@@ -6213,9 +6213,8 @@ function profileAbilities(){
 }
 function abilitySegments(v){
   const value=clamp(Number(v)||0,0,100);
-  const cells=7, step=100/cells;
-  return `<span class="pid-segs">${Array.from({length:cells},(_,i)=>{
-    const pct=Math.round(clamp((value-i*step)/step,0,1)*100);
+  return `<span class="pid-segs">${Array.from({length:8},(_,i)=>{
+    const pct=Math.round(clamp((value-i*12.5)/12.5,0,1)*100);
     return `<i style="--fill:${pct}%"><b></b></i>`;
   }).join('')}</span>`;
 }
@@ -13739,107 +13738,5 @@ input,textarea,select{font-size:max(16px,1em)}
   .profile-id-card .pid-card-name,.profile-id-card .pid-card-label,.profile-id-card .pid-card-level,.profile-id-card .pid-card-title,.profile-id-card .pid-overlay-row,.profile-id-card .pid-sheen{transform:none!important}
 }
 </style>
-
-<style id="profile-skill-art-lock-v21">
-/*
-  v21 — skill values are registered to the printed source-art boxes.
-  Measured from the actual 1254×1254 male/female card animation frames.
-  Important: the art has SEVEN cells per row, and male/female geometry differs.
-*/
-
-/* Do not enlarge the artwork independently from the overlays: a 1.018 video scale
-   shifts the printed grid under the DOM values and becomes visible during tilt. */
-.profile-id-card .pid-media video{
-  transform:translateZ(0) scale(1)!important;
-  -webkit-transform:translateZ(0) scale(1)!important;
-}
-
-/* The skill layer belongs to the printed card plane. 3D rotates the whole card,
-   but skill values never get an independent Z/parallax displacement. */
-.profile-id-card .pid-overlay-row,
-.profile-id-card.fx-on .pid-overlay-row{
-  transform:translateZ(2px)!important;
-  -webkit-transform:translateZ(2px)!important;
-  filter:none!important;
-  transform-origin:50% 50%!important;
-}
-.profile-id-card .pid-segs{
-  grid-template-columns:repeat(7,1fr)!important;
-  gap:0!important;
-  inset:0!important;
-  padding:0!important;
-}
-.profile-id-card .pid-row-value{
-  top:50%!important;
-  left:calc(100% + 2.1%)!important;
-  transform:translateY(-50%) rotate(-2deg)!important;
-  -webkit-transform:translateY(-50%) rotate(-2deg)!important;
-  line-height:1!important;
-}
-
-/* FEMALE source-art registration (1254×1254):
-   row 1 = x117..438 / y282..337
-   row 2 = x117..436 / y371..423
-   row 3 = x118..437 / y456..508
-   row 4 = x119..437 / y544..595 */
-.profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r1{
-  left:9.3301%!important; top:22.4880%!important; width:25.5981%!important; height:4.3860%!important;
-}
-.profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r2{
-  left:9.3301%!important; top:29.5853%!important; width:25.4386%!important; height:4.1467%!important;
-}
-.profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r3{
-  left:9.4099%!important; top:36.3636%!important; width:25.4386%!important; height:4.1467%!important;
-}
-.profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r4{
-  left:9.4896%!important; top:43.3812%!important; width:25.3589%!important; height:4.0670%!important;
-}
-
-/* MALE source-art registration (1254×1254):
-   row 1 = x120..448 / y290..347
-   row 2 = x120..448 / y386..439
-   row 3 = x123..449 / y478..532
-   row 4 = x123..448 / y570..622 */
-.profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r1{
-  left:9.5694%!important; top:23.1260%!important; width:26.1563%!important; height:4.5455%!important;
-}
-.profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r2{
-  left:9.5694%!important; top:30.7815%!important; width:26.1563%!important; height:4.2265%!important;
-}
-.profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r3{
-  left:9.8086%!important; top:38.1180%!important; width:25.9968%!important; height:4.3062%!important;
-}
-.profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r4{
-  left:9.8086%!important; top:45.4545%!important; width:25.9171%!important; height:4.1467%!important;
-}
-
-/* Animation may change opacity only; it must never alter registration geometry. */
-.profile-id-card.fx-on .pid-overlay-row{
-  animation:pidSkillInkLocked .42s ease-out both!important;
-  animation-delay:calc(var(--delay,0)*70ms + 90ms)!important;
-}
-@keyframes pidSkillInkLocked{
-  from{opacity:0}
-  to{opacity:1}
-}
-
-/* Prevent prior mobile overrides from moving the calibrated rectangles. */
-@media(max-width:540px){
-  .profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r1{left:9.3301%!important;top:22.4880%!important;width:25.5981%!important;height:4.3860%!important}
-  .profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r2{left:9.3301%!important;top:29.5853%!important;width:25.4386%!important;height:4.1467%!important}
-  .profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r3{left:9.4099%!important;top:36.3636%!important;width:25.4386%!important;height:4.1467%!important}
-  .profile-id-card .pid-media[data-gender="female"] .pid-overlay-row.r4{left:9.4896%!important;top:43.3812%!important;width:25.3589%!important;height:4.0670%!important}
-  .profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r1{left:9.5694%!important;top:23.1260%!important;width:26.1563%!important;height:4.5455%!important}
-  .profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r2{left:9.5694%!important;top:30.7815%!important;width:26.1563%!important;height:4.2265%!important}
-  .profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r3{left:9.8086%!important;top:38.1180%!important;width:25.9968%!important;height:4.3062%!important}
-  .profile-id-card .pid-media[data-gender="male"] .pid-overlay-row.r4{left:9.8086%!important;top:45.4545%!important;width:25.9171%!important;height:4.1467%!important}
-  .profile-id-card .pid-row-value{top:50%!important;left:calc(100% + 2.1%)!important}
-}
-
-@media(prefers-reduced-motion:reduce){
-  .profile-id-card .pid-overlay-row{transform:none!important;-webkit-transform:none!important}
-}
-</style>
-
 </body>
 </html>
