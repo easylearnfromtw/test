@@ -12988,7 +12988,7 @@ input,select,textarea{max-width:100%;min-width:0}
   .ac-dragon.battle-boss::before,.ac-dragon.battle-boss::after,.ac-vfx,.ac-battle-victory .ac-result::before{animation:none!important}
   .ac-vfx{display:none!important}
 }
-</style>\n
+</style>
 
 
 <style id="pastel-dragon-boss-integration-v1">
@@ -13738,5 +13738,67 @@ input,textarea,select{font-size:max(16px,1em)}
   .profile-id-card .pid-card-name,.profile-id-card .pid-card-label,.profile-id-card .pid-card-level,.profile-id-card .pid-card-title,.profile-id-card .pid-overlay-row,.profile-id-card .pid-sheen{transform:none!important}
 }
 </style>
+
+
+<style id="footer-edge-alignment-fix-v1">
+/* Fix: late .foot{width:100%} made the full-bleed footer one body-padding narrower
+   than the viewport on phones, leaving an exposed cream strip on the right. */
+.foot.foot2{
+  width:100vw!important;
+  max-width:100vw!important;
+  margin-left:calc(50% - 50vw)!important;
+  margin-right:calc(50% - 50vw)!important;
+  box-sizing:border-box!important;
+}
+@supports (width:100dvw){
+  .foot.foot2{
+    width:100dvw!important;
+    max-width:100dvw!important;
+    margin-left:calc(50% - 50dvw)!important;
+    margin-right:calc(50% - 50dvw)!important;
+  }
+}
+@media (max-width:620px){
+  .foot.foot2{
+    padding-left:max(16px,env(safe-area-inset-left,0px))!important;
+    padding-right:max(16px,env(safe-area-inset-right,0px))!important;
+  }
+  .foot.foot2 .f-tape{
+    margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)))!important;
+    margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)))!important;
+  }
+  .foot.foot2 .f-base{
+    width:100%;
+    align-items:flex-start;
+    text-align:left;
+  }
+  .foot.foot2 .f-base>span{
+    width:auto;
+    max-width:100%;
+    margin:0;
+    text-align:left;
+  }
+}
+</style>
+
+<style id="profile-name-two-grid-v1">
+/* 我的頁面：姓名放大約 2 倍並加粗；Lv. / 新來的維持原本位置與尺寸。 */
+.profile-id-card .pid-card-label{
+  font-family:var(--f-zh-serif)!important;
+  font-size:clamp(14px,1.7vw,20px)!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:.07em!important;
+  white-space:nowrap!important;
+}
+@media(max-width:540px){
+  .profile-id-card .pid-card-label{
+    font-size:13.8px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+}
+</style>
+
 </body>
 </html>
