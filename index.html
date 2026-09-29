@@ -2,6 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- github-pages-singlefile-fix: 2026-09-29; instant GitHub welcome + hard boot escape -->
 <!-- certificate-template: official uploaded blank PDF page 1; dynamic fields: award title + recipient name -->
 <!-- audio-revision: direct-37-zhuyin-audio + explicit-first-tone-dash + persistent-bgm-v4-foreground-duck -->
 <!-- audio-stability-v8: bounded-pcm-cache + context-identity-recovery + instant-native-failover + tts-stall-watchdog -->
@@ -11322,7 +11323,8 @@ const Welcome = (() => {
     startDots();
     // preloader counter on the very first visit
     const count = el.querySelector('.wl-count b');
-    const dur = first && !REDUCE ? 1650 : 0; const t0 = performance.now();
+    const isGitHubPages = /(?:^|\.)github\.io$/i.test(location.hostname);
+    const dur = first && !REDUCE && !isGitHubPages ? 1650 : 0; const t0 = performance.now();
     const tickC = (t) => { const p = dur ? Math.min(1, (t - t0) / dur) : 1; const e2 = 1 - Math.pow(1 - p, 3); count.textContent = String(Math.round(e2 * 100)).padStart(3, '0'); el && el.style.setProperty('--lp', e2.toFixed(3)); if (p < 1 && el) requestAnimationFrame(tickC); else if (el) { el.classList.add('ready'); setStep(0); } };
     if (dur) requestAnimationFrame(tickC); else { el.classList.add('ready', 'instant'); setStep(0); }
   }
@@ -13457,7 +13459,7 @@ input,textarea,select{font-size:max(16px,1em)}
 }
 
 /* GitHub Pages hard boot fail-safe: works even if JavaScript initialization fails. */
-#boot-screen{animation:xtwBootHardExit .45s ease 3.2s forwards!important}
+#boot-screen{animation:xtwBootHardExit .35s ease 1.25s forwards!important}
 @keyframes xtwBootHardExit{to{opacity:0;visibility:hidden;pointer-events:none}}
 </style>
 
@@ -13477,9 +13479,9 @@ input,textarea,select{font-size:max(16px,1em)}
       var c=w.querySelector('.wl-count b'); if(c)c.textContent='100';
     }
   }
-  setTimeout(releaseBoot,3400);
-  setTimeout(releaseWelcomeLoader,4200);
-  window.addEventListener('pageshow',function(){setTimeout(releaseBoot,3400);setTimeout(releaseWelcomeLoader,4200)});
+  setTimeout(releaseBoot,1400);
+  setTimeout(releaseWelcomeLoader,1800);
+  window.addEventListener('pageshow',function(){setTimeout(releaseBoot,1400);setTimeout(releaseWelcomeLoader,4200)});
 })();
 </script>
 </body>
