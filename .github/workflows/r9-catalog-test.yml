@@ -1,0 +1,71 @@
+name: R9 catalog 1150 validation
+
+on:
+  push:
+    branches:
+      - musicetown-production-r9
+    paths:
+      - ".github/workflows/r9-catalog-test.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ffmpeg and Python dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Restore production audio cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            _master_audio
+            _fresh_audio_cache
+            _theme_audio_cache
+          key: musicetown-r891-64k-${{ hashFiles('verified_audio_manifest.json','fresh_city_profiles.json','theme_profiles.json') }}
+          restore-keys: |
+            musicetown-r891-64k-
+
+      - name: Install verified general catalog
+        run: python fetch_verified_audio.py --bitrate "64k"
+
+      - name: Build all city themes
+        run: python build_fresh_city_packs.py --per-city 50 --bitrate "64k"
+
+      - name: Build all mood themes
+        run: python build_theme_packs.py --per-theme 50 --bitrate "64k"
+
+      - name: Verify exact 23 × 50 catalog
+        run: python verify_music_install.py
+
+      - name: Prepare production site
+        run: python prepare_audio_site.py
+
+      - name: Verify production shell and files
+        run: |
+          test -f _site/index.html
+          test -f _site/404.html
+          python - <<'PY'
+          from pathlib import Path
+          import json,re
+          h=Path("_site/index.html").read_text(encoding="utf-8")
+          m=re.search(r'window\.MUSIC_DATA\s*=\s*(\[.*?\]);\s*\n',h,re.S)
+          data=json.loads(m.group(1))
+          assert len(data)==23
+          assert sum(len(x.get("tracks",[])) for x in data)==1150
+          assert all(len(x.get("tracks",[]))==50 for x in data)
+          assert "MENACING DUBAI" in [x["t"] for x in data]
+          print("R9 CATALOG PASS · 23 THEMES · 1150 TRACKS")
+          PY
