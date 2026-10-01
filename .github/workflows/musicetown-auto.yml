@@ -49,6 +49,27 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Patch resilient Nullrights download links
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files = [
+              Path("_src/fetch_verified_audio.py"),
+              Path("_src/build_fresh_city_packs.py"),
+              Path("_src/build_theme_packs.py"),
+          ]
+          old = 'if "download" in label and re.search(r"\\.(mp3|ogg|oga|flac|wav)(?:\\?|$)",href,re.I):'
+          new = 'if "download" in label:'
+          for p in files:
+              text = p.read_text(encoding="utf-8")
+              count = text.count(old)
+              if count == 0:
+                  raise SystemExit(f"Expected Nullrights download matcher not found in {p}")
+              p.write_text(text.replace(old, new), encoding="utf-8")
+              print(f"Patched {p}: {count} matcher(s)")
+          PY
+
       - name: Restore music cache
         uses: actions/cache@v4
         with:
