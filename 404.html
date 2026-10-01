@@ -7649,6 +7649,217 @@ window.addEventListener('error',function(e){
 }
 </style>
 
+
+<style id="musicetown-production-r900">
+/* musicetown R9 production polish */
+:root{--mt-safe-x:clamp(10px,3vw,22px)}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+*{box-sizing:border-box}
+button,input{-webkit-tap-highlight-color:transparent}
+
+/* 3 / 5 · airier database cards and taxonomy rail */
+.track-list{gap:12px!important}
+.track-row{min-height:62px!important;padding:11px 12px!important;border-radius:18px!important}
+.theme-group-tabs{gap:9px!important;padding-bottom:10px!important}
+.theme-group-items{gap:10px!important}
+.theme-group-tab{min-height:32px!important;padding-inline:12px!important;font-size:6.2px!important}
+.theme-shelf-item{min-width:156px!important;height:48px!important;padding:7px 10px!important}
+.theme-shelf-head{padding-bottom:9px!important}
+
+/* 4 · no green / browser-accent focus ring */
+.library-search:focus,
+.global-search-box:focus-within,
+.global-search-box input:focus,
+input[type="search"]:focus{
+  outline:none!important;
+  border-color:rgba(41,70,93,.10)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 0 0 1px rgba(41,70,93,.04)!important;
+}
+input[type="search"]{-webkit-appearance:none;appearance:none}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none}
+
+/* 8 · production surface: remove diagnostic / administrator-facing UI */
+.cloud-audio-flow,
+.local-path,
+.local-mp3-status,
+.local-file-picker,
+.player-links,
+.legal-mini,
+.side-stack .music-panel:has(#rightsNote){
+  display:none!important;
+}
+.player-eyebrow{letter-spacing:.16em!important}
+.local-player-controls{margin-top:14px!important}
+.local-player-controls .group{width:100%!important}
+#playerLegal{display:none!important}
+
+/* 9 · no volume row, only listener actions */
+.glass-action-row{
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:7px!important;
+  grid-template-columns:none!important;
+}
+.glass-action-row>span,.glass-volume{display:none!important}
+
+/* 2 · smooth vinyl / range rendering */
+.vinyl-rotor,.glass-disc{
+  will-change:transform;
+  transform:translateZ(0) rotate(var(--record-angle,0deg));
+  backface-visibility:hidden;
+}
+.vinyl-scrub-readout{
+  position:absolute;
+  left:50%;bottom:10px;
+  transform:translate(-50%,8px) scale(.96);
+  min-width:72px;height:30px;padding:0 11px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.78);
+  background:rgba(247,251,253,.72);
+  color:#29465d;
+  box-shadow:0 9px 28px rgba(31,50,69,.10),inset 0 1px 0 rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(12px) saturate(120%);
+  backdrop-filter:blur(12px) saturate(120%);
+  font:700 8px/1 var(--grotesk);letter-spacing:.10em;
+  opacity:0;pointer-events:none;
+  transition:opacity .18s ease,transform .22s cubic-bezier(.16,1,.3,1);
+  z-index:20;
+}
+.vinyl-scrub-readout.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.deck-seek,.glass-seek{touch-action:pan-x}
+
+/* 10 · long-list and glass performance */
+.track-row{content-visibility:auto;contain:layout paint style;contain-intrinsic-size:64px}
+.theme-shelf-item,.search-result-row{contain:layout paint style}
+.player-card,.music-panel,.theme-shelf,.glass-transport{transform:translateZ(0)}
+.mt-perf-mobile .music-panel,
+.mt-perf-mobile .theme-shelf,
+.mt-perf-mobile .glass-transport,
+.mt-perf-mobile .player-card{
+  -webkit-backdrop-filter:blur(16px) saturate(116%)!important;
+  backdrop-filter:blur(16px) saturate(116%)!important;
+}
+
+/* 11 · custom 2-second branded prelude */
+#welcome.mt-intro-pending .welcome-card{
+  opacity:0!important;
+  transform:translateY(18px) scale(.985)!important;
+  pointer-events:none!important;
+}
+.mt-welcome-prelude{
+  position:absolute;inset:0;z-index:20;
+  display:grid;place-items:center;
+  pointer-events:none;
+  opacity:1;
+  transition:opacity .62s cubic-bezier(.16,1,.3,1),filter .62s ease;
+}
+#welcome.mt-intro-reveal .mt-welcome-prelude{opacity:0;filter:blur(8px)}
+.mt-welcome-orbit{
+  position:relative;width:150px;height:150px;
+  display:grid;place-items:center;
+}
+.mt-welcome-orbit::before,.mt-welcome-orbit::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(48,77,99,.14);
+  animation:mtWelcomeOrbit 2s cubic-bezier(.16,1,.3,1) both;
+}
+.mt-welcome-orbit::after{inset:18px;animation-delay:.16s}
+.mt-welcome-orbit svg{width:52px;height:52px;fill:none;stroke:#29465d;stroke-width:1.4;animation:mtWelcomeLogo 2s cubic-bezier(.16,1,.3,1) both}
+.mt-welcome-prelude-copy{position:absolute;top:calc(50% + 104px);left:0;right:0;text-align:center;color:#29465d}
+.mt-welcome-prelude-copy b{display:block;font:750 11px/1 var(--grotesk);letter-spacing:.28em}
+.mt-welcome-prelude-copy span{display:block;margin-top:9px;font:650 6.4px/1 var(--grotesk);letter-spacing:.19em;color:rgba(41,70,93,.42)}
+@keyframes mtWelcomeOrbit{
+  0%{opacity:0;transform:scale(.72) rotate(-18deg)}
+  35%{opacity:1}
+  100%{opacity:.65;transform:scale(1.08) rotate(18deg)}
+}
+@keyframes mtWelcomeLogo{
+  0%{opacity:0;transform:scale(.72) rotate(-12deg)}
+  34%{opacity:1}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+
+/* Mobile production layout */
+@media(max-width:760px){
+  body.detail-open .detail{
+    left:0!important;right:0!important;top:0!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;
+    padding:calc(72px + env(safe-area-inset-top,0px)) var(--mt-safe-x) calc(116px + env(safe-area-inset-bottom,0px))!important;
+    overflow-x:hidden!important;
+  }
+  body.detail-open .detail>.inner.music-detail{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding:0!important;
+  }
+  .music-grid,.music-panel,.branch-drawer-section,.track-list,.track-row,.library-tools{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+  }
+  .music-grid{display:block!important}
+  .music-panel{padding:12px!important}
+  .library-tools{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+  }
+  .library-search{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+  .lib-pill{width:100%!important;min-width:0!important}
+  .track-row{
+    display:grid!important;
+    grid-template-columns:40px minmax(0,1fr) 38px!important;
+    grid-template-rows:auto!important;
+    gap:10px!important;
+    overflow:hidden!important;
+    padding:11px!important;
+  }
+  .track-row>div:nth-child(2){grid-column:2!important;grid-row:1!important;min-width:0!important}
+  .track-name,.track-note{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+  .track-actions{
+    grid-column:3!important;grid-row:1!important;
+    width:38px!important;min-width:38px!important;padding:0!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;
+  }
+  .track-actions .cc0-badge,.track-actions .play-dot,.track-actions .dislike-btn{display:none!important}
+  .favorite-btn{width:34px!important;height:34px!important;flex:0 0 34px!important}
+  .side-stack{width:100%!important;max-width:100%!important}
+  .player-sheet{width:100%!important;max-width:100%!important;padding:6px!important;overflow:hidden!important}
+  .player-card{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    max-height:calc(100dvh - 10px)!important;
+    margin:0!important;padding:13px 11px calc(18px + env(safe-area-inset-bottom,0px))!important;
+    border-radius:26px 26px 0 0!important;
+    overflow-x:hidden!important;overflow-y:auto!important;
+  }
+  .musicetown-deck,.deck-info,.vinyl-wrap{width:100%!important;max-width:100%!important;min-width:0!important}
+  .musicetown-deck{grid-template-columns:minmax(0,1fr)!important;padding:11px!important}
+  .deck-favorite-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .local-player-controls .group{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .local-control{min-width:0!important;padding-inline:4px!important}
+  #glassTransport.glass-transport{
+    left:8px!important;right:8px!important;inset-inline:8px!important;width:auto!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"track center" "sliders sliders"!important;
+    padding:8px 9px!important;border-radius:22px!important;
+  }
+  #glassTransport .glass-sliders{grid-area:sliders!important}
+  #glassTransport .glass-action-row{margin-top:3px!important}
+  #glassTransport .glass-copy b,#glassTransport .glass-copy span{max-width:44vw!important}
+  body:not(.detail-open) .theme-shelf{
+    width:calc(100% - 16px)!important;
+    bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
+    border-radius:22px!important;
+    padding:10px!important;
+  }
+  body:has(#glassTransport.show):not(.detail-open) .theme-shelf{
+    bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+  }
+  .theme-shelf-item{min-width:150px!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -7889,7 +8100,7 @@ window.addEventListener('error',function(e){
 
 <footer class="site-foot">
   <span style="--d:1.42s">musicetown · 23 THEMES · 1150 PICKS</span>
-  <span style="--d:1.5s">2026 | musicetown R8.9.1<i class="sq"></i></span>
+  <span style="--d:1.5s">2026 | musicetown · PRODUCTION<i class="sq"></i></span>
 </footer>
 <p class="nogl" id="nogl" hidden>這個瀏覽器無法顯示 3D 收納盒，請用上方導覽列瀏覽各頁。</p>
 
@@ -7898,7 +8109,7 @@ window.addEventListener('error',function(e){
   <div class="player-card" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
     <div class="player-head">
       <div>
-        <div class="player-eyebrow">musicetown · VINYL PLAYER · CLOUD AUDIO</div>
+        <div class="player-eyebrow">musicetown · VINYL PLAYER</div>
         <div class="player-title" id="playerTitle">Track</div>
         <div class="player-artist" id="playerArtist">Artist</div>
       </div>
@@ -7955,8 +8166,11 @@ const HOME_GROUPS={
   MIDDLE_EAST:{label:'中東 · MIDDLE EAST',short:'MIDDLE EAST',items:[
     'MENACING DUBAI'
   ]},
-  MUSIC_THEMES:{label:'音樂主題 · MUSIC THEMES',short:'MUSIC THEMES',items:[
-    'JAZZ','CROONER','ROCK','SPORT','LO-FI','EMO','RUNNING','POEM'
+  MUSIC_STYLES:{label:'音樂風格 · MUSIC STYLES',short:'MUSIC STYLES',items:[
+    'JAZZ','CROONER','ROCK','LO-FI'
+  ]},
+  MOODS:{label:'音樂調性 · MOODS',short:'MOODS',items:[
+    'EMO','SPORT','RUNNING','POEM'
   ]}
 };
 const HOME_CARD_SLOTS=8;
@@ -7982,7 +8196,7 @@ function currentHomeGroup(){return HOME_GROUPS[HOME_GROUP_KEY]||HOME_GROUPS.ASIA
 /* ================= scene dimensions (world units) ================= */
 const BW=268, BD=293, HF=162, HB=337.4, GT=4, PT=6;          // box
 const CW=236, CH=236, CT=2.4, LEAN=6*Math.PI/180;           // cards
-const TOP0={y:241.5, z:99.3}, MAIN_STEP={y:8.8, z:-23.8}, BRANCH_STEP={y:24.2, z:-48.8};          // card top-edge positions
+const TOP0={y:241.5, z:99.3}, MAIN_STEP={y:9.8, z:-27.2}, BRANCH_STEP={y:24.2, z:-48.8};          // card top-edge positions
 const DEG=Math.PI/180;
 const HOV={lift:95, tilt:-7.2*DEG, dz:-14}, FRONT={tilt:-6*DEG, dz:4}, BEHIND={tilt:0, dz:-35}; // hover response
 const RING_C=[.505,.545], RING_R=[.195,.17], DOT_R=.03;     // ring on the 3D card face
@@ -8388,7 +8602,7 @@ function resize(){
 
   const dm=navigator.deviceMemory||4, hc=navigator.hardwareConcurrency||4;
   const lowPower=(dm<=4||hc<=4||cssW<700);
-  dpr=Math.min(window.devicePixelRatio||1,lowPower?1.25:1.65);
+  dpr=Math.min(window.devicePixelRatio||1,lowPower?1.35:1.75);
 
   W=Math.max(1,Math.round(cssW*dpr));
   H=Math.max(1,Math.round(cssH*dpr));
@@ -9274,6 +9488,12 @@ const CITY_PASS_THEMES={
   'TRADITIONAL BEIJING':{slug:'traditional-beijing',code:'BJS',country:'CN',aliases:['beijing','beijing city'],qr:'assets/city-pass-qr/traditional-beijing.png',summary:'京劇唱腔、鑼鼓、嗩吶與傳統戲曲舞台感。TRADITIONAL BEIJING 把京味戲劇張力與古典器樂聲響集中在一起。'}
 };
 
+// Embedded QR assets make City Pass independent of GitHub Pages asset timing.
+const CITY_PASS_QR_EMBEDDED={"taipei-style":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABoklEQVR42rVVPY/UMBB9Wa/kbYhFjQ9Hul9wXRad5PwDOnq4P5BQ0ZCPbqvL8nPovNJJue4k+pOMTI2yVC68GVqoJhJiOkvPzzPvzYwzwh9BG/wV/3JEAswYU44wAy13tyO8r7aN2w+U2IfOu8vrRw+I/lQw4C0AwBa5O/VvsQZ8906/enP984mvV0Ucby7DQcN6FjxkqJ9uf8lLl2056YgowYZzNES0cDrXMKPzuUUNswJMi0ytDHOpWw6cS0EUBmeGiWfuKMxWLNCZ4+0+74vskI72x+eKl+746Md9Np/EpmRNEb296kvz0iVA9Az40oN6+TyjyNwt2xs5im/V9QeLF7vUc2o0k8+RaogVOhM5M0yBouml4HSmRdJ58nXpAcHbbc0Qw0haucTaraJXLtwjDJHvjcYZIihKalqTRjg738SUl2uY0QJqAmRqV0xK5xLgu4lnBgxNvom+WZFzRzqXYgE6p/l+3uHuq/4y6aF6WLMnx0/P36sH5Qp2i9ZSqxjGSdclN4MbqCg+yqv5JpjDmv2sc0v3Fm0ZGObsv30TvwGoNdLnEKWj8wAAAABJRU5ErkJggg==","old-tokyo":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABrUlEQVR42rWVv47UMBDGP68jOQ2OrlwpRyLxBHRGWil0vAcvQLL0+QPNNey+ATzHdV7ppKSCJ0CYTWq4TZVITuZaqGYlxHSWZsYzv8+fLAh/BG3wV/zLER6Ic+U1+keg5GorwpcpLSgV5NmLLqH8/UoW4Vyf0iumWvbq4bMZrltB3txt99hdkxxN0GbIO4fMscmNWM7dTtiURMChIyKvFXSGimjlOOdGNm3fTP1lchxneXPnnxXbTxHo9Y4dozYxDB0JGp7rvBzQ1t+Wc0dnw6ELMCL99SYdv57KbuDHyJyYkkPmI5Irx7m43+kOI9K3p5jtfFAumnqySTMlLGdt4hwJWYiWTaZL66NWHq0TlhMFXivkmTxSUit2Qfne9s8xFyEi+73mRFmRCpuWs3tXXOMUh3n4gOGj5dBt5H6+/RnKywQKH3jOcIL6VSVkPUujoIQmrxWg+vUKp1TWlcZXlnNKsASIx/t2o4ZR8e6uCKMacIKeb2vWgyo5KCcswCoIn6tYtL6a5Go4GgEAlC+DqN7u8eIH17mi5FElDTkonjMQFxTD9EfLvWfx376JJ6aO0/Dom1nFAAAAAElFTkSuQmCC","splendor-shanghai":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAAB7AQAAAAB8vMLSAAAB9ElEQVR42r1VPa/TMBQ9riu5DK9mBOE0ld6OxOZKSAk/hX+QPImRJBUzTfk7TO6UroxIDH7yD3hpWVzJyWVggukOiDtaOr73nHM/BOGPeFzgr/gnD5MQ2+MtW5yy7izEivVHS7gqf9dKXebkWJDLanraLavTNNppwSkMqVJGR7MuDJQRg2eSq1QYMfSORx+pJQNr6sFA5cTLsheoewCo3aMoGVmWkjB9uOGu/PHqHbGsRKqQE9EIoIAgRmEgIjootET9EOaCA0mAnC2R87CmUSxIPaQ6mjrK2UKzFJN6d5+twkZN0pn3JcuXOtKoDIB2CEQ8LoXsrOwddcBaMRULF4KIclRg0V9MHXYb4GOZjm/M1XK4UE+hJ3lxph3CyPRFyYPyjc07JWcel57CXIQZqY2S2ck4v/2yz54X96J8+cDikjR5HU2jwt5Rz/NFD3IGajKN9TxfEhQdlGkUzfDMtmyUEZSPMMKZigcR0evoWyJygcVliUYVT8/i4rR9fXvxbfWdI/L15H9estnK8XY6WN6SLrLP2h/V9pPbXll7jIiSdnSwclZJM+cF+Wi9jkQDV7GWzLowsPllSKzZR6qUqV1qowdQExcihnBxv/c/yxcAFbLmq6xXdOSJrKPcIDycp1FlI+9YAAZWdgVQJHAUE//liP8C1swQICfpy8YAAAAASUVORK5CYII=","vancouver":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABqElEQVR42rVVMarcMBQcrTZoK5uUAQUbkguk08KCt8oRcoC9QNaQWvam+k1wLpA9ixYWbMglDNoipf3T2CDrpU2aPEPI6wSj0bw3b5Ag/Fa0wR/1L0cEQJ9VsPADYLm7FSGd8p+UCwrsQ+NOlnv5ZTfXt3yFqqVW9694rGtBZk+vanNYA04n0PFx6noUPQu+iMW7g3A5iS03OiIKSYGUUBHFv4O3y6fuu32vv+19Mv+4cqaIiaIJVvnBaMaULT4eHydIOYnkOXzmNEflBxXKlgYTLCejdLJpdaJg0XNgqos+nbK60CnJyM3Zzm/qDuhwuml2zpeWmslHZJcpi5zmxOjSZREQLQumkULqJLW9cHyDsUBSyAtltZKsDOH8YEKiqGlZ5lC1KClYQ9GAtXvcU7PvgMfVveX2WdYQ/kmOE2h3B8d8RXjxoU9w6I+sKaGiLJqQtoDycUVS0ra3Ragcl5TNIkQ+lsUG22fFp7siWNxxQzK/rjnNZ5VFQDhA8SsKLC8pWMj4bl7BrCuHlPTZ8CtaUTZSVhc9FJ9BQJ8LLSbfOI5Z/Ldv4hcXM9g7pnHhWQAAAABJRU5ErkJggg==","london":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABpklEQVR42rVVQY7TMBR9jiuZzSRlifDgSD0Bu4yE5HIC7sAJCgdIHPaUG3APdq5UKd3NCUbykEospwkbR3Ly2Q6rXwnxd5aen/3f+34WhGdFGf6qf1kiAaYlQ9FcgJrb29D8JOb1/dxSYg8aXgA4jpN0h5IBrwDguzVzBvfhmhbkT5x/R+mu6LeIEO2rvdKwgQW3YnaqHE9zI1acdESUYOmiDBEtDPPsUGJ6fFM9ZhPLnIQPTSeXSpI3C3cNVwG2H7xpOx5MPtTKLEqDtRsJlW6iFl2C5RpE2oFcpWvVtzGwg1R0ZQ358oemrXTMbMhseliP/ev3Pj/dfWR1rjY96S8ogcA6+I1orwDIIWr2zjisxreoEW624Jm70EQNG4SX7Gw8bTdrdW78uxyT43SubcqRYOUerN2p8Sh8KCgVnWTBdZVya4YuFZFnLrxuolxsAhInnbzYMOLh8+HcdFwUZLMQm7UqBZUjfjk+kYBJ32xDPmn2We2UcRUNpAF+RAHgdPtVHHOU14TqJw8oQF2VSLk6AsZNxvH5rHeW9hZ11TOmiP/2TfwBPRPF+EF0DCYAAAAASUVORK5CYII=","new-york":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABp0lEQVR42rVVS2rcQBB9PRro2Vjy1tBJC3SJHjBodr6HcwHJB9Bn541HvkBylh4ItHc5gUF2B7JLNM7GA92qbONVCYxr1/Coz3uvqgXhv6AV3sR7ngiAJhsa+AloOHBLeg8Iq2oKDVfouIk3GCsk3SFf0lUl869Xh47teQ0A99KfnRe/f/DzZq9IT3GwCuXIgnuBL+7yRcZWrDnqiCi05CdoIpqZzLEWhdjGz+VTLXJWlIxCRiGVfjKKE4V6QiN9b3Xv9MyB9yZUMpmhhGXlpqPVvaOpRIORkzt2OHQQ3cGvDCtKcm6KWJO2Ckg6LvOMcP8QJ5MLewnedfm1KcQVzjaPHUudDSgDZLKA51A7PTg/kO5kwvJ8JJrlCDMCPLi3mixapzLLrlXcm8cVvNi6G8MbqbYqxZi5kDmujRVS+EkmzydQfcFRFxqpMjumEpB+XrApkKHC2DrFDihEMRzX4jV/wS/OG2gpPu383Qbp6aLjvQE8qL+k+t33JRfpWynudj8zy/NcSSUsDU5VRs/8RUpi++nP1uvbJfdZZY4GQmM4nsWHfRP/AH21zydtxk42AAAAAElFTkSuQmCC","traditional-beijing":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAAB7AQAAAAB8vMLSAAAB7ElEQVR42r1VsW7bMBB9FA0wi2V3NMBA/gwaCCBt/Y70C6xkF6XNk9V+QNrvyMYCAeitv0CDBrJKySIDki5Dp3a6oeiBE4FH3nv37k4Q/ohzgr/in1xMQmyb3aXfnRMIccN6w9LUQX9Hfjxl5BgQjHulgWyGrpQWPjAztW5aI3w1fHKyhu/y1/7AhawGNBbvzW4NOYPFBdCl/30AxeACIhqRhwqRiIg4kNGS3kN2AExW56xfahWgiFxWI4AH6SBpyMgFGDkrXmIu1nkoSZLT1rMge8je6UqN1kviQaBGqACFSsWWpRi1g+yMbB11QKpYHrsvwo+DflOXFckHTvUXEH4xXs9T+SLMpjMsw9ghHhX1XlcqMkvZky6H2Lo4G5Q8xYQLwtOsIg2y9TzFvK5USPOsNrokXlde46OT3fWSIjBbrLe3R9w++k2nLk+cCQPqfWwGVKDe8UqJUXi98loMge+x1RBSpe0QZ6bHEtyv7oCYnDZrsyUWl7H0495E8rIzI3i2pGKL025t8O2wKDkDNpHtEGC8LZCqMTXMOZb1g5whe89r5ASW8PR5SnK9LNjVv8H7Qdvnn8l18Wa4O2pZ4E3JGll94kK+4GW5uwNCW3Anf4rs4dfUu6lliYxGTJ+ez40LqXqtOfTFf1niH/fFCoMIAMraAAAAAElFTkSuQmCC","tropical-hawaii":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABo0lEQVR42rWVMWocMRSGf60WtI1HaRdEtOBLyGCYdDlHcoLZHGBG07la7w18DncaCMhdTmAYrIF08cymmQXNvhRpkuoZQtQJfknf/97PkyD8sWiFv9a/bJEBO825RhqBmjvbEI5q+BluWsrsQ9NmWTa7AtJ3u7dQHV3STedZ5jUAiLvtS3f94xvvV884nQcdDMqeFbcClbo9qaURa650RJQrlUZniejC1bmCvZ+zJlSwjHgt36se3S1t0tXT4DkMD3txkoJto2UxoGgKaYQRgWs3cg0UyvoSNXouG9KD2vA8dnLl2KYs70rxul8/hAxI1iAFOqhEs21nzuAKRyWmx137EVebZ89hvCDDbX03fHY7tt1ThI6JZuuVvPDMfaFQux5gxVmTAeQ9GR0y35QyVy4Dsp0NK64UKgdNWUceo4lE0eznXDheXDs7ql5HQHHZABH99tg3kWNeLUJcfzkPe8IJ3z0/kZYRshEozlvPV8OgNDoa8HkGgLrDpw9fdWCzkStl4HodTeX4iOpZHp7k602yd2+Zz0ZQOpSoXWJuFv/tm/gFa5LOzssTrJIAAAAASUVORK5CYII=","bustling-hong-kong":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAAB7AQAAAAB8vMLSAAAB3UlEQVR42r1VsYrcMBQcrQJKE2tTBnR4IT+hQMDX3YfkB9ZXpbLXpEnlzRfsf6RzEdB29wUHPhRIa2+lBdmT4qpc9QIhD1WC0Zt5w+gp4o962uBF/ZOLRand5bpsr8BZqdeiN1ri9AA8KPu55CCAIO+NK1AyaQanwihk+in8+GaWzd+IO11v2g9xFUNswnyX1dd36lavEGkBXB2eD2AEWkAyNx6AniqSEvlLrd5vkRs/nqA2ImKcOdoU5+BsiGslInYcyi6h8TygXEVacp3iWukJrh1gg6hLj7Kj7iunktvLuhRVnOD2BjZE0cTAybvCxzmUkxkLmS+9HxuDlnECGiEx6Gf58G5fySAmHoA2kSFOMogNrkHJAaiEvnAFSdemuHpNmS9d0gfvLHWXnJINmSHD5wKxG3gU+2I52pQLL/Qlq5TrwQHlZEaRLxu93L0qPBr/+HbeXWRBtoyHSs/BtSHKtOTGoCbg2RtZ9jdQM7dXvZ5/7q8U/ZYbXLB7Yx+31ccvg7qXZZ/MNcu10r3JVqYFKEnULLsgTWVLZ5mbinPIsuznvXGF4TwAQE3pz3/BU+/jMbniLN0vMOTgAK4yX2zS3febe/9rwk0n86VTy+T11ixbP863Aoj6L0v8N50hFskCTfVIAAAAAElFTkSuQmCC","slightly-tipsy-rome":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAAB7AQAAAAB8vMLSAAAB8ElEQVR42r1VsYrcMBB9Wi1oK2nLHOjOC/sTuhCwU91/3BfYXSp73V21e/mB+490XgjI3X5BQIsJly52ZxPZkyJVUk0gZFAlGObNm/dmBOG3uK7wR/yTj1mIHXC7wlxlQmwYKYgVJaeR+jRolZAPnLLDBnm7fmlRNPMKrCq5SmrqBpK9soJXBYA+v9Pn8MxsH7EiqxUtadIze0EEbOF/PUBxgEmibjt1JgNlRCMLWOmsIQsVxdgR8YC5UI0BaSg8cy7y2O63F7kAerqajAOM6ibksCUA1514wIyXtYdpgkZy5DAGqsdoiBbQaZQ9KyVqyNNoKy+JULBGSdRE7VA6C8SKWBqjh13xFMUpFKMSHMbWEMO3l0z+ePv6eLnpW5ZNn7GXFHEJGq9bnrOHhy9Le11N4vuHkDveMph2dZYsrpNP93csv1CvQums8LHwkjfKWHk5eJvDmpEWxSP5ftpOQVAgAziWX6DkIUWeRu24GutBvepqsgXJAwvYfHRruLlvX+8mmIbnlzHo1MIFrVD9hV+ChlzAVjLFHEndACoalvdnIfZbF7RKDthRxt2WpkkWFyofkQaO+IfNm6L6/NHffn2/1twbNdOnHQmUaXjkpkixuRm8PJyhW+4VOzpJI7SS3AULW6oIBNMkLCWL/3LEfwJefg3N6Xra9gAAAABJRU5ErkJggg==","psychedelic-la":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABpElEQVR42rWVsW7bMBCGf4oGpMVm1gJMKcBP0I0BAshbn6NPUDlTl1BSpy5t0sfpRgMGlM1PEIAoPReKuygApcuaTGegKDcCx+N3//F+CsKrRRnerH/ZIgFmtskhDoDjzjYE4RfCX3WU2IueikkU4QTZ7spzqFy1vmx2Lcu8AIDTQ1jerP8c+HrVCPVruvMaVWCDO4FTfn3Kp0YsOOmIKNV5fPKGiGZO5xpmsEERahgmeCEv7P7rQX8u4vLh2HKZV4CiSN50vWExhE+C5AwtPN9uh/J2k+6r4+2GlU42X/Z/u8vfO5lZvin3hxJVb8YESKbAbLqx8T2mAaXw12xm93zVCCM+Ylk8ctLRgOBsAuRgtWN1tmauIo3U5nLmx4q6PtQ2AHywGPXKyjvSyicWA3mcoQHZjTyzgyQP1SfV8xiuCs6itmll+Ye09RCUVA/kwZ0xKaJPQGh6nhkwLcKWwpZlztDQRLT+LsrV87uWdyQA6SfpbrM/x5G6Ap+Ko/Il66J1rpsRqtc1K10GNcptYYYP0Xw7x581rPxRwdnIZBb/7Zt4AbpfxmYWIxXoAAAAAElFTkSuQmCC","solemn-kyoto":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABm0lEQVR42rVVQYrcMBAsjQc0l7XOC1pkmBfk5sCA5gf5Q17gnQfY8i2ncfIjGRac275gQawOOa49Jxs07lyTUxtC+iZolaq7q0uC8EfQDn/FvxyRAENzyhFHoObuNoT2vH/2n1tK7EPT4e5+BiBzfcEk7wEg/1TkvndfNpVQIb4vR7ehwIa08KGZzUSJLbAVqOTp9npvxJ5DJqIEG0cYIlo5GhVM50NuUcHwySVdZcplHEtdczRWm3UUW2/agUUmoni12QotPFjkUUIRXS1qBK51d+Pp0ouxz3YlOxTqSAOm8+TKuHLIFwxOvo0ohD+x2qDzqVqOosHD4c1xNCYKNRKQbelzN5vWZxORkxk7wVxS60NdAuCTK6vFHDvSyvMS/Y7wcMAkhktZsOKvka0Wakhq4GjsABtuS/q6gJ4fHbtWHo3XagBkqjdsivIJMjSDZoUkxPEdezUXN/xyvCPd1Tl+COTLo+MdCcrrH6Tb88s2n3z6OLwoz/e5kjovY0e6Kg3bZzVnl9ensY/m2xZ/1ori1aJmN0X8t2/iNxKG0zkAedGgAAAAAElFTkSuQmCC","miraculous-luoyang":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHsAAAB7AQAAAAB8vMLSAAAB+0lEQVR42r1VMW7bQBCc0xE4NRGtMgBlCvAL3F2AAMcyH8gD4heQfgBFulJF6gOR3uGORQCyU5fOACUScErSaU7AUZsiVVJtEWTLA+Z2d3Z2VhD+iNMMf8U/eZiEWCXz1UZ4OwgxZ/2xISzu+52ezgipYkHGOZ6UHNCtomnGrVQWzbTcThmzFw/ANFzafUTd989MPnwrl/VdXotMyysPkovpjPePCNCcRMSAgIho0IEgWRIRtQyIS4FUE1k5wMWKA6Gy6qgKEuugWxgepA5z2y7QFUpS3XIEc4q+kf/xTU2jDUZO+54sjit//HH4BDS9X7EYG8lBtYlFrJzPYwwKMIgVDToAizGX2K4AUSXJykwxs8iylpnGwoQjMbO0saaS5ICu5EFiLQflFtqlOkhYc5Hhtt1f+vj4OkO/B0+WVVhSWJhuAFgkz6Zk09KHHljvtXtg7Yu8xfoBL2P+clavtw2rsAEuVXJQ3WghWO1jhzW0OzyvCsVbZDiYNta/1eIEU2NGUiVzG14NeFvpUtBVu9TI0TpmLz9J3Bw9NPg694jrMC41WGii2sWm5Tn/+g3y8dg/Ye1vuc5/qCZ6Dt5FLdNgxzm+RMEYnc4XD5p/o2RZ390gzBrusVhusbufCvWS8aa/oZCszIkG45h2AQSpcbFym7pjuaX4L0f8F83rE2YIrKsGAAAAAElFTkSuQmCC","champs-elysees":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABrElEQVR42rVVQWrcMBR9qgzySp60q4CnNvQE3WkR8JwlvcBMD+CRe4A4J8g5OouCAgF71Z5gqFsNdNnxlIBNZP9u29UfCNFO8PT0/nv/S4Lwz6JX+G89Z4sApNoEDX8ESu7slnBq8YdyQYG9qI/lXMjf8Wjv8zNUTQtEd+ZwXgnSIkV7dQ44GXBqu2t0KDoWXImpd8vK5SQiBhxJwhR9/bVcjQlxoSCsjawbssb3Q1dyzAuMr8fH+RtodbhmmKlv5FFlFUEjcAlOyWp/sZuOLf00fG+USNcqaIUSrGYIwqfdAebLG4qeWDeKVINskW5cNnOh3KKx6gft5ILXTD1ls8nIQTQcM4IYwhq+bjrhuAIRtMnmQhKRVZLTLPt6b3GZxHni9pZj3pC8MQGg2YCXoTy5oOGrIeXilt4tFwYfBlD8wFpXN1Q12awycp61buMgqNMKUKx1RBRQoDRh64izbhIiL0eyKjopfrq3BOEOuO/0uGR9XqvMGt87gE8QwHRsc0DO70fLNT+AZIjffr78iHffOXAy5GLl7/CQq0d7xvtcqhTG1+ykiBf7Jv4CfgvQOdT+VoMAAAAASUVORK5CYII=","menacing-dubai":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAG8AAABvAQAAAADKvqPNAAABr0lEQVR42rWVv27bMBDGP5oC6El0O9WAXArIE2TTUIDZ+h7uCzjNrj+ZstTJ1DHv0Y0GDFhbX6BGhUgPYKUoQAGUrkOXdjoDQW4hCPx4vLvvjhSEf4xm+M9eskUAkjgLMdoTkHNnC8K6xidKBQX2on4uF1Z+mQ/lLj0jqnGqo4esOy8FucgS4MM5sPZ4rpt13cA2LFyJsXeryqUkIgaOJGGMvr57j04TJwrCJpNb1Va+7X2Tc54XGN5iOeofdNWtGc/Uezkp0xNiBE7Bsfh4vPk2ljU9ZXxvFAczKSotcnAxI2jfCNfENmiSEwdfUxKDSpVcO8PCsaX7QztlpvIsTERyygw5iAMHz3C7G2bf9w9oMOxKPgxT2pa8KRWX4ExWd8fTsBQa2h1Zz8LJkw3IaMrA1jlHyBGAtvIJJ7cs1cUbJ3sPmu85uWmr2oqQW0Ou5RV0gG30AVBsbxBR2FjENhSOuNKNQqSPME/onhU/3QXhl+uwS+NhxdZ5o8wWsncAryCAsfcNIKfLgfEc/V1W+rT8jIufHKx9KuYhutqn6nd5xvucq0T49p6dFPFq38QfugfRaxxAUV4AAAAAElFTkSuQmCC"};
+function cityPassQrSrc(config){
+  return CITY_PASS_QR_EMBEDDED[config?.slug]||config?.qr||'';
+}
+
 let cityPassGeoPromise=null;
 let cityPassActive=null;
 let cityPassPendingIndex=null;
@@ -9354,7 +9574,7 @@ function renderCityPass(drawer,geo){
   $('cityPassDescription').textContent=config.summary;
   $('cityPassDetectedCity').textContent=(geo.city||config.code).toUpperCase();
   $('cityPassTicketNo').textContent=ticketNo;
-  document.querySelectorAll('.city-pass-qr-img').forEach(img=>img.src=config.qr);
+  document.querySelectorAll('.city-pass-qr-img').forEach(img=>{img.src=cityPassQrSrc(config);img.onerror=null;});
   const list=$('cityPassHotList');
   if(list){
     list.innerHTML=tracks.length?tracks.map((t,i)=>`
@@ -9427,7 +9647,7 @@ async function buildCityPassCanvas(){
   const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#F8FBFD');bg.addColorStop(.56,'#F0F4F8');bg.addColorStop(1,'#E8EDF3');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
   ctx.save();ctx.globalAlpha=.18;const glow=ctx.createRadialGradient(160,110,0,160,110,620);glow.addColorStop(0,ui.accent||'#719aa0');glow.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);ctx.restore();
   roundRectPath(ctx,64,60,952,1600,48);ctx.fillStyle='rgba(255,255,255,.88)';ctx.fill();ctx.strokeStyle='rgba(36,63,86,.10)';ctx.lineWidth=2;ctx.stroke();
-  let qr=null;try{qr=await loadCityPassImage(config.qr)}catch(_){}
+  let qr=null;try{qr=await loadCityPassImage(cityPassQrSrc(config))}catch(_){}
   if(qr)ctx.drawImage(qr,105,105,210,210);
   ctx.fillStyle=ui.ink||'#29465d';ctx.textAlign='left';ctx.font='700 28px -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif';ctx.fillText('MUSICTOWN',360,142);
   ctx.font='700 15px -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif';ctx.globalAlpha=.50;ctx.fillText('CITY LIMITED MUSIC PASS',360,177);ctx.globalAlpha=1;
@@ -11009,10 +11229,6 @@ function attachGlobalTransport(audio,t){
   markPlayingTrack(t);
   refreshDislikeButtons();
 
-  if(activeAudio){
-    activeAudio.volume=Number($('glassVolume')?.value||.85);
-  }
-
   const refresh=()=>updateGlassUI();
   audio.addEventListener('play',refresh);
   audio.addEventListener('pause',refresh);
@@ -11038,7 +11254,7 @@ function jumpGlobal(dir){
   const nxt=nextTrackFrom(activeTrack,dir);
   if(!nxt)return;
   window.__musicetownAutoplayNext=true;
-  openTrack(nxt,false);
+  openTrack(nxt,true);
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -11050,6 +11266,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   $('glassPrev')?.addEventListener('click',()=>jumpGlobal(-1));
   $('glassNext')?.addEventListener('click',()=>jumpGlobal(1));
+
+  $('glassTransport')?.addEventListener('click',e=>{
+    if(e.target.closest('button,input'))return;
+    if(!activeTrack||!$('playerBody')?.children.length)return;
+    $('playerSheet')?.classList.add('open');
+    $('playerSheet')?.setAttribute('aria-hidden','false');
+    requestAnimationFrame(()=>paintVinylFromAudio(activeAudio));
+  });
+
   $('glassDislike')?.addEventListener('click',()=>{
     if(activeTrack)toggleDislike(activeTrack);
   });
@@ -11058,11 +11283,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!activeAudio)return;
     activeAudio.currentTime=Number(e.target.value)||0;
     updateGlassUI();
-  });
-
-  $('glassVolume')?.addEventListener('input',e=>{
-    if(!activeAudio)return;
-    activeAudio.volume=Math.max(0,Math.min(1,Number(e.target.value)||0));
   });
 
   $('autoNextToggle')?.addEventListener('click',e=>{
@@ -11121,7 +11341,10 @@ function paintVinylFromAudio(audio){
   const rotor=$('vinylRotor')||vinyl;
   if(!vinyl||!audio)return;
   if(!vinylDragging){
-    vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
+    const target=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
+    const diff=target-vinylVisualAngle;
+    vinylVisualAngle=Math.abs(diff)>540?target:(vinylVisualAngle+diff*.26);
+    if(Math.abs(target-vinylVisualAngle)<.04)vinylVisualAngle=target;
     rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
   }
   const seek=$('deckSeek');
@@ -11256,24 +11479,26 @@ function maxSeekTime(audio){
   return null;
 }
 
+let vinylSeekRAF=null;
+let vinylSeekTarget=null;
 function setVinylAudioTime(audio,next){
   next=Number(next);
   if(!Number.isFinite(next))return false;
 
   const max=maxSeekTime(audio);
   const target=Math.max(0,max==null?next:Math.min(max,next));
+  vinylSeekTarget=target;
 
-  try{
-    if(typeof audio.fastSeek==='function'){
-      // Keep normal assignment as source of truth; fastSeek is inconsistent on iOS.
-      audio.currentTime=target;
-    }else{
-      audio.currentTime=target;
-    }
-    return true;
-  }catch(_){
-    return false;
+  if(!vinylSeekRAF){
+    vinylSeekRAF=requestAnimationFrame(()=>{
+      vinylSeekRAF=null;
+      const t=vinylSeekTarget;
+      vinylSeekTarget=null;
+      if(!Number.isFinite(t))return;
+      try{audio.currentTime=t}catch(_){}
+    });
   }
+  return true;
 }
 
 function wireVinylTransport(audio,t){
@@ -11295,6 +11520,8 @@ function wireVinylTransport(audio,t){
   let vinylStartY=0;
   let vinylTouchIntent=null;
   let dragPointerId=null;
+  let vinylDragOriginTime=0;
+  let vinylDragTargetTime=0;
 
   const freezeAtAudioTime=()=>{
     stopVinylRAF();
@@ -11310,8 +11537,13 @@ function wireVinylTransport(audio,t){
     vinyl.setPointerCapture?.(e.pointerId);
 
     vinylWasPlaying=!audio.paused;
+    vinylDragOriginTime=Number(audio.currentTime)||0;
+    vinylDragTargetTime=vinylDragOriginTime;
     audio.pause();
     freezeAtAudioTime();
+
+    const readout=$('vinylScrubReadout');
+    if(readout){readout.textContent='±0.0s';readout.classList.add('show');}
 
     vinylLastPointerAngle=pointerAngle(vinyl,e);
     startVinylScrubSound();
@@ -11365,19 +11597,23 @@ function wireVinylTransport(audio,t){
     // Screen coordinates make positive angular movement clockwise.
     // Clockwise => forward, counter-clockwise => rewind.
     const secDelta=(delta/360)*VINYL_SECONDS_PER_TURN;
-    const before=Number(audio.currentTime)||0;
-    const changed=setVinylAudioTime(audio,before+secDelta);
+    const max=maxSeekTime(audio);
+    vinylDragTargetTime=Math.max(0,max==null?vinylDragTargetTime+secDelta:Math.min(max,vinylDragTargetTime+secDelta));
+    const changed=setVinylAudioTime(audio,vinylDragTargetTime);
 
     if(changed){
-      vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
+      vinylVisualAngle+=(delta*.92);
       rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
 
-      if(seek){
-        seek.value=String(audio.currentTime||0);
-      }
-
+      if(seek)seek.value=String(vinylDragTargetTime);
       const cur=$('deckCurrent');
-      if(cur)cur.textContent=formatClock(audio.currentTime||0);
+      if(cur)cur.textContent=formatClock(vinylDragTargetTime);
+
+      const readout=$('vinylScrubReadout');
+      if(readout){
+        const shifted=vinylDragTargetTime-vinylDragOriginTime;
+        readout.textContent=`${shifted>=0?'+':''}${shifted.toFixed(1)}s`;
+      }
 
       updateGlassUI();
       updateVinylScrubSound(delta);
@@ -11405,6 +11641,8 @@ function wireVinylTransport(audio,t){
 
     dragPointerId=null;
     stopVinylScrubSound();
+    const readout=$('vinylScrubReadout');
+    if(readout)readout.classList.remove('show');
 
     // Snap visual state exactly to the real audio position.
     freezeAtAudioTime();
@@ -11427,9 +11665,16 @@ function wireVinylTransport(audio,t){
     const value=Number(seek.value);
     if(!Number.isFinite(value))return;
     if(setVinylAudioTime(audio,value)){
-      freezeAtAudioTime();
-      updateGlassUI();
+      vinylVisualAngle=(value/VINYL_SECONDS_PER_TURN)*360;
+      rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
+      const cur=$('deckCurrent');if(cur)cur.textContent=formatClock(value);
+      const readout=$('vinylScrubReadout');
+      if(readout){readout.textContent=formatClock(value);readout.classList.add('show');}
     }
+  });
+  seek?.addEventListener('change',()=>{
+    const readout=$('vinylScrubReadout');if(readout)readout.classList.remove('show');
+    freezeAtAudioTime();updateGlassUI();
   });
 
   audio.addEventListener('loadedmetadata',()=>freezeAtAudioTime());
@@ -11782,10 +12027,6 @@ const MUSICETOWN_AUDIO_MODE='site-cloud';
 
 function resolveSiteCloudAudio(t){
   try{
-    const remote=remoteBackupAudioUrl(t);
-    if(remote)return remote;
-  }catch(_){}
-  try{
     return new URL(String(t?.audioSrc||''),document.baseURI).href;
   }catch(_){
     return String(t?.audioSrc||'');
@@ -11863,10 +12104,10 @@ function mountOnlinePlaybackFallback(t){
   mediaSessionAudio=null;
 
   const badge=deck.querySelector('.cloud-audio-badge');
-  if(badge) badge.textContent='SOURCE PAGE FALLBACK';
+  if(badge) badge.textContent='ONLINE PLAYER';
   const flow=deck.querySelector('.cloud-audio-flow');
   if(flow){
-    flow.innerHTML='<b class="cloud-audio-badge fallback">SOURCE PAGE FALLBACK</b><span>網站雲端 MP3 缺少</span><i>→</i><span>改用來源頁 / 官方 CC0 Player</span>';
+    flow.innerHTML='<b class="cloud-audio-badge fallback">ONLINE PLAYER</b><span>線上音源</span><i>→</i><span>改用來源頁 / 官方 CC0 Player</span>';
   }
 
   const cur=$('deckCurrent'),dur=$('deckDuration'),seek=$('deckSeek');
@@ -11896,7 +12137,7 @@ function mountOnlinePlaybackFallback(t){
     box.innerHTML=`
       <div class="online-fallback-head">
         <b>ONLINE CC0 PLAYER</b>
-        <span>LOCAL MP3 FALLBACK</span>
+        <span>ONLINE AUDIO</span>
       </div>
       <iframe class="online-player-frame"
               src="https://nullrights.com/embed/${encodeURIComponent(id)}"
@@ -11907,7 +12148,7 @@ function mountOnlinePlaybackFallback(t){
         <a href="${esc(source)}" target="_blank" rel="noopener">SOURCE / LICENSE</a>
       </div>
       <div class="online-fallback-note">
-        找不到本地 MP3，已切換成 Nullrights 官方 CC0 player。
+        已切換至官方 CC0 線上播放器。
       </div>`;
   }else{
     box.innerHTML=`
@@ -11934,7 +12175,7 @@ function mountOnlinePlaybackFallback(t){
   const status=$('localMp3Status');
   if(status){
     status.className='local-mp3-status ready';
-    status.innerHTML='<i></i><span>網站雲端 MP3 缺少 · 暫時切換來源頁</span>';
+    status.innerHTML='<i></i><span>線上音源 · 暫時切換來源頁</span>';
   }
   $('playerLegal').textContent=
     'Source-page fallback · 此曲尚未部署網站雲端 MP3，已改用官方 CC0 Player / 來源頁。';
@@ -12004,6 +12245,7 @@ function openTrack(t, userGesture=true){
                 <span class="vinyl-center-dot"></span>
               </span>
             </button>
+            <div class="vinyl-scrub-readout" id="vinylScrubReadout" aria-live="polite">±0.0s</div>
           </div>
 
           <div class="deck-info">
@@ -12044,10 +12286,6 @@ function openTrack(t, userGesture=true){
                 <button class="local-control primary icon-control" id="localPlay" type="button" aria-label="播放">${musicetownIcon('play')}<span>PLAY</span></button>
                 <button class="local-control icon-control" id="localNext" type="button" aria-label="下一首">${musicetownIcon('next')}<span>NEXT</span></button>
               </div>
-              <div class="group">
-                <button class="local-control" id="localPickFile" type="button">測試本機 MP3</button>
-                <input class="local-file-picker" id="localFileInput" type="file" accept="audio/mpeg,.mp3">
-              </div>
             </div>
 
             <div class="deck-help">
@@ -12076,8 +12314,6 @@ function openTrack(t, userGesture=true){
 
       const a=$('nativeAudioPlayer');
       const status=$('localMp3Status');
-      const initialRemoteAudio=remoteBackupAudioUrl(t);
-      if(a&&initialRemoteAudio)a.dataset.musicetownBackupUrl=initialRemoteAudio;
       if(a){
         setupMusicetownMediaSession(t,a);
         try{
@@ -12154,21 +12390,11 @@ function openTrack(t, userGesture=true){
         const nxt=nextTrackFrom(t,dir);
         if(!nxt)return;
         window.__musicetownAutoplayNext=true;
-        openTrack(nxt,false);
+        openTrack(nxt,true);
       };
       $('localPrev')?.addEventListener('click',()=>jump(-1));
       $('localNext')?.addEventListener('click',()=>jump(1));
 
-      const fi=$('localFileInput');
-      $('localPickFile')?.addEventListener('click',()=>fi?.click());
-      fi?.addEventListener('change',()=>{
-        const f=fi.files?.[0]; if(!f||!a)return;
-        const u=URL.createObjectURL(f);
-        a.src=u;
-        a.load();
-        a.play().catch(()=>{});
-        setStatus('ready','正在播放你選擇的本機 MP3（僅此工作階段）');
-      });
       return;
     }
 
@@ -12206,13 +12432,8 @@ function closeTrack(){
   stopVinylRAF();
   $('playerSheet').classList.remove('open');
   $('playerSheet').setAttribute('aria-hidden','true');
-
-  // If music is still playing, keep the <audio> alive so the Liquid Glass
-  // bottom transport continues to work. When paused, cleaning is safe.
-  if(!activeAudio || activeAudio.paused){
-    $('playerBody').innerHTML='';
-    currentTrack=null;
-  }
+  // Production player keeps the active song DOM alive even while paused.
+  // This preserves position and lets the bottom Liquid Glass dock reopen it.
   updateGlassUI();
 }
 
@@ -12852,9 +13073,7 @@ setTimeout(()=>{
       <input id="glassSeek" class="glass-range glass-seek" type="range" min="0" max="0" step="0.05" value="0">
       <span id="glassDuration">0:00</span>
     </div>
-    <div class="glass-volume-row">
-      <span>VOL</span>
-      <input id="glassVolume" class="glass-range glass-volume" type="range" min="0" max="1" step="0.01" value="0.85">
+    <div class="glass-volume-row glass-action-row">
       <button class="glass-dislike" id="glassDislike" type="button" aria-pressed="false">NOT FOR ME</button>
       <button class="auto-next-toggle active" id="autoNextToggle" type="button" aria-pressed="true">AUTO NEXT</button>
     </div>
@@ -12862,5 +13081,36 @@ setTimeout(()=>{
 </div>
 
 <div id="uiClickToast" aria-hidden="true"></div>
+
+<script id="musicetown-welcome-r900">
+document.addEventListener('DOMContentLoaded',()=>{
+  const welcome=document.getElementById('welcome');
+  if(!welcome || welcome.classList.contains('is-out') || welcome.querySelector('.mt-welcome-prelude'))return;
+
+  welcome.classList.add('mt-intro-pending');
+  const prelude=document.createElement('div');
+  prelude.className='mt-welcome-prelude';
+  prelude.innerHTML=`
+    <div class="mt-welcome-orbit" aria-hidden="true">
+      <svg viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="16"></circle>
+        <ellipse cx="20" cy="20" rx="7" ry="16"></ellipse>
+        <ellipse cx="20" cy="20" rx="16" ry="7"></ellipse>
+      </svg>
+    </div>
+    <div class="mt-welcome-prelude-copy">
+      <b>musicetown</b>
+      <span>CITY SOUND ARCHIVE · LOADING EXPERIENCE</span>
+    </div>`;
+  welcome.appendChild(prelude);
+
+  setTimeout(()=>{
+    welcome.classList.add('mt-intro-reveal');
+    welcome.classList.remove('mt-intro-pending');
+    setTimeout(()=>prelude.remove(),720);
+  },2000);
+});
+</script>
+
 </body>
 </html>
