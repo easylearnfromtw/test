@@ -120,7 +120,7 @@ def parse_track(url,profile):
     for a in soup.find_all("a",href=True):
         label=norm(a.get_text(" ",strip=True)).casefold()
         href=urljoin(url,a["href"])
-        if "download" in label:
+        if "download" in label and "/download/" in href:
             download=href;break
     if not download:
         for a in soup.find_all("a",href=True):
