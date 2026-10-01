@@ -6,7 +6,12 @@ SITE=ROOT/"_site"
 if SITE.exists():shutil.rmtree(SITE)
 SITE.mkdir()
 
-for name in ["index.html","404.html",".nojekyll","MUSIC_INSTALL_REPORT.json","theme_curation_manifest.json","city-pass-preview.html"]:
+for name in [
+    "index.html","404.html",".nojekyll",
+    "remote-audio-map.js",
+    "MUSIC_INSTALL_REPORT.json","theme_curation_manifest.json","fresh_city_manifest.json",
+    "city-pass-preview.html"
+]:
     p=ROOT/name
     if p.exists():shutil.copy2(p,SITE/name)
 
