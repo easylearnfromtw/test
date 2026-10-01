@@ -298,8 +298,18 @@ def write_catalog(path, data):
     path.write_text(text[:m.start()] + "window.MUSIC_DATA = " + js + ";\n" + text[m.end():], encoding="utf-8")
 
 
-def materialize_existing_slots(drawer, profile, per_city):
-    """Reuse already curated metadata and the verified master cache where possible."""
+def selection_cache_path(profile):
+    return CACHE / f"selection-{profile['slug']}.json"
+
+
+def save_selection(profile, tracks):
+    selection_cache_path(profile).write_text(
+        json.dumps(tracks, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
+    )
+
+
+def materialize_existing_slots(drawer, profile, per_city, bitrate):
+    """Reuse repo metadata, verified master cache, then prior production selection cache."""
     folder = profile["slug"]
     target_dir = ROOT / folder
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -328,6 +338,38 @@ def materialize_existing_slots(drawer, profile, per_city):
             kept["localMp3"] = True
             kept["curatedTheme"] = drawer["t"]
             slots[idx] = kept
+
+    # New city themes are empty in the repo. Once curated successfully, cache the
+    # exact legal selection so later UI-only deploys can rebuild without re-scraping.
+    cached_file = selection_cache_path(profile)
+    try:
+        cached_tracks = json.loads(cached_file.read_text(encoding="utf-8"))
+    except Exception:
+        cached_tracks = []
+
+    for idx, t in enumerate(list(cached_tracks)[:per_city]):
+        if slots[idx] is not None:
+            continue
+        source = str(t.get("source") or "")
+        if not source:
+            continue
+        audio_cache = CACHE / f"{hashlib.sha256(source.encode()).hexdigest()[:24]}-{bitrate}.mp3"
+        if not audio_cache.exists() or audio_cache.stat().st_size < 20000:
+            continue
+
+        track_no = idx + 1
+        rel = f"{folder}/{track_no:03d}.mp3"
+        dst = ROOT / rel
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(audio_cache, dst)
+
+        kept = dict(t)
+        kept["trackNo"] = track_no
+        kept["audioSrc"] = rel
+        kept["shareId"] = f"{folder}-{track_no:03d}"
+        kept["localMp3"] = True
+        kept["curatedTheme"] = drawer["t"]
+        slots[idx] = kept
 
     return slots
 
@@ -358,7 +400,7 @@ def main():
         folder = profile["slug"]
 
         # First restore existing curated city tracks from the verified general master cache.
-        slots = materialize_existing_slots(drawer, profile, args.per_city)
+        slots = materialize_existing_slots(drawer, profile, args.per_city, args.bitrate)
         retained = [t for t in slots if t]
         missing_positions = [i for i, t in enumerate(slots) if t is None]
 
@@ -367,6 +409,7 @@ def main():
             drawer["tracks"] = slots
             drawer["installPending"] = False
             report["cities"][city] = slots
+            save_selection(profile, slots)
             (ROOT / folder / "manifest.json").write_text(
                 json.dumps(slots, ensure_ascii=False, indent=2), encoding="utf-8"
             )
@@ -463,6 +506,7 @@ def main():
         drawer["tracks"] = slots
         drawer["installPending"] = False
         report["cities"][city] = slots
+        save_selection(profile, slots)
         (ROOT / folder / "manifest.json").write_text(
             json.dumps(slots, ensure_ascii=False, indent=2), encoding="utf-8"
         )
