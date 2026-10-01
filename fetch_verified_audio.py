@@ -45,46 +45,58 @@ def direct_audio_from_page(url,title):
     if not verify_cc0(h,url):
         raise RuntimeError("source no longer shows CC0 1.0 Universal")
     soup=BeautifulSoup(h,"html.parser")
+    norm=lambda x:re.sub(r"\s+"," ",x or "").strip().casefold()
+    target=norm(title)
 
-    # Nullrights uses extensionless /download/<track-id> routes that return
-    # real audio bytes with audio/* Content-Type. Do not match generic
-    # "download" navigation labels on other sites.
+    # Nullrights exposes extensionless audio/download routes.
     if "nullrights.com/track/" in url:
-        for a in soup.find_all("a",href=True):
-            label=a.get_text(" ",strip=True).lower()
-            href=urljoin(url,a["href"])
-            if "download" in label and "/download/" in href:
-                return href
         tid=url.rstrip("/").split("/")[-1]
-        return f"https://nullrights.com/download/{tid}"
+        # /audio/<id> is the inline player stream and avoids Content-Disposition.
+        return f"https://nullrights.com/audio/{tid}"
 
-    # Direct media/src links.
+    # FMA album and track pages expose authoritative per-track JSON in
+    # data-track-info. Match the requested title before using fileUrl.
+    for node in soup.find_all(attrs={"data-track-info":True}):
+        raw=html.unescape(node.get("data-track-info") or "")
+        try:
+            info=json.loads(raw)
+        except Exception:
+            continue
+        if norm(info.get("title"))!=target:
+            continue
+        for key in ("fileUrl","playbackUrl","downloadUrl"):
+            u=info.get(key)
+            if u:
+                return str(u).replace("\\/","/")
+
+    # Some FMA pages expose track metadata as raw JSON-like script content.
+    title_pat=re.escape(title)
+    pair_patterns=[
+      rf'"title"\s*:\s*"{title_pat}".{{0,2200}}?"fileUrl"\s*:\s*"([^"]+)"',
+      rf'"title"\s*:\s*"{title_pat}".{{0,2200}}?"playbackUrl"\s*:\s*"([^"]+)"',
+    ]
+    for pat in pair_patterns:
+        m=re.search(pat,h,re.I|re.S)
+        if m:
+            return html.unescape(m.group(1)).replace("\\/","/")
+
+    # Direct media/src links as a conservative final fallback.
     for node in soup.find_all(["audio","source"]):
         src=node.get("src")
         if not src:continue
         u=urljoin(url,src)
         if re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",u,re.I):return u
-
-    # Direct audio anchors.
     for a in soup.find_all("a",href=True):
         u=urljoin(url,a["href"])
         if re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",u,re.I):return u
-
-    # FMA embeds the current audio URL in serialized page data.
-    pats=[
-      r'fileUrl["\']?\s*:\s*["\']([^"\']+)',
-      r'downloadUrl["\']?\s*:\s*["\']([^"\']+)',
-      r'(https://files\.freemusicarchive\.org/[^"\']+?\.(?:mp3|ogg)(?:\?[^"\']*)?)'
-    ]
-    for pat in pats:
-        m=re.search(pat,h,re.I)
-        if m:return html.unescape(m.group(1)).replace("\\/","/")
     return None
 
 def resolve_master_audio(master):
     src=master["source"]
     if "nullrights.com/track/" in src:
         return direct_audio_from_page(src,master["title"])
+    direct=direct_audio_from_page(src,master["title"])
+    if direct:return direct
     track_page=find_fma_track_page(src,master["title"])
     return direct_audio_from_page(track_page,master["title"])
 
