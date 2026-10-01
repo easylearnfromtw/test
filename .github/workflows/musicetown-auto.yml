@@ -4,7 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - "auto-package/**"
+      - "index.html"
+      - "404.html"
+      - "*.py"
+      - "*.json"
+      - "requirements.txt"
       - ".github/workflows/musicetown-auto.yml"
   workflow_dispatch:
 
@@ -37,61 +41,48 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Rebuild source package
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p _bundle _src
-          cat auto-package/package.part-*.b64 | tr -d '\r\n' | base64 --decode > _bundle/site.zip
-          echo "70e1e96cd4f07905a7014a49f28c8adebb5f65abbdd125ba86e6e3f53e094873  _bundle/site.zip" | sha256sum -c -
-          unzip -q _bundle/site.zip -d _src
-          test -f _src/index.html
-          grep -q "VAPOR LONDON" _src/index.html
-          grep -q "MENACING DUBAI" _src/index.html
-
-      - name: Install ffmpeg and Python dependencies
+      - name: Install ffmpeg + Python deps
         shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-          python -m pip install -r _src/requirements.txt
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
 
       - name: Restore music cache
         uses: actions/cache@v4
         with:
           path: |
-            _src/_master_audio
-            _src/_fresh_audio_cache
-            _src/_theme_audio_cache
-          key: musicetown-auto-r891-64k-${{ hashFiles('auto-package/manifest.json') }}
+            _master_audio
+            _fresh_audio_cache
+            _theme_audio_cache
+          key: musicetown-r891-64k-${{ hashFiles('verified_audio_manifest.json','fresh_city_profiles.json','theme_profiles.json') }}
           restore-keys: |
-            musicetown-auto-r891-64k-
+            musicetown-r891-64k-
 
-      - name: Install 5 general themes
-        working-directory: _src
+      - name: Install JAZZ / CROONER / ROCK / SPORT / LO-FI
         run: python fetch_verified_audio.py --bitrate "64k"
 
       - name: Curate city themes
-        working-directory: _src
         run: python build_fresh_city_packs.py --per-city 50 --bitrate "64k"
 
-      - name: Curate music themes
-        working-directory: _src
+      - name: Curate EMO / RUNNING / POEM / TRADITIONAL BEIJING
         run: python build_theme_packs.py --per-theme 50 --bitrate "64k"
 
-      - name: Verify 1150 MP3 files
-        working-directory: _src
+      - name: Generate City Pass QR assets
+        run: python generate_city_pass_qr.py
+
+      - name: Verify all 1150 MP3 files
         run: python verify_music_install.py
 
       - name: Prepare Pages artifact
-        working-directory: _src
         run: python prepare_audio_site.py
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _src/_site
+          path: _site
 
-      - name: Deploy
+      - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
