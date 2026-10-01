@@ -7475,6 +7475,93 @@ window.addEventListener('error',function(e){
 }
 </style>
 
+
+<style id="musicetown-r892-mobile-hotfix">
+@media(max-width:760px){
+  html,body{max-width:100%!important;overflow-x:hidden!important}
+  body.detail-open .detail{
+    width:100%!important;max-width:100vw!important;
+    padding-left:10px!important;padding-right:10px!important;
+    box-sizing:border-box!important;
+  }
+  body.detail-open .detail>.inner.music-detail{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding-left:0!important;padding-right:0!important;
+    box-sizing:border-box!important;
+  }
+  .music-grid,.music-panel,.branch-drawer-section,.track-list,.track-row,.track-row>*{
+    min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+  }
+  .music-grid{grid-template-columns:minmax(0,1fr)!important;width:100%!important}
+  .music-panel{width:100%!important;padding:14px!important;overflow:hidden!important}
+  .library-tools{
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;width:100%!important;
+  }
+  .library-search{
+    grid-column:1/-1!important;min-width:0!important;width:100%!important;
+  }
+  .lib-pill{width:100%!important;min-width:0!important;padding:0 8px!important}
+  .track-row{
+    grid-template-columns:34px minmax(0,1fr)!important;
+    width:100%!important;padding:10px!important;
+    row-gap:7px!important;column-gap:10px!important;overflow:hidden!important;
+  }
+  .track-row>div:nth-child(2){grid-column:2!important;min-width:0!important;width:100%!important}
+  .track-name,.track-note{max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+  .track-actions{
+    grid-column:2!important;display:flex!important;flex-wrap:wrap!important;
+    gap:6px!important;width:100%!important;min-width:0!important;
+    justify-content:flex-start!important;align-items:center!important;
+  }
+  .track-actions .cc0-badge{
+    margin-right:auto!important;max-width:calc(100% - 76px)!important;
+    overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+  }
+  .track-actions .play-dot{display:none!important}
+  .favorite-btn,.dislike-btn{flex:0 0 30px!important}
+  .player-sheet{padding:6px!important;align-items:end!important}
+  .player-card{
+    width:calc(100vw - 12px)!important;max-width:calc(100vw - 12px)!important;
+    min-width:0!important;padding:12px!important;box-sizing:border-box!important;
+    border-radius:22px!important;
+  }
+  .player-head,.player-body,.musicetown-deck,.deck-info{
+    min-width:0!important;max-width:100%!important;
+  }
+  .player-title{font-size:clamp(22px,8vw,34px)!important;overflow-wrap:anywhere!important}
+  .musicetown-deck{
+    grid-template-columns:minmax(0,1fr)!important;width:100%!important;
+    padding:12px!important;gap:10px!important;box-sizing:border-box!important;
+  }
+  .vinyl-wrap{min-height:210px!important}
+  .vinyl{width:min(190px,58vw)!important}
+  .deck-favorite-row{
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;width:100%!important;
+  }
+  .deck-favorite,.deck-dislike{
+    width:100%!important;min-width:0!important;justify-content:center!important;
+    padding:0 7px!important;white-space:nowrap!important;
+  }
+  .local-player-controls{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;width:100%!important;
+  }
+  .local-player-controls .group{
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:7px!important;width:100%!important;min-width:0!important;
+  }
+  .local-player-controls .group:last-child{grid-template-columns:minmax(0,1fr)!important}
+  .local-control{
+    width:100%!important;min-width:0!important;padding:0 5px!important;
+    font-size:8px!important;letter-spacing:.04em!important;
+  }
+  .deck-help,.local-path,.player-links{max-width:100%!important;overflow-wrap:anywhere!important}
+  .library-fab{right:8px!important;max-width:calc(100vw - 16px)!important}
+}
+</style>
+<script src="./remote-audio-map.js"></script>
 </head>
 <body>
 
@@ -11627,6 +11714,36 @@ function nullrightsEmbedId(t){
 function remoteSearchUrl(t){
   return `https://nullrights.com/search?q=${encodeURIComponent(`${t?.title||''} ${t?.artist||''}`.trim())}`;
 }
+function remoteBackupAudioUrl(t){
+  try{
+    const map=window.MUSICETOWN_REMOTE_AUDIO||{};
+    if(t?.masterId && map[t.masterId])return String(map[t.masterId]);
+  }catch(_){}
+  const id=nullrightsEmbedId(t);
+  return id?`https://nullrights.com/audio/${encodeURIComponent(id)}`:'';
+}
+function switchToRemoteBackup(t,a,{autoplay=false}={}){
+  if(!a)return false;
+  const url=remoteBackupAudioUrl(t);
+  if(!url || a.dataset.musicetownBackupUrl===url)return false;
+  a.dataset.musicetownBackupUrl=url;
+  try{
+    a.pause?.();
+    a.src=url;
+    a.load();
+    const status=$('localMp3Status');
+    if(status){
+      status.className='local-mp3-status loading';
+      status.innerHTML='<i></i><span>正在切換可播放音源…</span>';
+    }
+    if(autoplay){
+      a.play().catch(()=>{});
+    }
+    return true;
+  }catch(_){
+    return false;
+  }
+}
 function mountOnlinePlaybackFallback(t){
   const deck=document.querySelector('.musicetown-deck');
   const info=deck?.querySelector('.deck-info');
@@ -11881,7 +11998,7 @@ function openTrack(t, userGesture=true){
         }
         setTimeout(()=>{
           if(a.error || a.networkState===HTMLMediaElement.NETWORK_NO_SOURCE){
-            mountOnlinePlaybackFallback(t);
+            if(!switchToRemoteBackup(t,a,{autoplay:userGesture}))mountOnlinePlaybackFallback(t);
           }
         },1500);
       }
@@ -11895,18 +12012,19 @@ function openTrack(t, userGesture=true){
         wireVinylTransport(a,t);
 
         a.addEventListener('loadedmetadata',()=>{
-          setStatus('ready','MP3 已就緒 · 站內直接播放');
+          setStatus('ready',a.dataset.musicetownBackupUrl?'線上音源已就緒 · 直接播放':'MP3 已就緒 · 站內直接播放');
           paintVinylFromAudio(a);
         });
         a.addEventListener('canplay',()=>{
-          setStatus('ready','MP3 已就緒 · 站內直接播放');
+          setStatus('ready',a.dataset.musicetownBackupUrl?'線上音源已就緒 · 直接播放':'MP3 已就緒 · 站內直接播放');
           if(window.__musicetownAutoplayNext){
             window.__musicetownAutoplayNext=false;
             a.play().catch(()=>{});
           }
         });
         a.addEventListener('error',()=>{
-          setStatus('missing',`網站雲端 MP3 尚未部署：${t.audioSrc}`);
+          if(switchToRemoteBackup(t,a,{autoplay:userGesture}))return;
+          setStatus('missing','目前找不到可播放音源');
           mountOnlinePlaybackFallback(t);
         });
 
@@ -11922,10 +12040,14 @@ function openTrack(t, userGesture=true){
         // the original user activation stack on iPhone Safari.
         if(userGesture){
           a.play().then(()=>{
-            setStatus('ready','正在播放 · SITE CLOUD MP3');
+            setStatus('ready',a.dataset.musicetownBackupUrl?'正在播放 · LEGAL REMOTE AUDIO':'正在播放 · SITE CLOUD MP3');
           }).catch(err=>{
             console.warn('[musicetown one-tap play blocked]',err);
-            setStatus('ready','音樂已就緒 · 點播放器播放');
+            if(switchToRemoteBackup(t,a,{autoplay:true})){
+              setStatus('loading','正在切換可播放音源…');
+              return;
+            }
+            setStatus('ready','音樂來源載入中 · 請再點一次 PLAY');
           });
         }
       }
