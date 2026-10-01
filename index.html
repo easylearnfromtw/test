@@ -7649,6 +7649,217 @@ window.addEventListener('error',function(e){
 }
 </style>
 
+
+<style id="musicetown-production-r900">
+/* musicetown R9 production polish */
+:root{--mt-safe-x:clamp(10px,3vw,22px)}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+*{box-sizing:border-box}
+button,input{-webkit-tap-highlight-color:transparent}
+
+/* 3 / 5 · airier database cards and taxonomy rail */
+.track-list{gap:12px!important}
+.track-row{min-height:62px!important;padding:11px 12px!important;border-radius:18px!important}
+.theme-group-tabs{gap:9px!important;padding-bottom:10px!important}
+.theme-group-items{gap:10px!important}
+.theme-group-tab{min-height:32px!important;padding-inline:12px!important;font-size:6.2px!important}
+.theme-shelf-item{min-width:156px!important;height:48px!important;padding:7px 10px!important}
+.theme-shelf-head{padding-bottom:9px!important}
+
+/* 4 · no green / browser-accent focus ring */
+.library-search:focus,
+.global-search-box:focus-within,
+.global-search-box input:focus,
+input[type="search"]:focus{
+  outline:none!important;
+  border-color:rgba(41,70,93,.10)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92),0 0 0 1px rgba(41,70,93,.04)!important;
+}
+input[type="search"]{-webkit-appearance:none;appearance:none}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none}
+
+/* 8 · production surface: remove diagnostic / administrator-facing UI */
+.cloud-audio-flow,
+.local-path,
+.local-mp3-status,
+.local-file-picker,
+.player-links,
+.legal-mini,
+.side-stack .music-panel:has(#rightsNote){
+  display:none!important;
+}
+.player-eyebrow{letter-spacing:.16em!important}
+.local-player-controls{margin-top:14px!important}
+.local-player-controls .group{width:100%!important}
+#playerLegal{display:none!important}
+
+/* 9 · no volume row, only listener actions */
+.glass-action-row{
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  gap:7px!important;
+  grid-template-columns:none!important;
+}
+.glass-action-row>span,.glass-volume{display:none!important}
+
+/* 2 · smooth vinyl / range rendering */
+.vinyl-rotor,.glass-disc{
+  will-change:transform;
+  transform:translateZ(0) rotate(var(--record-angle,0deg));
+  backface-visibility:hidden;
+}
+.vinyl-scrub-readout{
+  position:absolute;
+  left:50%;bottom:10px;
+  transform:translate(-50%,8px) scale(.96);
+  min-width:72px;height:30px;padding:0 11px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.78);
+  background:rgba(247,251,253,.72);
+  color:#29465d;
+  box-shadow:0 9px 28px rgba(31,50,69,.10),inset 0 1px 0 rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(12px) saturate(120%);
+  backdrop-filter:blur(12px) saturate(120%);
+  font:700 8px/1 var(--grotesk);letter-spacing:.10em;
+  opacity:0;pointer-events:none;
+  transition:opacity .18s ease,transform .22s cubic-bezier(.16,1,.3,1);
+  z-index:20;
+}
+.vinyl-scrub-readout.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.deck-seek,.glass-seek{touch-action:pan-x}
+
+/* 10 · long-list and glass performance */
+.track-row{content-visibility:auto;contain:layout paint style;contain-intrinsic-size:64px}
+.theme-shelf-item,.search-result-row{contain:layout paint style}
+.player-card,.music-panel,.theme-shelf,.glass-transport{transform:translateZ(0)}
+.mt-perf-mobile .music-panel,
+.mt-perf-mobile .theme-shelf,
+.mt-perf-mobile .glass-transport,
+.mt-perf-mobile .player-card{
+  -webkit-backdrop-filter:blur(16px) saturate(116%)!important;
+  backdrop-filter:blur(16px) saturate(116%)!important;
+}
+
+/* 11 · custom 2-second branded prelude */
+#welcome.mt-intro-pending .welcome-card{
+  opacity:0!important;
+  transform:translateY(18px) scale(.985)!important;
+  pointer-events:none!important;
+}
+.mt-welcome-prelude{
+  position:absolute;inset:0;z-index:20;
+  display:grid;place-items:center;
+  pointer-events:none;
+  opacity:1;
+  transition:opacity .62s cubic-bezier(.16,1,.3,1),filter .62s ease;
+}
+#welcome.mt-intro-reveal .mt-welcome-prelude{opacity:0;filter:blur(8px)}
+.mt-welcome-orbit{
+  position:relative;width:150px;height:150px;
+  display:grid;place-items:center;
+}
+.mt-welcome-orbit::before,.mt-welcome-orbit::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(48,77,99,.14);
+  animation:mtWelcomeOrbit 2s cubic-bezier(.16,1,.3,1) both;
+}
+.mt-welcome-orbit::after{inset:18px;animation-delay:.16s}
+.mt-welcome-orbit svg{width:52px;height:52px;fill:none;stroke:#29465d;stroke-width:1.4;animation:mtWelcomeLogo 2s cubic-bezier(.16,1,.3,1) both}
+.mt-welcome-prelude-copy{position:absolute;top:calc(50% + 104px);left:0;right:0;text-align:center;color:#29465d}
+.mt-welcome-prelude-copy b{display:block;font:750 11px/1 var(--grotesk);letter-spacing:.28em}
+.mt-welcome-prelude-copy span{display:block;margin-top:9px;font:650 6.4px/1 var(--grotesk);letter-spacing:.19em;color:rgba(41,70,93,.42)}
+@keyframes mtWelcomeOrbit{
+  0%{opacity:0;transform:scale(.72) rotate(-18deg)}
+  35%{opacity:1}
+  100%{opacity:.65;transform:scale(1.08) rotate(18deg)}
+}
+@keyframes mtWelcomeLogo{
+  0%{opacity:0;transform:scale(.72) rotate(-12deg)}
+  34%{opacity:1}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+
+/* Mobile production layout */
+@media(max-width:760px){
+  body.detail-open .detail{
+    left:0!important;right:0!important;top:0!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;
+    padding:calc(72px + env(safe-area-inset-top,0px)) var(--mt-safe-x) calc(116px + env(safe-area-inset-bottom,0px))!important;
+    overflow-x:hidden!important;
+  }
+  body.detail-open .detail>.inner.music-detail{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding:0!important;
+  }
+  .music-grid,.music-panel,.branch-drawer-section,.track-list,.track-row,.library-tools{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+  }
+  .music-grid{display:block!important}
+  .music-panel{padding:12px!important}
+  .library-tools{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+  }
+  .library-search{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+  .lib-pill{width:100%!important;min-width:0!important}
+  .track-row{
+    display:grid!important;
+    grid-template-columns:40px minmax(0,1fr) 38px!important;
+    grid-template-rows:auto!important;
+    gap:10px!important;
+    overflow:hidden!important;
+    padding:11px!important;
+  }
+  .track-row>div:nth-child(2){grid-column:2!important;grid-row:1!important;min-width:0!important}
+  .track-name,.track-note{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+  .track-actions{
+    grid-column:3!important;grid-row:1!important;
+    width:38px!important;min-width:38px!important;padding:0!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;
+  }
+  .track-actions .cc0-badge,.track-actions .play-dot,.track-actions .dislike-btn{display:none!important}
+  .favorite-btn{width:34px!important;height:34px!important;flex:0 0 34px!important}
+  .side-stack{width:100%!important;max-width:100%!important}
+  .player-sheet{width:100%!important;max-width:100%!important;padding:6px!important;overflow:hidden!important}
+  .player-card{
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    max-height:calc(100dvh - 10px)!important;
+    margin:0!important;padding:13px 11px calc(18px + env(safe-area-inset-bottom,0px))!important;
+    border-radius:26px 26px 0 0!important;
+    overflow-x:hidden!important;overflow-y:auto!important;
+  }
+  .musicetown-deck,.deck-info,.vinyl-wrap{width:100%!important;max-width:100%!important;min-width:0!important}
+  .musicetown-deck{grid-template-columns:minmax(0,1fr)!important;padding:11px!important}
+  .deck-favorite-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .local-player-controls .group{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .local-control{min-width:0!important;padding-inline:4px!important}
+  #glassTransport.glass-transport{
+    left:8px!important;right:8px!important;inset-inline:8px!important;width:auto!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"track center" "sliders sliders"!important;
+    padding:8px 9px!important;border-radius:22px!important;
+  }
+  #glassTransport .glass-sliders{grid-area:sliders!important}
+  #glassTransport .glass-action-row{margin-top:3px!important}
+  #glassTransport .glass-copy b,#glassTransport .glass-copy span{max-width:44vw!important}
+  body:not(.detail-open) .theme-shelf{
+    width:calc(100% - 16px)!important;
+    bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;
+    border-radius:22px!important;
+    padding:10px!important;
+  }
+  body:has(#glassTransport.show):not(.detail-open) .theme-shelf{
+    bottom:calc(118px + env(safe-area-inset-bottom,0px))!important;
+  }
+  .theme-shelf-item{min-width:150px!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -7889,7 +8100,7 @@ window.addEventListener('error',function(e){
 
 <footer class="site-foot">
   <span style="--d:1.42s">musicetown · 23 THEMES · 1150 PICKS</span>
-  <span style="--d:1.5s">2026 | musicetown R8.9.1<i class="sq"></i></span>
+  <span style="--d:1.5s">2026 | musicetown · PRODUCTION<i class="sq"></i></span>
 </footer>
 <p class="nogl" id="nogl" hidden>這個瀏覽器無法顯示 3D 收納盒，請用上方導覽列瀏覽各頁。</p>
 
@@ -7898,7 +8109,7 @@ window.addEventListener('error',function(e){
   <div class="player-card" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
     <div class="player-head">
       <div>
-        <div class="player-eyebrow">musicetown · VINYL PLAYER · CLOUD AUDIO</div>
+        <div class="player-eyebrow">musicetown · VINYL PLAYER</div>
         <div class="player-title" id="playerTitle">Track</div>
         <div class="player-artist" id="playerArtist">Artist</div>
       </div>
@@ -7955,8 +8166,11 @@ const HOME_GROUPS={
   MIDDLE_EAST:{label:'中東 · MIDDLE EAST',short:'MIDDLE EAST',items:[
     'MENACING DUBAI'
   ]},
-  MUSIC_THEMES:{label:'音樂主題 · MUSIC THEMES',short:'MUSIC THEMES',items:[
-    'JAZZ','CROONER','ROCK','SPORT','LO-FI','EMO','RUNNING','POEM'
+  MUSIC_STYLES:{label:'音樂風格 · MUSIC STYLES',short:'MUSIC STYLES',items:[
+    'JAZZ','CROONER','ROCK','LO-FI'
+  ]},
+  MOODS:{label:'音樂調性 · MOODS',short:'MOODS',items:[
+    'EMO','SPORT','RUNNING','POEM'
   ]}
 };
 const HOME_CARD_SLOTS=8;
@@ -7982,7 +8196,7 @@ function currentHomeGroup(){return HOME_GROUPS[HOME_GROUP_KEY]||HOME_GROUPS.ASIA
 /* ================= scene dimensions (world units) ================= */
 const BW=268, BD=293, HF=162, HB=337.4, GT=4, PT=6;          // box
 const CW=236, CH=236, CT=2.4, LEAN=6*Math.PI/180;           // cards
-const TOP0={y:241.5, z:99.3}, MAIN_STEP={y:8.8, z:-23.8}, BRANCH_STEP={y:24.2, z:-48.8};          // card top-edge positions
+const TOP0={y:241.5, z:99.3}, MAIN_STEP={y:9.8, z:-27.2}, BRANCH_STEP={y:24.2, z:-48.8};          // card top-edge positions
 const DEG=Math.PI/180;
 const HOV={lift:95, tilt:-7.2*DEG, dz:-14}, FRONT={tilt:-6*DEG, dz:4}, BEHIND={tilt:0, dz:-35}; // hover response
 const RING_C=[.505,.545], RING_R=[.195,.17], DOT_R=.03;     // ring on the 3D card face
@@ -8388,7 +8602,7 @@ function resize(){
 
   const dm=navigator.deviceMemory||4, hc=navigator.hardwareConcurrency||4;
   const lowPower=(dm<=4||hc<=4||cssW<700);
-  dpr=Math.min(window.devicePixelRatio||1,lowPower?1.25:1.65);
+  dpr=Math.min(window.devicePixelRatio||1,lowPower?1.35:1.75);
 
   W=Math.max(1,Math.round(cssW*dpr));
   H=Math.max(1,Math.round(cssH*dpr));
@@ -11015,10 +11229,6 @@ function attachGlobalTransport(audio,t){
   markPlayingTrack(t);
   refreshDislikeButtons();
 
-  if(activeAudio){
-    activeAudio.volume=Number($('glassVolume')?.value||.85);
-  }
-
   const refresh=()=>updateGlassUI();
   audio.addEventListener('play',refresh);
   audio.addEventListener('pause',refresh);
@@ -11044,7 +11254,7 @@ function jumpGlobal(dir){
   const nxt=nextTrackFrom(activeTrack,dir);
   if(!nxt)return;
   window.__musicetownAutoplayNext=true;
-  openTrack(nxt,false);
+  openTrack(nxt,true);
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -11056,6 +11266,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   $('glassPrev')?.addEventListener('click',()=>jumpGlobal(-1));
   $('glassNext')?.addEventListener('click',()=>jumpGlobal(1));
+
+  $('glassTransport')?.addEventListener('click',e=>{
+    if(e.target.closest('button,input'))return;
+    if(!activeTrack||!$('playerBody')?.children.length)return;
+    $('playerSheet')?.classList.add('open');
+    $('playerSheet')?.setAttribute('aria-hidden','false');
+    requestAnimationFrame(()=>paintVinylFromAudio(activeAudio));
+  });
+
   $('glassDislike')?.addEventListener('click',()=>{
     if(activeTrack)toggleDislike(activeTrack);
   });
@@ -11064,11 +11283,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!activeAudio)return;
     activeAudio.currentTime=Number(e.target.value)||0;
     updateGlassUI();
-  });
-
-  $('glassVolume')?.addEventListener('input',e=>{
-    if(!activeAudio)return;
-    activeAudio.volume=Math.max(0,Math.min(1,Number(e.target.value)||0));
   });
 
   $('autoNextToggle')?.addEventListener('click',e=>{
@@ -11127,7 +11341,10 @@ function paintVinylFromAudio(audio){
   const rotor=$('vinylRotor')||vinyl;
   if(!vinyl||!audio)return;
   if(!vinylDragging){
-    vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
+    const target=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
+    const diff=target-vinylVisualAngle;
+    vinylVisualAngle=Math.abs(diff)>540?target:(vinylVisualAngle+diff*.26);
+    if(Math.abs(target-vinylVisualAngle)<.04)vinylVisualAngle=target;
     rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
   }
   const seek=$('deckSeek');
@@ -11262,24 +11479,26 @@ function maxSeekTime(audio){
   return null;
 }
 
+let vinylSeekRAF=null;
+let vinylSeekTarget=null;
 function setVinylAudioTime(audio,next){
   next=Number(next);
   if(!Number.isFinite(next))return false;
 
   const max=maxSeekTime(audio);
   const target=Math.max(0,max==null?next:Math.min(max,next));
+  vinylSeekTarget=target;
 
-  try{
-    if(typeof audio.fastSeek==='function'){
-      // Keep normal assignment as source of truth; fastSeek is inconsistent on iOS.
-      audio.currentTime=target;
-    }else{
-      audio.currentTime=target;
-    }
-    return true;
-  }catch(_){
-    return false;
+  if(!vinylSeekRAF){
+    vinylSeekRAF=requestAnimationFrame(()=>{
+      vinylSeekRAF=null;
+      const t=vinylSeekTarget;
+      vinylSeekTarget=null;
+      if(!Number.isFinite(t))return;
+      try{audio.currentTime=t}catch(_){}
+    });
   }
+  return true;
 }
 
 function wireVinylTransport(audio,t){
@@ -11301,6 +11520,8 @@ function wireVinylTransport(audio,t){
   let vinylStartY=0;
   let vinylTouchIntent=null;
   let dragPointerId=null;
+  let vinylDragOriginTime=0;
+  let vinylDragTargetTime=0;
 
   const freezeAtAudioTime=()=>{
     stopVinylRAF();
@@ -11316,8 +11537,13 @@ function wireVinylTransport(audio,t){
     vinyl.setPointerCapture?.(e.pointerId);
 
     vinylWasPlaying=!audio.paused;
+    vinylDragOriginTime=Number(audio.currentTime)||0;
+    vinylDragTargetTime=vinylDragOriginTime;
     audio.pause();
     freezeAtAudioTime();
+
+    const readout=$('vinylScrubReadout');
+    if(readout){readout.textContent='±0.0s';readout.classList.add('show');}
 
     vinylLastPointerAngle=pointerAngle(vinyl,e);
     startVinylScrubSound();
@@ -11371,19 +11597,23 @@ function wireVinylTransport(audio,t){
     // Screen coordinates make positive angular movement clockwise.
     // Clockwise => forward, counter-clockwise => rewind.
     const secDelta=(delta/360)*VINYL_SECONDS_PER_TURN;
-    const before=Number(audio.currentTime)||0;
-    const changed=setVinylAudioTime(audio,before+secDelta);
+    const max=maxSeekTime(audio);
+    vinylDragTargetTime=Math.max(0,max==null?vinylDragTargetTime+secDelta:Math.min(max,vinylDragTargetTime+secDelta));
+    const changed=setVinylAudioTime(audio,vinylDragTargetTime);
 
     if(changed){
-      vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
+      vinylVisualAngle+=(delta*.92);
       rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
 
-      if(seek){
-        seek.value=String(audio.currentTime||0);
-      }
-
+      if(seek)seek.value=String(vinylDragTargetTime);
       const cur=$('deckCurrent');
-      if(cur)cur.textContent=formatClock(audio.currentTime||0);
+      if(cur)cur.textContent=formatClock(vinylDragTargetTime);
+
+      const readout=$('vinylScrubReadout');
+      if(readout){
+        const shifted=vinylDragTargetTime-vinylDragOriginTime;
+        readout.textContent=`${shifted>=0?'+':''}${shifted.toFixed(1)}s`;
+      }
 
       updateGlassUI();
       updateVinylScrubSound(delta);
@@ -11411,6 +11641,8 @@ function wireVinylTransport(audio,t){
 
     dragPointerId=null;
     stopVinylScrubSound();
+    const readout=$('vinylScrubReadout');
+    if(readout)readout.classList.remove('show');
 
     // Snap visual state exactly to the real audio position.
     freezeAtAudioTime();
@@ -11433,9 +11665,16 @@ function wireVinylTransport(audio,t){
     const value=Number(seek.value);
     if(!Number.isFinite(value))return;
     if(setVinylAudioTime(audio,value)){
-      freezeAtAudioTime();
-      updateGlassUI();
+      vinylVisualAngle=(value/VINYL_SECONDS_PER_TURN)*360;
+      rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
+      const cur=$('deckCurrent');if(cur)cur.textContent=formatClock(value);
+      const readout=$('vinylScrubReadout');
+      if(readout){readout.textContent=formatClock(value);readout.classList.add('show');}
     }
+  });
+  seek?.addEventListener('change',()=>{
+    const readout=$('vinylScrubReadout');if(readout)readout.classList.remove('show');
+    freezeAtAudioTime();updateGlassUI();
   });
 
   audio.addEventListener('loadedmetadata',()=>freezeAtAudioTime());
@@ -11788,10 +12027,6 @@ const MUSICETOWN_AUDIO_MODE='site-cloud';
 
 function resolveSiteCloudAudio(t){
   try{
-    const remote=remoteBackupAudioUrl(t);
-    if(remote)return remote;
-  }catch(_){}
-  try{
     return new URL(String(t?.audioSrc||''),document.baseURI).href;
   }catch(_){
     return String(t?.audioSrc||'');
@@ -12010,6 +12245,7 @@ function openTrack(t, userGesture=true){
                 <span class="vinyl-center-dot"></span>
               </span>
             </button>
+            <div class="vinyl-scrub-readout" id="vinylScrubReadout" aria-live="polite">±0.0s</div>
           </div>
 
           <div class="deck-info">
@@ -12050,10 +12286,6 @@ function openTrack(t, userGesture=true){
                 <button class="local-control primary icon-control" id="localPlay" type="button" aria-label="播放">${musicetownIcon('play')}<span>PLAY</span></button>
                 <button class="local-control icon-control" id="localNext" type="button" aria-label="下一首">${musicetownIcon('next')}<span>NEXT</span></button>
               </div>
-              <div class="group">
-                <button class="local-control" id="localPickFile" type="button">測試本機 MP3</button>
-                <input class="local-file-picker" id="localFileInput" type="file" accept="audio/mpeg,.mp3">
-              </div>
             </div>
 
             <div class="deck-help">
@@ -12082,8 +12314,6 @@ function openTrack(t, userGesture=true){
 
       const a=$('nativeAudioPlayer');
       const status=$('localMp3Status');
-      const initialRemoteAudio=remoteBackupAudioUrl(t);
-      if(a&&initialRemoteAudio)a.dataset.musicetownBackupUrl=initialRemoteAudio;
       if(a){
         setupMusicetownMediaSession(t,a);
         try{
@@ -12160,21 +12390,11 @@ function openTrack(t, userGesture=true){
         const nxt=nextTrackFrom(t,dir);
         if(!nxt)return;
         window.__musicetownAutoplayNext=true;
-        openTrack(nxt,false);
+        openTrack(nxt,true);
       };
       $('localPrev')?.addEventListener('click',()=>jump(-1));
       $('localNext')?.addEventListener('click',()=>jump(1));
 
-      const fi=$('localFileInput');
-      $('localPickFile')?.addEventListener('click',()=>fi?.click());
-      fi?.addEventListener('change',()=>{
-        const f=fi.files?.[0]; if(!f||!a)return;
-        const u=URL.createObjectURL(f);
-        a.src=u;
-        a.load();
-        a.play().catch(()=>{});
-        setStatus('ready','正在播放你選擇的本機 MP3（僅此工作階段）');
-      });
       return;
     }
 
@@ -12212,13 +12432,8 @@ function closeTrack(){
   stopVinylRAF();
   $('playerSheet').classList.remove('open');
   $('playerSheet').setAttribute('aria-hidden','true');
-
-  // If music is still playing, keep the <audio> alive so the Liquid Glass
-  // bottom transport continues to work. When paused, cleaning is safe.
-  if(!activeAudio || activeAudio.paused){
-    $('playerBody').innerHTML='';
-    currentTrack=null;
-  }
+  // Production player keeps the active song DOM alive even while paused.
+  // This preserves position and lets the bottom Liquid Glass dock reopen it.
   updateGlassUI();
 }
 
@@ -12858,9 +13073,7 @@ setTimeout(()=>{
       <input id="glassSeek" class="glass-range glass-seek" type="range" min="0" max="0" step="0.05" value="0">
       <span id="glassDuration">0:00</span>
     </div>
-    <div class="glass-volume-row">
-      <span>VOL</span>
-      <input id="glassVolume" class="glass-range glass-volume" type="range" min="0" max="1" step="0.01" value="0.85">
+    <div class="glass-volume-row glass-action-row">
       <button class="glass-dislike" id="glassDislike" type="button" aria-pressed="false">NOT FOR ME</button>
       <button class="auto-next-toggle active" id="autoNextToggle" type="button" aria-pressed="true">AUTO NEXT</button>
     </div>
@@ -12868,5 +13081,36 @@ setTimeout(()=>{
 </div>
 
 <div id="uiClickToast" aria-hidden="true"></div>
+
+<script id="musicetown-welcome-r900">
+document.addEventListener('DOMContentLoaded',()=>{
+  const welcome=document.getElementById('welcome');
+  if(!welcome || welcome.classList.contains('is-out') || welcome.querySelector('.mt-welcome-prelude'))return;
+
+  welcome.classList.add('mt-intro-pending');
+  const prelude=document.createElement('div');
+  prelude.className='mt-welcome-prelude';
+  prelude.innerHTML=`
+    <div class="mt-welcome-orbit" aria-hidden="true">
+      <svg viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="16"></circle>
+        <ellipse cx="20" cy="20" rx="7" ry="16"></ellipse>
+        <ellipse cx="20" cy="20" rx="16" ry="7"></ellipse>
+      </svg>
+    </div>
+    <div class="mt-welcome-prelude-copy">
+      <b>musicetown</b>
+      <span>CITY SOUND ARCHIVE · LOADING EXPERIENCE</span>
+    </div>`;
+  welcome.appendChild(prelude);
+
+  setTimeout(()=>{
+    welcome.classList.add('mt-intro-reveal');
+    welcome.classList.remove('mt-intro-pending');
+    setTimeout(()=>prelude.remove(),720);
+  },2000);
+});
+</script>
+
 </body>
 </html>
