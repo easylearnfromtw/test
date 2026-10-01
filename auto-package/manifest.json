@@ -4,6 +4,7 @@
   "sha256": "70e1e96cd4f07905a7014a49f28c8adebb5f65abbdd125ba86e6e3f53e094873",
   "zip_bytes": 405854,
   "base64_chars": 541140,
-  "parts": 7,
-  "part_size": 80000
+  "parts": 14,
+  "part_size": 40000,
+  "deployment": "github-native-auto"
 }
