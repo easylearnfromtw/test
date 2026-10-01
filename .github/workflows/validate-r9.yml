@@ -49,7 +49,8 @@ jobs:
             "musicetown-production-r9",
             "welcome-boot-sequence",
             "vinylScrubReadout",
-            "音樂調性 · MUSIC MOODS",
+            "音樂風格 · MUSIC STYLES",
+            "音樂調性 · MOODS",
             "MENACING DUBAI",
             "libraryPassSheet",
             "musicetown:bluetooth-audio",
@@ -67,6 +68,9 @@ jobs:
           m=re.search(r'window\.MUSIC_DATA\s*=\s*(\[.*?\]);\s*\n',h,re.S)
           data=json.loads(m.group(1)) if m else []
           print("themes",len(data),"tracks",sum(len(d.get("tracks",[])) for d in data))
+          prepare=pathlib.Path("prepare_audio_site.py").read_text(encoding="utf-8")
+          if "remote-audio-map.js" not in prepare:
+              missing.append("remote-audio-map.js deploy")
           if len(data)!=23 or missing or bad:
               raise SystemExit(f"contract failed missing={missing} forbidden={bad}")
           print("Production UI contract PASS")
