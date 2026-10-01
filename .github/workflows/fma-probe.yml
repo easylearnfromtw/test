@@ -1,0 +1,56 @@
+name: FMA resolver probe 2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fma-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - name: Inspect exact FMA track serialization
+        shell: bash
+        run: |
+          python - <<'PY'
+          import requests,re,json,html
+          from bs4 import BeautifulSoup
+          u="https://freemusicarchive.org/music/superare/pop-sensation"
+          title="Blow My High"
+          r=requests.get(u,headers={"User-Agent":"Mozilla/5.0"},timeout=30)
+          h=r.text
+          print("STATUS",r.status_code,len(h))
+          low=h.lower()
+          p=low.find(title.lower())
+          print("TITLE_POS",p)
+          if p>=0: print("TITLE_CONTEXT",h[max(0,p-2500):p+5000])
+          # print contexts around fileUrl occurrences closest to title
+          poss=[m.start() for m in re.finditer("fileUrl",h,re.I)]
+          print("FILEURL_COUNT",len(poss))
+          for x in poss[:30]:
+              ctx=h[max(0,x-900):x+1400]
+              if title.lower() in ctx.lower():
+                  print("MATCHED_CTX",ctx)
+          # Test every raw FMA mp3 URL from page until one mentions title nearby
+          urls=[]
+          for m in re.finditer(r'https://files\.freemusicarchive\.org/[^"\'<> ]+?\.mp3(?:\?[^"\'<> ]*)?',h,re.I):
+              url=html.unescape(m.group(0)).replace("\\/","/")
+              urls.append((m.start(),url))
+          print("MP3_COUNT",len(urls))
+          for x,url in urls:
+              nearby=h[max(0,x-1800):x+1800]
+              if title.lower() in nearby.lower():
+                  print("CANDIDATE",url)
+                  q=requests.get(url,headers={"User-Agent":"Mozilla/5.0","Referer":u},timeout=30,stream=True)
+                  first=next(q.iter_content(64),b"")
+                  print("GET",q.status_code,q.url,q.headers.get("content-type"),q.headers.get("content-length"),repr(first))
+                  q.close()
+          PY
