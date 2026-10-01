@@ -1,0 +1,8 @@
+{
+  "release": "musicetown-r9-production",
+  "catalog_target": "23 themes x 50 tracks = 1150",
+  "ui_commit": "38c48de357469368f1fc47384996ad1182273fc7",
+  "production_shell_commit": "6bf856379353e6c5ed75dc64cf676d109d312042",
+  "requested_at": "2026-10-01T20:37:00+08:00",
+  "purpose": "Trigger full audio build/deploy from latest production UI after the existing catalog run releases the concurrency lock."
+}
