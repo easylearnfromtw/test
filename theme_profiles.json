@@ -1,0 +1,282 @@
+{
+  "EMO": {
+    "slug": "emo",
+    "label": "Emo Night · Alternative / Post-Punk / Catharsis",
+    "queries": [
+      "emo vocal",
+      "alternative rock vocal",
+      "post punk vocal",
+      "pop punk vocal",
+      "indie rock sad vocal",
+      "melancholic rock vocal",
+      "grunge vocal",
+      "emotional indie vocal",
+      "heartbreak vocal"
+    ],
+    "genres": [
+      "Rock",
+      "Pop",
+      "Experimental Pop"
+    ],
+    "keywords": [
+      "emo",
+      "emotional",
+      "alternative",
+      "post-punk",
+      "post punk",
+      "pop punk",
+      "punk",
+      "indie rock",
+      "grunge",
+      "melancholic",
+      "sad",
+      "heartbreak",
+      "angry",
+      "dark",
+      "confessional",
+      "guitar"
+    ],
+    "prefer_bpm": [
+      90,
+      180
+    ],
+    "prefer_energy": [
+      42,
+      92
+    ],
+    "reject": [
+      "game",
+      "battle",
+      "boss",
+      "trailer",
+      "corporate",
+      "advertisement",
+      "jingle",
+      "loop"
+    ],
+    "vibe": "Midnight Catharsis · Emo / Alternative"
+  },
+  "RUNNING": {
+    "slug": "running",
+    "label": "Running Pace · Energy / Momentum / Vocal Drive",
+    "queries": [
+      "energetic vocal",
+      "running music vocal",
+      "dance pop vocal",
+      "electronic pop vocal",
+      "drum and bass vocal",
+      "punk vocal energetic",
+      "rock vocal energetic",
+      "synthwave vocal energetic",
+      "house vocal",
+      "upbeat vocal"
+    ],
+    "genres": [
+      "Electronic",
+      "Pop",
+      "Rock",
+      "Funk / Soul"
+    ],
+    "keywords": [
+      "energetic",
+      "upbeat",
+      "dance",
+      "electronic",
+      "drum and bass",
+      "dnb",
+      "house",
+      "synthwave",
+      "punk",
+      "rock",
+      "powerful",
+      "intense",
+      "driving",
+      "fast",
+      "euphoric",
+      "workout",
+      "fitness",
+      "run",
+      "running",
+      "motivational"
+    ],
+    "prefer_bpm": [
+      125,
+      180
+    ],
+    "prefer_energy": [
+      55,
+      100
+    ],
+    "reject": [
+      "slow",
+      "sleep",
+      "lullaby",
+      "meditative",
+      "ambient",
+      "game",
+      "battle",
+      "boss",
+      "trailer",
+      "loop"
+    ],
+    "vibe": "Forward Motion · Running / High Energy"
+  },
+  "POEM": {
+    "slug": "poem",
+    "label": "Poem Room · Folk / Story / Intimate Vocal",
+    "queries": [
+      "singer songwriter vocal",
+      "folk vocal",
+      "acoustic vocal",
+      "spoken word music",
+      "storytelling vocal",
+      "poetic vocal",
+      "intimate vocal",
+      "art pop vocal",
+      "meditative folk vocal",
+      "chanson vocal"
+    ],
+    "genres": [
+      "Folk",
+      "Pop",
+      "Experimental Pop",
+      "Ambient"
+    ],
+    "keywords": [
+      "folk",
+      "singer-songwriter",
+      "singer songwriter",
+      "acoustic",
+      "spoken",
+      "poetry",
+      "poetic",
+      "story",
+      "storytelling",
+      "lyrical",
+      "intimate",
+      "meditative",
+      "sentimental",
+      "chanson",
+      "ballad",
+      "soft",
+      "melancholic",
+      "love"
+    ],
+    "prefer_bpm": [
+      55,
+      125
+    ],
+    "prefer_energy": [
+      18,
+      70
+    ],
+    "reject": [
+      "game",
+      "battle",
+      "boss",
+      "trailer",
+      "corporate",
+      "advertisement",
+      "jingle",
+      "loop",
+      "dubstep"
+    ],
+    "vibe": "Words & Quiet Rooms · Poem / Story"
+  },
+  "TRADITIONAL BEIJING": {
+    "slug": "traditional-beijing",
+    "label": "Traditional Beijing · Jingju / Chinese Opera / Theatre",
+    "queries": [
+      "peking opera",
+      "beijing opera",
+      "jingju",
+      "chinese opera",
+      "traditional chinese opera",
+      "chinese theatrical vocal",
+      "chinese traditional vocal",
+      "erhu vocal",
+      "suona vocal",
+      "pipa vocal",
+      "chinese percussion opera",
+      "gong opera",
+      "pentatonic vocal",
+      "traditional chinese music",
+      "oriental opera"
+    ],
+    "genres": [
+      "Folk",
+      "Classical",
+      "Avant-Garde",
+      "Experimental Pop",
+      "World"
+    ],
+    "keywords": [
+      "peking opera",
+      "beijing opera",
+      "jingju",
+      "chinese opera",
+      "opera",
+      "theatrical",
+      "theatre",
+      "traditional chinese",
+      "chinese traditional",
+      "chinese folk",
+      "chinese",
+      "pentatonic",
+      "erhu",
+      "pipa",
+      "suona",
+      "dizi",
+      "guqin",
+      "gong",
+      "gongs",
+      "cymbal",
+      "percussion",
+      "dramatic vocal",
+      "folk vocal",
+      "ceremonial",
+      "ritual",
+      "court",
+      "ancient"
+    ],
+    "required_any": [
+      "peking opera",
+      "beijing opera",
+      "jingju",
+      "chinese opera",
+      "traditional chinese",
+      "chinese traditional",
+      "erhu",
+      "pipa",
+      "suona",
+      "dizi",
+      "guqin",
+      "gong",
+      "pentatonic",
+      "chinese folk"
+    ],
+    "prefer_bpm": [
+      55,
+      165
+    ],
+    "prefer_energy": [
+      20,
+      88
+    ],
+    "reject": [
+      "corporate",
+      "advertisement",
+      "jingle",
+      "game battle",
+      "boss battle",
+      "synthwave",
+      "cyberpunk",
+      "8-bit",
+      "chiptune"
+    ],
+    "vibe": "Jingju Theatre · Traditional Beijing",
+    "vocal_mode": "preferred",
+    "allow_instrumental": true,
+    "min_strong_matches": 1
+  }
+}
