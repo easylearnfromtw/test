@@ -1,0 +1,73 @@
+name: R9 production validation
+
+on:
+  push:
+    branches:
+      - musicetown-production-r9
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Python installers
+        run: |
+          python -m py_compile             fetch_verified_audio.py             build_fresh_city_packs.py             build_theme_packs.py             verify_music_install.py             prepare_audio_site.py             generate_city_pass_qr.py
+      - name: Validate inline JavaScript syntax
+        run: |
+          python - <<'PY'
+          import re, pathlib, subprocess, sys
+          html=pathlib.Path("index.html").read_text(encoding="utf-8")
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',html,re.S|re.I)
+          checked=0
+          for i,s in enumerate(scripts):
+              if not s.strip():
+                  continue
+              p=pathlib.Path(f"/tmp/musicetown-inline-{i}.js")
+              p.write_text(s,encoding="utf-8")
+              r=subprocess.run(["node","--check",str(p)],capture_output=True,text=True)
+              if r.returncode:
+                  print(f"INLINE SCRIPT {i} FAILED")
+                  print(r.stderr or r.stdout)
+                  sys.exit(r.returncode)
+              checked+=1
+          print("Inline scripts PASS:",checked)
+          PY
+      - name: Production UI contract
+        run: |
+          python - <<'PY'
+          import pathlib,re,json
+          h=pathlib.Path("index.html").read_text(encoding="utf-8")
+          required=[
+            "musicetown-production-r9",
+            "welcome-boot-sequence",
+            "vinylScrubReadout",
+            "音樂調性 · MUSIC MOODS",
+            "MENACING DUBAI",
+            "libraryPassSheet",
+            "musicetown:bluetooth-audio",
+            "CITY_PASS_QR_EMBEDDED",
+          ]
+          missing=[x for x in required if x not in h]
+          forbidden=[
+            'id="glassVolume"',
+            '>VOL<',
+            '測試本機 MP3',
+            'SOURCE PAGE FALLBACK',
+            'LOCAL MP3 NOT FOUND',
+          ]
+          bad=[x for x in forbidden if x in h]
+          m=re.search(r'window\.MUSIC_DATA\s*=\s*(\[.*?\]);\s*\n',h,re.S)
+          data=json.loads(m.group(1)) if m else []
+          print("themes",len(data),"tracks",sum(len(d.get("tracks",[])) for d in data))
+          if len(data)!=23 or missing or bad:
+              raise SystemExit(f"contract failed missing={missing} forbidden={bad}")
+          print("Production UI contract PASS")
+          PY
