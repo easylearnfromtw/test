@@ -1,0 +1,165 @@
+name: Bake remote audio map
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/bake-remote-audio-map.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - name: Resolve legal direct audio URLs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import html, json, re, time
+          from pathlib import Path
+          from urllib.parse import urljoin
+          import requests
+          from bs4 import BeautifulSoup
+
+          root=Path(".")
+          text=(root/"index.html").read_text(encoding="utf-8")
+          m=re.search(r'window\.MUSIC_DATA\s*=\s*(\[.*?\]);\s*\n',text,re.S)
+          if not m:
+              raise SystemExit("MUSIC_DATA not found")
+          data=json.loads(m.group(1))
+
+          tracks={}
+          for drawer in data:
+              for t in drawer.get("tracks",[]):
+                  mid=t.get("masterId")
+                  if mid and mid not in tracks:
+                      tracks[mid]={"title":t.get("title",""),"source":t.get("source",""),"embed":t.get("embed")}
+
+          S=requests.Session()
+          S.headers.update({"User-Agent":"Mozilla/5.0 musicetown-remote-audio-map/1.0"})
+          cache={}
+          def get(url):
+              if url not in cache:
+                  r=S.get(url,timeout=35)
+                  r.raise_for_status()
+                  cache[url]=r.text
+              return cache[url]
+
+          def norm(s):
+              return re.sub(r"\s+"," ",s or "").strip().casefold()
+
+          def from_page(url,title):
+              h=get(url)
+              low=h.lower()
+              if "cc0 1.0 universal" not in low:
+                  return None
+              soup=BeautifulSoup(h,"html.parser")
+              target=norm(title)
+
+              for node in soup.find_all(attrs={"data-track-info":True}):
+                  raw=html.unescape(node.get("data-track-info") or "")
+                  try:
+                      info=json.loads(raw)
+                  except Exception:
+                      continue
+                  if norm(info.get("title"))!=target:
+                      continue
+                  for key in ("fileUrl","playbackUrl","downloadUrl"):
+                      u=info.get(key)
+                      if u:
+                          return str(u).replace("\\/","/")
+
+              title_pat=re.escape(title)
+              for pat in (
+                  rf'"title"\s*:\s*"{title_pat}".{{0,2400}}?"fileUrl"\s*:\s*"([^"]+)"',
+                  rf'"title"\s*:\s*"{title_pat}".{{0,2400}}?"playbackUrl"\s*:\s*"([^"]+)"',
+              ):
+                  mm=re.search(pat,h,re.I|re.S)
+                  if mm:
+                      return html.unescape(mm.group(1)).replace("\\/","/")
+
+              for node in soup.find_all(["audio","source"]):
+                  src=node.get("src")
+                  if src:
+                      u=urljoin(url,src)
+                      if re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",u,re.I):
+                          return u
+              return None
+
+          def resolve(t):
+              src=t["source"]
+              if "nullrights.com/track/" in src:
+                  tid=t.get("embed") or src.rstrip("/").split("/")[-1]
+                  # Nullrights' inline route is a real audio response and is safe
+                  # for native <audio> fallback playback.
+                  return f"https://nullrights.com/audio/{tid}"
+
+              direct=from_page(src,t["title"])
+              if direct:
+                  return direct
+
+              h=get(src)
+              soup=BeautifulSoup(h,"html.parser")
+              target=norm(t["title"])
+              candidates=[]
+              for a in soup.find_all("a",href=True):
+                  label=norm(a.get_text(" ",strip=True))
+                  if label==target or (target and target in label) or (label and label in target):
+                      u=urljoin(src,a["href"])
+                      if "/music/" in u:
+                          candidates.append(u)
+              for u in candidates[:5]:
+                  try:
+                      direct=from_page(u,t["title"])
+                      if direct:
+                          return direct
+                  except Exception:
+                      pass
+              return None
+
+          out={}
+          failures=[]
+          for i,(mid,t) in enumerate(tracks.items(),1):
+              try:
+                  u=resolve(t)
+                  if not u:
+                      raise RuntimeError("unresolved")
+                  out[mid]=u
+                  print(f"[{i}/{len(tracks)}] OK {t['title']}")
+              except Exception as e:
+                  failures.append({"masterId":mid,"title":t["title"],"source":t["source"],"error":str(e)})
+                  print(f"[{i}/{len(tracks)}] FAIL {t['title']}: {e}")
+
+          if len(out)<100:
+              raise SystemExit(f"Only resolved {len(out)}/{len(tracks)} URLs; refusing weak map")
+
+          payload="window.MUSICETOWN_REMOTE_AUDIO="+json.dumps(out,ensure_ascii=False,separators=(",",":"))+";\n"
+          (root/"remote-audio-map.js").write_text(payload,encoding="utf-8")
+          (root/"remote-audio-map-report.json").write_text(
+              json.dumps({"generatedAt":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"resolved":len(out),"total":len(tracks),"failures":failures},ensure_ascii=False,indent=2),
+              encoding="utf-8"
+          )
+          print("RESOLVED",len(out),"/",len(tracks))
+          PY
+      - name: Commit map
+        shell: bash
+        run: |
+          set -e
+          git config user.name "musicetown-auto"
+          git config user.email "actions@users.noreply.github.com"
+          git add remote-audio-map.js remote-audio-map-report.json
+          if git diff --cached --quiet; then
+            echo "No map changes."
+            exit 0
+          fi
+          git commit -m "Bake resilient remote audio map"
+          git push
