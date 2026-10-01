@@ -45,22 +45,35 @@ def direct_audio_from_page(url,title):
     if not verify_cc0(h,url):
         raise RuntimeError("source no longer shows CC0 1.0 Universal")
     soup=BeautifulSoup(h,"html.parser")
-    # visible Download link
-    for a in soup.find_all("a",href=True):
-        label=a.get_text(" ",strip=True).lower()
-        href=urljoin(url,a["href"])
-        if "download" in label:
-            return href
-    # media/src links
-    for node in soup.find_all(["audio","source","a"],src=True):
-        u=urljoin(url,node.get("src"))
+
+    # Nullrights uses extensionless /download/<track-id> routes that return
+    # real audio bytes with audio/* Content-Type. Do not match generic
+    # "download" navigation labels on other sites.
+    if "nullrights.com/track/" in url:
+        for a in soup.find_all("a",href=True):
+            label=a.get_text(" ",strip=True).lower()
+            href=urljoin(url,a["href"])
+            if "download" in label and "/download/" in href:
+                return href
+        tid=url.rstrip("/").split("/")[-1]
+        return f"https://nullrights.com/download/{tid}"
+
+    # Direct media/src links.
+    for node in soup.find_all(["audio","source"]):
+        src=node.get("src")
+        if not src:continue
+        u=urljoin(url,src)
         if re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",u,re.I):return u
+
+    # Direct audio anchors.
     for a in soup.find_all("a",href=True):
         u=urljoin(url,a["href"])
         if re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",u,re.I):return u
-    # FMA embeds fileUrl in page source on many versions
+
+    # FMA embeds the current audio URL in serialized page data.
     pats=[
       r'fileUrl["\']?\s*:\s*["\']([^"\']+)',
+      r'downloadUrl["\']?\s*:\s*["\']([^"\']+)',
       r'(https://files\.freemusicarchive\.org/[^"\']+?\.(?:mp3|ogg)(?:\?[^"\']*)?)'
     ]
     for pat in pats:
