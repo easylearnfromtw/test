@@ -1,0 +1,83 @@
+name: Nullrights/FMA audio resolver probe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nullrights-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install parser
+        run: pip install requests beautifulsoup4
+      - name: Probe source/download/embed structures
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re, requests, json
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin
+          S=requests.Session()
+          S.headers["User-Agent"]="Mozilla/5.0 musicetown-resolver-probe/1.0"
+
+          urls=[
+            "https://nullrights.com/track/euprupk1y6",
+            "https://nullrights.com/track/aud8c99prl",
+            "https://freemusicarchive.org/music/holiznacc0/shooting-ghost-dirty-driving-death-part-2",
+          ]
+          for url in urls:
+            print("\n===== SOURCE",url,"=====")
+            r=S.get(url,timeout=30,allow_redirects=True)
+            print("source",r.status_code,r.url,r.headers.get("content-type"),len(r.content))
+            h=r.text
+            soup=BeautifulSoup(h,"html.parser")
+            for a in soup.find_all("a",href=True):
+              label=" ".join(a.get_text(" ",strip=True).split())
+              href=urljoin(r.url,a["href"])
+              if "download" in label.lower() or re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",href,re.I):
+                print("A",repr(label[:100]),href)
+                try:
+                  q=S.get(href,timeout=30,allow_redirects=True,stream=True)
+                  first=next(q.iter_content(64),b"")
+                  print("  GET",q.status_code,q.url,q.headers.get("content-type"),q.headers.get("content-disposition"),repr(first[:48]))
+                  q.close()
+                except Exception as e:
+                  print("  GET ERROR",repr(e))
+            for node in soup.find_all(["audio","source"]):
+              print("MEDIA",node.name,node.get("src"),node.get("type"))
+            for meta in soup.find_all("meta"):
+              p=(meta.get("property") or meta.get("name") or "").lower()
+              if "audio" in p:
+                print("META",p,meta.get("content"))
+            for key in ["fileUrl","audioUrl","downloadUrl","contentUrl","audio_url","download_url","src"]:
+              if key.lower() in h.lower():
+                print("HASKEY",key)
+            for m in re.finditer(r'https?[^"\'<> ]{0,500}',h,re.I):
+              s=m.group(0).replace("\\/","/")
+              if re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",s,re.I):
+                print("RAW_AUDIO_URL",s[:600])
+            tid=url.rstrip("/").split("/")[-1]
+            if "nullrights.com/track/" in url:
+              for eurl in [f"https://nullrights.com/embed/{tid}", f"https://nullrights.com/track/{tid}/download", f"https://nullrights.com/download/{tid}"]:
+                try:
+                  q=S.get(eurl,timeout=30,allow_redirects=True)
+                  print("EXTRA",eurl,"=>",q.status_code,q.url,q.headers.get("content-type"),len(q.content),repr(q.content[:60]))
+                  if "text/html" in (q.headers.get("content-type") or ""):
+                    es=BeautifulSoup(q.text,"html.parser")
+                    for n in es.find_all(["audio","source"]):
+                      print(" EXTRA MEDIA",n.name,n.get("src"),n.get("type"))
+                    for a in es.find_all("a",href=True):
+                      ah=urljoin(q.url,a["href"])
+                      if re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",ah,re.I) or "download" in a.get_text(" ",strip=True).lower():
+                        print(" EXTRA A",repr(a.get_text(" ",strip=True)[:80]),ah)
+                except Exception as e:
+                  print("EXTRA ERROR",eurl,repr(e))
+          PY
