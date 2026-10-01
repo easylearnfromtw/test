@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths:
+      - "index.html"
+      - "404.html"
       - "*.py"
       - "*.json"
       - "requirements.txt"
@@ -17,7 +19,7 @@ permissions:
 
 concurrency:
   group: musicetown-auto-pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
@@ -42,8 +44,10 @@ jobs:
       - name: Install ffmpeg + Python deps
         shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
