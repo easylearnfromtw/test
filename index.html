@@ -7651,6 +7651,7 @@ window.addEventListener('error',function(e){
 
 
 <style id="musicetown-production-r9">
+*{box-sizing:border-box}
 html,body{max-width:100%;overflow-x:hidden}
 .track-list{gap:13px!important}
 .library-search:focus,.library-search:focus-visible,.global-search-box:focus-within,#globalSearchInput:focus,#globalSearchInput:focus-visible{outline:none!important;box-shadow:none!important;border-color:rgba(41,70,93,.11)!important}
@@ -7680,7 +7681,7 @@ body.detail-open .detail{width:100%!important;max-width:100vw!important;padding-
 .detail>*,.detail-inner,.detail-shell,.detail-content,.music-grid,.music-panel,.track-list,.track-row,.library-tools,.branch-drawer-section{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
 .music-grid{display:block!important;width:100%!important;margin-top:14px!important}.music-panel{width:100%!important;padding:14px!important;overflow:hidden!important}
 .library-tools{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;gap:8px!important}#genreSearch{grid-column:1/-1!important;min-width:0!important;width:100%!important}.lib-pill{width:100%!important;min-width:0!important}
-.track-list{gap:12px!important}.track-row{width:100%!important;grid-template-columns:38px minmax(0,1fr) auto!important;gap:9px!important;padding:10px!important;min-height:66px!important;overflow:hidden!important}.track-row>div:nth-child(2),.track-name,.track-note{min-width:0!important;max-width:100%!important}.track-name,.track-note{display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}.track-tag,.cc0-badge{display:none!important}.track-actions{min-width:36px!important;max-width:44px!important;gap:0!important}
+.track-list{gap:12px!important}.track-row{width:100%!important;grid-template-columns:38px minmax(0,1fr) auto!important;gap:9px!important;padding:10px!important;min-height:66px!important;overflow:hidden!important}.track-row>div:nth-child(2),.track-name,.track-note{min-width:0!important;max-width:100%!important}.track-name,.track-note{display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}.track-tag,.cc0-badge{display:none!important}.track-actions{min-width:36px!important;max-width:40px!important;gap:0!important}.track-actions .play-dot,.track-actions .dislike-btn{display:none!important}.favorite-btn{width:34px!important;height:34px!important;flex:0 0 34px!important}
 .player-sheet{padding:0!important;place-items:end center!important}.player-card{width:100vw!important;max-width:100vw!important;max-height:calc(100dvh - env(safe-area-inset-top,0px))!important;border-radius:28px 28px 0 0!important;padding:14px!important;box-sizing:border-box!important;overflow-x:hidden!important}.player-head,.player-body,.musicetown-deck,.track-story-grid,.track-story,.caption-panel{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}.musicetown-deck{grid-template-columns:1fr!important;width:100%!important;padding:12px!important;gap:10px!important}.vinyl-wrap{min-height:214px!important}.vinyl{width:min(196px,58vw)!important}.deck-info{text-align:center!important}.deck-title{font-size:clamp(25px,8vw,34px)!important}.deck-artist{overflow-wrap:anywhere}.local-player-controls .group{grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important}.local-control{min-width:0!important;width:100%!important}.track-story-grid{grid-template-columns:1fr!important}
 .glass-transport{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;grid-template-columns:minmax(0,1fr) auto!important}.glass-copy b{font-size:9px!important}.glass-copy span{font-size:6px!important}.glass-time{grid-template-columns:29px minmax(0,1fr) 29px!important}.glass-action-row{margin-top:3px!important}
 .theme-shelf{bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;width:calc(100% - 14px)!important;padding:8px!important;border-radius:20px!important}.theme-shelf-head{padding-bottom:6px!important}.theme-group-items{gap:8px!important;padding-bottom:7px!important}.theme-shelf-item{min-width:150px!important;max-width:174px!important;height:48px!important}.theme-group-tabs{overflow-x:auto!important;display:flex!important;flex-wrap:nowrap!important;padding-bottom:1px!important;scrollbar-width:none}.theme-group-tab{flex:none!important;min-height:30px!important}body:not(.detail-open) #scene{inset:54px 0 154px 0!important;height:calc(100% - 208px)!important}
@@ -7940,7 +7941,7 @@ html.mt-perf-mobile .music-panel,html.mt-perf-mobile .player-card,html.mt-perf-m
 
 <footer class="site-foot">
   <span style="--d:1.42s">musicetown · 23 THEMES · 1150 PICKS</span>
-  <span style="--d:1.5s">2026 | musicetown R8.9.1<i class="sq"></i></span>
+  <span style="--d:1.5s">2026 | musicetown · PRODUCTION<i class="sq"></i></span>
 </footer>
 <p class="nogl" id="nogl" hidden>這個瀏覽器無法顯示 3D 收納盒，請用上方導覽列瀏覽各頁。</p>
 
@@ -7949,7 +7950,7 @@ html.mt-perf-mobile .music-panel,html.mt-perf-mobile .player-card,html.mt-perf-m
   <div class="player-card" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
     <div class="player-head">
       <div>
-        <div class="player-eyebrow">musicetown · VINYL PLAYER · CLOUD AUDIO</div>
+        <div class="player-eyebrow">musicetown · VINYL PLAYER</div>
         <div class="player-title" id="playerTitle">Track</div>
         <div class="player-artist" id="playerArtist">Artist</div>
       </div>
@@ -8006,8 +8007,11 @@ const HOME_GROUPS={
   MIDDLE_EAST:{label:'中東 · MIDDLE EAST',short:'中東 · MIDDLE EAST',items:[
     'MENACING DUBAI'
   ]},
-  MUSIC_THEMES:{label:'音樂調性 · MUSIC MOODS',short:'音樂調性 · MOODS',items:[
-    'JAZZ','CROONER','ROCK','SPORT','LO-FI','EMO','RUNNING','POEM'
+  MUSIC_STYLES:{label:'音樂風格 · MUSIC STYLES',short:'音樂風格 · STYLES',items:[
+    'JAZZ','CROONER','ROCK','LO-FI'
+  ]},
+  MOODS:{label:'音樂調性 · MOODS',short:'音樂調性 · MOODS',items:[
+    'EMO','SPORT','RUNNING','POEM'
   ]}
 };
 const HOME_CARD_SLOTS=8;
@@ -8033,7 +8037,7 @@ function currentHomeGroup(){return HOME_GROUPS[HOME_GROUP_KEY]||HOME_GROUPS.ASIA
 /* ================= scene dimensions (world units) ================= */
 const BW=268, BD=293, HF=162, HB=337.4, GT=4, PT=6;          // box
 const CW=236, CH=236, CT=2.4, LEAN=6*Math.PI/180;           // cards
-const TOP0={y:241.5, z:99.3}, MAIN_STEP={y:8.8, z:-23.8}, BRANCH_STEP={y:24.2, z:-48.8};          // card top-edge positions
+const TOP0={y:241.5, z:99.3}, MAIN_STEP={y:9.8, z:-27.2}, BRANCH_STEP={y:24.2, z:-48.8};          // card top-edge positions
 const DEG=Math.PI/180;
 const HOV={lift:95, tilt:-7.2*DEG, dz:-14}, FRONT={tilt:-6*DEG, dz:4}, BEHIND={tilt:0, dz:-35}; // hover response
 const RING_C=[.505,.545], RING_R=[.195,.17], DOT_R=.03;     // ring on the 3D card face
@@ -11216,8 +11220,11 @@ function paintVinylFromAudio(audio){
   const rotor=$('vinylRotor')||vinyl;
   if(!vinyl||!audio)return;
   if(!vinylDragging){
-    vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
-    rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
+    const target=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
+    const diff=target-vinylVisualAngle;
+    vinylVisualAngle=Math.abs(diff)>540?target:(vinylVisualAngle+diff*.28);
+    if(Math.abs(target-vinylVisualAngle)<.035)vinylVisualAngle=target;
+    rotor.style.setProperty('--record-angle',String(vinylVisualAngle)+'deg');
   }
   const seek=$('deckSeek');
   if(seek&&Number.isFinite(audio.duration)&&audio.duration>0){
@@ -11613,7 +11620,7 @@ function renderTracks(genreIndex, query=''){
         <button class="play-dot" type="button" tabindex="-1" aria-hidden="true">${musicetownIcon('play')}</button>
       </div>
     </div>`}).join('') || (d.installPending
-      ? `<div class="theme-install-pending"><b>50-TRACK CURATION READY TO INSTALL</b><span>執行 R8.9.0 的 1150-track GitHub Action 後，這裡會填入 50 首來源頁明確標示 CC0 1.0 Universal、且通過 ${esc(d.t)} 主題強特徵篩選的曲目。</span></div>`
+      ? `<div class="theme-install-pending"><b>MUSIC LIBRARY PREPARING</b><span>${esc(d.t)} 的 50 首策展音樂正在準備中。</span></div>`
       : `<div class="track-note" style="padding:20px">找不到符合的歌曲</div>`);
 }
 
@@ -12243,13 +12250,8 @@ function closeTrack(){
   stopVinylRAF();
   $('playerSheet').classList.remove('open');
   $('playerSheet').setAttribute('aria-hidden','true');
-
-  // If music is still playing, keep the <audio> alive so the Liquid Glass
-  // bottom transport continues to work. When paused, cleaning is safe.
-  if(!activeAudio || activeAudio.paused){
-    $('playerBody').innerHTML='';
-    currentTrack=null;
-  }
+  // Production player keeps the active song DOM alive even while paused.
+  // The Liquid Glass dock can therefore reopen the exact same song state.
   updateGlassUI();
 }
 
