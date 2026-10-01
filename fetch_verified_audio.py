@@ -49,7 +49,7 @@ def direct_audio_from_page(url,title):
     for a in soup.find_all("a",href=True):
         label=a.get_text(" ",strip=True).lower()
         href=urljoin(url,a["href"])
-        if "download" in label and re.search(r"\.(mp3|ogg|oga|flac|wav)(?:\?|$)",href,re.I):
+        if "download" in label:
             return href
     # media/src links
     for node in soup.find_all(["audio","source","a"],src=True):
