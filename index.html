@@ -11101,6 +11101,8 @@ function attachGlobalTransport(audio,t){
     if(url){
       const pre=new Audio();
       pre.preload='auto';
+      pre.playsInline=true;
+      pre.volume=.92;
       pre.src=url;
       pre.load();
       window.__musicetownPrimedAudio=pre;
@@ -11827,6 +11829,20 @@ function isSiteCloudAudioUrl(url){
     return new URL(url,document.baseURI).origin===location.origin;
   }catch(_){return false}
 }
+function takePrimedAudio(t){
+  const primed=window.__musicetownPrimedAudio;
+  if(!primed)return null;
+  try{
+    const target=new URL(resolveSiteCloudAudio(t),document.baseURI).href;
+    const actual=new URL(primed.currentSrc||primed.src,document.baseURI).href;
+    if(target!==actual)return null;
+  }catch(_){return null}
+  window.__musicetownPrimedAudio=null;
+  primed.preload='auto';
+  primed.playsInline=true;
+  primed.volume=.92;
+  return primed;
+}
 
 function nullrightsEmbedId(t){
   if(t?.embed)return String(t.embed);
@@ -11975,6 +11991,11 @@ function openTrack(t, userGesture=true){
   if(!t) return;
   const shouldAutoplay=Boolean(userGesture||window.__musicetownAutoplayNext);
   window.__musicetownAutoplayNext=false;
+  const incomingAudio=shouldAutoplay?takePrimedAudio(t):null;
+  if(incomingAudio){
+    // Begin first, then swap UI: avoids an audible dead gap on NEXT/AUTO NEXT.
+    incomingAudio.play().catch(()=>{});
+  }
 
   currentTrack=t;
 
@@ -12096,7 +12117,15 @@ function openTrack(t, userGesture=true){
         toggleDislike(t);
       });
 
-      const a=$('nativeAudioPlayer');
+      let a=$('nativeAudioPlayer');
+      if(a&&incomingAudio){
+        try{
+          a.replaceWith(incomingAudio);
+          incomingAudio.id='nativeAudioPlayer';
+          incomingAudio.className='native-audio';
+          a=incomingAudio;
+        }catch(_){}
+      }
       const status=$('localMp3Status');
       const initialRemoteAudio=remoteBackupAudioUrl(t);
       if(a&&initialRemoteAudio)a.dataset.musicetownBackupUrl=initialRemoteAudio;
