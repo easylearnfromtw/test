@@ -7562,6 +7562,92 @@ window.addEventListener('error',function(e){
 }
 </style>
 <script src="./remote-audio-map.js"></script>
+
+<style id="musicetown-r893-mobile-lock">
+@media(max-width:760px){
+  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  body.detail-open{width:100%!important;max-width:100vw!important;overflow-x:hidden!important}
+  body.detail-open .detail{
+    inset:0!important;display:block!important;
+    width:100vw!important;max-width:100vw!important;min-width:0!important;
+    padding:calc(68px + env(safe-area-inset-top,0px)) 8px calc(106px + env(safe-area-inset-bottom,0px))!important;
+    margin:0!important;overflow-x:hidden!important;box-sizing:border-box!important;
+  }
+  body.detail-open .detail>.inner.music-detail{
+    display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+    margin:0!important;padding:0!important;transform:none!important;box-sizing:border-box!important;
+  }
+  .music-hero,.branch-drawer-section,.music-grid,.music-panel,.track-list,.side-stack{
+    width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+  }
+  .music-grid{display:block!important;margin-top:14px!important}
+  .side-stack{display:grid!important;gap:12px!important;margin-top:12px!important}
+  .music-panel{padding:12px!important;border-radius:20px!important;overflow:hidden!important}
+  .library-tools{
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;width:100%!important;max-width:100%!important;
+  }
+  .library-search{grid-column:1/-1!important;width:100%!important;min-width:0!important;max-width:100%!important}
+  .lib-pill{width:100%!important;min-width:0!important;max-width:100%!important}
+  .track-row{
+    display:grid!important;grid-template-columns:38px minmax(0,1fr)!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    padding:10px!important;gap:8px 10px!important;overflow:hidden!important;box-sizing:border-box!important;
+  }
+  .track-row>*{min-width:0!important;max-width:100%!important}
+  .track-row>div:nth-child(2){grid-column:2!important;min-width:0!important;overflow:hidden!important}
+  .track-name,.track-note{display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+  .track-actions{
+    grid-column:1/-1!important;width:100%!important;min-width:0!important;
+    display:flex!important;flex-wrap:wrap!important;justify-content:flex-end!important;
+    gap:6px!important;padding-left:48px!important;box-sizing:border-box!important;
+  }
+  .track-actions .cc0-badge{
+    margin-right:auto!important;min-width:0!important;max-width:calc(100% - 72px)!important;
+    overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:6.7px!important;
+  }
+  .track-actions .play-dot{display:none!important}
+  .player-sheet{
+    width:100vw!important;max-width:100vw!important;overflow:hidden!important;
+    padding:0!important;place-items:end stretch!important;background:rgba(35,36,54,.18)!important;
+  }
+  .player-card{
+    width:100vw!important;max-width:100vw!important;min-width:0!important;
+    max-height:92dvh!important;overflow-x:hidden!important;overflow-y:auto!important;
+    margin:0!important;padding:14px 10px calc(18px + env(safe-area-inset-bottom,0px))!important;
+    border-radius:26px 26px 0 0!important;box-sizing:border-box!important;
+  }
+  .player-head,.player-body,.musicetown-deck,.vinyl-wrap,.deck-info{
+    width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;
+  }
+  .player-title{font-size:clamp(22px,7.5vw,32px)!important;line-height:1.08!important;overflow-wrap:anywhere!important}
+  .player-artist{overflow-wrap:anywhere!important}
+  .musicetown-deck{
+    grid-template-columns:minmax(0,1fr)!important;
+    padding:10px!important;gap:10px!important;overflow:hidden!important;
+  }
+  .vinyl-wrap{min-height:196px!important}
+  .vinyl{width:min(188px,58vw)!important;max-width:188px!important}
+  .deck-favorite-row{
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:8px!important;width:100%!important;
+  }
+  .deck-favorite,.deck-dislike{
+    width:100%!important;min-width:0!important;padding:0 6px!important;
+    justify-content:center!important;white-space:nowrap!important;font-size:8px!important;
+  }
+  .local-player-controls{display:block!important;width:100%!important;max-width:100%!important}
+  .local-player-controls .group{
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    width:100%!important;max-width:100%!important;gap:7px!important;margin:0 0 8px!important;
+  }
+  .local-player-controls .group:last-child{grid-template-columns:minmax(0,1fr)!important;margin-bottom:0!important}
+  .local-control{width:100%!important;min-width:0!important;max-width:100%!important;padding:0 4px!important;font-size:7.8px!important}
+  .deck-help,.local-path,.player-links,.legal-mini{max-width:100%!important;overflow-wrap:anywhere!important}
+  .library-fab{right:8px!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;max-width:calc(100vw - 16px)!important}
+}
+</style>
+
 </head>
 <body>
 
@@ -11695,6 +11781,10 @@ const MUSICETOWN_AUDIO_MODE='site-cloud';
 
 function resolveSiteCloudAudio(t){
   try{
+    const remote=remoteBackupAudioUrl(t);
+    if(remote)return remote;
+  }catch(_){}
+  try{
     return new URL(String(t?.audioSrc||''),document.baseURI).href;
   }catch(_){
     return String(t?.audioSrc||'');
@@ -11934,9 +12024,8 @@ function openTrack(t, userGesture=true){
               </button>
             </div>`}
 
-            <audio id="nativeAudioPlayer" class="native-audio" preload="metadata">
-              <source src="${esc(resolveSiteCloudAudio(t))}" type="audio/mpeg">
-            </audio>
+            <audio id="nativeAudioPlayer" class="native-audio" preload="metadata" playsinline
+                   src="${esc(resolveSiteCloudAudio(t))}"></audio>
 
             <div class="deck-time">
               <span id="deckCurrent">0:00</span>
@@ -11945,7 +12034,7 @@ function openTrack(t, userGesture=true){
             <input class="deck-seek" id="deckSeek" type="range" min="0" max="0" step="0.05" value="0">
 
             <div class="local-mp3-status loading" id="localMp3Status">
-              <i></i><span>正在連線 musicetown 網站雲端 MP3…</span>
+              <i></i><span>${remoteBackupAudioUrl(t)?'正在連線合法線上音源…':'正在連線 musicetown 網站雲端 MP3…'}</span>
             </div>
 
             <div class="local-player-controls">
@@ -11986,6 +12075,8 @@ function openTrack(t, userGesture=true){
 
       const a=$('nativeAudioPlayer');
       const status=$('localMp3Status');
+      const initialRemoteAudio=remoteBackupAudioUrl(t);
+      if(a&&initialRemoteAudio)a.dataset.musicetownBackupUrl=initialRemoteAudio;
       if(a){
         setupMusicetownMediaSession(t,a);
         try{
