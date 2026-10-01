@@ -11380,7 +11380,7 @@ function wireVinylTransport(audio,t){
   vinyl.style.setProperty('--vinyl',color.hex);
   vinyl.dataset.dark=color.dark?'true':'false';
   vinyl.dataset.material=color.material||'solid';
-  vinyl.setAttribute('aria-label',\`\${color.name} 彩膠唱片。播放時跟隨歌曲旋轉；拖曳可平滑快轉或倒轉。\`);
+  vinyl.setAttribute('aria-label',`${color.name} 彩膠唱片。播放時跟隨歌曲旋轉；拖曳可平滑快轉或倒轉。`);
 
   let vinylStartX=0,vinylStartY=0,vinylTouchIntent=null,dragPointerId=null;
   let dragOriginTime=0,pendingTime=0,scrubRAF=0,seekOrigin=0;
@@ -11392,14 +11392,14 @@ function wireVinylTransport(audio,t){
   const showDelta=delta=>{
     if(!readout)return;
     const sign=delta>0?'+':delta<0?'−':'';
-    readout.textContent=\`\${sign}\${Math.abs(delta).toFixed(Math.abs(delta)<10?1:0)}s\`;
+    readout.textContent=`${sign}${Math.abs(delta).toFixed(Math.abs(delta)<10?1:0)}s`;
     readout.classList.add('show');
   };
   const hideDelta=()=>readout?.classList.remove('show');
   const freezeAtAudioTime=()=>{
     stopVinylRAF();
     vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
-    rotor.style.setProperty('--record-angle',\`\${vinylVisualAngle}deg\`);
+    rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
     paintVinylFromAudio(audio);
   };
   const flushPendingSeek=()=>{
@@ -11443,7 +11443,7 @@ function wireVinylTransport(audio,t){
     vinylLastPointerAngle=nextAngle;
     pendingTime=clampTime(pendingTime+(delta/360)*VINYL_SECONDS_PER_TURN);
     vinylVisualAngle=(pendingTime/VINYL_SECONDS_PER_TURN)*360;
-    rotor.style.setProperty('--record-angle',\`\${vinylVisualAngle}deg\`);
+    rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
     showDelta(pendingTime-dragOriginTime);
     updateVinylScrubSound(delta);
     scheduleSeek();
@@ -11470,7 +11470,7 @@ function wireVinylTransport(audio,t){
     pendingTime=clampTime(value);
     try{audio.currentTime=pendingTime}catch(_){}
     vinylVisualAngle=(pendingTime/VINYL_SECONDS_PER_TURN)*360;
-    rotor.style.setProperty('--record-angle',\`\${vinylVisualAngle}deg\`);
+    rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
     const cur=$('deckCurrent');if(cur)cur.textContent=formatClock(pendingTime);
     showDelta(pendingTime-seekOrigin);updateGlassUI();
   });
