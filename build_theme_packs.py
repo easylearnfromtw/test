@@ -334,7 +334,17 @@ def convert(t, bitrate):
     return out
 
 
-def existing_slots(drawer, p, per_theme):
+def selection_cache_path(p):
+    return CACHE / f"selection-{p['slug']}.json"
+
+
+def save_selection(p, tracks):
+    selection_cache_path(p).write_text(
+        json.dumps(tracks, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
+    )
+
+
+def existing_slots(drawer, p, per_theme, bitrate):
     folder = p["slug"]
     target = ROOT / folder
     target.mkdir(parents=True, exist_ok=True)
@@ -350,6 +360,35 @@ def existing_slots(drawer, p, per_theme):
             kept["shareId"] = kept.get("shareId") or f"{folder}-{idx + 1:03d}"
             kept["localMp3"] = True
             slots[idx] = kept
+
+    try:
+        cached_tracks = json.loads(selection_cache_path(p).read_text(encoding="utf-8"))
+    except Exception:
+        cached_tracks = []
+
+    for idx, t in enumerate(list(cached_tracks)[:per_theme]):
+        if slots[idx] is not None:
+            continue
+        source = str(t.get("source") or "")
+        if not source:
+            continue
+        audio_cache = CACHE / f"{hashlib.sha256(source.encode()).hexdigest()[:24]}-{bitrate}.mp3"
+        if not audio_cache.exists() or audio_cache.stat().st_size < 20000:
+            continue
+
+        track_no = idx + 1
+        rel = f"{folder}/{track_no:03d}.mp3"
+        dst = ROOT / rel
+        shutil.copy2(audio_cache, dst)
+
+        kept = dict(t)
+        kept["trackNo"] = track_no
+        kept["audioSrc"] = rel
+        kept["shareId"] = f"{folder}-{track_no:03d}"
+        kept["localMp3"] = True
+        kept["curatedTheme"] = drawer["t"]
+        slots[idx] = kept
+
     return slots
 
 
@@ -377,7 +416,7 @@ def main():
     for theme, p in PROFILES.items():
         drawer = by_name[theme]
         folder = p["slug"]
-        slots = existing_slots(drawer, p, args.per_theme)
+        slots = existing_slots(drawer, p, args.per_theme, args.bitrate)
         retained = [t for t in slots if t]
         missing_positions = [i for i, t in enumerate(slots) if t is None]
 
@@ -386,6 +425,7 @@ def main():
             drawer["tracks"] = slots
             drawer["installPending"] = False
             report["themes"][theme] = slots
+            save_selection(p, slots)
             (ROOT / folder / "manifest.json").write_text(
                 json.dumps(slots, ensure_ascii=False, indent=2), encoding="utf-8"
             )
@@ -487,6 +527,7 @@ def main():
         drawer["tracks"] = slots
         drawer["installPending"] = False
         report["themes"][theme] = slots
+        save_selection(p, slots)
         (ROOT / folder / "manifest.json").write_text(
             json.dumps(slots, ensure_ascii=False, indent=2), encoding="utf-8"
         )
