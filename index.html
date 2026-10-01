@@ -7649,10 +7649,61 @@ window.addEventListener('error',function(e){
 }
 </style>
 
+
+<style id="musicetown-production-r9">
+html,body{max-width:100%;overflow-x:hidden}
+.track-list{gap:13px!important}
+.library-search:focus,.library-search:focus-visible,.global-search-box:focus-within,#globalSearchInput:focus,#globalSearchInput:focus-visible{outline:none!important;box-shadow:none!important;border-color:rgba(41,70,93,.11)!important}
+.cloud-audio-flow,.local-path,.local-mp3-status,#playerLegal{display:none!important}
+.glass-action-row{display:flex!important;justify-content:flex-end!important;gap:7px!important;grid-template-columns:none!important}
+.glass-track{cursor:pointer;border-radius:14px}.glass-track:active{transform:scale(.985)}
+.vinyl-wrap{position:relative}
+.vinyl-scrub-readout{position:absolute;left:50%;bottom:10px;translate:-50% 7px;min-width:72px;padding:7px 11px;border-radius:999px;opacity:0;pointer-events:none;transform:scale(.96);background:rgba(247,251,255,.84);color:#17345c;border:1px solid rgba(255,255,255,.8);box-shadow:0 8px 22px rgba(8,28,52,.16);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font:760 9px/1 var(--grotesk);letter-spacing:.08em;text-align:center;transition:opacity .14s ease,transform .18s cubic-bezier(.16,1,.3,1),translate .18s cubic-bezier(.16,1,.3,1);z-index:5}
+.vinyl-scrub-readout.show{opacity:1;translate:-50% 0;transform:scale(1)}
+.vinyl-rotor{will-change:transform;transform:rotate(var(--record-angle,0deg))}
+.theme-shelf{padding-bottom:10px!important}.theme-group-items{gap:10px!important;padding-bottom:9px!important}.theme-shelf-item{min-width:158px!important;height:48px!important;padding:7px 10px!important}
+.theme-group-tabs{width:100%;margin-top:2px;padding-top:8px!important;border-top:1px solid rgba(41,61,81,.065);gap:7px!important}.theme-group-tab{min-height:31px!important;padding-inline:12px!important}
+.welcome-boot-sequence{position:absolute;inset:0;z-index:3;display:grid;place-items:center;pointer-events:none;opacity:1;background:radial-gradient(circle at 22% 20%,rgba(185,221,243,.30),transparent 30%),radial-gradient(circle at 79% 78%,rgba(231,202,221,.34),transparent 32%),linear-gradient(145deg,rgba(248,252,255,.97),rgba(246,246,251,.98));transition:opacity .55s cubic-bezier(.16,1,.3,1),visibility .55s}
+#welcome .welcome-card{transition:opacity .55s ease,transform .65s cubic-bezier(.16,1,.3,1);position:relative;z-index:2}
+#welcome.welcome-booting .welcome-card{opacity:0;transform:translateY(12px) scale(.985);pointer-events:none}
+#welcome.welcome-intro-done .welcome-boot-sequence{opacity:0;visibility:hidden}#welcome.welcome-intro-done .welcome-card{opacity:1;transform:none}
+.welcome-boot-record{position:absolute;width:min(210px,48vw);aspect-ratio:1;border-radius:50%;opacity:.86;border:1px solid rgba(53,81,109,.10);background:repeating-radial-gradient(circle,rgba(55,86,112,.10) 0 1px,transparent 1px 5px),rgba(244,250,253,.72);box-shadow:0 28px 70px rgba(63,85,110,.13),inset 0 0 50px rgba(255,255,255,.8);transform:scale(.72) rotate(-18deg)}
+.welcome-boot-record svg{position:absolute;width:54px;height:54px;left:50%;top:50%;translate:-50% -50%;fill:none;stroke:#3f6178;stroke-width:1.3}
+.welcome-boot-word{position:absolute;top:calc(50% + 134px);font:780 13px/1 var(--grotesk);letter-spacing:.30em;color:#38566d;text-transform:lowercase;opacity:0;transform:translateY(10px)}
+.welcome-boot-line{position:absolute;top:calc(50% + 165px);display:flex;align-items:center;gap:10px;color:rgba(56,86,109,.48);font:700 6px/1 var(--grotesk);letter-spacing:.20em;opacity:0}.welcome-boot-line i{display:block;width:34px;height:1px;background:currentColor}
+.welcome-boot-orbit{position:absolute;left:50%;top:50%;border:1px solid rgba(61,96,124,.12);border-radius:50%;translate:-50% -50%;opacity:0}.welcome-boot-orbit.orbit-one{width:min(310px,70vw);height:min(310px,70vw)}.welcome-boot-orbit.orbit-two{width:min(390px,88vw);height:min(390px,88vw)}
+#welcome.welcome-intro-run .welcome-boot-record{animation:mtWelcomeRecord 1.35s cubic-bezier(.16,1,.3,1) forwards}#welcome.welcome-intro-run .welcome-boot-word{animation:mtWelcomeWord .9s .28s cubic-bezier(.16,1,.3,1) forwards}#welcome.welcome-intro-run .welcome-boot-line{animation:mtWelcomeLine .8s .48s ease forwards}#welcome.welcome-intro-run .orbit-one{animation:mtWelcomeOrbit 1.15s .05s ease-out forwards}#welcome.welcome-intro-run .orbit-two{animation:mtWelcomeOrbit 1.2s .18s ease-out forwards}
+@keyframes mtWelcomeRecord{0%{transform:scale(.72) rotate(-18deg);filter:blur(3px)}55%{transform:scale(1.045) rotate(4deg);filter:blur(0)}100%{transform:scale(1) rotate(0);filter:blur(0)}}@keyframes mtWelcomeWord{to{opacity:1;transform:none}}@keyframes mtWelcomeLine{to{opacity:1}}@keyframes mtWelcomeOrbit{0%{opacity:0;scale:.72}45%{opacity:.9}100%{opacity:0;scale:1.18}}
+@media(max-width:760px){
+html,body{width:100%!important;max-width:100vw!important;overflow-x:hidden!important}
+body.detail-open .detail{width:100%!important;max-width:100vw!important;padding-left:8px!important;padding-right:8px!important;box-sizing:border-box!important;overflow-x:hidden!important}
+.detail>*,.detail-inner,.detail-shell,.detail-content,.music-grid,.music-panel,.track-list,.track-row,.library-tools,.branch-drawer-section{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+.music-grid{display:block!important;width:100%!important;margin-top:14px!important}.music-panel{width:100%!important;padding:14px!important;overflow:hidden!important}
+.library-tools{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;gap:8px!important}#genreSearch{grid-column:1/-1!important;min-width:0!important;width:100%!important}.lib-pill{width:100%!important;min-width:0!important}
+.track-list{gap:12px!important}.track-row{width:100%!important;grid-template-columns:38px minmax(0,1fr) auto!important;gap:9px!important;padding:10px!important;min-height:66px!important;overflow:hidden!important}.track-row>div:nth-child(2),.track-name,.track-note{min-width:0!important;max-width:100%!important}.track-name,.track-note{display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}.track-tag,.cc0-badge{display:none!important}.track-actions{min-width:36px!important;max-width:44px!important;gap:0!important}
+.player-sheet{padding:0!important;place-items:end center!important}.player-card{width:100vw!important;max-width:100vw!important;max-height:calc(100dvh - env(safe-area-inset-top,0px))!important;border-radius:28px 28px 0 0!important;padding:14px!important;box-sizing:border-box!important;overflow-x:hidden!important}.player-head,.player-body,.musicetown-deck,.track-story-grid,.track-story,.caption-panel{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}.musicetown-deck{grid-template-columns:1fr!important;width:100%!important;padding:12px!important;gap:10px!important}.vinyl-wrap{min-height:214px!important}.vinyl{width:min(196px,58vw)!important}.deck-info{text-align:center!important}.deck-title{font-size:clamp(25px,8vw,34px)!important}.deck-artist{overflow-wrap:anywhere}.local-player-controls .group{grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important}.local-control{min-width:0!important;width:100%!important}.track-story-grid{grid-template-columns:1fr!important}
+.glass-transport{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;grid-template-columns:minmax(0,1fr) auto!important}.glass-copy b{font-size:9px!important}.glass-copy span{font-size:6px!important}.glass-time{grid-template-columns:29px minmax(0,1fr) 29px!important}.glass-action-row{margin-top:3px!important}
+.theme-shelf{bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;width:calc(100% - 14px)!important;padding:8px!important;border-radius:20px!important}.theme-shelf-head{padding-bottom:6px!important}.theme-group-items{gap:8px!important;padding-bottom:7px!important}.theme-shelf-item{min-width:150px!important;max-width:174px!important;height:48px!important}.theme-group-tabs{overflow-x:auto!important;display:flex!important;flex-wrap:nowrap!important;padding-bottom:1px!important;scrollbar-width:none}.theme-group-tab{flex:none!important;min-height:30px!important}body:not(.detail-open) #scene{inset:54px 0 154px 0!important;height:calc(100% - 208px)!important}
+.global-search-box{border-color:rgba(41,70,93,.08)!important;box-shadow:none!important}.global-search-panel{max-width:100vw!important}
+}
+html.mt-perf-mobile .track-row,html.mt-perf-mobile .theme-shelf-item{content-visibility:auto;contain-intrinsic-size:auto 66px}
+html.mt-perf-mobile .music-panel,html.mt-perf-mobile .player-card,html.mt-perf-mobile .theme-shelf{-webkit-backdrop-filter:blur(7px) saturate(106%)!important;backdrop-filter:blur(7px) saturate(106%)!important}
+</style>
+
 </head>
 <body>
 
-<div id="welcome" class="welcome-active" aria-modal="true" role="dialog" aria-labelledby="welcomeTitle">
+<div id="welcome" class="welcome-active welcome-booting" aria-modal="true" role="dialog" aria-labelledby="welcomeTitle">
+  <div class="welcome-boot-sequence" id="welcomeBootSequence" aria-hidden="true">
+    <div class="welcome-boot-orbit orbit-one"></div>
+    <div class="welcome-boot-orbit orbit-two"></div>
+    <div class="welcome-boot-record">
+      <div class="welcome-boot-grooves"></div>
+      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16"></circle><ellipse cx="20" cy="20" rx="7" ry="16"></ellipse><ellipse cx="20" cy="20" rx="16" ry="7"></ellipse></svg>
+    </div>
+    <div class="welcome-boot-word">musicetown</div>
+    <div class="welcome-boot-line"><i></i><span>CITY SOUND ARCHIVE</span><i></i></div>
+  </div>
   <div class="welcome-card" id="welcomeCard">
     <div class="welcome-topline">
       <div class="welcome-brand">
@@ -7942,20 +7993,20 @@ const css = c => `rgb(${Math.round(c[0]*255)},${Math.round(c[1]*255)},${Math.rou
 
 /* ================= R8.9.0 dynamic theme classification ================= */
 const HOME_GROUPS={
-  ASIA:{label:'亞洲 · ASIA',short:'ASIA',items:[
+  ASIA:{label:'亞洲 · ASIA',short:'亞洲 · ASIA',items:[
     'TAIPEI DREAM','OLD TOKYO','SPLENDOR SHANGHAI','TRADITIONAL BEIJING',
     'BUSTLING HONG KONG','SOLEMN KYOTO','MIRACULOUS LUOYANG'
   ]},
-  EUROPE:{label:'歐洲 · EUROPE',short:'EUROPE',items:[
+  EUROPE:{label:'歐洲 · EUROPE',short:'歐洲 · EUROPE',items:[
     'VAPOR LONDON','SLIGHTLY TIPSY ROME','CHAMPS-ÉLYSÉES'
   ]},
-  NORTH_AMERICA:{label:'北美 · NORTH AMERICA',short:'N. AMERICA',items:[
+  NORTH_AMERICA:{label:'北美 · NORTH AMERICA',short:'北美 · N. AMERICA',items:[
     'VANCOUVER','NEW YORK','TROPICAL HAWAII','PSYCHEDELIC LA'
   ]},
-  MIDDLE_EAST:{label:'中東 · MIDDLE EAST',short:'MIDDLE EAST',items:[
+  MIDDLE_EAST:{label:'中東 · MIDDLE EAST',short:'中東 · MIDDLE EAST',items:[
     'MENACING DUBAI'
   ]},
-  MUSIC_THEMES:{label:'音樂主題 · MUSIC THEMES',short:'MUSIC THEMES',items:[
+  MUSIC_THEMES:{label:'音樂調性 · MUSIC MOODS',short:'音樂調性 · MOODS',items:[
     'JAZZ','CROONER','ROCK','SPORT','LO-FI','EMO','RUNNING','POEM'
   ]}
 };
@@ -8388,7 +8439,7 @@ function resize(){
 
   const dm=navigator.deviceMemory||4, hc=navigator.hardwareConcurrency||4;
   const lowPower=(dm<=4||hc<=4||cssW<700);
-  dpr=Math.min(window.devicePixelRatio||1,lowPower?1.25:1.65);
+  dpr=Math.min(window.devicePixelRatio||1,lowPower?1.38:1.78);
 
   W=Math.max(1,Math.round(cssW*dpr));
   H=Math.max(1,Math.round(cssH*dpr));
@@ -8990,11 +9041,12 @@ function renderThemeShelf(){
   items.innerHTML=group.items.map((name,i)=>{
     const di=DATA.findIndex(d=>d.t===name),d=DATA[di];
     const count=d?.tracks?.length||0;
-    const status=count?`${count} TRACKS`:'CURATING 50';
+    const status=count?`${count} TRACKS`:'50 TRACKS';
     return `<button type="button" class="theme-shelf-item" data-theme-index="${di}" data-stage-index="${i}">
       <em>${String(i+1).padStart(2,'0')}</em><b>${name}</b><span>${status}</span>
     </button>`;
   }).join('');
+  if(items.parentNode && tabs.parentNode===items.parentNode) items.parentNode.appendChild(tabs);
 }
 function updateGenreUI(){renderThemeShelf()}
 function renderOrderDock(){renderThemeShelf()}
@@ -9680,6 +9732,16 @@ $('welcomeGenreList')?.addEventListener('click',e=>{
 document.body.classList.add('welcome-active');
 renderWelcomeGenres();
 setWelcomeStep(1);
+
+setTimeout(()=>{
+  const w=$('welcome');
+  if(!w||w.classList.contains('is-out'))return;
+  w.classList.add('welcome-intro-run');
+  setTimeout(()=>{
+    w.classList.remove('welcome-booting');
+    w.classList.add('welcome-intro-done');
+  },1450);
+},2000);
 
 $('rerollDrawer').addEventListener('click',()=>renderBranchDrawer(window.__genreIndex||0));
 $('drawerPlayRandom').addEventListener('click',()=>{
@@ -11004,8 +11066,6 @@ function updateGlassUI(){
       if(!seek.matches(':active'))seek.value=String(cur);
     }
     setPlayButtonVisual($('glassPlay'),activeAudio.paused,false);
-    const vol=$('glassVolume');
-    if(vol&&!vol.matches(':active'))vol.value=String(activeAudio.volume);
   }
 }
 function attachGlobalTransport(audio,t){
@@ -11014,10 +11074,7 @@ function attachGlobalTransport(audio,t){
   activeTrackPosition=findTrackPosition(t);
   markPlayingTrack(t);
   refreshDislikeButtons();
-
-  if(activeAudio){
-    activeAudio.volume=Number($('glassVolume')?.value||.85);
-  }
+  if(activeAudio) activeAudio.volume=.92;
 
   const refresh=()=>updateGlassUI();
   audio.addEventListener('play',refresh);
@@ -11025,7 +11082,6 @@ function attachGlobalTransport(audio,t){
   audio.addEventListener('timeupdate',refresh);
   audio.addEventListener('loadedmetadata',refresh);
   audio.addEventListener('durationchange',refresh);
-  audio.addEventListener('volumechange',refresh);
 
   audio.addEventListener('ended',()=>{
     markPlayingTrack(null);
@@ -11038,6 +11094,18 @@ function attachGlobalTransport(audio,t){
   });
 
   updateGlassUI();
+
+  try{
+    const prime=nextTrackFrom(t,1);
+    const url=prime?resolveSiteCloudAudio(prime):'';
+    if(url){
+      const pre=new Audio();
+      pre.preload='auto';
+      pre.src=url;
+      pre.load();
+      window.__musicetownPrimedAudio=pre;
+    }
+  }catch(_){}
 }
 function jumpGlobal(dir){
   if(!activeTrack)return;
@@ -11056,6 +11124,30 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
   $('glassPrev')?.addEventListener('click',()=>jumpGlobal(-1));
   $('glassNext')?.addEventListener('click',()=>jumpGlobal(1));
+  document.querySelector('#glassTransport .glass-track')?.addEventListener('click',()=>{
+    if(!activeTrack)return;
+    const sheet=$('playerSheet');
+    const sameLive=currentTrack===activeTrack && $('nativeAudioPlayer')===activeAudio && $('playerBody')?.children?.length;
+    if(sameLive){
+      sheet?.classList.add('open');
+      sheet?.setAttribute('aria-hidden','false');
+      return;
+    }
+    const snapshot={time:Number(activeAudio?.currentTime)||0,playing:!!activeAudio&&!activeAudio.paused};
+    const track=activeTrack;
+    window.__musicetownAutoplayNext=snapshot.playing;
+    openTrack(track,false);
+    const restore=()=>{
+      const next=$('nativeAudioPlayer');if(!next)return;
+      try{if(snapshot.time>0)next.currentTime=Math.min(snapshot.time,Number(next.duration)||snapshot.time)}catch(_){}
+      if(snapshot.playing)next.play().catch(()=>{});
+    };
+    const next=$('nativeAudioPlayer');
+    if(next){
+      if(next.readyState>=1)restore();
+      else next.addEventListener('loadedmetadata',restore,{once:true});
+    }
+  });
   $('glassDislike')?.addEventListener('click',()=>{
     if(activeTrack)toggleDislike(activeTrack);
   });
@@ -11064,11 +11156,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!activeAudio)return;
     activeAudio.currentTime=Number(e.target.value)||0;
     updateGlassUI();
-  });
-
-  $('glassVolume')?.addEventListener('input',e=>{
-    if(!activeAudio)return;
-    activeAudio.volume=Math.max(0,Math.min(1,Number(e.target.value)||0));
   });
 
   $('autoNextToggle')?.addEventListener('click',e=>{
@@ -11286,142 +11373,90 @@ function wireVinylTransport(audio,t){
   const vinyl=$('vinylDisc');
   const rotor=$('vinylRotor')||vinyl;
   const seek=$('deckSeek');
+  const readout=$('vinylScrubReadout');
   if(!audio||!vinyl)return;
 
-  const c=vinylColorForTrack(t);
-  vinyl.style.setProperty('--vinyl',c.hex);
-  vinyl.dataset.dark=c.dark?'true':'false';
-  vinyl.dataset.material=c.material||'solid';
-  vinyl.setAttribute(
-    'aria-label',
-    `${c.name} 彩膠唱片。播放時跟隨歌曲旋轉；暫停時停止；拖曳可真正快轉或倒轉。`
-  );
+  const color=vinylColorForTrack(t);
+  vinyl.style.setProperty('--vinyl',color.hex);
+  vinyl.dataset.dark=color.dark?'true':'false';
+  vinyl.dataset.material=color.material||'solid';
+  vinyl.setAttribute('aria-label',\`\${color.name} 彩膠唱片。播放時跟隨歌曲旋轉；拖曳可平滑快轉或倒轉。\`);
 
-  let vinylStartX=0;
-  let vinylStartY=0;
-  let vinylTouchIntent=null;
-  let dragPointerId=null;
+  let vinylStartX=0,vinylStartY=0,vinylTouchIntent=null,dragPointerId=null;
+  let dragOriginTime=0,pendingTime=0,scrubRAF=0,seekOrigin=0;
 
+  const clampTime=value=>{
+    const max=maxSeekTime(audio);
+    return Math.max(0,Math.min(Number.isFinite(max)&&max>0?max:Number.MAX_SAFE_INTEGER,value));
+  };
+  const showDelta=delta=>{
+    if(!readout)return;
+    const sign=delta>0?'+':delta<0?'−':'';
+    readout.textContent=\`\${sign}\${Math.abs(delta).toFixed(Math.abs(delta)<10?1:0)}s\`;
+    readout.classList.add('show');
+  };
+  const hideDelta=()=>readout?.classList.remove('show');
   const freezeAtAudioTime=()=>{
     stopVinylRAF();
     vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
-    rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
+    rotor.style.setProperty('--record-angle',\`\${vinylVisualAngle}deg\`);
     paintVinylFromAudio(audio);
   };
-
+  const flushPendingSeek=()=>{
+    scrubRAF=0;
+    const target=clampTime(pendingTime);
+    try{audio.currentTime=target}catch(_){}
+    if(seek)seek.value=String(target);
+    const cur=$('deckCurrent');if(cur)cur.textContent=formatClock(target);
+    updateGlassUI();
+  };
+  const scheduleSeek=()=>{
+    if(!scrubRAF)scrubRAF=requestAnimationFrame(flushPendingSeek);
+  };
   const beginScratch=e=>{
-    vinylTouchIntent='scratch';
-    dragPointerId=e.pointerId;
-    vinyl.classList.add('dragging');
-    vinyl.setPointerCapture?.(e.pointerId);
-
-    vinylWasPlaying=!audio.paused;
-    audio.pause();
-    freezeAtAudioTime();
-
-    vinylLastPointerAngle=pointerAngle(vinyl,e);
-    startVinylScrubSound();
+    vinylTouchIntent='scratch';dragPointerId=e.pointerId;
+    vinyl.classList.add('dragging');vinyl.setPointerCapture?.(e.pointerId);
+    vinylWasPlaying=!audio.paused;audio.pause();freezeAtAudioTime();
+    dragOriginTime=Number(audio.currentTime)||0;pendingTime=dragOriginTime;
+    vinylLastPointerAngle=pointerAngle(vinyl,e);startVinylScrubSound();
   };
-
   const begin=e=>{
-    // No fake control in remote/source-page fallback mode.
     if(vinyl.closest('.musicetown-deck')?.classList.contains('fallback-mode'))return;
-
-    vinylStartX=e.clientX;
-    vinylStartY=e.clientY;
+    vinylStartX=e.clientX;vinylStartY=e.clientY;
     vinylTouchIntent=e.pointerType==='mouse'?'scratch':null;
-    vinylDragging=true;
-    vinylWasPlaying=!audio.paused;
+    vinylDragging=true;vinylWasPlaying=!audio.paused;
     vinylLastPointerAngle=pointerAngle(vinyl,e);
-
-    if(e.pointerType==='mouse'){
-      e.preventDefault();
-      beginScratch(e);
-    }
+    if(e.pointerType==='mouse'){e.preventDefault();beginScratch(e)}
   };
-
   const move=e=>{
     if(!vinylDragging)return;
-
-    if(e.pointerType!=='mouse' && vinylTouchIntent==null){
-      const dx=e.clientX-vinylStartX;
-      const dy=e.clientY-vinylStartY;
-
+    if(e.pointerType!=='mouse'&&vinylTouchIntent==null){
+      const dx=e.clientX-vinylStartX,dy=e.clientY-vinylStartY;
       if(Math.hypot(dx,dy)<8)return;
-
-      // Vertical movement stays page scrolling.
-      if(Math.abs(dy)>Math.abs(dx)*1.15){
-        vinylTouchIntent='scroll';
-        vinylDragging=false;
-        return;
-      }
-
+      if(Math.abs(dy)>Math.abs(dx)*1.15){vinylTouchIntent='scroll';vinylDragging=false;return}
       beginScratch(e);
     }
-
-    if(vinylTouchIntent==='scroll')return;
     if(vinylTouchIntent!=='scratch')return;
-
     if(e.cancelable)e.preventDefault();
-
     const nextAngle=pointerAngle(vinyl,e);
     const delta=normalizeDelta(nextAngle-vinylLastPointerAngle);
     vinylLastPointerAngle=nextAngle;
-
-    // Screen coordinates make positive angular movement clockwise.
-    // Clockwise => forward, counter-clockwise => rewind.
-    const secDelta=(delta/360)*VINYL_SECONDS_PER_TURN;
-    const before=Number(audio.currentTime)||0;
-    const changed=setVinylAudioTime(audio,before+secDelta);
-
-    if(changed){
-      vinylVisualAngle=((audio.currentTime||0)/VINYL_SECONDS_PER_TURN)*360;
-      rotor.style.setProperty('--record-angle',`${vinylVisualAngle}deg`);
-
-      if(seek){
-        seek.value=String(audio.currentTime||0);
-      }
-
-      const cur=$('deckCurrent');
-      if(cur)cur.textContent=formatClock(audio.currentTime||0);
-
-      updateGlassUI();
-      updateVinylScrubSound(delta);
-    }
+    pendingTime=clampTime(pendingTime+(delta/360)*VINYL_SECONDS_PER_TURN);
+    vinylVisualAngle=(pendingTime/VINYL_SECONDS_PER_TURN)*360;
+    rotor.style.setProperty('--record-angle',\`\${vinylVisualAngle}deg\`);
+    showDelta(pendingTime-dragOriginTime);
+    updateVinylScrubSound(delta);
+    scheduleSeek();
   };
-
   const end=e=>{
-    if(vinylTouchIntent==='scroll'){
-      vinylTouchIntent=null;
-      vinylDragging=false;
-      stopVinylScrubSound();
-      return;
-    }
-
+    if(vinylTouchIntent==='scroll'){vinylTouchIntent=null;vinylDragging=false;stopVinylScrubSound();hideDelta();return}
     if(!vinylDragging)return;
-
-    vinylDragging=false;
-    vinylTouchIntent=null;
-    vinyl.classList.remove('dragging');
-
-    try{
-      if(dragPointerId!=null)vinyl.releasePointerCapture?.(dragPointerId);
-      else vinyl.releasePointerCapture?.(e.pointerId);
-    }catch(_){}
-
+    vinylDragging=false;vinylTouchIntent=null;vinyl.classList.remove('dragging');
+    try{vinyl.releasePointerCapture?.(dragPointerId??e.pointerId)}catch(_){}
     dragPointerId=null;
-    stopVinylScrubSound();
-
-    // Snap visual state exactly to the real audio position.
-    freezeAtAudioTime();
-    updateGlassUI();
-
-    // Preserve the state from before dragging.
-    if(vinylWasPlaying){
-      audio.play().catch(()=>{});
-    }else{
-      audio.pause();
-    }
+    if(scrubRAF){cancelAnimationFrame(scrubRAF);scrubRAF=0;flushPendingSeek()}
+    stopVinylScrubSound();hideDelta();freezeAtAudioTime();updateGlassUI();
+    if(vinylWasPlaying)audio.play().catch(()=>{});else audio.pause();
   };
 
   vinyl.addEventListener('pointerdown',begin);
@@ -11429,37 +11464,27 @@ function wireVinylTransport(audio,t){
   vinyl.addEventListener('pointerup',end);
   vinyl.addEventListener('pointercancel',end);
 
+  seek?.addEventListener('pointerdown',()=>{seekOrigin=Number(audio.currentTime)||0;readout?.classList.add('show')});
   seek?.addEventListener('input',()=>{
-    const value=Number(seek.value);
-    if(!Number.isFinite(value))return;
-    if(setVinylAudioTime(audio,value)){
-      freezeAtAudioTime();
-      updateGlassUI();
-    }
+    const value=Number(seek.value);if(!Number.isFinite(value))return;
+    pendingTime=clampTime(value);
+    try{audio.currentTime=pendingTime}catch(_){}
+    vinylVisualAngle=(pendingTime/VINYL_SECONDS_PER_TURN)*360;
+    rotor.style.setProperty('--record-angle',\`\${vinylVisualAngle}deg\`);
+    const cur=$('deckCurrent');if(cur)cur.textContent=formatClock(pendingTime);
+    showDelta(pendingTime-seekOrigin);updateGlassUI();
   });
+  const endSeek=()=>{hideDelta();if(!vinylDragging)freezeAtAudioTime()};
+  seek?.addEventListener('pointerup',endSeek);
+  seek?.addEventListener('change',endSeek);
 
   audio.addEventListener('loadedmetadata',()=>freezeAtAudioTime());
   audio.addEventListener('durationchange',()=>freezeAtAudioTime());
-  audio.addEventListener('timeupdate',()=>{
-    if(!vinylDragging)paintVinylFromAudio(audio);
-  });
-  audio.addEventListener('seeked',()=>freezeAtAudioTime());
-
-  audio.addEventListener('play',()=>{
-    vinyl.classList.remove('remote-spinning');
-    runVinylRAF(audio);
-  });
-
-  audio.addEventListener('pause',()=>{
-    // Pause means the record truly stops at its current groove.
-    freezeAtAudioTime();
-  });
-
-  audio.addEventListener('ended',()=>{
-    freezeAtAudioTime();
-  });
-
-  // Initial state: never spin until audio is actually playing.
+  audio.addEventListener('timeupdate',()=>{if(!vinylDragging)paintVinylFromAudio(audio)});
+  audio.addEventListener('seeked',()=>{if(!vinylDragging)freezeAtAudioTime()});
+  audio.addEventListener('play',()=>{vinyl.classList.remove('remote-spinning');runVinylRAF(audio)});
+  audio.addEventListener('pause',()=>{if(!vinylDragging)freezeAtAudioTime()});
+  audio.addEventListener('ended',()=>freezeAtAudioTime());
   freezeAtAudioTime();
 }
 
@@ -11948,6 +11973,8 @@ function mountOnlinePlaybackFallback(t){
 
 function openTrack(t, userGesture=true){
   if(!t) return;
+  const shouldAutoplay=Boolean(userGesture||window.__musicetownAutoplayNext);
+  window.__musicetownAutoplayNext=false;
 
   currentTrack=t;
 
@@ -12010,18 +12037,13 @@ function openTrack(t, userGesture=true){
                 <span class="vinyl-center-dot"></span>
               </span>
             </button>
+            <div class="vinyl-scrub-readout" id="vinylScrubReadout" aria-live="polite"></div>
           </div>
 
           <div class="deck-info">
             <div class="deck-eyebrow">musicetown · ${esc(trackGenreName(t))}</div>
             <div class="deck-title">${esc(t.title)}</div>
-            <div class="deck-artist">${esc(t.artist)} · ${esc(t.vibe)}</div>
-            <div class="cloud-audio-flow">
-              <b class="cloud-audio-badge">SITE CLOUD MP3</b>
-              <span>網站雲端</span><i>→</i><span>使用者播放</span><i>→</i><span>原生 audio</span>
-            </div>
-
-            ${t.localPersonal?'':`
+            <div class="deck-artist">${esc(t.artist)} · ${esc(t.vibe)}</div>            ${t.localPersonal?'':`
             <div class="deck-favorite-row">
               <button class="deck-favorite ${isFavorite(t)?'saved':''}" id="playerFavorite" type="button">
                 <i>${isFavorite(t)?'♥':'♡'}</i>${isFavorite(t)?'已收藏到 MY LIBRARY':'加入 MY LIBRARY'}
@@ -12031,7 +12053,7 @@ function openTrack(t, userGesture=true){
               </button>
             </div>`}
 
-            <audio id="nativeAudioPlayer" class="native-audio" preload="metadata" playsinline
+            <audio id="nativeAudioPlayer" class="native-audio" preload="auto" playsinline
                    src="${esc(resolveSiteCloudAudio(t))}"></audio>
 
             <div class="deck-time">
@@ -12050,17 +12072,11 @@ function openTrack(t, userGesture=true){
                 <button class="local-control primary icon-control" id="localPlay" type="button" aria-label="播放">${musicetownIcon('play')}<span>PLAY</span></button>
                 <button class="local-control icon-control" id="localNext" type="button" aria-label="下一首">${musicetownIcon('next')}<span>NEXT</span></button>
               </div>
-              <div class="group">
-                <button class="local-control" id="localPickFile" type="button">測試本機 MP3</button>
-                <input class="local-file-picker" id="localFileInput" type="file" accept="audio/mpeg,.mp3">
-              </div>
             </div>
 
             <div class="deck-help">
               <b>${vc.name}</b> 彩膠 · 播放時會跟著音樂旋轉。用手指或滑鼠把唱片往回轉，音樂會真的倒退；往前轉則快轉。
             </div>
-
-            <div class="local-path">MP3 · ${esc(t.audioSrc)}</div>
 
             ${t.localPersonal?'':`
             <div class="player-links">
@@ -12096,7 +12112,7 @@ function openTrack(t, userGesture=true){
         }
         setTimeout(()=>{
           if(a.error || a.networkState===HTMLMediaElement.NETWORK_NO_SOURCE){
-            if(!switchToRemoteBackup(t,a,{autoplay:userGesture}))mountOnlinePlaybackFallback(t);
+            if(!switchToRemoteBackup(t,a,{autoplay:shouldAutoplay}))mountOnlinePlaybackFallback(t);
           }
         },1500);
       }
@@ -12115,13 +12131,10 @@ function openTrack(t, userGesture=true){
         });
         a.addEventListener('canplay',()=>{
           setStatus('ready',a.dataset.musicetownBackupUrl?'線上音源已就緒 · 直接播放':'MP3 已就緒 · 站內直接播放');
-          if(window.__musicetownAutoplayNext){
-            window.__musicetownAutoplayNext=false;
-            a.play().catch(()=>{});
-          }
+          if(shouldAutoplay&&a.paused)a.play().catch(()=>{});
         });
         a.addEventListener('error',()=>{
-          if(switchToRemoteBackup(t,a,{autoplay:userGesture}))return;
+          if(switchToRemoteBackup(t,a,{autoplay:shouldAutoplay}))return;
           setStatus('missing','目前找不到可播放音源');
           mountOnlinePlaybackFallback(t);
         });
@@ -12136,7 +12149,7 @@ function openTrack(t, userGesture=true){
         // R8.6.5: true one-tap playback.
         // openTrack() is now synchronous, so this play() call remains inside
         // the original user activation stack on iPhone Safari.
-        if(userGesture){
+        if(shouldAutoplay){
           a.play().then(()=>{
             setStatus('ready',a.dataset.musicetownBackupUrl?'正在播放 · LEGAL REMOTE AUDIO':'正在播放 · SITE CLOUD MP3');
           }).catch(err=>{
@@ -12164,17 +12177,6 @@ function openTrack(t, userGesture=true){
       };
       $('localPrev')?.addEventListener('click',()=>jump(-1));
       $('localNext')?.addEventListener('click',()=>jump(1));
-
-      const fi=$('localFileInput');
-      $('localPickFile')?.addEventListener('click',()=>fi?.click());
-      fi?.addEventListener('change',()=>{
-        const f=fi.files?.[0]; if(!f||!a)return;
-        const u=URL.createObjectURL(f);
-        a.src=u;
-        a.load();
-        a.play().catch(()=>{});
-        setStatus('ready','正在播放你選擇的本機 MP3（僅此工作階段）');
-      });
       return;
     }
 
@@ -12858,9 +12860,7 @@ setTimeout(()=>{
       <input id="glassSeek" class="glass-range glass-seek" type="range" min="0" max="0" step="0.05" value="0">
       <span id="glassDuration">0:00</span>
     </div>
-    <div class="glass-volume-row">
-      <span>VOL</span>
-      <input id="glassVolume" class="glass-range glass-volume" type="range" min="0" max="1" step="0.01" value="0.85">
+    <div class="glass-volume-row glass-action-row">
       <button class="glass-dislike" id="glassDislike" type="button" aria-pressed="false">NOT FOR ME</button>
       <button class="auto-next-toggle active" id="autoNextToggle" type="button" aria-pressed="true">AUTO NEXT</button>
     </div>
