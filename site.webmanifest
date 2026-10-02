@@ -1,0 +1,23 @@
+{
+  "name": "musicetown",
+  "short_name": "musicetown",
+  "description": "City sound archive and curated music player.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F5F8FC",
+  "theme_color": "#F5F8FC",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
