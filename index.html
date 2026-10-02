@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="musicetown-build" content="R8.9.4-20261002-PLAYER-STAGE4">
+<meta name="musicetown-build" content="R8.9.5-20261002-HOME-UX">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>musicetown</title>
@@ -7944,6 +7944,271 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none}
 }
 </style>
 
+
+<style id="musicetown-home-ux-r895">
+/* =========================================================
+   R8.9.5 · HOMEPAGE UX
+   Keep the 3D identity, remove navigation ambiguity.
+   ========================================================= */
+
+/* Header = library / brand / search */
+body:not(.detail-open) .site-head-r890{
+  z-index:470 !important;
+}
+body:not(.detail-open) .site-head-r890 .global-search-trigger{
+  min-width:88px;
+  justify-content:center;
+  gap:7px;
+  font-size:7px;
+}
+body:not(.detail-open) .library-fab{
+  min-width:110px;
+  justify-content:flex-start;
+  background:rgba(250,252,254,.72) !important;
+}
+body:not(.detail-open) .library-fab b{
+  font-size:6.5px !important;
+}
+
+/* Home orientation card */
+#homeHud{
+  pointer-events:auto !important;
+}
+.home-hud-actions{
+  display:flex;
+  gap:7px;
+  margin-top:14px;
+}
+.home-hud-actions button,
+.theme-shelf-head-actions button{
+  border:1px solid rgba(49,68,87,.08);
+  background:rgba(255,255,255,.68);
+  color:var(--genre-ink);
+  cursor:pointer;
+  border-radius:999px;
+  font:700 6.5px/1 var(--grotesk);
+  letter-spacing:.06em;
+  transition:transform .16s ease,background .16s ease,box-shadow .16s ease;
+}
+.home-hud-actions button{
+  min-height:34px;
+  padding:0 12px;
+}
+.home-hud-actions button:first-child{
+  background:var(--genre-ink);
+  color:#fff;
+  border-color:transparent;
+}
+.home-hud-actions button:hover,
+.theme-shelf-head-actions button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(45,61,80,.08);
+}
+
+/* Shelf header and active selection */
+.theme-shelf-head-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.theme-shelf-head-actions button{
+  min-height:28px;
+  padding:0 10px;
+}
+.theme-shelf-item.active{
+  border-color:color-mix(in srgb,var(--genre-accent) 32%,transparent) !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.92),var(--genre-accent-soft)) !important;
+  box-shadow:
+    0 8px 22px var(--genre-accent-soft),
+    inset 0 0 0 1px rgba(255,255,255,.72) !important;
+}
+.theme-shelf-item.active em,
+.theme-shelf-item.active b{
+  color:var(--genre-ink) !important;
+}
+.theme-group-tab{
+  font-size:5.8px !important;
+  letter-spacing:.055em !important;
+}
+
+/* Slightly larger click targets without turning the shelf into a wall. */
+.theme-shelf-item{
+  min-width:156px !important;
+  height:48px !important;
+  padding:7px 10px !important;
+}
+.theme-shelf-item b{
+  font-size:7.7px !important;
+}
+.theme-shelf-item span{
+  font-size:5.3px !important;
+}
+
+/* Desktop 3D gets a little more breathing room. */
+@media(min-width:901px){
+  body:not(.detail-open) #scene{
+    inset:70px 0 154px 0 !important;
+    height:calc(100% - 224px) !important;
+  }
+}
+
+/* Mobile: do NOT hide the orientation card.
+   It becomes a compact "where am I / what do I do" strip. */
+@media(max-width:900px){
+  #homeHud{
+    display:block !important;
+    position:fixed !important;
+    left:10px !important;
+    right:10px !important;
+    top:calc(60px + env(safe-area-inset-top,0px)) !important;
+    bottom:auto !important;
+    width:auto !important;
+    transform:none !important;
+    padding:10px 12px 9px !important;
+    border-radius:18px !important;
+    z-index:33 !important;
+    background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(245,249,252,.60)) !important;
+    -webkit-backdrop-filter:blur(10px) saturate(112%) !important;
+    backdrop-filter:blur(10px) saturate(112%) !important;
+  }
+  #homeHud::before{
+    display:none !important;
+  }
+  .home-hud-kicker{
+    font-size:5.6px !important;
+    letter-spacing:.13em !important;
+  }
+  .home-hud-title{
+    margin-top:4px !important;
+    font-size:20px !important;
+    line-height:1 !important;
+    letter-spacing:-.035em !important;
+  }
+  .home-hud-copy{
+    margin-top:6px !important;
+    max-width:none !important;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:8.5px !important;
+    line-height:1.4 !important;
+  }
+  .home-hud-meta{
+    display:none !important;
+  }
+  .home-hud-actions{
+    position:absolute;
+    right:9px;
+    top:9px;
+    margin:0;
+    gap:5px;
+  }
+  .home-hud-actions button{
+    min-height:30px;
+    padding:0 9px;
+    font-size:5.8px;
+  }
+
+  body:not(.detail-open) #scene{
+    inset:128px 0 158px 0 !important;
+    height:calc(100% - 286px) !important;
+    transform:scale(.92) !important;
+    transform-origin:50% 50% !important;
+  }
+
+  .theme-shelf{
+    width:calc(100% - 12px) !important;
+    bottom:calc(6px + env(safe-area-inset-bottom,0px)) !important;
+    padding:8px 8px 9px !important;
+    border-radius:20px !important;
+  }
+  .theme-shelf-head{
+    padding:0 3px 7px !important;
+  }
+  .theme-shelf-head b{
+    font-size:7.5px !important;
+  }
+  .theme-shelf-head-actions{
+    gap:5px;
+  }
+  .theme-shelf-head-actions button{
+    min-height:26px;
+    padding-inline:8px;
+    font-size:5.6px;
+  }
+  #themeShelfCount{
+    display:none !important;
+  }
+  .theme-group-tabs{
+    gap:5px !important;
+    padding-bottom:7px !important;
+  }
+  .theme-group-tab{
+    min-height:31px !important;
+    padding-inline:10px !important;
+    font-size:5.6px !important;
+  }
+  .theme-group-items{
+    gap:6px !important;
+  }
+  .theme-shelf-item{
+    min-width:138px !important;
+    max-width:170px !important;
+    height:48px !important;
+  }
+
+  /* Make SEARCH understandable on mobile; still compact. */
+  .site-head-r890 .global-search-trigger{
+    width:auto !important;
+    min-width:62px !important;
+    height:38px !important;
+    padding:0 10px !important;
+    gap:5px !important;
+  }
+  .site-head-r890 .global-search-trigger span{
+    display:block !important;
+    font-size:6px !important;
+  }
+
+  /* Library stays clearly labeled at top-left. */
+  body:not(.detail-open) .library-fab{
+    min-width:84px !important;
+    padding:0 10px 0 6px !important;
+  }
+  body:not(.detail-open) .library-fab span{
+    width:27px !important;
+    height:27px !important;
+  }
+  body:not(.detail-open) .library-fab b{
+    font-size:5.8px !important;
+    letter-spacing:.07em !important;
+  }
+}
+
+@media(max-width:430px){
+  #homeHud{
+    left:7px !important;
+    right:7px !important;
+    padding-right:154px !important;
+  }
+  .home-hud-copy{
+    display:none !important;
+  }
+  body:not(.detail-open) #scene{
+    inset:118px 0 158px 0 !important;
+    height:calc(100% - 276px) !important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .theme-shelf-item.active,
+  .home-hud-actions button,
+  .theme-shelf-head-actions button{
+    transition:none !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -8013,14 +8278,18 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none}
   </div>
 </div>
 
-<div id="homeHud" aria-hidden="true">
+<div id="homeHud" aria-live="polite">
   <div class="home-hud-kicker" id="homeHudKicker">musicetown</div>
   <div class="home-hud-title" id="homeHudTitle">TAIPEI DREAM</div>
-  <div class="home-hud-copy" id="homeHudCopy">選擇下方分類，讓同一組 3D 抽屜切換成不同城市與音樂世界。</div>
+  <div class="home-hud-copy" id="homeHudCopy">點 3D 卡片進入主題，或從下方分類直接選擇你想聽的城市與風格。</div>
   <div class="home-hud-meta">
     <span id="homeHudCount">01 / 07</span>
     <span>50 TRACKS</span>
     <span>VERIFIED CC0</span>
+  </div>
+  <div class="home-hud-actions">
+    <button type="button" id="homeRandomExplore">隨機探索</button>
+    <button type="button" id="homeSearchShortcut">搜尋全部</button>
   </div>
 </div>
 
@@ -8038,10 +8307,13 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none}
 <section id="themeShelf" class="theme-shelf" aria-label="主題分類">
   <div class="theme-shelf-head">
     <div>
-      <small>THEME CLASSIFICATION</small>
+      <small>選擇一個音樂世界 · THEME</small>
       <b id="themeShelfTitle">亞洲 · ASIA</b>
     </div>
-    <span id="themeShelfCount">07 THEMES</span>
+    <div class="theme-shelf-head-actions">
+      <button type="button" id="themeRandomExplore">隨機探索</button>
+      <span id="themeShelfCount">07 THEMES</span>
+    </div>
   </div>
   <div class="theme-group-tabs" id="themeGroupTabs" role="tablist" aria-label="主題群組"></div>
   <div class="theme-group-items" id="themeGroupItems" aria-live="polite"></div>
@@ -8058,7 +8330,7 @@ input[type="search"]::-webkit-search-cancel-button{-webkit-appearance:none}
   </button>
   <button class="global-search-trigger" id="globalSearchBtn" type="button" aria-label="搜尋主題與音樂">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m15.5 15.5 4.2 4.2"></path></svg>
-    <span>SEARCH</span>
+    <span>搜尋</span>
   </button>
 </header>
 
@@ -9210,6 +9482,14 @@ function setUiTheme(name,index=null){
     });
   }
 
+  document.querySelectorAll('.theme-shelf-item[data-theme-index]').forEach(el=>{
+    const active=Number(el.dataset.themeIndex)===Number(index);
+    el.classList.toggle('active',active);
+    if(active && !document.body.classList.contains('detail-open')){
+      requestAnimationFrame(()=>el.scrollIntoView({behavior:REDUCE?'auto':'smooth',block:'nearest',inline:'center'}));
+    }
+  });
+
   const ht=document.getElementById('homeHudTitle');
   if(ht) ht.textContent=name;
   const hc=document.getElementById('homeHudCopy');
@@ -9320,7 +9600,7 @@ function renderThemeShelf(){
   $('themeShelfCount').textContent=`${String(group.items.length).padStart(2,'0')} THEMES`;
   tabs.innerHTML=Object.entries(HOME_GROUPS).map(([key,g])=>`
     <button type="button" class="theme-group-tab ${key===HOME_GROUP_KEY?'active':''}" data-home-group="${key}" role="tab" aria-selected="${key===HOME_GROUP_KEY?'true':'false'}">
-      <span>${g.short}</span>
+      <span>${g.label}</span>
     </button>`).join('');
   items.innerHTML=group.items.map((name,i)=>{
     const di=DATA.findIndex(d=>d.t===name),d=DATA[di];
@@ -9424,6 +9704,18 @@ document.addEventListener('DOMContentLoaded',()=>{
     const b=e.target.closest('[data-theme-index]');if(!b)return;
     navigateToThemeIndex(b.dataset.themeIndex);
   });
+
+  const randomExplore=()=>{
+    const available=DATA.map((d,i)=>({d,i})).filter(x=>Array.isArray(x.d?.tracks)&&x.d.tracks.length);
+    if(!available.length)return;
+    const pick=available[Math.floor(Math.random()*available.length)];
+    const groupKey=themeGroupKeyForName(pick.d.t);
+    if(HOME_GROUPS[groupKey] && groupKey!==HOME_GROUP_KEY)setHomeGroup(groupKey);
+    setTimeout(()=>navigateToThemeIndex(pick.i),90);
+  };
+  $('homeRandomExplore')?.addEventListener('click',randomExplore);
+  $('themeRandomExplore')?.addEventListener('click',randomExplore);
+  $('homeSearchShortcut')?.addEventListener('click',openGlobalSearch);
 
   $('globalSearchBtn')?.addEventListener('click',openGlobalSearch);
   $('globalSearchClose')?.addEventListener('click',closeGlobalSearch);
