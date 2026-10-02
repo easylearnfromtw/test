@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="musicetown-build" content="R8.9.6-20261002-DUBAI-AUDIO-FIX">
+<meta name="musicetown-build" content="R8.9.7-20261002-IOS-SEAMLESS-VINTAGE">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F8FC">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="musicetown">
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <title>musicetown</title>
 <script src="remote-audio-map.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8210,6 +8218,219 @@ body:not(.detail-open) .library-fab b{
 }
 </style>
 
+
+<style id="musicetown-ios-r897">
+/* R8.9.7 · Apple-first interaction layer */
+@supports (-webkit-touch-callout:none){
+  :root{
+    --ios-material:rgba(248,250,253,.78);
+    --ios-material-strong:rgba(252,253,255,.92);
+    --ios-separator:rgba(60,60,67,.12);
+    --ios-label:#1c1c1e;
+    --ios-secondary:rgba(60,60,67,.60);
+    --ios-blue:#0a84ff;
+    --ios-spring:cubic-bezier(.22,1,.36,1);
+  }
+  body,button,input{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Arial,sans-serif;
+  }
+  button{min-height:44px}
+  input[type="search"]{font-size:16px}
+
+  .site-head-r890 .logo-center,
+  .site-head-r890 .global-search-trigger,
+  .library-fab{
+    background:rgba(250,252,255,.72) !important;
+    border-color:rgba(255,255,255,.82) !important;
+    -webkit-backdrop-filter:blur(22px) saturate(150%) !important;
+    backdrop-filter:blur(22px) saturate(150%) !important;
+    box-shadow:0 8px 28px rgba(50,60,80,.09),inset 0 .5px 0 rgba(255,255,255,.96) !important;
+  }
+
+  .theme-group-tab{
+    min-height:36px !important;
+    border-radius:11px !important;
+    background:rgba(118,118,128,.10) !important;
+    border-color:transparent !important;
+  }
+  .theme-group-tab.active{
+    background:rgba(255,255,255,.94) !important;
+    color:var(--genre-ink) !important;
+    box-shadow:0 1px 5px rgba(30,40,60,.12) !important;
+  }
+
+  .theme-shelf,
+  #glassTransport.glass-transport{
+    -webkit-backdrop-filter:blur(28px) saturate(160%) !important;
+    backdrop-filter:blur(28px) saturate(160%) !important;
+  }
+
+  .player-sheet,
+  .library-sheet,
+  .global-search-sheet{
+    -webkit-backdrop-filter:none !important;
+    backdrop-filter:none !important;
+  }
+
+  .player-card,
+  .library-panel,
+  .global-search-panel{
+    background:var(--ios-material-strong) !important;
+    border-color:rgba(255,255,255,.86) !important;
+    box-shadow:0 -14px 50px rgba(15,23,42,.16) !important;
+  }
+}
+
+/* Fix iPhone horizontal playlist tabs: ancestor may not prohibit pan-x. */
+@media(max-width:760px){
+  .library-sheet{
+    place-items:end center !important;
+    padding:0 !important;
+  }
+  .library-panel{
+    width:100% !important;
+    max-width:none !important;
+    height:min(94dvh,900px) !important;
+    max-height:94dvh !important;
+    border-radius:30px 30px 0 0 !important;
+    padding:16px 15px max(24px,env(safe-area-inset-bottom,0px)) !important;
+    touch-action:auto !important;
+    overscroll-behavior-y:contain !important;
+  }
+  .library-panel::before,
+  .player-card::before{
+    content:"";
+    display:block;
+    width:38px;height:5px;
+    margin:0 auto 13px;
+    border-radius:999px;
+    background:rgba(60,60,67,.22);
+  }
+  .library-collection-shell{
+    overflow:visible !important;
+    touch-action:auto !important;
+  }
+  .library-collection-list{
+    width:100% !important;
+    max-width:100% !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    touch-action:pan-x !important;
+    overscroll-behavior-x:contain !important;
+    -webkit-overflow-scrolling:touch !important;
+    scroll-snap-type:x proximity !important;
+    scroll-padding-inline:4px !important;
+    padding:10px 4px 5px !important;
+    gap:8px !important;
+  }
+  .library-collection-tab{
+    flex:0 0 132px !important;
+    min-width:132px !important;
+    max-width:172px !important;
+    min-height:54px !important;
+    scroll-snap-align:start !important;
+    transform:none !important;
+  }
+  .library-collection-tab:active{
+    transform:scale(.98) !important;
+  }
+  .library-collection-head{
+    align-items:flex-start !important;
+  }
+  .library-collection-controls button{
+    min-height:36px !important;
+  }
+
+  /* Detailed player becomes an iOS bottom sheet. */
+  .player-sheet{
+    display:flex !important;
+    align-items:flex-end !important;
+    justify-content:center !important;
+    padding:0 !important;
+    background:rgba(18,24,36,.18) !important;
+  }
+  .player-card{
+    width:100% !important;
+    max-width:none !important;
+    max-height:94dvh !important;
+    border-radius:30px 30px 0 0 !important;
+    padding:14px 14px max(28px,env(safe-area-inset-bottom,0px)) !important;
+    transform:translateY(18px) !important;
+    transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .22s ease !important;
+  }
+  .player-sheet.open .player-card{
+    transform:none !important;
+  }
+  .player-head{
+    position:sticky !important;
+    top:0 !important;
+    z-index:15 !important;
+    padding:2px 2px 12px !important;
+    background:linear-gradient(180deg,rgba(252,253,255,.96) 78%,rgba(252,253,255,0)) !important;
+  }
+  .player-close{
+    width:44px !important;height:44px !important;
+  }
+
+  /* The vintage control is a top strip, not buried below transport. */
+  .musicetown-deck{
+    display:grid !important;
+  }
+  .vintage-mode-topbar{
+    grid-column:1/-1 !important;
+    grid-row:1 !important;
+    order:-1 !important;
+    margin:0 0 12px !important;
+    padding:12px 13px 10px !important;
+    border-radius:18px !important;
+    background:rgba(118,118,128,.08) !important;
+    border:1px solid rgba(60,60,67,.08) !important;
+    box-shadow:none !important;
+  }
+  .vintage-mode-topbar.active{
+    background:
+      radial-gradient(circle at 86% 20%,rgba(251,215,228,.35),transparent 34%),
+      rgba(118,118,128,.08) !important;
+  }
+  .vintage-mode-head b{font-size:11px !important}
+  .vintage-mode-head span{font-size:7px !important}
+  .vintage-mode-head strong{font-size:11px !important}
+  .vintage-slider{
+    height:30px !important;
+    margin:6px 0 3px !important;
+  }
+  .vintage-features{
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    scrollbar-width:none;
+    touch-action:pan-x !important;
+  }
+  .vintage-features::-webkit-scrollbar{display:none}
+  .vintage-features span{
+    flex:0 0 auto !important;
+    min-height:22px !important;
+    font-size:6px !important;
+  }
+
+  /* 44pt tap targets and native-looking grouped rows. */
+  .local-control,
+  .glass-btn,
+  .branch-action,
+  .lib-pill,
+  .library-import,
+  .library-clear{
+    min-height:44px !important;
+  }
+  .track-row{
+    min-height:62px !important;
+    border-radius:16px !important;
+  }
+  .track-row+.track-row{
+    border-top-color:var(--ios-separator,rgba(60,60,67,.12)) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -11124,6 +11345,10 @@ function renderLibraryCollections(){
       <b>${esc(lib.name)}</b>
       <span>${lib.keys.length} SAVED</span>
     </button>`).join('');
+  requestAnimationFrame(()=>{
+    const activeTab=host.querySelector('.library-collection-tab.active');
+    activeTab?.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});
+  });
   const active=libs.find(x=>x.id===aid)||libs[0];
   if($('libraryTitle'))$('libraryTitle').textContent=active?.name||'MY MUSIC LIBRARY';
   if($('libraryCollectionLabel'))$('libraryCollectionLabel').textContent=`${libs.length} ${libs.length===1?'LIBRARY':'LIBRARIES'}`;
@@ -11571,22 +11796,25 @@ let activeTrack=null;
 let autoNextEnabled=true;
 let activeTrackPosition=null;
 
-/* R8.9.4 · 3-second continuous transition */
-const MUSICETOWN_CROSSFADE_SECONDS=3;
+/* R8.9.7 · seamless sequential playback
+   Keep one already-authorized <audio> element alive on iOS, warm the next
+   request in advance, then swap its src at ended. This avoids the old
+   fade-to-zero + create-a-new-player gap. */
+const MUSICETOWN_PREFETCH_SECONDS=15;
 let mtNextPreload=null;
-let mtFadeInNext=false;
+let mtNextPreloadTrack=null;
+let mtFadeInNext=false; // kept for backward-compatible call sites; no silence fade.
 
-function mtFadeVolume(audio,to,seconds=MUSICETOWN_CROSSFADE_SECONDS){
+function mtFadeVolume(audio,to,seconds=.18){
   if(!audio)return;
   if(audio.__mtFadeRAF)cancelAnimationFrame(audio.__mtFadeRAF);
   const from=Number.isFinite(audio.volume)?audio.volume:1;
-  const target=Math.max(0,Math.min(1,Number(to)||0));
-  const duration=Math.max(.05,Number(seconds)||.05)*1000;
+  const target=Math.max(0,Math.min(1,Number(to)));
+  const duration=Math.max(.03,Number(seconds)||.03)*1000;
   const started=performance.now();
   const tick=now=>{
     const p=Math.min(1,(now-started)/duration);
-    const eased=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-    try{audio.volume=from+(target-from)*eased}catch(_){}
+    try{audio.volume=from+(target-from)*p}catch(_){}
     if(p<1)audio.__mtFadeRAF=requestAnimationFrame(tick);
     else audio.__mtFadeRAF=null;
   };
@@ -11594,19 +11822,25 @@ function mtFadeVolume(audio,to,seconds=MUSICETOWN_CROSSFADE_SECONDS){
 }
 
 function mtPrefetchNextTrack(t){
-  if(!autoNextEnabled)return;
+  if(!autoNextEnabled)return null;
   const nxt=nextTrackFrom(t,1);
-  if(!nxt)return;
+  if(!nxt)return null;
   try{
     const url=resolveSiteCloudAudio(nxt);
-    if(mtNextPreload?.src===url)return;
-    mtNextPreload?.pause?.();
+    if(mtNextPreload && mtNextPreload.src===url){
+      mtNextPreloadTrack=nxt;
+      return mtNextPreload;
+    }
+    try{mtNextPreload?.pause?.()}catch(_){}
     const a=new Audio();
     a.preload='auto';
+    a.playsInline=true;
     a.src=url;
     a.load();
     mtNextPreload=a;
-  }catch(_){}
+    mtNextPreloadTrack=nxt;
+    return a;
+  }catch(_){return null}
 }
 
 function findTrackPosition(t){
@@ -11675,62 +11909,169 @@ function updateGlassUI(){
     if(vol&&!vol.matches(':active'))vol.value=String(activeAudio.volume);
   }
 }
+function mtRefreshDetailedTrack(t,audio){
+  if(!t)return;
+  currentTrack=t;
+  activeTrack=t;
+  activeTrackPosition=findTrackPosition(t);
+  if(audio)activeAudio=audio;
+
+  const title=$('playerTitle');
+  const artist=$('playerArtist');
+  if(title)title.textContent=t.discovery?'CC0 MUSIC':(t.title||'Track');
+  if(artist)artist.textContent=t.discovery
+    ? `${t.vibe||''} · CC0 catalog`
+    : `${t.artist||''} · ${t.vibe||''} · ${t.license||''}`;
+
+  const body=$('playerBody');
+  body?.querySelector('.deck-eyebrow')?.replaceChildren(document.createTextNode(`musicetown · ${trackGenreName(t)}`));
+  body?.querySelector('.deck-title')?.replaceChildren(document.createTextNode(t.title||'Track'));
+  body?.querySelector('.deck-artist')?.replaceChildren(document.createTextNode(`${t.artist||''} · ${t.vibe||''}`));
+
+  const path=body?.querySelector('.local-path');
+  if(path)path.textContent=`MP3 · ${t.audioSrc||'REMOTE AUDIO'}`;
+
+  const sourceLink=body?.querySelector('.player-links .player-link.secondary');
+  if(sourceLink && t.source)sourceLink.href=t.source;
+
+  const story=body?.querySelector('.track-story-grid.track-story-only');
+  if(story)story.outerHTML=buildStoryUI(t);
+
+  const fav=$('playerFavorite');
+  if(fav && !t.localPersonal){
+    const saved=isFavorite(t);
+    fav.classList.toggle('saved',saved);
+    fav.innerHTML=`<i>${saved?'♥':'♡'}</i>${saved?'已收藏到 '+esc(getActiveLibrary()?.name||'MY LIBRARY'):'加入 '+esc(getActiveLibrary()?.name||'MY LIBRARY')}`;
+  }
+  const dislike=$('playerDislike');
+  if(dislike && !t.localPersonal){
+    const disliked=isDisliked(t);
+    dislike.classList.toggle('disliked',disliked);
+    dislike.innerHTML=`<i>${disliked?'−':'⊘'}</i>${disliked?'取消不喜歡':'不喜歡 · 自動略過'}`;
+  }
+
+  const status=$('localMp3Status');
+  if(status){
+    status.className='local-mp3-status loading';
+    status.innerHTML='<i></i><span>下一首已預載 · 正在無縫銜接…</span>';
+  }
+
+  markPlayingTrack(t);
+  refreshDislikeButtons();
+  updateGlassUI();
+  if(audio){
+    setupMusicetownMediaSession(t,audio);
+    if(mtVintageLevel>0)mtApplyVintage(audio,mtVintageLevel);
+  }
+}
+
+function mtAdvanceInPlace(audio){
+  if(!audio || audio.__mtAdvanceBusy)return false;
+  const from=audio.__mtTrack||activeTrack;
+  const nxt=nextTrackFrom(from,1);
+  if(!nxt)return false;
+
+  audio.__mtAdvanceBusy=true;
+  audio.__mtTrack=nxt;
+  mtRefreshDetailedTrack(nxt,audio);
+
+  try{
+    audio.pause();
+    audio.currentTime=0;
+  }catch(_){}
+
+  try{
+    const nextUrl=resolveSiteCloudAudio(nxt);
+    delete audio.dataset.musicetownBackupUrl;
+    audio.preload='auto';
+    audio.src=nextUrl;
+    audio.load();
+
+    const release=()=>{
+      audio.__mtAdvanceBusy=false;
+      mtPrefetchNextTrack(nxt);
+      const status=$('localMp3Status');
+      if(status){
+        status.className='local-mp3-status ready';
+        status.innerHTML='<i></i><span>連續播放中 · NEXT TRACK READY</span>';
+      }
+    };
+
+    const attempt=()=>{
+      const p=audio.play();
+      if(p&&typeof p.then==='function'){
+        p.then(release).catch(()=>{
+          audio.addEventListener('canplay',()=>{
+            audio.play().then(release).catch(()=>{audio.__mtAdvanceBusy=false});
+          },{once:true});
+        });
+      }else release();
+    };
+
+    // Same media element retains the playback authorization on iOS.
+    attempt();
+    return true;
+  }catch(err){
+    audio.__mtAdvanceBusy=false;
+    console.warn('[musicetown seamless next]',err);
+    window.__musicetownAutoplayNext=true;
+    openTrack(nxt,false);
+    return false;
+  }
+}
+
 function attachGlobalTransport(audio,t){
   activeAudio=audio;
   activeTrack=t;
   activeTrackPosition=findTrackPosition(t);
+  audio.__mtTrack=t;
   markPlayingTrack(t);
   refreshDislikeButtons();
 
   const refresh=()=>updateGlassUI();
-  let fadeStarted=false;
+  let prefetchedFor='';
 
   const watchTransition=()=>{
     refresh();
+    const current=audio.__mtTrack||activeTrack||t;
     if(!autoNextEnabled || audio.paused || !Number.isFinite(audio.duration) || audio.duration<=0)return;
     const remaining=audio.duration-(audio.currentTime||0);
-
-    if(fadeStarted && remaining>MUSICETOWN_CROSSFADE_SECONDS+.75){
-      fadeStarted=false;
-      mtFadeInNext=false;
-      mtFadeVolume(audio,1,.22);
-    }
-
-    if(!fadeStarted && remaining>0 && remaining<=MUSICETOWN_CROSSFADE_SECONDS+.04){
-      fadeStarted=true;
-      mtFadeInNext=true;
-      mtPrefetchNextTrack(t);
-      mtFadeVolume(audio,0,Math.max(.12,Math.min(MUSICETOWN_CROSSFADE_SECONDS,remaining)));
+    const key=dislikeKey(current)||favoriteKey?.(current)||String(current?.shareId||current?.title||'');
+    if(remaining>0 && remaining<=MUSICETOWN_PREFETCH_SECONDS && prefetchedFor!==key){
+      prefetchedFor=key;
+      mtPrefetchNextTrack(current);
     }
   };
 
-  audio.addEventListener('play',refresh);
-  audio.addEventListener('pause',refresh);
+  audio.addEventListener('play',()=>{
+    refresh();
+    if(mtVintageLevel>0)mtApplyVintage(audio,mtVintageLevel);
+  });
+  audio.addEventListener('pause',()=>{
+    refresh();
+    if(mtVintageLevel>0)mtApplyVintage(audio,mtVintageLevel);
+  });
   audio.addEventListener('timeupdate',watchTransition);
-  audio.addEventListener('loadedmetadata',()=>{refresh();mtPrefetchNextTrack(t);});
+  audio.addEventListener('loadedmetadata',()=>{
+    refresh();
+    const current=audio.__mtTrack||activeTrack||t;
+    mtPrefetchNextTrack(current);
+  });
   audio.addEventListener('durationchange',refresh);
   audio.addEventListener('volumechange',refresh);
-  audio.addEventListener('seeking',()=>{
-    if(Number.isFinite(audio.duration) && audio.duration-(audio.currentTime||0)>MUSICETOWN_CROSSFADE_SECONDS+.75){
-      fadeStarted=false;
-      mtFadeInNext=false;
-      mtFadeVolume(audio,1,.16);
-    }
-  });
 
   audio.addEventListener('ended',()=>{
     markPlayingTrack(null);
     updateGlassUI();
-    if(!autoNextEnabled){
-      mtFadeInNext=false;
-      try{audio.volume=1}catch(_){}
-      return;
+    if(!autoNextEnabled)return;
+    if(!mtAdvanceInPlace(audio)){
+      const current=audio.__mtTrack||activeTrack||t;
+      const nxt=nextTrackFrom(current,1);
+      if(nxt){
+        window.__musicetownAutoplayNext=true;
+        openTrack(nxt,false);
+      }
     }
-    const nxt=nextTrackFrom(t,1);
-    if(!nxt)return;
-    mtFadeInNext=true;
-    window.__musicetownAutoplayNext=true;
-    openTrack(nxt,false);
   });
 
   updateGlassUI();
@@ -12685,96 +13026,113 @@ let mtVintageCtx=null;
 let mtVintageActive=null;
 
 function mtVintageCurve(level){
-  const n=2048,curve=new Float32Array(n),k=Math.max(0,Number(level)||0)*28;
+  const n=2048,curve=new Float32Array(n),k=Math.max(0,Number(level)||0)*22;
   for(let i=0;i<n;i++){
     const x=i*2/(n-1)-1;
     curve[i]=(1+k)*x/(1+k*Math.abs(x));
   }
   return curve;
 }
-function mtMakeNoiseBuffer(ctx,seconds=4,crackle=false){
+function mtMakeNoiseBuffer(ctx,seconds=6,crackle=false){
   const len=Math.max(1,Math.floor(ctx.sampleRate*seconds));
   const b=ctx.createBuffer(1,len,ctx.sampleRate);
   const d=b.getChannelData(0);
   let last=0;
   for(let i=0;i<len;i++){
     if(crackle){
-      const impulse=Math.random()<0.0018?(Math.random()*2-1)*(.25+Math.random()*.75):0;
-      d[i]=impulse;
+      const impulse=Math.random()<0.0015?(Math.random()*2-1)*(.30+Math.random()*.70):0;
+      const dust=Math.random()<0.00022?(Math.random()*2-1)*.75:0;
+      d[i]=impulse+dust;
     }else{
       const white=Math.random()*2-1;
-      last=last*.91+white*.09;
-      d[i]=last*.62;
+      last=last*.92+white*.08;
+      d[i]=last*.58;
     }
   }
   return b;
 }
 function mtStopVintageAux(){
-  if(!mtVintageActive)return;
-  try{mtVintageActive.noiseSource?.stop()}catch(_){}
-  try{mtVintageActive.crackleSource?.stop()}catch(_){}
-  try{clearInterval(mtVintageActive.wowTimer)}catch(_){}
+  const g=mtVintageActive;
+  if(!g)return;
+  try{g.noiseSource?.stop()}catch(_){}
+  try{g.crackleSource?.stop()}catch(_){}
+  try{g.source?.disconnect()}catch(_){}
+  try{g.low?.disconnect()}catch(_){}
+  try{g.shaper?.disconnect()}catch(_){}
+  try{g.output?.disconnect()}catch(_){}
+  try{clearInterval(g.wowTimer)}catch(_){}
   try{
-    mtVintageActive.audio.playbackRate=1;
-    mtVintageActive.audio.preservesPitch=true;
-    mtVintageActive.audio.webkitPreservesPitch=true;
+    g.audio.playbackRate=1;
+    g.audio.preservesPitch=true;
+    g.audio.webkitPreservesPitch=true;
   }catch(_){}
   mtVintageActive=null;
 }
 function mtEnsureVintageGraph(audio){
   if(mtVintageActive?.audio===audio)return mtVintageActive;
   mtStopVintageAux();
+
   try{
-    const srcUrl=new URL(audio.currentSrc||audio.src,document.baseURI);
-    if(srcUrl.origin!==location.origin)return null;
     const AC=window.AudioContext||window.webkitAudioContext;
     if(!AC)return null;
     if(!mtVintageCtx)mtVintageCtx=new AC();
     if(mtVintageCtx.state==='suspended')mtVintageCtx.resume().catch(()=>{});
 
-    const source=mtVintageCtx.createMediaElementSource(audio);
-    const low=mtVintageCtx.createBiquadFilter();
-    const shaper=mtVintageCtx.createWaveShaper();
-    const output=mtVintageCtx.createGain();
-    low.type='lowpass';
-    low.Q.value=.62;
-    shaper.oversample='2x';
-    source.connect(low);
-    low.connect(shaper);
-    shaper.connect(output);
-    output.connect(mtVintageCtx.destination);
-
-    const noiseSource=mtVintageCtx.createBufferSource();
-    const noiseFilter=mtVintageCtx.createBiquadFilter();
-    const noiseGain=mtVintageCtx.createGain();
-    noiseSource.buffer=mtMakeNoiseBuffer(mtVintageCtx,4,false);
+    const ctx=mtVintageCtx;
+    const noiseSource=ctx.createBufferSource();
+    const noiseFilter=ctx.createBiquadFilter();
+    const noiseGain=ctx.createGain();
+    noiseSource.buffer=mtMakeNoiseBuffer(ctx,6,false);
     noiseSource.loop=true;
     noiseFilter.type='bandpass';
-    noiseFilter.frequency.value=1700;
-    noiseFilter.Q.value=.45;
+    noiseFilter.frequency.value=1550;
+    noiseFilter.Q.value=.42;
     noiseGain.gain.value=0;
     noiseSource.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
-    noiseGain.connect(mtVintageCtx.destination);
+    noiseGain.connect(ctx.destination);
     noiseSource.start();
 
-    const crackleSource=mtVintageCtx.createBufferSource();
-    const crackleFilter=mtVintageCtx.createBiquadFilter();
-    const crackleGain=mtVintageCtx.createGain();
-    crackleSource.buffer=mtMakeNoiseBuffer(mtVintageCtx,5,true);
+    const crackleSource=ctx.createBufferSource();
+    const crackleFilter=ctx.createBiquadFilter();
+    const crackleGain=ctx.createGain();
+    crackleSource.buffer=mtMakeNoiseBuffer(ctx,7,true);
     crackleSource.loop=true;
     crackleFilter.type='highpass';
-    crackleFilter.frequency.value=900;
+    crackleFilter.frequency.value=850;
     crackleGain.gain.value=0;
     crackleSource.connect(crackleFilter);
     crackleFilter.connect(crackleGain);
-    crackleGain.connect(mtVintageCtx.destination);
+    crackleGain.connect(ctx.destination);
     crackleSource.start();
 
-    mtVintageActive={audio,source,low,shaper,output,noiseSource,noiseGain,crackleSource,crackleGain,wowTimer:null};
+    let source=null,low=null,shaper=null,output=null,processed=false;
+    // Full EQ/saturation is safe for same-origin/blob audio. Remote streams
+    // still receive real hiss/crackle + wow/flutter via native playbackRate.
+    try{
+      const u=new URL(audio.currentSrc||audio.src,document.baseURI);
+      const canRoute=u.protocol==='blob:' || u.origin===location.origin;
+      if(canRoute){
+        source=ctx.createMediaElementSource(audio);
+        low=ctx.createBiquadFilter();
+        shaper=ctx.createWaveShaper();
+        output=ctx.createGain();
+        low.type='lowpass';
+        low.Q.value=.64;
+        shaper.oversample='2x';
+        source.connect(low);low.connect(shaper);shaper.connect(output);output.connect(ctx.destination);
+        processed=true;
+      }
+    }catch(_){}
+
+    mtVintageActive={
+      audio,source,low,shaper,output,processed,
+      noiseSource,noiseGain,crackleSource,crackleGain,
+      wowTimer:null
+    };
     return mtVintageActive;
   }catch(err){
-    console.warn('[musicetown vintage graph]',err);
+    console.warn('[musicetown vintage engine]',err);
     return null;
   }
 }
@@ -12783,41 +13141,40 @@ function mtApplyVintage(audio,level){
   const t=level/100;
   if(!audio)return;
 
-  if(t<=.001 && !mtVintageActive){
-    try{
-      audio.playbackRate=1;
-      audio.preservesPitch=true;
-      audio.webkitPreservesPitch=true;
-    }catch(_){}
-    return;
-  }
-
   const g=mtEnsureVintageGraph(audio);
-  if(g&&mtVintageCtx){
+  if(!g)return;
+
+  try{
+    if(mtVintageCtx.state==='suspended')mtVintageCtx.resume().catch(()=>{});
+  }catch(_){}
+
+  const audible=audio.paused?0:t;
+  if(mtVintageCtx){
     const now=mtVintageCtx.currentTime;
-    g.low.frequency.setTargetAtTime(19000-14500*t,now,.045);
-    g.shaper.curve=mtVintageCurve(t);
-    g.output.gain.setTargetAtTime(1-t*.05,now,.05);
-    g.noiseGain.gain.setTargetAtTime(t*.014,now,.06);
-    g.crackleGain.gain.setTargetAtTime(t*.035,now,.06);
+    try{g.noiseGain.gain.setTargetAtTime(audible*.0125,now,.055)}catch(_){}
+    try{g.crackleGain.gain.setTargetAtTime(audible*.030,now,.055)}catch(_){}
+    if(g.processed){
+      try{g.low.frequency.setTargetAtTime(19000-14300*t,now,.05)}catch(_){}
+      try{g.shaper.curve=mtVintageCurve(t)}catch(_){}
+      try{g.output.gain.setTargetAtTime(1-t*.04,now,.05)}catch(_){}
+    }
   }
 
-  if(mtVintageActive?.wowTimer)clearInterval(mtVintageActive.wowTimer);
-  if(t>.01){
+  if(g.wowTimer){clearInterval(g.wowTimer);g.wowTimer=null}
+  if(t>.005){
     try{
       audio.preservesPitch=false;
       audio.webkitPreservesPitch=false;
     }catch(_){}
-    if(mtVintageActive){
-      const born=performance.now();
-      mtVintageActive.wowTimer=setInterval(()=>{
-        if(audio.paused)return;
-        const s=(performance.now()-born)/1000;
-        const wow=Math.sin(s*2.05)*.0028*t;
-        const flutter=Math.sin(s*11.3)*.00115*t;
-        try{audio.playbackRate=1+wow+flutter}catch(_){}
-      },90);
-    }
+    const born=performance.now();
+    g.wowTimer=setInterval(()=>{
+      if(audio.paused)return;
+      const s=(performance.now()-born)/1000;
+      const wow=Math.sin(s*1.72)*(.0033*t);
+      const flutter=Math.sin(s*10.8)*(.00135*t);
+      const drift=Math.sin(s*.31)*(.00085*t);
+      try{audio.playbackRate=1+wow+flutter+drift}catch(_){}
+    },75);
   }else{
     try{
       audio.playbackRate=1;
@@ -12833,16 +13190,20 @@ function wireVintageMode(audio){
     const n=Math.round(mtVintageLevel);
     slider.value=String(n);
     if(value)value.textContent=`${n}%`;
-    if(copy)copy.textContent=n===0?'CLEAN':n<30?'WARM':n<60?'VINYL':n<85?'TAPE':'AGED RADIO';
+    if(copy)copy.textContent=n===0?'CLEAN':n<25?'WARM':n<55?'VINYL':n<82?'TAPE':'AGED RADIO';
+    const bar=$('vintageModeBar');
+    if(bar)bar.classList.toggle('active',n>0);
   };
+  const apply=()=>{render();mtApplyVintage(audio,mtVintageLevel)};
   render();
-  if(mtVintageLevel>0)mtApplyVintage(audio,mtVintageLevel);
+  if(mtVintageLevel>0)apply();
   slider.addEventListener('input',()=>{
     mtVintageLevel=Number(slider.value)||0;
     try{localStorage.setItem(MT_VINTAGE_KEY,String(mtVintageLevel))}catch(_){}
-    render();
-    mtApplyVintage(audio,mtVintageLevel);
+    apply();
   });
+  audio.addEventListener('play',apply);
+  audio.addEventListener('pause',()=>mtApplyVintage(audio,mtVintageLevel));
 }
 
 function openTrack(t, userGesture=true){
@@ -12877,6 +13238,20 @@ function openTrack(t, userGesture=true){
       const vc=vinylColorForTrack(t);
       body.innerHTML=`
         <div class="musicetown-deck">
+          <section class="vintage-mode vintage-mode-topbar" id="vintageModeBar" aria-label="老舊音樂模式">
+            <div class="vintage-mode-head">
+              <div>
+                <b>老舊音樂模式</b>
+                <span>REAL-TIME ANALOG · <i id="vintageState">CLEAN</i></span>
+              </div>
+              <strong id="vintageValue">0%</strong>
+            </div>
+            <input id="vintageSlider" class="vintage-slider" type="range" min="0" max="100" step="1" value="0" aria-label="老舊音樂模式程度">
+            <div class="vintage-features">
+              <span>HISS</span><span>CRACKLE</span><span>WOW</span><span>FLUTTER</span><span>ANALOG SATURATION</span>
+            </div>
+          </section>
+
           <div class="vinyl-wrap">
             <button class="vinyl"
                     id="vinylDisc"
@@ -12952,20 +13327,6 @@ function openTrack(t, userGesture=true){
               </div>
             </div>
 
-            <section class="vintage-mode" aria-label="老舊音樂模式">
-              <div class="vintage-mode-head">
-                <div>
-                  <b>老舊音樂模式</b>
-                  <span>VINTAGE MODE · <i id="vintageState">CLEAN</i></span>
-                </div>
-                <strong id="vintageValue">0%</strong>
-              </div>
-              <input id="vintageSlider" class="vintage-slider" type="range" min="0" max="100" step="1" value="0" aria-label="老舊音樂模式程度">
-              <div class="vintage-features">
-                <span>高頻柔化</span><span>類比飽和</span><span>底噪</span><span>黑膠爆裂</span><span>WOW / FLUTTER</span>
-              </div>
-            </section>
-
             <div class="deck-help">
               <b>${vc.name}</b> 彩膠 · 播放時會跟著音樂旋轉。用手指或滑鼠把唱片往回轉，音樂會真的倒退；往前轉則快轉。
             </div>
@@ -12984,20 +13345,18 @@ function openTrack(t, userGesture=true){
       $('playerLegal').textContent=t.localPersonal?'MY LIBRARY · 本機音訊只存在這個瀏覽器。':'musicetown CLOUD PLAYER · 網站雲端 MP3 → 使用者播放 → 原生 audio 真實串流。';
     
       $('playerFavorite')?.addEventListener('click',async()=>{
-        await toggleFavorite(t);
+        await toggleFavorite(activeTrack||t);
       });
       $('playerDislike')?.addEventListener('click',()=>{
-        toggleDislike(t);
+        toggleDislike(activeTrack||t);
       });
 
       const a=$('nativeAudioPlayer');
       const status=$('localMp3Status');
       if(a){
-        if(mtFadeInNext){
-          try{a.volume=0}catch(_){}
-          a.dataset.mtFadeIn='1';
-          mtFadeInNext=false;
-        }
+        try{a.volume=1}catch(_){}
+        a.__mtTrack=t;
+        mtFadeInNext=false;
         setupMusicetownMediaSession(t,a);
         try{
           attachGlobalTransport(a,t);
@@ -13042,10 +13401,6 @@ function openTrack(t, userGesture=true){
 
         a.addEventListener('play',()=>{
           setPlayButtonVisual($('localPlay'),false,true);
-          if(a.dataset.mtFadeIn==='1'){
-            delete a.dataset.mtFadeIn;
-            mtFadeVolume(a,1,MUSICETOWN_CROSSFADE_SECONDS);
-          }
         });
         a.addEventListener('pause',()=>{
           setPlayButtonVisual($('localPlay'),true,true);
@@ -13075,7 +13430,8 @@ function openTrack(t, userGesture=true){
       });
 
       const jump=(dir)=>{
-        const nxt=nextTrackFrom(t,dir);
+        const base=activeTrack||t;
+        const nxt=nextTrackFrom(base,dir);
         if(!nxt)return;
         window.__musicetownAutoplayNext=true;
         openTrack(nxt,true);
