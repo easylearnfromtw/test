@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta name="musicetown-build" content="R8.9.7-20261002-IOS-SEAMLESS-VINTAGE">
+<meta name="musicetown-build" content="R8.9.8-20261002-IOS-FINAL">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F5F8FC">
@@ -8431,6 +8431,56 @@ body:not(.detail-open) .library-fab b{
 }
 </style>
 
+
+<style id="musicetown-ios-final-r898">
+.musicetown-deck{
+  display:grid !important;
+}
+.vintage-mode-topbar{
+  grid-column:1/-1 !important;
+  grid-row:1 !important;
+  width:100% !important;
+  margin:0 0 14px !important;
+  border-radius:18px !important;
+}
+.vintage-mode-topbar.active{
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--genre-accent) 16%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.88) !important;
+}
+@media(max-width:760px){
+  .library-collection-shell,
+  .library-collection-list,
+  .library-collection-tab{
+    pointer-events:auto !important;
+  }
+  .library-collection-list{
+    position:relative !important;
+    z-index:20 !important;
+    scroll-behavior:auto !important;
+  }
+  .library-collection-tab{
+    position:relative !important;
+    z-index:21 !important;
+  }
+  .library-collection-tab:first-child{
+    margin-left:0 !important;
+  }
+  .vintage-mode-topbar{
+    position:relative !important;
+    top:auto !important;
+  }
+}
+@media(display-mode:standalone){
+  body{
+    min-height:100dvh;
+  }
+  .site-head-r890{
+    padding-top:calc(8px + env(safe-area-inset-top,0px)) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -11347,7 +11397,13 @@ function renderLibraryCollections(){
     </button>`).join('');
   requestAnimationFrame(()=>{
     const activeTab=host.querySelector('.library-collection-tab.active');
-    activeTab?.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});
+    if(!activeTab)return;
+    const left=Math.max(0,
+      activeTab.offsetLeft-(host.clientWidth-activeTab.offsetWidth)/2
+    );
+    // Horizontal-only positioning. scrollIntoView() can move the whole
+    // library bottom-sheet on iOS and make the first playlist feel "stuck".
+    host.scrollTo({left,top:0,behavior:'auto'});
   });
   const active=libs.find(x=>x.id===aid)||libs[0];
   if($('libraryTitle'))$('libraryTitle').textContent=active?.name||'MY MUSIC LIBRARY';
@@ -11931,6 +11987,19 @@ function mtRefreshDetailedTrack(t,audio){
   const path=body?.querySelector('.local-path');
   if(path)path.textContent=`MP3 · ${t.audioSrc||'REMOTE AUDIO'}`;
 
+  const vinyl=$('vinylDisc');
+  if(vinyl){
+    const vc=vinylColorForTrack(t);
+    vinyl.style.setProperty('--vinyl',vc.hex);
+    vinyl.dataset.dark=vc.dark?'true':'false';
+    vinyl.dataset.material=vc.material||'solid';
+    vinyl.setAttribute('aria-label',
+      `${vc.name} 彩膠唱片。播放時跟隨歌曲旋轉；拖曳可快轉或倒轉。`
+    );
+    const helper=body?.querySelector('.deck-help');
+    if(helper)helper.innerHTML=`<b>${esc(vc.name)}</b> 彩膠 · 播放時會跟著音樂旋轉。用手指或滑鼠把唱片往回轉，音樂會真的倒退；往前轉則快轉。`;
+  }
+
   const sourceLink=body?.querySelector('.player-links .player-link.secondary');
   if(sourceLink && t.source)sourceLink.href=t.source;
 
@@ -11976,7 +12045,6 @@ function mtAdvanceInPlace(audio){
   mtRefreshDetailedTrack(nxt,audio);
 
   try{
-    audio.pause();
     audio.currentTime=0;
   }catch(_){}
 
@@ -13383,20 +13451,23 @@ function openTrack(t, userGesture=true){
         wireVintageMode(a);
 
         a.addEventListener('loadedmetadata',()=>{
-          setStatus('ready',a.dataset.musicetownBackupUrl?'線上音源已就緒 · 直接播放':'MP3 已就緒 · 站內直接播放');
+          const cur=a.__mtTrack||activeTrack||t;
+          setStatus('ready',a.dataset.musicetownBackupUrl?'線上音源已就緒 · 直接播放':'音源已就緒 · AUTO NEXT READY');
           paintVinylFromAudio(a);
+          mtRefreshDetailedTrack(cur,a);
         });
         a.addEventListener('canplay',()=>{
-          setStatus('ready',a.dataset.musicetownBackupUrl?'線上音源已就緒 · 直接播放':'MP3 已就緒 · 站內直接播放');
+          setStatus('ready',a.dataset.musicetownBackupUrl?'線上音源已就緒 · 直接播放':'音源已就緒 · AUTO NEXT READY');
           if(window.__musicetownAutoplayNext){
             window.__musicetownAutoplayNext=false;
             a.play().catch(()=>{});
           }
         });
         a.addEventListener('error',()=>{
-          if(switchToRemoteBackup(t,a,{autoplay:userGesture}))return;
+          const cur=a.__mtTrack||activeTrack||t;
+          if(switchToRemoteBackup(cur,a,{autoplay:userGesture||!a.paused}))return;
           setStatus('missing','目前找不到可播放音源');
-          mountOnlinePlaybackFallback(t);
+          mountOnlinePlaybackFallback(cur);
         });
 
         a.addEventListener('play',()=>{
