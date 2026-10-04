@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080a0d">
+<title>SIGNWELL Aesthetic Auto Landmark v0.4</title>
+<style>
+:root{color-scheme:dark;--bg:#080a0d;--panel:#11141a;--line:rgba(255,255,255,.11);--line2:rgba(255,255,255,.18);--text:#f4f5f7;--muted:#8d94a0;--ok:#9be0c2}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 15% 0,#182130 0,transparent 31%),radial-gradient(circle at 90% 8%,#201520 0,transparent 26%),linear-gradient(#090b0f,#07080b);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC",sans-serif}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}button,input{font:inherit}.app{width:min(100%,560px);margin:auto;padding:10px 10px 34px}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 2px 11px;background:linear-gradient(180deg,rgba(8,10,13,.98),rgba(8,10,13,.82) 72%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-weight:900;border:1px solid var(--line2);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.055))}
+.brand b{display:block;font-size:11px;letter-spacing:.08em}.brand small{display:block;margin-top:3px;color:var(--muted);font-size:8px;letter-spacing:.13em}.privacy{font-size:8px;color:#8c929d;text-align:right;line-height:1.35}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid var(--line);box-shadow:0 24px 70px rgba(0,0,0,.36);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.hero{border-radius:24px;padding:14px}.hero h1{font-size:25px;line-height:1.02;letter-spacing:-.045em;margin:0}.hero p{font-size:9.5px;line-height:1.55;color:var(--muted);margin:7px 0 0}
+.upload{position:relative;margin-top:12px;height:48px;border-radius:15px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);font-size:10.5px;font-weight:800}.upload input{position:absolute;inset:0;opacity:0}.upload.ready{border-color:rgba(155,224,194,.38);color:var(--ok)}
+.editor{margin-top:10px;border-radius:24px;overflow:hidden;position:relative}.stage{position:relative;aspect-ratio:3/4;background:#0b0d11;overflow:hidden;touch-action:none}.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.overlay{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20%;color:#727a86;font-size:10.5px;line-height:1.65}
+.toptools{position:absolute;left:10px;right:10px;top:10px;z-index:7;display:flex;justify-content:space-between;gap:8px}.pill{padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(9,11,15,.74);backdrop-filter:blur(12px);font-size:8.5px;color:#d9dce1}.pill.ok{color:var(--ok)}
+.bottomtools{position:absolute;left:10px;right:10px;bottom:10px;z-index:7;display:grid;grid-template-columns:.8fr 1fr 1.25fr;gap:7px}.bottomtools button{height:42px;border-radius:14px;border:1px solid var(--line2);background:rgba(9,11,15,.76);color:#e7e9ec;font-size:9.5px;font-weight:800}.bottomtools .primary{background:#edf0f2;color:#111318;border-color:#fff}
+.guide{stroke:rgba(255,255,255,.28);stroke-width:1;stroke-dasharray:5 7;vector-effect:non-scaling-stroke}.pt{fill:#fff;stroke:rgba(0,0,0,.76);stroke-width:2.5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 3px 6px rgba(0,0,0,.55))}.pt.active{fill:var(--ok)}.lab{fill:#fff;font-size:14px;font-weight:700;paint-order:stroke;stroke:#090b0e;stroke-width:5px;stroke-linejoin:round}
+.panel{margin-top:10px;border-radius:22px;padding:16px}.panel h2{margin:0;font-size:14px}.panel p{margin:5px 0 0;color:var(--muted);font-size:9.5px;line-height:1.5}.controls{display:grid;gap:15px;margin-top:16px}.row{display:grid;grid-template-columns:1fr auto;gap:5px 10px}.row label{font-size:11px;font-weight:750}.val{font-size:10px;color:#c9ced5;font-variant-numeric:tabular-nums}.row input{grid-column:1/-1;width:100%;height:27px;accent-color:#eceef0}.hint{grid-column:1/-1;font-size:9px;color:#777f8b;line-height:1.4}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.actions button{height:44px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#e5e7ea;font-size:10px;font-weight:800}.actions .primary{background:#edf0f2;color:#111318;border-color:#fff}
+.note{margin-top:10px;padding:12px;border:1px dashed rgba(255,255,255,.14);border-radius:15px;color:#9299a4;font-size:9.3px;line-height:1.55}.note b{color:#f1f2f4}
+.toast{position:fixed;left:50%;bottom:20px;z-index:100;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#eef0f2;color:#111318;padding:10px 13px;border-radius:999px;font-size:10px;font-weight:800;transition:.22s}.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:380px){.privacy{display:none}.hero h1{font-size:23px}.bottomtools{grid-template-columns:.75fr .9fr 1.2fr}.bottomtools button{font-size:9px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand"><div class="logo">S</div><div><b>SIGNWELL AESTHETIC</b><small>AUTO LANDMARK · V0.4</small></div></div>
+  <div class="privacy">照片只在你的手機處理<br>不會送到伺服器</div>
+</header>
+
+<section class="hero card">
+  <h1>用自己的照片<br>自己調整輪廓。</h1>
+  <p>先上傳正面照，系統會自動偵測臉部 landmark，定位下顎、下巴、鼻翼與嘴唇；偵測後仍可手動微調，再用 slider 直接改自己的照片。</p>
+  <label class="upload" id="uploadLabel">選擇自己的正面照片<input id="upload" type="file" accept="image/*"></label>
+</section>
+
+<section class="editor card">
+  <div class="stage" id="stage">
+    <canvas id="canvas" width="600" height="800"></canvas>
+    <div class="empty" id="empty">尚未載入照片<br><br>建議使用正面、頭部不要傾斜、光線均勻的照片。</div>
+    <svg id="overlay" class="overlay" viewBox="0 0 600 800" preserveAspectRatio="none" hidden>
+      <line id="jawGuide" class="guide"/>
+      <line id="chinGuide" class="guide"/>
+      <line id="noseGuide" class="guide"/>
+      <line id="lipGuide" class="guide"/>
+      <g id="landmarks"></g>
+    </svg>
+    <div class="toptools"><div class="pill" id="modePill">AI · 等待照片</div><div class="pill ok" id="perfPill">478 LANDMARKS</div></div>
+    <div class="bottomtools">
+      <button id="resetPts">重設點位</button>
+      <button id="togglePts">隱藏點位</button>
+      <button class="primary" id="before">按住 Before</button>
+    </div>
+  </div>
+</section>
+
+<section class="panel card">
+  <h2>直接調整自己的照片</h2>
+  <p>調整幅度刻意限制在較小範圍，避免一拉就產生明顯破圖。</p>
+  <div class="controls">
+    <div class="row"><label>下顎寬度 Jaw width</label><span class="val" id="jawVal">0</span><input id="jaw" type="range" min="-20" max="20" value="0" step="1"><span class="hint">負值收窄、正值加寬 lower face。</span></div>
+    <div class="row"><label>下巴長度 Chin length</label><span class="val" id="chinVal">0</span><input id="chin" type="range" min="-18" max="18" value="0" step="1"><span class="hint">負值縮短、正值拉長下巴。</span></div>
+    <div class="row"><label>鼻翼寬度 Nose width</label><span class="val" id="noseVal">0</span><input id="nose" type="range" min="-18" max="18" value="0" step="1"><span class="hint">以左右鼻翼控制點為中心做局部橫向變形。</span></div>
+    <div class="row"><label>嘴唇厚度 Lip fullness</label><span class="val" id="lipVal">0</span><input id="lip" type="range" min="-18" max="18" value="0" step="1"><span class="hint">局部改變上下唇垂直厚度。</span></div>
+    <div class="row"><label>下臉長度 Lower face</label><span class="val" id="lowerVal">0</span><input id="lower" type="range" min="-14" max="14" value="0" step="1"><span class="hint">從鼻底到下巴做較柔和的縱向比例調整。</span></div>
+  </div>
+  <div class="actions"><button id="resetMorph">全部歸零</button><button class="primary" id="exportBtn">匯出目前照片</button></div>
+  <div class="note"><b>自動偵測：</b>使用瀏覽器端 MediaPipe Face Landmarker 先抓 478 個 landmark，再挑出 jaw、chin、nose、lip 控制點。偵測後仍建議看一下白點位置；若照片歪頭、側臉、表情太大或臉太小，可手動修正。<br><br><b>重要：</b>這是 2D 視覺溝通 prototype，不是醫療療效預測。照片角度、鏡頭焦段、表情與光線都會影響視覺比例。</div>
+</section>
+</div>
+<div class="toast" id="toast">完成</div>
+
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/+esm";
+(function(){
+'use strict';
+var W=600,H=800;
+var canvas=document.getElementById('canvas');
+var ctx=canvas.getContext('2d',{willReadFrequently:true});
+var baseCanvas=document.createElement('canvas');baseCanvas.width=W;baseCanvas.height=H;
+var bctx=baseCanvas.getContext('2d',{willReadFrequently:true});
+var workCanvas=document.createElement('canvas');workCanvas.width=W;workCanvas.height=H;
+var wctx=workCanvas.getContext('2d',{willReadFrequently:true});
+var loaded=false,pointsVisible=true,dragKey=null,renderPending=false;
+var faceLandmarker=null, detectorInit=null, lastAutoQuality=null;
+
+async function getDetector(){
+  if(faceLandmarker)return faceLandmarker;
+  if(detectorInit)return detectorInit;
+  detectorInit=(async function(){
+    el('modePill').textContent='AI · 載入模型…';
+    var vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm");
+    var opts={
+      baseOptions:{
+        modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+        delegate:"GPU"
+      },
+      runningMode:"IMAGE",
+      numFaces:1,
+      minFaceDetectionConfidence:0.65,
+      minFacePresenceConfidence:0.65,
+      minTrackingConfidence:0.5,
+      outputFaceBlendshapes:false,
+      outputFacialTransformationMatrixes:false
+    };
+    try{
+      faceLandmarker=await FaceLandmarker.createFromOptions(vision,opts);
+    }catch(err){
+      opts.baseOptions.delegate="CPU";
+      faceLandmarker=await FaceLandmarker.createFromOptions(vision,opts);
+    }
+    el('modePill').textContent='AI · 模型就緒';
+    return faceLandmarker;
+  })().catch(function(err){
+    detectorInit=null;
+    el('modePill').textContent='AI · 模型載入失敗';
+    throw err;
+  });
+  return detectorInit;
+}
+
+function avgLm(lm, ids){
+  var sx=0,sy=0,sz=0,n=0;
+  ids.forEach(function(id){var p=lm[id];if(p){sx+=p.x;sy+=p.y;sz+=(p.z||0);n++;}});
+  return n?{x:sx/n,y:sy/n,z:sz/n}:null;
+}
+function mapLm(p,fit){
+  return [fit.dx+p.x*fit.dw,fit.dy+p.y*fit.dh];
+}
+function orderedLR(a,b,fit){
+  var pa=mapLm(a,fit),pb=mapLm(b,fit);
+  return pa[0]<=pb[0]?[pa,pb]:[pb,pa];
+}
+function angleDeg(a,b){
+  return Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
+}
+async function autoDetectLandmarks(img,fit){
+  try{
+    var detector=await getDetector();
+    el('modePill').textContent='AI · 偵測中…';
+    var res=detector.detect(img);
+    if(!res.faceLandmarks||!res.faceLandmarks.length){
+      el('modePill').textContent='AI · 找不到正面臉';
+      toast('沒有偵測到臉，請換正面清楚照片');
+      return false;
+    }
+    var lm=res.faceLandmarks[0];
+
+    var jawA=avgLm(lm,[172,136,150]);
+    var jawB=avgLm(lm,[397,365,379]);
+    var jawPair=orderedLR(jawA,jawB,fit);
+
+    var nosePair=orderedLR(avgLm(lm,[98]),avgLm(lm,[327]),fit);
+    var chin=mapLm(lm[152],fit);
+    var lipU=mapLm(lm[13],fit),lipD=mapLm(lm[14],fit);
+    var noseBase=mapLm(avgLm(lm,[2,164]),fit);
+
+    points={
+      jawL:jawPair[0],
+      jawR:jawPair[1],
+      chin:chin,
+      noseL:nosePair[0],
+      noseR:nosePair[1],
+      lipU:lipU,
+      lipD:lipD,
+      noseBase:noseBase
+    };
+
+    var eyeL=lm[33],eyeR=lm[263];
+    var tilt=Math.abs(angleDeg(eyeL,eyeR));
+    if(tilt>90)tilt=Math.abs(180-tilt);
+    var faceW=Math.abs(lm[454].x-lm[234].x);
+    var quality=100;
+    quality-=Math.min(35,tilt*3);
+    if(faceW<0.28)quality-=20;
+    quality=Math.max(45,Math.round(quality));
+    lastAutoQuality=quality;
+
+    drawPoints();scheduleRender();
+    el('modePill').textContent='AI · 自動定位 '+quality+'%';
+    if(tilt>7) toast('已自動定位；照片有些傾斜，建議手動微調');
+    else toast('AI landmark 自動定位完成');
+    return true;
+  }catch(err){
+    console.error(err);
+    el('modePill').textContent='AI · 偵測失敗';
+    toast('自動偵測失敗，可先手動微調');
+    return false;
+  }
+}
+var state={jaw:0,chin:0,nose:0,lip:0,lower:0};
+var pointsDefault={jawL:[175,525],jawR:[425,525],chin:[300,675],noseL:[255,380],noseR:[345,380],lipU:[300,455],lipD:[300,490],noseBase:[300,405]};
+var points=JSON.parse(JSON.stringify(pointsDefault));
+var el=function(id){return document.getElementById(id)};
+function toast(t){var e=el('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove('on')},1250)}
+function signed(n){return (n>0?'+':'')+String(n)}
+function updateVals(){el('jawVal').textContent=signed(state.jaw);el('chinVal').textContent=signed(state.chin);el('noseVal').textContent=signed(state.nose);el('lipVal').textContent=signed(state.lip);el('lowerVal').textContent=signed(state.lower)}
+function drawBaseImage(img){
+  bctx.clearRect(0,0,W,H);bctx.fillStyle='#0b0d11';bctx.fillRect(0,0,W,H);
+  var s=Math.min(W/img.naturalWidth,H/img.naturalHeight);
+  var dw=img.naturalWidth*s,dh=img.naturalHeight*s,dx=(W-dw)/2,dy=(H-dh)/2;
+  bctx.drawImage(img,dx,dy,dw,dh);
+  ctx.drawImage(baseCanvas,0,0);
+  return {s:s,dw:dw,dh:dh,dx:dx,dy:dy};
+}
+var sampleTmp=[0,0,0,0];
+function sampleBilinear(src,x,y){
+  if(x<0)x=0;if(y<0)y=0;if(x>W-1)x=W-1;if(y>H-1)y=H-1;
+  var x0=x|0,y0=y|0,x1=x0<W-1?x0+1:x0,y1=y0<H-1?y0+1:y0,fx=x-x0,fy=y-y0;
+  var i00=(y0*W+x0)*4,i10=(y0*W+x1)*4,i01=(y1*W+x0)*4,i11=(y1*W+x1)*4;
+  var a0=(1-fx)*(1-fy),a1=fx*(1-fy),a2=(1-fx)*fy,a3=fx*fy;
+  sampleTmp[0]=src[i00]*a0+src[i10]*a1+src[i01]*a2+src[i11]*a3;
+  sampleTmp[1]=src[i00+1]*a0+src[i10+1]*a1+src[i01+1]*a2+src[i11+1]*a3;
+  sampleTmp[2]=src[i00+2]*a0+src[i10+2]*a1+src[i01+2]*a2+src[i11+2]*a3;
+  sampleTmp[3]=src[i00+3]*a0+src[i10+3]*a1+src[i01+3]*a2+src[i11+3]*a3;
+  return sampleTmp;
+}
+function warpTranslation(input,cx,cy,rx,ry,dx,dy){
+  if(!dx&&!dy)return input;
+  var out=new Uint8ClampedArray(input.length);
+  for(var y=0;y<H;y++){
+    var ny=(y-cy)/ry;
+    for(var x=0;x<W;x++){
+      var nx=(x-cx)/rx,r2=nx*nx+ny*ny,idx=(y*W+x)*4;
+      if(r2<1){
+        var f=1-r2;f=f*f;
+        var c=sampleBilinear(input,x-dx*f,y-dy*f);
+        out[idx]=c[0];out[idx+1]=c[1];out[idx+2]=c[2];out[idx+3]=c[3];
+      }else{out[idx]=input[idx];out[idx+1]=input[idx+1];out[idx+2]=input[idx+2];out[idx+3]=input[idx+3]}
+    }
+  }
+  return out;
+}
+function warpScale(input,cx,cy,rx,ry,sx,sy){
+  if(Math.abs(sx-1)<.001&&Math.abs(sy-1)<.001)return input;
+  var out=new Uint8ClampedArray(input.length);
+  for(var y=0;y<H;y++){
+    var ny=(y-cy)/ry;
+    for(var x=0;x<W;x++){
+      var nx=(x-cx)/rx,r2=nx*nx+ny*ny,idx=(y*W+x)*4;
+      if(r2<1){
+        var f=1-r2;f=f*f;
+        var ex=1+(sx-1)*f,ey=1+(sy-1)*f;
+        var srcx=cx+(x-cx)/ex,srcy=cy+(y-cy)/ey;
+        var c=sampleBilinear(input,srcx,srcy);
+        out[idx]=c[0];out[idx+1]=c[1];out[idx+2]=c[2];out[idx+3]=c[3];
+      }else{out[idx]=input[idx];out[idx+1]=input[idx+1];out[idx+2]=input[idx+2];out[idx+3]=input[idx+3]}
+    }
+  }
+  return out;
+}
+function render(){
+  if(!loaded)return;
+  var data=bctx.getImageData(0,0,W,H),pix=data.data;
+  var jl=points.jawL,jr=points.jawR,ch=points.chin,nl=points.noseL,nr=points.noseR,lu=points.lipU,ld=points.lipD,nb=points.noseBase;
+  var jawDx=state.jaw*1.5;
+  pix=warpTranslation(pix,jl[0],jl[1],145,170,-jawDx,0);
+  pix=warpTranslation(pix,jr[0],jr[1],145,170,jawDx,0);
+  pix=warpTranslation(pix,ch[0],ch[1],165,145,0,state.chin*1.65);
+  var ncx=(nl[0]+nr[0])/2,ncy=(nl[1]+nr[1])/2;
+  pix=warpScale(pix,ncx,ncy,105,95,1+state.nose*0.008,1);
+  var lcx=(lu[0]+ld[0])/2,lcy=(lu[1]+ld[1])/2;
+  pix=warpScale(pix,lcx,lcy,130,72,1,1+state.lip*0.011);
+  var lowerCy=(nb[1]+ch[1])/2;
+  pix=warpScale(pix,ch[0],lowerCy,210,235,1,1+state.lower*0.0065);
+  data.data.set(pix);wctx.putImageData(data,0,0);ctx.clearRect(0,0,W,H);ctx.drawImage(workCanvas,0,0);
+}
+function scheduleRender(){
+  if(renderPending)return;
+  renderPending=true;
+  setTimeout(function(){renderPending=false;render()},48);
+}
+function drawPoints(){
+  var g=el('landmarks');g.innerHTML='';
+  var names={jawL:'Jaw L',jawR:'Jaw R',chin:'Chin',noseL:'Nose L',noseR:'Nose R',lipU:'Lip U',lipD:'Lip D',noseBase:'Nose base'};
+  Object.keys(points).forEach(function(k){
+    var p=points[k],c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',p[0]);c.setAttribute('cy',p[1]);c.setAttribute('r','13');c.setAttribute('class','pt');c.dataset.key=k;g.appendChild(c);
+    var t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',p[0]+16);t.setAttribute('y',p[1]-15);t.setAttribute('class','lab');t.textContent=names[k];g.appendChild(t);
+  });
+  el('jawGuide').setAttribute('x1',points.jawL[0]);el('jawGuide').setAttribute('y1',points.jawL[1]);el('jawGuide').setAttribute('x2',points.jawR[0]);el('jawGuide').setAttribute('y2',points.jawR[1]);
+  el('chinGuide').setAttribute('x1',points.noseBase[0]);el('chinGuide').setAttribute('y1',points.noseBase[1]);el('chinGuide').setAttribute('x2',points.chin[0]);el('chinGuide').setAttribute('y2',points.chin[1]);
+  el('noseGuide').setAttribute('x1',points.noseL[0]);el('noseGuide').setAttribute('y1',points.noseL[1]);el('noseGuide').setAttribute('x2',points.noseR[0]);el('noseGuide').setAttribute('y2',points.noseR[1]);
+  el('lipGuide').setAttribute('x1',points.lipU[0]);el('lipGuide').setAttribute('y1',points.lipU[1]);el('lipGuide').setAttribute('x2',points.lipD[0]);el('lipGuide').setAttribute('y2',points.lipD[1]);
+}
+function svgPos(e){
+  var r=el('overlay').getBoundingClientRect(),p=e.touches&&e.touches[0]?e.touches[0]:e;
+  return [(p.clientX-r.left)/r.width*W,(p.clientY-r.top)/r.height*H];
+}
+el('overlay').addEventListener('pointerdown',function(e){if(e.target.classList.contains('pt')){dragKey=e.target.dataset.key;e.target.classList.add('active');e.preventDefault()}});
+window.addEventListener('pointermove',function(e){if(!dragKey)return;var p=svgPos(e);points[dragKey]=[Math.max(15,Math.min(W-15,p[0])),Math.max(15,Math.min(H-15,p[1]))];drawPoints();scheduleRender()});
+window.addEventListener('pointerup',function(){dragKey=null;document.querySelectorAll('.pt').forEach(function(n){n.classList.remove('active')})});
+el('upload').addEventListener('change',function(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;
+  var r=new FileReader();r.onload=function(){
+    var img=new Image();img.onload=async function(){
+      var fit=drawBaseImage(img);loaded=true;el('empty').style.display='none';el('overlay').hidden=false;el('uploadLabel').classList.add('ready');el('uploadLabel').childNodes[0].textContent='照片已載入 · 點此可更換';
+      points=JSON.parse(JSON.stringify(pointsDefault));drawPoints();render();
+      await autoDetectLandmarks(img,fit);
+    };img.src=r.result
+  };r.readAsDataURL(f)
+});
+['jaw','chin','nose','lip','lower'].forEach(function(k){
+  el(k).addEventListener('input',function(e){state[k]=Number(e.target.value);updateVals();scheduleRender()});
+});
+el('resetMorph').onclick=function(){state={jaw:0,chin:0,nose:0,lip:0,lower:0};['jaw','chin','nose','lip','lower'].forEach(function(k){el(k).value=0});updateVals();render();toast('已全部歸零')};
+el('resetPts').onclick=function(){points=JSON.parse(JSON.stringify(pointsDefault));drawPoints();scheduleRender();toast('控制點已重設')};
+el('togglePts').onclick=function(){pointsVisible=!pointsVisible;el('overlay').style.opacity=pointsVisible?'1':'0';el('overlay').style.pointerEvents=pointsVisible?'auto':'none';el('togglePts').textContent=pointsVisible?'隱藏點位':'顯示點位';el('modePill').textContent=pointsVisible?'STEP 1 · 定位控制點':'STEP 2 · 調整照片'};
+var before=el('before');
+function showBefore(on){if(!loaded)return;if(on){ctx.clearRect(0,0,W,H);ctx.drawImage(baseCanvas,0,0);before.textContent='Before'}else{render();before.textContent='按住 Before'}}
+['pointerdown','touchstart'].forEach(function(ev){before.addEventListener(ev,function(){showBefore(true)},{passive:true})});
+['pointerup','pointercancel','pointerleave','touchend'].forEach(function(ev){before.addEventListener(ev,function(){showBefore(false)},{passive:true})});
+el('exportBtn').onclick=function(){
+  if(!loaded){toast('請先上傳照片');return}
+  render();
+  canvas.toBlob(function(blob){
+    if(!blob){toast('匯出失敗');return}
+    var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='signwell-photo-morph.jpg';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1500);toast('已建立目前照片')
+  },'image/jpeg',.92)
+};
+updateVals();
+})();
+</script>
+</body>
+</html>
