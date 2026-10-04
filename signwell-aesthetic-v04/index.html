@@ -77,7 +77,7 @@ body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}button,input
 <div class="toast" id="toast">完成</div>
 
 <script type="module">
-import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/+esm";
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/+esm";
 (function(){
 'use strict';
 var W=600,H=800;
@@ -95,7 +95,7 @@ async function getDetector(){
   if(detectorInit)return detectorInit;
   detectorInit=(async function(){
     el('modePill').textContent='AI · 載入模型…';
-    var vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm");
+    var vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm");
     var opts={
       baseOptions:{
         modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
