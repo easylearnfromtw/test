@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0c10">
+<title>SIGNWELL Aesthetic v0.6 · Doctor Comm Card</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0a0c10;--panel:rgba(20,24,30,.82);--line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.18);
+  --text:#f3f5f7;--muted:#8d95a1;--accent:#eef0f2;--ok:#9ae1c1;--radius:22px;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:
+radial-gradient(circle at 15% 0,rgba(78,97,135,.18),transparent 30%),
+radial-gradient(circle at 88% 10%,rgba(102,67,86,.14),transparent 24%),
+linear-gradient(180deg,#0b0d11,#08090c 72%,#0b0d10);color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang TC","Noto Sans TC",sans-serif}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}button,input,select,textarea{font:inherit}
+button{-webkit-tap-highlight-color:transparent}
+.app{width:min(100%,980px);margin:0 auto;padding:10px 10px 34px}
+.glass{background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025));border:1px solid var(--line);box-shadow:0 24px 70px rgba(0,0,0,.34);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.top{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 2px 12px;background:linear-gradient(180deg,rgba(8,10,13,.97),rgba(8,10,13,.82) 72%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.brand{display:flex;gap:10px;align-items:center}.logo{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-weight:900;border:1px solid var(--line2);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.055))}
+.brand b{display:block;font-size:12px;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:8.5px;letter-spacing:.14em;margin-top:3px}.privacy{font-size:8.5px;color:#8f96a2;text-align:right;line-height:1.35}
+.hero{padding:16px;border-radius:24px}.hero h1{font-size:28px;line-height:1.02;letter-spacing:-.05em;margin:0}.hero p{margin:8px 0 0;color:var(--muted);font-size:10.5px;line-height:1.6}
+.upload-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.upload{position:relative;height:50px;border-radius:16px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);font-size:10.5px;font-weight:780;text-align:center;padding:0 10px}.upload input{position:absolute;inset:0;opacity:0}.upload.ready{border-color:rgba(154,225,193,.38);color:var(--ok)}
+.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:10px;margin-top:10px}
+.editors{display:grid;gap:10px}.stage-card{border-radius:24px;overflow:hidden;padding:0}.stage-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06)}.stage-head b{font-size:12px}.stage-head span{font-size:9px;color:var(--muted)}
+.stage{position:relative;aspect-ratio:3/4;background:#0b0d11;overflow:hidden;touch-action:none}.stage canvas{position:absolute;inset:0;width:100%;height:100%}.overlay{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.empty{position:absolute;inset:0;display:grid;place-items:center;padding:16%;text-align:center;color:#737c89;font-size:10px;line-height:1.6}
+.chips{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;z-index:5}.pill{padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(9,11,15,.74);backdrop-filter:blur(12px);font-size:8.5px;color:#d9dde2}.pill.ok{color:var(--ok)}
+.tools{position:absolute;left:10px;right:10px;bottom:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;z-index:6}.tools button,.btn{height:42px;border-radius:14px;border:1px solid var(--line2);background:rgba(10,12,16,.76);color:#e8eaed;font-size:9.5px;font-weight:780}.tools .primary,.btn.primary{background:var(--accent);color:#121418;border-color:#fff}
+.guide{stroke:rgba(255,255,255,.26);stroke-width:1;stroke-dasharray:5 7;vector-effect:non-scaling-stroke}.pt{fill:#fff;stroke:rgba(0,0,0,.75);stroke-width:2.5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 3px 6px rgba(0,0,0,.55))}.pt.active{fill:var(--ok)}.lab{fill:#fff;font-size:13px;font-weight:700;paint-order:stroke;stroke:#090b0e;stroke-width:5px;stroke-linejoin:round}
+.side{display:grid;gap:10px}.panel{border-radius:22px;padding:16px}.panel h2{margin:0;font-size:14px}.panel p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.55}
+.controls{margin-top:16px;display:grid;gap:15px}.row{display:grid;grid-template-columns:1fr auto;gap:5px 10px}.row label{font-size:11px;font-weight:760}.val{font-size:10px;color:#c9ced5;font-variant-numeric:tabular-nums}.row input{grid-column:1/-1;width:100%;height:26px;accent-color:#eceef0}.hint{grid-column:1/-1;font-size:9px;color:#78808b;line-height:1.45}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.metric{padding:11px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.025)}.metric span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:.06em}.metric b{display:block;font-size:16px;margin-top:4px}
+.note{margin-top:10px;padding:12px;border:1px dashed rgba(255,255,255,.13);border-radius:15px;color:#939aa5;font-size:9.5px;line-height:1.6}
+.form{display:grid;gap:10px;margin-top:14px}.field label{display:block;font-size:10px;color:var(--muted);margin-bottom:6px}.field select,.field textarea{width:100%;border-radius:14px;border:1px solid var(--line);background:#0d1015;color:#eef0f2;padding:12px;font-size:10.5px;outline:none}.field textarea{min-height:88px;resize:vertical;line-height:1.55}
+.quick-tags{display:flex;flex-wrap:wrap;gap:8px}.tag-btn{border:1px solid var(--line2);background:rgba(255,255,255,.04);color:#e7eaed;border-radius:999px;padding:8px 10px;font-size:9.5px;font-weight:700}.tag-btn.active{background:#eef0f2;color:#111318;border-color:#fff}.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}.output{margin-top:12px;width:100%;min-height:220px;border-radius:16px;border:1px solid var(--line);background:#0c0f14;color:#eef0f2;padding:14px;font-size:10.5px;line-height:1.65;white-space:pre-wrap}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,12px);opacity:0;pointer-events:none;z-index:99;background:#eef0f2;color:#111318;padding:10px 13px;border-radius:999px;font-size:10px;font-weight:780;transition:.22s}.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:860px){.layout{grid-template-columns:1fr}.app{max-width:560px}.hero h1{font-size:26px}}
+@media(max-width:390px){.privacy{display:none}.upload-row{grid-template-columns:1fr}.hero h1{font-size:24px}.tools,.actions{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><div class="logo">S</div><div><b>SIGNWELL AESTHETIC</b><small>DOCTOR COMM CARD · V0.6</small></div></div>
+    <div class="privacy">正面＋側面一起模擬<br>照片只在本機處理</div>
+  </header>
+
+  <section class="hero glass">
+    <h1>把想法變成<br>可以跟醫師溝通的版本。</h1>
+    <p>1）上傳正面與側面照片。2）系統先自動偵測 landmark，必要時可微調。3）調整鼻子、下巴、嘴唇、下臉比例時，正面與側面會同步改。4）最後自動生成一份「看診溝通摘要」，也可以輸出成溝通卡。</p>
+    <div class="upload-row">
+      <label class="upload" id="frontUploadLabel">上傳正面照片<input id="frontUpload" type="file" accept="image/*"></label>
+      <label class="upload" id="sideUploadLabel">上傳側面照片<input id="sideUpload" type="file" accept="image/*"></label>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="editors">
+      <div class="stage-card glass">
+        <div class="stage-head"><b>Front view</b><span>正面比例 / 輪廓視覺</span></div>
+        <div class="stage" id="frontStage">
+          <canvas id="frontCanvas" width="600" height="800"></canvas>
+          <div class="empty" id="frontEmpty">請先上傳正面照片。<br><br>建議正面、五官清楚、不要太歪頭。</div>
+          <svg id="frontOverlay" class="overlay" viewBox="0 0 600 800" preserveAspectRatio="none" hidden>
+            <line id="frontJawGuide" class="guide"/>
+            <line id="frontChinGuide" class="guide"/>
+            <line id="frontNoseGuide" class="guide"/>
+            <line id="frontLipGuide" class="guide"/>
+            <g id="frontLandmarks"></g>
+          </svg>
+          <div class="chips"><div class="pill" id="frontStatus">AI · 等待照片</div><div class="pill ok">FRONT</div></div>
+          <div class="tools">
+            <button data-view="front" class="redetect">重新偵測</button>
+            <button data-view="front" class="toggle-pts">隱藏點位</button>
+            <button data-view="front" class="before primary">按住 Before</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-card glass">
+        <div class="stage-head"><b>Profile view</b><span>側面立體度 / 投射感</span></div>
+        <div class="stage" id="sideStage">
+          <canvas id="sideCanvas" width="600" height="800"></canvas>
+          <div class="empty" id="sideEmpty">請再上傳一張側面照片。<br><br>系統會偵測鼻子、下巴、嘴唇等控制點。</div>
+          <svg id="sideOverlay" class="overlay" viewBox="0 0 600 800" preserveAspectRatio="none" hidden>
+            <line id="sideNoseGuide" class="guide"/>
+            <line id="sideChinGuide" class="guide"/>
+            <line id="sideLipGuide" class="guide"/>
+            <line id="sideJawGuide" class="guide"/>
+            <g id="sideLandmarks"></g>
+          </svg>
+          <div class="chips"><div class="pill" id="sideStatus">AI · 等待照片</div><div class="pill ok">PROFILE</div></div>
+          <div class="tools">
+            <button data-view="side" class="redetect">重新偵測</button>
+            <button data-view="side" class="toggle-pts">隱藏點位</button>
+            <button data-view="side" class="before primary">按住 Before</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="panel glass">
+        <h2>連動調整</h2>
+        <p>鼻子、下巴、嘴唇與下臉比例會同時作用到正面與側面；下顎寬度以正面為主，側面只做輕微補償。</p>
+        <div class="controls">
+          <div class="row"><label>鼻子立體度 Nose projection</label><div class="val" id="noseVal">0</div><input id="nose" type="range" min="-20" max="20" value="0"><div class="hint">正值：側面鼻子更有投射感；正面同步更精緻一些。</div></div>
+          <div class="row"><label>下巴立體度 Chin projection</label><div class="val" id="chinVal">0</div><input id="chin" type="range" min="-20" max="20" value="0"><div class="hint">正值：側面下巴更往前，正面同步微調下巴比例。</div></div>
+          <div class="row"><label>下顎寬度 Jaw width</label><div class="val" id="jawVal">0</div><input id="jaw" type="range" min="-20" max="20" value="0"><div class="hint">負值收窄、正值加寬 lower face。</div></div>
+          <div class="row"><label>嘴唇厚度 Lip fullness</label><div class="val" id="lipVal">0</div><input id="lip" type="range" min="-18" max="18" value="0"><div class="hint">上下唇一起做柔和變化。</div></div>
+          <div class="row"><label>下臉長度 Lower face</label><div class="val" id="lowerVal">0</div><input id="lower" type="range" min="-14" max="14" value="0"><div class="hint">從鼻底到下巴的縱向比例。</div></div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="resetMorph">全部歸零</button>
+          <button class="btn primary" id="generateBrief">更新看診摘要</button>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span>Nose</span><b id="mNose">0</b></div>
+          <div class="metric"><span>Chin</span><b id="mChin">0</b></div>
+          <div class="metric"><span>Jaw</span><b id="mJaw">0</b></div>
+          <div class="metric"><span>Lower face</span><b id="mLower">0</b></div>
+        </div>
+        <div class="note">這是 2D 視覺溝通 prototype。它的目的不是預測術後結果，而是讓你更容易把「我想要的方向」講清楚。</div>
+      </section>
+
+      <section class="panel glass">
+        <h2>看診溝通摘要</h2>
+        <p>把調整結果轉成醫師容易理解的語言。你也可以補上自己的風格偏好與不想要的結果。</p>
+        <div class="form">
+          <div class="field"><label for="styleSelect">偏好風格</label><select id="styleSelect"><option>自然保守</option><option selected>自然精緻</option><option>輪廓明顯</option></select></div>
+          <div class="field"><label for="vibeSelect">輪廓方向</label><select id="vibeSelect"><option selected>男性俐落</option><option>中性乾淨</option><option>柔和精緻</option></select></div>
+          <div class="field"><label for="freeText">補充在意點 / 不想要的結果</label><textarea id="freeText" placeholder="例如：希望自然，不想太假；鼻子不要過翹；下巴不要太尖；仍想保留男性感。"></textarea></div>
+        </div>
+        <div class="field"><label>快速勾選不想要的結果</label><div class="quick-tags" id="quickTags">
+          <button type="button" class="tag-btn" data-tag="鼻子不要太翹">鼻子不要太翹</button>
+          <button type="button" class="tag-btn" data-tag="下巴不要太尖">下巴不要太尖</button>
+          <button type="button" class="tag-btn" data-tag="不要太假">不要太假</button>
+          <button type="button" class="tag-btn" data-tag="保留男性感">保留男性感</button>
+          <button type="button" class="tag-btn" data-tag="不要過度女性化">不要過度女性化</button>
+          <button type="button" class="tag-btn" data-tag="希望恢復期與變化自然">恢復期自然</button>
+        </div></div>
+        <div class="actions">
+          <button class="btn" id="copyBrief">複製摘要</button>
+          <button class="btn" id="exportFront">匯出正面圖</button>
+          <button class="btn primary" id="exportCard">輸出溝通卡</button>
+        </div>
+        <textarea class="output" id="briefOutput" readonly></textarea>
+      </section>
+    </aside>
+  </div>
+</div>
+<div class="toast" id="toast">完成</div>
+
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/+esm";
+
+const W=600, H=800;
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const state = {nose:0, chin:0, jaw:0, lip:0, lower:0};
+const selectedTags = new Set();
+let faceLandmarker = null, detectorPromise = null;
+
+const data = {
+  front: setupView('front'),
+  side: setupView('side')
+};
+
+data.front.defaults = {jawL:[175,525], jawR:[425,525], chin:[300,680], noseL:[255,385], noseR:[345,385], lipU:[300,455], lipD:[300,490], noseBase:[300,408]};
+data.side.defaults  = {noseTip:[405,350], noseBase:[355,408], lipU:[335,458], lipD:[335,492], chin:[325,655], jawBack:[245,565], faceDir:1};
+resetPoints('front');
+resetPoints('side');
+updateValues();
+generateBrief();
+
+function setupView(name){
+  const canvas = $(`#${name}Canvas`), ctx = canvas.getContext('2d', {willReadFrequently:true});
+  const baseCanvas = document.createElement('canvas'); baseCanvas.width=W; baseCanvas.height=H;
+  const baseCtx = baseCanvas.getContext('2d', {willReadFrequently:true});
+  const workCanvas = document.createElement('canvas'); workCanvas.width=W; workCanvas.height=H;
+  const workCtx = workCanvas.getContext('2d', {willReadFrequently:true});
+  return {name, canvas, ctx, baseCanvas, baseCtx, workCanvas, workCtx, loaded:false, pointsVisible:true, dragKey:null, renderPending:false, points:{}, defaults:{}, fit:null, lastImage:null, quality:null};
+}
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'), 1300); }
+function signed(n){ return `${n>0?'+':''}${n}`; }
+function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+function avgLm(lm, ids){ let sx=0, sy=0, n=0; ids.forEach(id=>{ const p=lm[id]; if(p){sx+=p.x; sy+=p.y; n++;} }); return n?{x:sx/n,y:sy/n}:null; }
+function mapLm(p, fit){ return [fit.dx + p.x * fit.dw, fit.dy + p.y * fit.dh]; }
+function angleDeg(a,b){ return Math.atan2(b.y-a.y,b.x-a.x) * 180 / Math.PI; }
+function dist(a,b){ return Math.hypot(a[0]-b[0], a[1]-b[1]); }
+function sampleBilinear(src, x, y){
+  x=clamp(x,0,W-1); y=clamp(y,0,H-1);
+  const x0=x|0, y0=y|0, x1=Math.min(x0+1,W-1), y1=Math.min(y0+1,H-1), fx=x-x0, fy=y-y0;
+  const i00=(y0*W+x0)*4, i10=(y0*W+x1)*4, i01=(y1*W+x0)*4, i11=(y1*W+x1)*4;
+  const a0=(1-fx)*(1-fy), a1=fx*(1-fy), a2=(1-fx)*fy, a3=fx*fy;
+  return [
+    src[i00]*a0 + src[i10]*a1 + src[i01]*a2 + src[i11]*a3,
+    src[i00+1]*a0 + src[i10+1]*a1 + src[i01+1]*a2 + src[i11+1]*a3,
+    src[i00+2]*a0 + src[i10+2]*a1 + src[i01+2]*a2 + src[i11+2]*a3,
+    src[i00+3]*a0 + src[i10+3]*a1 + src[i01+3]*a2 + src[i11+3]*a3,
+  ];
+}
+function warpTranslation(input, cx, cy, rx, ry, dx, dy){
+  if(!dx && !dy) return input;
+  const out = new Uint8ClampedArray(input.length);
+  for(let y=0;y<H;y++){
+    const ny=(y-cy)/ry;
+    for(let x=0;x<W;x++){
+      const nx=(x-cx)/rx, r2=nx*nx+ny*ny, idx=(y*W+x)*4;
+      if(r2<1){
+        let f=1-r2; f=f*f;
+        const c=sampleBilinear(input, x-dx*f, y-dy*f);
+        out[idx]=c[0]; out[idx+1]=c[1]; out[idx+2]=c[2]; out[idx+3]=c[3];
+      }else{
+        out[idx]=input[idx]; out[idx+1]=input[idx+1]; out[idx+2]=input[idx+2]; out[idx+3]=input[idx+3];
+      }
+    }
+  }
+  return out;
+}
+function warpScale(input, cx, cy, rx, ry, sx, sy){
+  if(Math.abs(sx-1)<0.001 && Math.abs(sy-1)<0.001) return input;
+  const out = new Uint8ClampedArray(input.length);
+  for(let y=0;y<H;y++){
+    const ny=(y-cy)/ry;
+    for(let x=0;x<W;x++){
+      const nx=(x-cx)/rx, r2=nx*nx+ny*ny, idx=(y*W+x)*4;
+      if(r2<1){
+        let f=1-r2; f=f*f;
+        const ex=1+(sx-1)*f, ey=1+(sy-1)*f;
+        const srcx=cx+(x-cx)/ex, srcy=cy+(y-cy)/ey;
+        const c=sampleBilinear(input, srcx, srcy);
+        out[idx]=c[0]; out[idx+1]=c[1]; out[idx+2]=c[2]; out[idx+3]=c[3];
+      }else{
+        out[idx]=input[idx]; out[idx+1]=input[idx+1]; out[idx+2]=input[idx+2]; out[idx+3]=input[idx+3];
+      }
+    }
+  }
+  return out;
+}
+
+function drawBaseImage(view, img){
+  const {baseCtx, ctx} = data[view];
+  baseCtx.clearRect(0,0,W,H); baseCtx.fillStyle='#0b0d11'; baseCtx.fillRect(0,0,W,H);
+  const s=Math.min(W/img.naturalWidth, H/img.naturalHeight);
+  const dw=img.naturalWidth*s, dh=img.naturalHeight*s, dx=(W-dw)/2, dy=(H-dh)/2;
+  baseCtx.drawImage(img, dx, dy, dw, dh); ctx.clearRect(0,0,W,H); ctx.drawImage(data[view].baseCanvas,0,0);
+  data[view].fit = {s,dw,dh,dx,dy}; data[view].lastImage = img;
+}
+
+async function getDetector(){
+  if(faceLandmarker) return faceLandmarker;
+  if(detectorPromise) return detectorPromise;
+  detectorPromise=(async()=>{
+    const vision = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm');
+    let opts = {
+      baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task', delegate:'GPU'},
+      runningMode:'IMAGE', numFaces:1, minFaceDetectionConfidence:0.65, minFacePresenceConfidence:0.65, minTrackingConfidence:0.5,
+      outputFaceBlendshapes:false, outputFacialTransformationMatrixes:false
+    };
+    try{ faceLandmarker = await FaceLandmarker.createFromOptions(vision, opts); }
+    catch(e){ opts.baseOptions.delegate='CPU'; faceLandmarker = await FaceLandmarker.createFromOptions(vision, opts); }
+    return faceLandmarker;
+  })();
+  return detectorPromise;
+}
+
+function setStatus(view, text){ $(`#${view}Status`).textContent = text; }
+function resetPoints(view){ data[view].points = JSON.parse(JSON.stringify(data[view].defaults)); drawPoints(view); }
+function togglePoints(view){ const d=data[view]; d.pointsVisible=!d.pointsVisible; const ov=$(`#${view}Overlay`); ov.style.opacity=d.pointsVisible?'1':'0'; ov.style.pointerEvents=d.pointsVisible?'auto':'none'; [...$$(`.toggle-pts`) ].filter(b=>b.dataset.view===view)[0].textContent=d.pointsVisible?'隱藏點位':'顯示點位'; }
+
+async function autoDetect(view){
+  const d=data[view]; if(!d.lastImage || !d.fit) return;
+  setStatus(view, 'AI · 偵測中…');
+  try{
+    const detector=await getDetector();
+    const res=detector.detect(d.lastImage);
+    const lm = res.faceLandmarks && res.faceLandmarks[0];
+    if(!lm){ setStatus(view,'AI · 找不到臉'); toast(`${view==='front'?'正面':'側面'}照片未偵測到臉`); return; }
+    if(view==='front'){
+      const jawA=avgLm(lm,[172,136,150]), jawB=avgLm(lm,[397,365,379]);
+      let jawL=mapLm(jawA,d.fit), jawR=mapLm(jawB,d.fit); if(jawL[0]>jawR[0]) [jawL,jawR]=[jawR,jawL];
+      let noseL=mapLm(lm[98],d.fit), noseR=mapLm(lm[327],d.fit); if(noseL[0]>noseR[0]) [noseL,noseR]=[noseR,noseL];
+      d.points = {
+        jawL, jawR,
+        chin: mapLm(lm[152],d.fit),
+        noseL, noseR,
+        lipU: mapLm(lm[13],d.fit),
+        lipD: mapLm(lm[14],d.fit),
+        noseBase: mapLm(avgLm(lm,[2,164]),d.fit)
+      };
+      const tilt=Math.abs(angleDeg(lm[33],lm[263]));
+      let quality=100-Math.min(40,(tilt>90?Math.abs(180-tilt):tilt)*3);
+      quality=Math.max(55, Math.round(quality));
+      d.quality=quality;
+      setStatus(view, `AI · 自動定位 ${quality}%`);
+    }else{
+      // Pick profile direction and anchor points
+      const noseTipPt = lm[1] || lm[4] || lm[5];
+      const chinPt = lm[152];
+      const dir = noseTipPt.x >= chinPt.x ? 1 : -1; // right-facing = 1, left-facing = -1
+      const forwardNose = mapLm(noseTipPt, d.fit);
+      const subnasale = mapLm(avgLm(lm,[2,164]), d.fit);
+      const lipU = mapLm(lm[13], d.fit);
+      const lipD = mapLm(lm[14], d.fit);
+      const chin = mapLm(chinPt, d.fit);
+      const jawBackLm = dir===1 ? avgLm(lm,[234,93,132]) : avgLm(lm,[454,323,361]);
+      const jawBack = mapLm(jawBackLm, d.fit);
+      d.points = {noseTip:forwardNose, noseBase:subnasale, lipU, lipD, chin, jawBack, faceDir:dir};
+      const faceW=Math.abs(lm[454].x-lm[234].x), quality = Math.max(50, Math.round(80 + Math.min(20, faceW*40)));
+      d.quality=quality;
+      setStatus(view, `AI · 自動定位 ${quality}%`);
+    }
+    drawPoints(view); scheduleRender(view); toast(`${view==='front'?'正面':'側面'}自動定位完成`);
+  }catch(err){ console.error(err); setStatus(view,'AI · 偵測失敗'); toast('自動偵測失敗，可手動微調'); }
+}
+
+function drawPoints(view){
+  const d=data[view], pts=d.points, g=$(`#${view}Landmarks`); g.innerHTML='';
+  const labels = view==='front' ? {jawL:'左下顎',jawR:'右下顎',chin:'下巴',noseL:'左鼻翼',noseR:'右鼻翼',lipU:'上唇',lipD:'下唇',noseBase:'鼻底'} : {noseTip:'鼻尖',noseBase:'鼻底',lipU:'上唇',lipD:'下唇',chin:'下巴',jawBack:'下顎後緣'};
+  Object.entries(pts).forEach(([k,p])=>{
+    if(Array.isArray(p)){
+      const c=document.createElementNS('http://www.w3.org/2000/svg','circle'); c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r','13'); c.setAttribute('class','pt'); c.dataset.key=k; g.appendChild(c);
+      const t=document.createElementNS('http://www.w3.org/2000/svg','text'); t.setAttribute('x',p[0]+16); t.setAttribute('y',p[1]-15); t.setAttribute('class','lab'); t.textContent=labels[k]||k; g.appendChild(t);
+    }
+  });
+  if(view==='front'){
+    $('#frontJawGuide').setAttribute('x1',pts.jawL[0]); $('#frontJawGuide').setAttribute('y1',pts.jawL[1]); $('#frontJawGuide').setAttribute('x2',pts.jawR[0]); $('#frontJawGuide').setAttribute('y2',pts.jawR[1]);
+    $('#frontChinGuide').setAttribute('x1',pts.noseBase[0]); $('#frontChinGuide').setAttribute('y1',pts.noseBase[1]); $('#frontChinGuide').setAttribute('x2',pts.chin[0]); $('#frontChinGuide').setAttribute('y2',pts.chin[1]);
+    $('#frontNoseGuide').setAttribute('x1',pts.noseL[0]); $('#frontNoseGuide').setAttribute('y1',pts.noseL[1]); $('#frontNoseGuide').setAttribute('x2',pts.noseR[0]); $('#frontNoseGuide').setAttribute('y2',pts.noseR[1]);
+    $('#frontLipGuide').setAttribute('x1',pts.lipU[0]); $('#frontLipGuide').setAttribute('y1',pts.lipU[1]); $('#frontLipGuide').setAttribute('x2',pts.lipD[0]); $('#frontLipGuide').setAttribute('y2',pts.lipD[1]);
+  } else {
+    $('#sideNoseGuide').setAttribute('x1',pts.noseTip[0]); $('#sideNoseGuide').setAttribute('y1',pts.noseTip[1]); $('#sideNoseGuide').setAttribute('x2',pts.noseBase[0]); $('#sideNoseGuide').setAttribute('y2',pts.noseBase[1]);
+    $('#sideChinGuide').setAttribute('x1',pts.noseBase[0]); $('#sideChinGuide').setAttribute('y1',pts.noseBase[1]); $('#sideChinGuide').setAttribute('x2',pts.chin[0]); $('#sideChinGuide').setAttribute('y2',pts.chin[1]);
+    $('#sideLipGuide').setAttribute('x1',pts.lipU[0]); $('#sideLipGuide').setAttribute('y1',pts.lipU[1]); $('#sideLipGuide').setAttribute('x2',pts.lipD[0]); $('#sideLipGuide').setAttribute('y2',pts.lipD[1]);
+    $('#sideJawGuide').setAttribute('x1',pts.jawBack[0]); $('#sideJawGuide').setAttribute('y1',pts.jawBack[1]); $('#sideJawGuide').setAttribute('x2',pts.chin[0]); $('#sideJawGuide').setAttribute('y2',pts.chin[1]);
+  }
+}
+
+function render(view){
+  const d=data[view]; if(!d.loaded) return;
+  const img = d.baseCtx.getImageData(0,0,W,H); let pix=img.data;
+  if(view==='front'){
+    const p=d.points; const noseCx=(p.noseL[0]+p.noseR[0])/2, noseCy=(p.noseL[1]+p.noseR[1])/2;
+    const lipCx=(p.lipU[0]+p.lipD[0])/2, lipCy=(p.lipU[1]+p.lipD[1])/2; const lowerCy=(p.noseBase[1]+p.chin[1])/2;
+    const jawDx=state.jaw*1.35;
+    pix = warpTranslation(pix, p.jawL[0], p.jawL[1], 150, 175, -jawDx, 0);
+    pix = warpTranslation(pix, p.jawR[0], p.jawR[1], 150, 175, jawDx, 0);
+    // Chin projection on front = slight length + subtle narrowing when positive
+    pix = warpTranslation(pix, p.chin[0], p.chin[1], 160, 140, 0, state.chin*0.9);
+    pix = warpScale(pix, p.chin[0], p.chin[1]-10, 120, 120, 1-state.chin*0.004, 1+state.chin*0.003);
+    // Nose projection on front = subtle narrowing / refinement
+    pix = warpScale(pix, noseCx, noseCy, 95, 115, 1-state.nose*0.005, 1+state.nose*0.0025);
+    // Lips and lower face
+    pix = warpScale(pix, lipCx, lipCy, 130, 78, 1, 1+state.lip*0.011);
+    pix = warpScale(pix, p.chin[0], lowerCy, 210, 235, 1, 1+state.lower*0.0065);
+  } else {
+    const p=d.points; const dir=p.faceDir||1; const lipCx=(p.lipU[0]+p.lipD[0])/2, lipCy=(p.lipU[1]+p.lipD[1])/2; const lowerCy=(p.noseBase[1]+p.chin[1])/2;
+    pix = warpTranslation(pix, p.noseTip[0], p.noseTip[1], 120, 120, dir*state.nose*1.5, -state.nose*0.15);
+    pix = warpTranslation(pix, p.chin[0], p.chin[1], 170, 150, dir*state.chin*1.35, state.chin*0.15);
+    pix = warpScale(pix, lipCx, lipCy, 120, 70, 1, 1+state.lip*0.0105);
+    pix = warpScale(pix, p.chin[0], lowerCy, 220, 240, 1, 1+state.lower*0.0065);
+    // Side compensation for jaw width
+    pix = warpTranslation(pix, p.jawBack[0], p.jawBack[1], 150, 150, -dir*state.jaw*0.45, 0);
+  }
+  img.data.set(pix); d.workCtx.putImageData(img,0,0); d.ctx.clearRect(0,0,W,H); d.ctx.drawImage(d.workCanvas,0,0);
+}
+function scheduleRender(view){
+  const d=data[view]; if(d.renderPending) return; d.renderPending=true;
+  setTimeout(()=>{ d.renderPending=false; render(view); }, 48);
+}
+function scheduleAll(){ scheduleRender('front'); scheduleRender('side'); }
+function showBefore(view, on){ const d=data[view]; if(!d.loaded) return; if(on){ d.ctx.clearRect(0,0,W,H); d.ctx.drawImage(d.baseCanvas,0,0); } else render(view); }
+
+function overlayPos(view,e){
+  const r=$(`#${view}Overlay`).getBoundingClientRect(); const p=e.touches?.[0]||e;
+  return [clamp((p.clientX-r.left)/r.width*W,15,W-15), clamp((p.clientY-r.top)/r.height*H,15,H-15)];
+}
+['front','side'].forEach(view=>{
+  const overlay = $(`#${view}Overlay`);
+  overlay.addEventListener('pointerdown', e=>{ if(e.target.classList.contains('pt')){ data[view].dragKey=e.target.dataset.key; e.target.classList.add('active'); e.preventDefault(); } });
+  window.addEventListener('pointermove', e=>{ if(!data[view].dragKey) return; data[view].points[data[view].dragKey]=overlayPos(view,e); drawPoints(view); scheduleRender(view); });
+  window.addEventListener('pointerup', ()=>{ data[view].dragKey=null; overlay.querySelectorAll('.pt').forEach(n=>n.classList.remove('active')); });
+});
+
+async function loadPhoto(view, file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const img = new Image();
+    img.onload = async ()=>{
+      drawBaseImage(view, img); data[view].loaded=true; $(`#${view}Empty`).style.display='none'; $(`#${view}Overlay`).hidden=false; $(`#${view}UploadLabel`).classList.add('ready');
+      $(`#${view}UploadLabel`).childNodes[0].textContent = `${view==='front'?'正面':'側面'}照片已載入 · 點此更換`;
+      resetPoints(view); render(view); await autoDetect(view); generateBrief();
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+$('#frontUpload').addEventListener('change', e=>loadPhoto('front', e.target.files[0]));
+$('#sideUpload').addEventListener('change', e=>loadPhoto('side', e.target.files[0]));
+
+$$('.redetect').forEach(btn=>btn.addEventListener('click', async ()=>{ const view=btn.dataset.view; if(!data[view].loaded){ toast('請先上傳照片'); return; } await autoDetect(view); }));
+$$('.toggle-pts').forEach(btn=>btn.addEventListener('click', ()=>togglePoints(btn.dataset.view)));
+$$('.tag-btn').forEach(btn=>btn.addEventListener('click', ()=>{ const tag=btn.dataset.tag; if(selectedTags.has(tag)){ selectedTags.delete(tag); btn.classList.remove('active'); } else { selectedTags.add(tag); btn.classList.add('active'); } generateBrief(); }));
+$$('.before').forEach(btn=>{
+  const view=btn.dataset.view;
+  ['pointerdown','touchstart'].forEach(ev=>btn.addEventListener(ev, ()=>showBefore(view,true), {passive:true}));
+  ['pointerup','pointerleave','pointercancel','touchend'].forEach(ev=>btn.addEventListener(ev, ()=>showBefore(view,false), {passive:true}));
+});
+
+['nose','chin','jaw','lip','lower'].forEach(k=>{
+  $(`#${k}`).addEventListener('input', e=>{ state[k]=Number(e.target.value); updateValues(); scheduleAll(); generateBrief(); });
+});
+$('#resetMorph').addEventListener('click', ()=>{ Object.keys(state).forEach(k=>{state[k]=0; $(`#${k}`).value=0;}); updateValues(); scheduleAll(); generateBrief(); toast('已全部歸零'); });
+$('#generateBrief').addEventListener('click', ()=>{ generateBrief(); toast('摘要已更新'); });
+$('#copyBrief').addEventListener('click', async ()=>{
+  try{ await navigator.clipboard.writeText($('#briefOutput').value); toast('摘要已複製'); }catch(e){ toast('瀏覽器不允許剪貼簿存取'); }
+});
+$('#exportFront').addEventListener('click', ()=>{
+  if(!data.front.loaded){ toast('請先上傳正面照片'); return; }
+  render('front');
+  data.front.canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download='signwell-front-preview.jpg'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500); toast('已匯出正面圖');
+  }, 'image/jpeg', .92);
+});
+$('#exportCard').addEventListener('click', ()=>{
+  if(!data.front.loaded && !data.side.loaded){ toast('請先上傳至少一張照片'); return; }
+  generateBrief();
+  const card=document.createElement('canvas'); card.width=1200; card.height=1800; const c=card.getContext('2d');
+  c.fillStyle='#f3f4f6'; c.fillRect(0,0,card.width,card.height);
+  c.fillStyle='#111318'; c.font='700 44px -apple-system,BlinkMacSystemFont,sans-serif'; c.fillText('SIGNWELL 看診溝通卡', 60, 80);
+  c.fillStyle='#5c6270'; c.font='24px -apple-system,BlinkMacSystemFont,sans-serif'; c.fillText('正面 / 側面模擬 + 文字摘要', 60, 120);
+  // image blocks
+  let y=170; const blockH=560, imgW=480, imgH=640;
+  if(data.front.loaded){ render('front'); c.fillStyle='#111318'; c.font='700 26px -apple-system,BlinkMacSystemFont,sans-serif'; c.fillText('正面模擬', 60, y); c.drawImage(data.front.canvas, 60, y+20, imgW, imgH); }
+  if(data.side.loaded){ render('side'); c.fillStyle='#111318'; c.font='700 26px -apple-system,BlinkMacSystemFont,sans-serif'; c.fillText('側面模擬', 650, y); c.drawImage(data.side.canvas, 650, y+20, imgW, imgH); }
+  y += blockH + 40;
+  c.fillStyle='#111318'; c.font='700 28px -apple-system,BlinkMacSystemFont,sans-serif'; c.fillText('看診溝通摘要', 60, y);
+  const text=$('#briefOutput').value.split('\n');
+  c.font='24px -apple-system,BlinkMacSystemFont,sans-serif'; c.fillStyle='#22252c';
+  let ty=y+40; const maxWidth=1080;
+  function wrapLine(line){
+    const words=[...line]; let cur=''; const out=[];
+    words.forEach(ch=>{ const test=cur+ch; if(c.measureText(test).width>maxWidth){ out.push(cur); cur=ch; } else { cur=test; } });
+    if(cur) out.push(cur); return out.length?out:[''];
+  }
+  text.forEach(line=>{ wrapLine(line).forEach(w=>{ c.fillText(w,60,ty); ty+=32; }); ty+=8; });
+  card.toBlob(blob=>{ const url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download='signwell-consult-card.jpg'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500); toast('已輸出溝通卡'); }, 'image/jpeg', .92);
+});
+
+function updateValues(){
+  ['nose','chin','jaw','lip','lower'].forEach(k=>{ $(`#${k}Val`).textContent=signed(state[k]); });
+  $('#mNose').textContent=signed(state.nose); $('#mChin').textContent=signed(state.chin); $('#mJaw').textContent=signed(state.jaw); $('#mLower').textContent=signed(state.lower);
+}
+function level(abs){ if(abs>=14) return '明顯'; if(abs>=8) return '中度'; if(abs>=3) return '輕度'; return '些微'; }
+function dirWord(val, positive, negative){ return val>0?positive:val<0?negative:'維持'; }
+function pickedConcerns(){
+  const items=[];
+  if(Math.abs(state.nose)>=3) items.push(`鼻子希望${level(Math.abs(state.nose))}${dirWord(state.nose,'更立體、更有投射感','更低調、投射感較弱')}`);
+  if(Math.abs(state.chin)>=3) items.push(`下巴希望${level(Math.abs(state.chin))}${dirWord(state.chin,'更往前、輪廓更完整','更收回、存在感較低')}`);
+  if(Math.abs(state.jaw)>=3) items.push(`下顎線希望${level(Math.abs(state.jaw))}${dirWord(state.jaw,'更寬、更有量感','更收、更俐落')}`);
+  if(Math.abs(state.lip)>=3) items.push(`嘴唇希望${level(Math.abs(state.lip))}${dirWord(state.lip,'更飽滿','更薄、更克制')}`);
+  if(Math.abs(state.lower)>=3) items.push(`下臉比例希望${level(Math.abs(state.lower))}${dirWord(state.lower,'略拉長','略縮短')}`);
+  return items;
+}
+function generateBrief(){
+  const style = $('#styleSelect').value, vibe = $('#vibeSelect').value, free = $('#freeText').value.trim();
+  const ideas = pickedConcerns();
+  const main = ideas.length ? ideas.join('；') : '目前沒有明顯偏移，我想先和醫師討論整體比例與最適合優先處理的部位。';
+  const prominent=[];
+  [['鼻子',state.nose],['下巴',state.chin],['下顎線',state.jaw],['嘴唇',state.lip],['下臉比例',state.lower]].forEach(([name,v])=>{ if(Math.abs(v)>=8) prominent.push(name); });
+  const discuss=[];
+  if(Math.abs(state.nose)>=3) discuss.push('鼻子的立體度 / 投射感是否適合再增加或減少，以及正面與側面是否協調');
+  if(Math.abs(state.chin)>=3) discuss.push('下巴前凸、下巴長度與整體下臉比例是否協調');
+  if(Math.abs(state.jaw)>=3) discuss.push('下顎線寬度、俐落度與臉型是否平衡');
+  if(Math.abs(state.lip)>=3) discuss.push('嘴唇厚度是否要再保守或明顯一些');
+  if(Math.abs(state.lower)>=3) discuss.push('下臉長度調整後會不會影響整體成熟感 / 男性感 / 精緻感');
+  if(!discuss.length) discuss.push('先由醫師評估臉部比例、正面與側面的優先處理重點');
+  const dont = [];
+  if(style==='自然保守') dont.push('不希望一眼就看出做過、不要過度誇張');
+  if(style==='自然精緻') dont.push('希望自然但有感，不要太假');
+  if(style==='輪廓明顯') dont.push('希望輪廓提升明顯，但仍需維持協調');
+  if(vibe==='男性俐落') dont.push('不希望過度女性化、過尖、過翹');
+  if(vibe==='中性乾淨') dont.push('希望乾淨俐落，不要太銳利');
+  if(vibe==='柔和精緻') dont.push('希望柔和精緻，但不要失去個人辨識度');
+  if(selectedTags.size) [...selectedTags].forEach(tag=>dont.push(tag));
+  if(free) dont.push(`其他補充：${free}`);
+
+  const note = `【看診溝通摘要】\n\n1. 我的主要想法\n${main}\n\n2. 我希望醫師優先評估的方向\n- 偏好風格：${style}\n- 輪廓方向：${vibe}\n- 此次模擬最有感的部位：${prominent.length?prominent.join('、'):'尚未特別放大任何單一部位'}\n- 我有提供正面與側面照片，希望能一起看整體比例，而不是只看單一角度。\n\n3. 想和醫師討論的問題\n${discuss.map(x=>`- ${x}`).join('\n')}\n\n4. 我不想要的結果\n${dont.map(x=>`- ${x}`).join('\n')}\n\n5. 補充說明\n- 這是我用 2D 視覺模擬做的方向參考，不是我認定的唯一做法。\n- 我希望醫師依照實際骨架、軟組織、咬合 / 鼻型條件，判斷哪些想法合理、哪些需要保守修正。`;
+  $('#briefOutput').value = note;
+}
+</script>
+</body>
+</html>
