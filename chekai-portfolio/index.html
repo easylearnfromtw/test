@@ -16,6 +16,25 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 @keyframes npPulse{50%{opacity:.35;transform:scale(.72)}}
 .hud{display:none}.chip{display:none}.chip b{display:block;color:#fff;font-size:9px;margin-bottom:2px}.status{position:absolute;right:16px;bottom:16px;min-width:190px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(5,10,22,.66);backdrop-filter:blur(12px);font:8px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9eabbc}.status strong{color:#fff;float:right}.bar{height:3px;margin-top:9px;background:rgba(255,255,255,.10);border-radius:4px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#fff;transition:width .3s}
 .loop-flash{display:none}
+.intro{position:fixed;inset:0;z-index:18;display:grid;place-items:center;padding:76px 18px 28px;pointer-events:none;transition:opacity .42s ease,visibility .42s ease}
+.intro::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(12,31,35,.10),rgba(5,14,20,.28));backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.intro.hidden{opacity:0;visibility:hidden}
+.intro-card{position:relative;width:min(620px,calc(100vw - 34px));padding:30px 30px 25px;background:#f7f2e7;color:#174b3a;border:3px solid #174b3a;box-shadow:0 24px 70px rgba(7,20,27,.28),8px 8px 0 rgba(23,75,58,.14);pointer-events:auto;overflow:hidden}
+.intro-card::before,.intro-card::after{content:"";position:absolute;width:42px;height:42px;border-color:#174b3a;opacity:.32;pointer-events:none}
+.intro-card::before{left:13px;top:13px;border-left:2px solid;border-top:2px solid}.intro-card::after{right:13px;bottom:13px;border-right:2px solid;border-bottom:2px solid}
+.intro-kicker{display:flex;align-items:center;gap:10px;font:800 11px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase}
+.intro-kicker i{width:9px;height:9px;border-radius:50%;background:#c94a43;display:block}
+.intro-name{margin:30px 0 3px;font:950 clamp(58px,11vw,112px)/.88 var(--sans);letter-spacing:-.075em}
+.intro-en{font:800 16px/1.1 var(--mono);letter-spacing:.18em;margin-bottom:26px}
+.intro-rule{height:1px;background:rgba(23,75,58,.20);margin:0 0 21px}
+.intro-copy{max-width:460px;margin:0;font-size:14px;line-height:1.8;font-weight:600;color:#315d50}
+.intro-meta{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:27px}
+.intro-swipe{display:flex;align-items:center;gap:12px;font:800 11px/1.25 var(--mono);letter-spacing:.08em}
+.intro-arrows{font-size:25px;letter-spacing:.18em;animation:introNudge 1.6s ease-in-out infinite}
+.intro-enter{appearance:none;border:0;background:#f3bf53;color:#1c2924;padding:12px 15px;font:900 12px/1 var(--mono);letter-spacing:.08em;cursor:pointer;box-shadow:3px 3px 0 #174b3a}
+.intro-seal{position:absolute;right:27px;top:26px;width:58px;height:58px;background:#c94a43;color:#f7f2e7;display:grid;place-items:center;text-align:center;font:900 14px/1.05 "Noto Sans TC",sans-serif;transform:rotate(-6deg);border:3px double #f7f2e7}
+@keyframes introNudge{0%,100%{transform:translateX(0);opacity:.62}50%{transform:translateX(7px);opacity:1}}
+@media(max-width:560px){.intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
 .drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.loading{position:absolute;inset:0;display:grid;place-items:center;z-index:30;background:#080d19;transition:opacity .5s}.loading.done{opacity:0;pointer-events:none}.loading div{text-align:center;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase}.loading strong{display:block;font:800 28px var(--sans);letter-spacing:.08em;margin-bottom:8px}
 @media(max-width:920px){.topbar{grid-template-columns:1fr auto;height:auto;min-height:58px;padding:8px 10px}.nav{grid-column:1/-1;justify-content:flex-start}.identity{display:none}.status{display:none}.hud{display:none}.chip:nth-child(2){display:none}.drawer{top:105px;right:10px;bottom:10px;width:calc(100vw - 20px)}}
 @media(max-width:900px){.app::after{display:none!important}.topbar,.now-playing{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
@@ -29,6 +48,20 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
+  <div class="intro" id="intro">
+    <section class="intro-card" role="dialog" aria-labelledby="introName" aria-describedby="introCopy">
+      <div class="intro-seal">哲愷<br>之印</div>
+      <div class="intro-kicker"><i></i><span>PORTFOLIO CITY · 2026</span></div>
+      <h1 class="intro-name" id="introName">林哲愷</h1>
+      <div class="intro-en">CHE-KAI LIN</div>
+      <div class="intro-rule"></div>
+      <p class="intro-copy" id="introCopy">我是學生、文字創作者，也是喜歡把想法做成網站與視覺作品的人。這座城市把我的作品、經歷、角色與紀錄拆成不同街區。</p>
+      <div class="intro-meta">
+        <div class="intro-swipe"><span class="intro-arrows">← →</span><span>左右滑動<br>探索城市</span></div>
+        <button class="intro-enter" id="introEnter" type="button">開始探索 →</button>
+      </div>
+    </section>
+  </div>
   <div class="chrome">
     <header class="topbar"><span class="brand">CHE-KAI LIN</span></header>
     <button class="now-playing blocked" id="nowPlaying" type="button" aria-label="CITYMUS audio"><span class="np-dot"></span><span id="nowPlayingText">CITYMUS · LOADING</span></button>
@@ -824,16 +857,23 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     facade.traverse(n=>{if(n!==facade&&!dynamicSet.has(n)){n.updateMatrix();n.matrixAutoUpdate=false}});
     buildings.set(group.name,group);
   }
-  spawn('hero',4,0);
-  const openingHero=buildings.get('hero:0');if(openingHero)openingHero.visible=true;
+  // Opening is now a DOM intro card; no one-off hero building is generated.
   [-1,0,1].forEach(copy=>cycleBuildings.forEach((id,index)=>spawn(id,index,copy)));
   [-1,0,1].forEach(copy=>{ addSeparator(-49.5+copy*LOOP_SPAN,copy*2+11); addSeparator(154.5+copy*LOOP_SPAN,copy*2+12); });
   renderer.compile(scene,camera);
-  document.getElementById('loading').classList.add('done'); focus('hero',false)
+  document.getElementById('loading').classList.add('done');focus('hero',false)
 },undefined,e=>{console.error(e);document.querySelector('#loading div').innerHTML='<strong>MODEL ERROR</strong>3D MODEL COULD NOT LOAD';});
 // nav/drawer
 const CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
-let activeId='hero',cycleCursor=0,openingHeroRetired=false;
+let activeId='hero',cycleCursor=0,introDismissed=false;
+const intro=document.getElementById('intro'),introEnter=document.getElementById('introEnter');
+function dismissIntro(dir=1,advance=true){
+  if(introDismissed)return false;
+  introDismissed=true;intro?.classList.add('hidden');
+  if(advance)focus(dir>=0?CYCLE[0]:CYCLE[CYCLE.length-1],false,dir>=0?0:-1);
+  return true
+}
+introEnter?.addEventListener('click',e=>{e.stopPropagation();dismissIntro(1,true)});
 const nav=document.getElementById('nav');if(nav)['hero',...CYCLE].forEach((id,i)=>{const b=document.createElement('button');b.textContent=id==='hero'?'Home':DATA[id].index+' '+DATA[id].nav;b.dataset.id=id;if(!i)b.classList.add('active');b.onclick=()=>focus(id,true);nav.appendChild(b)});
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
 function openDrawer(id){const d=DATA[id];document.getElementById('dk').textContent=`${d.index} / ${d.nav}`;document.getElementById('dt').textContent=d.title;document.getElementById('di').textContent=d.intro;document.getElementById('items').innerHTML=d.items.map(x=>`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');drawer.classList.add('open')}
@@ -845,8 +885,7 @@ function updateLoopUI(id){
 function nearestLapFor(id){ return Math.round((currentX-CONFIG[id].x)/LOOP_SPAN); }
 function focus(id,open=false,lap=null){
   const cfg=CONFIG[id]; if(!cfg) return;
-  const wasHero=activeId==='hero';activeId=id;setPortfolioBoardQuality(id);
-  if(wasHero&&id!=='hero')openingHeroRetired=true;
+  activeId=id;if(id!=='hero')setPortfolioBoardQuality(id);
   const useLap=(id==='hero')?0:(lap===null?nearestLapFor(id):lap);
   targetX=(id==='hero')?cfg.x:(cfg.x+useLap*LOOP_SPAN);
   targetY=id==='hero'?6.0:5.8;
@@ -856,7 +895,8 @@ function focus(id,open=false,lap=null){
   updateLoopUI(id); history.replaceState(null,'','#'+id); if(open)openDrawer(id)
 }
 function stepCycle(dir=1){
-  if(activeId==='hero'){ focus(dir>0?CYCLE[0]:CYCLE[CYCLE.length-1],false,dir>0?0:-1); return; }
+  if(!introDismissed){dismissIntro(dir,true);return}
+  if(activeId==='hero'){focus(dir>0?CYCLE[0]:CYCLE[CYCLE.length-1],false,dir>0?0:-1);return}
   let idx=CYCLE.indexOf(activeId); if(idx<0) idx=0;
   const lap=nearestLapFor(activeId);
   const nextIdx=(idx+dir+CYCLE.length)%CYCLE.length;
@@ -873,8 +913,8 @@ canvas.addEventListener('pointermove',e=>{if(!dragging){if(e.pointerType==='mous
 canvas.addEventListener('pointerup',e=>{dragging=false;canvas.classList.remove('dragging');const dx=e.clientX-down.x,dy=e.clientY-down.y;if(moved&&Math.abs(dx)>Math.max(46,Math.abs(dy)*1.1)){stepCycle(dx>0?-1:1);return}if(!moved){pointerN(e);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(clickables,false)[0];if(hit)focus(hit.object.userData.section,true)}});canvas.addEventListener('pointercancel',()=>{dragging=false;canvas.classList.remove('dragging')});
 canvas.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
-document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus('hero',false)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){drawer.classList.remove('open');focus('hero',false)}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
+document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus(CYCLE[0],false)});
+addEventListener('keydown',e=>{if(e.key==='Escape')drawer.classList.remove('open');if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
 addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;applyResponsiveCamera();renderer.setSize(innerWidth,innerHeight);
   QUALITY=qualityTargets();DPR_MIN=QUALITY.floor;DPR_MAX=QUALITY.idle;DPR_IDLE_TARGET=QUALITY.idle;
@@ -893,19 +933,10 @@ function animate(){
   currentY=moveToward(currentY,targetY,7.5*dt);
   currentZ=moveToward(currentZ,targetZ,13*dt);
   wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.lookAt(currentX,LOOK_AT_Y,LOOK_AT_Z);
-  const openingHero=buildings.get('hero:0');
-  if(openingHero&&openingHeroRetired&&openingHero.visible){
-    const dx=Math.abs(currentX-CONFIG.hero.x);
-    // Keep it alive during the departure so it physically slides off-screen.
-    // Once comfortably outside the view, remove it forever from the loop.
-    if(dx>48){openingHero.visible=false;const hf=facadeLayers.get('hero:0');if(hf)hf.visible=false}
-  }
-
   // Coarse culling: only keep the current and adjacent loop copies submitted to WebGL.
   const cullTick=Math.floor(t*4);
   if(cullTick!==lastCullTick){lastCullTick=cullTick;
     loopCullGroups.forEach(g=>{
-      if(g.name==='hero:0'||g.name==='hero:0:facade'){g.visible=!openingHeroRetired||Math.abs(currentX-CONFIG.hero.x)<=48;return}
       g.visible=Math.abs(g.position.x-currentX)<185;
     })
   }
@@ -949,6 +980,8 @@ function animate(){
   }
   renderer.render(scene,camera);requestAnimationFrame(animate)
 }animate();
-const initial=location.hash.slice(1);if(DATA[initial]){if(initial!=='hero')openingHeroRetired=true;focus(initial,false)}
+const initial=location.hash.slice(1);
+if(initial&&initial!=='hero'&&DATA[initial]){introDismissed=true;intro?.classList.add('hidden');focus(initial,false)}
+else{focus('hero',false)}
 </script>
 </body></html>
