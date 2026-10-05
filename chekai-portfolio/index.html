@@ -379,15 +379,13 @@ function makeTexture(id,quality='base'){
   // restrained printed grain: readable at distance, still feels like a physical city billboard
   x.globalAlpha=.035;for(let i=0;i<900;i++){const g=145+Math.random()*70;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*3,1+Math.random()*2)}x.globalAlpha=1;
 
-  // editorial grid
-  x.fillStyle=accent;x.fillRect(0,0,26,H);
+  // clean billboard face: no decorative divider lines
   x.fillStyle=fg;x.textBaseline='alphabetic';
   x.font='800 34px "SFMono-Regular",Consolas,monospace';x.fillText(d.index,74,82);
   x.globalAlpha=.68;x.font='650 28px "Noto Sans TC",Arial,sans-serif';x.fillText(BOARD_LABELS[id]||d.nav,170,82);x.globalAlpha=1;
 
   if(id==='hero'){
     x.font='950 164px Arial,sans-serif';x.fillText('CHE-KAI',74,348);x.fillText('LIN',74,524);
-    x.fillStyle=accent;x.fillRect(80,584,330,12);
     x.fillStyle=fg;x.font='700 34px Arial,sans-serif';x.fillText('WRITER × DESIGNER × STUDENT',74,668);
   }else{
     // Giant single-purpose title. No experience bullet points on the street façade.
@@ -397,7 +395,6 @@ function makeTexture(id,quality='base'){
     const max=1220;while(x.measureText(title).width>max&&size>88){size-=4;x.font=`950 ${size}px Arial,"Noto Sans TC",sans-serif`}
     x.fillText(title,74,420);
 
-    x.fillStyle=accent;x.fillRect(78,488,Math.min(600,Math.max(210,x.measureText(title).width*.42)),14);
     x.fillStyle=fg;x.globalAlpha=.76;x.font='650 34px "Noto Sans TC",Arial,sans-serif';
     x.fillText(d.intro,78,582);x.globalAlpha=1;
 
@@ -512,7 +509,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     frame.position.set(0,cfg.h*.64,dims.d*.49+.10);group.add(frame);
     const haloMat=new THREE.MeshBasicMaterial({color:DATA[id].accent,transparent:true,opacity:.14,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false});
     const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.6,bh+1.6),haloMat);halo.position.set(0,cfg.h*.64,dims.d*.49+.20);group.add(halo);
-    const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});
+    const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
     mat.userData.baseIntensity=1.55;mat.userData.phase=(index+copy*10)*1.11;
     const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat); board.position.set(0,cfg.h*.64,dims.d*.49+.34); board.userData.section=id; group.add(board); clickables.push(board);
     if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);portfolioBoards.get(id).push(mat);
