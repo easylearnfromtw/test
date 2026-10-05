@@ -746,6 +746,7 @@ const BOARD_STYLE={hero:'red',about:'cream',web:'dark',experience:'dark',academi
 const BOARD_LABELS={hero:'林哲愷 · CHE-KAI LIN',about:'關於我',web:'網站作品',experience:'個人經歷',academic:'學習經歷',writing:'文字創作',running:'跑步紀錄',roles:'身份角色',public:'公共參與',art:'藝術檔案'};
 const loader=new GLTFLoader();const root=new THREE.Group();scene.add(root);const buildings=new Map(),facadeLayers=new Map(),clickables=[],portfolioBoards=new Map();
 const textureCache=new Map(),wallTextureCache=new Map(),posterTextureCache=new Map(),shopSignTextureCache=new Map();
+const boardMaterialCache=new Map(),boardGeometryCache=new Map(),projectingGeometryCache=new Map();
 let activePortfolioHiTex=null,activePortfolioHiId=null;
 const SHOP_SIGNS={
   about:[['seven','7-ELEVEN']],
@@ -985,13 +986,13 @@ function addProjectingSign(facade,id,worldBox,index,copy){
   const def=SHOP_SIGNS[id]?.[0];if(!def)return;
   const [kind,label]=def,tex=makeShopSignTexture(kind,label),h=kind==='seven'?6.6:5.3,d=3.4,w=.72;
   const dark=sharedMat('projecting-dark',()=>new THREE.MeshStandardMaterial({color:0x07090d,roughness:.32,metalness:.72}));
-  const face=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.85,roughness:.32,metalness:0,toneMapped:false});
-  face.userData.baseIntensity=1.85;face.userData.phase=(index+copy*11)*1.31;
+  const face=sharedMat('projecting-face-'+id,()=>{const m=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.85,roughness:.32,metalness:0,toneMapped:false});m.userData.baseIntensity=1.85;return m});
+  const geoKey=kind+':'+w+':'+h+':'+d;let pGeo=projectingGeometryCache.get(geoKey);if(!pGeo){pGeo=new THREE.BoxGeometry(w,h,d);projectingGeometryCache.set(geoKey,pGeo)}
   const width=worldBox.max.x-worldBox.min.x;
-  const box=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[face,face,dark,dark,dark,dark]);
+  const box=new THREE.Mesh(pGeo,[face,face,dark,dark,dark,dark]);
   box.position.set(width*.43,Math.min(id==='art'?11:15,cfgSafeHeight(id)*.55),d*.5+.52);box.castShadow=false;box.renderOrder=7;facade.add(box);
   const haloColor=kind==='cosmed'?0xff6f9a:kind==='px'?0xffdb44:kind==='seven'?0x5ce38f:0xffa14a;
-  const haloMat=new THREE.MeshBasicMaterial({color:haloColor,transparent:true,opacity:.08,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,side:THREE.DoubleSide});
+  const haloMat=sharedMat('projecting-halo-'+id,()=>{const m=new THREE.MeshBasicMaterial({color:haloColor,transparent:true,opacity:.08,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,side:THREE.DoubleSide});m.forceSinglePass=true;return m});
   const halo=new THREE.Mesh(new THREE.BoxGeometry(w+.16,h+.30,d+.14),haloMat);halo.position.copy(box.position);facade.add(halo);
   lightboxes.push({mat:face,halo:haloMat,light:null,x:facade.position.x});
   if(kind==='barber')addBarberPole(facade,worldBox)
@@ -1207,7 +1208,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     const boardRatio=[.50,.586,.68][index%3],boardWidthFactor=[.92,.98,.84][index%3];
     const tex=makeTexture(id),bw=Math.min(15.8,Math.max(10.8,worldW*boardWidthFactor)),bh=bw*boardRatio;
     const boardY=cfg.h*(.60+(index%3)*.025),boardZ=.18;
-    const frameMat=new THREE.MeshStandardMaterial({color:id==='hero'?0x174B3A:0x06080c,roughness:id==='hero'?.48:.30,metalness:id==='hero'?.28:.84});
+    const frameMat=sharedMat('portfolio-frame-'+(id==='hero'?'hero':'default'),()=>new THREE.MeshStandardMaterial({color:id==='hero'?0x174B3A:0x06080c,roughness:id==='hero'?.48:.30,metalness:id==='hero'?.28:.84}));
     const frameT=.22,frameD=.12;
     const topBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
     const bottomBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
@@ -1219,13 +1220,14 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     rightBar.position.set(bw*.5+.12,boardY,boardZ-.08);
     [topBar,bottomBar,leftBar,rightBar].forEach(b=>b.userData.twStatic=true);
     facade.add(topBar,bottomBar,leftBar,rightBar);
-    const haloMat=new THREE.MeshBasicMaterial({color:id==='hero'?0xf4e7c8:DATA[id].accent,transparent:true,opacity:id==='hero'?.045:.11,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,toneMapped:false});
+    const haloMat=sharedMat('portfolio-halo-'+id,()=>new THREE.MeshBasicMaterial({color:id==='hero'?0xf4e7c8:DATA[id].accent,transparent:true,opacity:id==='hero'?.045:.11,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,toneMapped:false}));
     const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.25,bh+1.25),haloMat);halo.position.set(0,boardY,boardZ-.16);facade.add(halo);
-    const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});
-    mat.userData.baseIntensity=1.55;mat.userData.phase=(index+copy*10)*1.11;
-    const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat);
+    let mat=boardMaterialCache.get(id);
+    if(!mat){mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});mat.userData.baseIntensity=1.55;mat.forceSinglePass=true;boardMaterialCache.set(id,mat)}
+    const boardGeoKey=id+':'+bw.toFixed(3)+':'+bh.toFixed(3);let boardGeo=boardGeometryCache.get(boardGeoKey);if(!boardGeo){boardGeo=new THREE.PlaneGeometry(bw,bh);boardGeometryCache.set(boardGeoKey,boardGeo)}
+    const board=new THREE.Mesh(boardGeo,mat);
     board.position.set(0,boardY,boardZ);board.renderOrder=6;board.userData.section=id;facade.add(board);clickables.push(board);
-    if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);portfolioBoards.get(id).push(mat);
+    if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);if(!portfolioBoards.get(id).includes(mat))portfolioBoards.get(id).push(mat);
     // main billboard is intentionally the only portfolio identifier on the façade
     addProjectingSign(facade,id,worldBox,index,copy);
     addMiniSigns(facade,id,worldBox,index,copy);
@@ -1240,6 +1242,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
   [-1,0,1].forEach(copy=>{ addSeparator(-49.5+copy*LOOP_SPAN,copy*2+11); addSeparator(154.5+copy*LOOP_SPAN,copy*2+12); });
   scene.traverse(o=>{
     if(!o.isMesh)return;
+    if(o.geometry&&!o.geometry.boundingSphere)o.geometry.computeBoundingSphere();
     const mats=Array.isArray(o.material)?o.material:[o.material];
     mats.forEach(m=>{if(m&&m.transparent&&m.side===THREE.DoubleSide)m.forceSinglePass=true})
   });
