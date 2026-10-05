@@ -153,7 +153,11 @@ let renderDpr=QUALITY.idle;
 renderer.setPixelRatio(renderDpr);renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x8eaabd);scene.fog=new THREE.FogExp2(0xa6b8c0,.0046);
 const staticSceneObjects=[],loopCullGroups=[];
-function freezeStatic(o){o.updateMatrix();o.matrixAutoUpdate=false;staticSceneObjects.push(o);return o}
+function freezeStatic(o){
+  o.updateMatrix();o.matrixAutoUpdate=false;
+  o.updateMatrixWorld(true);o.matrixWorldAutoUpdate=false;
+  staticSceneObjects.push(o);return o
+}
 const sharedMaterialCache=new Map();
 function sharedMat(key,factory){if(!sharedMaterialCache.has(key))sharedMaterialCache.set(key,factory());return sharedMaterialCache.get(key)}
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,290);camera.position.set(CONFIG.hero.x,6.0,38);
