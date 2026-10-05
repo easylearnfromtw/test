@@ -149,15 +149,11 @@ function qualityTargets(){
   };
 }
 let QUALITY=qualityTargets(),DPR_MIN=QUALITY.floor,DPR_MAX=QUALITY.idle,DPR_IDLE_TARGET=QUALITY.idle;
-let renderDpr=QUALITY.idle;
+let renderDpr=QUALITY.motion;
 renderer.setPixelRatio(renderDpr);renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x8eaabd);scene.fog=new THREE.FogExp2(0xa6b8c0,.0046);
 const staticSceneObjects=[],loopCullGroups=[];
-function freezeStatic(o){
-  o.updateMatrix();o.matrixAutoUpdate=false;
-  o.updateMatrixWorld(true);o.matrixWorldAutoUpdate=false;
-  staticSceneObjects.push(o);return o
-}
+function freezeStatic(o){o.updateMatrix();o.matrixAutoUpdate=false;staticSceneObjects.push(o);return o}
 const sharedMaterialCache=new Map();
 function sharedMat(key,factory){if(!sharedMaterialCache.has(key))sharedMaterialCache.set(key,factory());return sharedMaterialCache.get(key)}
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,290);camera.position.set(CONFIG.hero.x,6.0,38);
@@ -712,7 +708,7 @@ for(let i=0;i<4;i++){
 }
 mrtTrain.position.set(-255,28.25,-57);scene.add(mrtTrain);
 
-// deterministic background towers — fully instanced to minimize draw calls
+// deterministic background towers — GPU-batched materials and one window plane per tower
 const bg=[[-92,-96,18,31],[-76,-92,14,24],[-60,-98,18,34],[-43,-94,13,27],[-25,-97,16,32],[-10,-92,12,25],[14,-95,14,31],[30,-99,18,36],[49,-94,14,28],[65,-97,18,34],[82,-92,13,25],[100,-96,16,33]];
 const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];
 const bgTowerMat=new THREE.MeshLambertMaterial({color:0x52656a,emissive:0x080d0f});
@@ -725,24 +721,13 @@ function makeWindowBandTexture(variant=0){
   const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;bgWindowTextureCache.set(key,tx);return tx
 }
 const bgWindowMats=[0,1].map(v=>new THREE.MeshBasicMaterial({map:makeWindowBandTexture(v),transparent:true,depthWrite:false}));
-const sharedAdMats=adColors.map(col=>new THREE.MeshBasicMaterial({color:col,toneMapped:false,transparent:true,opacity:.48,depthWrite:false}));
-const bgEntries=[];[-1,0,1].forEach(copy=>bg.forEach((b,i)=>bgEntries.push({copy,b,i})));
-const unitBox=new THREE.BoxGeometry(1,1,1),unitPlane=new THREE.PlaneGeometry(1,1),bm=new THREE.Matrix4(),bp=new THREE.Vector3(),bq=new THREE.Quaternion(),bs=new THREE.Vector3();
-
-const bgTowers=new THREE.InstancedMesh(unitBox,bgTowerMat,bgEntries.length);
-bgEntries.forEach((e,idx)=>{const [bx,z,w,h]=e.b,x=bx*1.5+e.copy*LOOP_SPAN;bp.set(x,h*.5,z);bs.set(w,h,10);bm.compose(bp,bq,bs);bgTowers.setMatrixAt(idx,bm)});
-bgTowers.instanceMatrix.needsUpdate=true;freezeStatic(bgTowers);scene.add(bgTowers);
-
-[0,1].forEach(v=>{
-  const entries=bgEntries.filter(e=>e.i%2===v),mesh=new THREE.InstancedMesh(unitPlane,bgWindowMats[v],entries.length);
-  entries.forEach((e,idx)=>{const [bx,z,w,h]=e.b,x=bx*1.5+e.copy*LOOP_SPAN;bp.set(x,h*.51,z+5.01);bs.set(w*.72,Math.max(8,h-10),1);bm.compose(bp,bq,bs);mesh.setMatrixAt(idx,bm)});
-  mesh.instanceMatrix.needsUpdate=true;freezeStatic(mesh);scene.add(mesh)
-});
-for(let variant=0;variant<sharedAdMats.length;variant++){
-  const entries=bgEntries.filter(e=>e.i%sharedAdMats.length===variant),mesh=new THREE.InstancedMesh(unitPlane,sharedAdMats[variant],entries.length);
-  entries.forEach((e,idx)=>{const [bx,z,w,h]=e.b,x=bx*1.5+e.copy*LOOP_SPAN;bp.set(x,h*.66,z+5.03);bs.set(w*.64,Math.min(8,h*.2),1);bm.compose(bp,bq,bs);mesh.setMatrixAt(idx,bm)});
-  mesh.instanceMatrix.needsUpdate=true;freezeStatic(mesh);scene.add(mesh)
-}
+const sharedAdMats=adColors.map((col,i)=>{const m=new THREE.MeshBasicMaterial({color:col,toneMapped:false,transparent:true,opacity:.55});m.userData.base=new THREE.Color(col);m.userData.phase=i*.73;flicker.push(m);return m});
+[-1,0,1].forEach(copy=>bg.forEach((b,i)=>{
+  const [bx,z,w,h]=b,x=bx*1.5+copy*LOOP_SPAN;
+  const tower=new THREE.Mesh(new THREE.BoxGeometry(w,h,10),bgTowerMat);tower.position.set(x,h/2,z);freezeStatic(tower);scene.add(tower);
+  const win=new THREE.Mesh(new THREE.PlaneGeometry(w*.72,Math.max(8,h-10)),bgWindowMats[i%2]);win.position.set(x,h*.51,z+5.01);freezeStatic(win);scene.add(win);
+  const ad=new THREE.Mesh(new THREE.PlaneGeometry(w*.64,Math.min(8,h*.2)),sharedAdMats[i%sharedAdMats.length]);ad.position.set(x,h*.66,z+5.03);freezeStatic(ad);scene.add(ad)
+}));
 function decodeBase64(s){const bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
 const BUILDING_TINTS={hero:0x192636,about:0x202832,web:0x142332,experience:0x101a25,academic:0x26303a,writing:0x252b31,running:0x111b25,roles:0x26303a,public:0x202832,art:0x101a25};
 const BOARD_STYLE={hero:'red',about:'cream',web:'dark',experience:'dark',academic:'cream',writing:'cream',running:'dark',roles:'cream',public:'cream',art:'dark'};
@@ -1116,14 +1101,14 @@ addEventListener('keydown',e=>{if(e.key==='Escape')drawer.classList.remove('open
 addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;applyResponsiveCamera();renderer.setSize(innerWidth,innerHeight);
   QUALITY=qualityTargets();DPR_MIN=QUALITY.floor;DPR_MAX=QUALITY.idle;DPR_IDLE_TARGET=QUALITY.idle;
-  renderDpr=QUALITY.idle;renderer.setPixelRatio(renderDpr)
+  renderDpr=Math.min(renderDpr,DPR_MAX,devicePixelRatio);renderer.setPixelRatio(renderDpr)
 });
 function wrapLoop(){
   while(currentX>WRAP_RIGHT && targetX>WRAP_RIGHT){ currentX-=LOOP_SPAN; targetX-=LOOP_SPAN; }
   while(currentX<WRAP_LEFT && targetX<WRAP_LEFT){ currentX+=LOOP_SPAN; targetX+=LOOP_SPAN; }
 }
 const clock=new THREE.Clock(),CAMERA_SPEED=38;
-let lastLightTick=-1;
+let lastLightTick=-1,lastCullTick=-1,fpsFrames=0,fpsTime=0,lastDprChange=0,idleStableTime=0;
 function moveToward(v,target,maxStep){const d=target-v;if(Math.abs(d)<=maxStep)return target;return v+Math.sign(d)*maxStep}
 function animate(){
   const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
@@ -1146,10 +1131,19 @@ function animate(){
     s.mesh.position.z=s.baseZ-run*(1.15+i*.20);
     s.mesh.material.opacity=.18+run*(.22-i*.025);
   });
-  // No hard visibility toggles: Three.js frustum culling handles off-screen meshes without pop/flicker.
-  // Stable signage: no luminance flicker. Only traffic signals update at low frequency.
-  const lightTick=Math.floor(t*8);
+  // Coarse culling: only keep the current and adjacent loop copies submitted to WebGL.
+  const cullTick=Math.floor(t*4);
+  if(cullTick!==lastCullTick){lastCullTick=cullTick;
+    loopCullGroups.forEach(g=>{
+      g.visible=Math.abs(g.position.x-currentX)<185;
+    })
+  }
+
+  // signage flicker at ~12 Hz instead of touching dozens of materials every frame
+  const lightTick=Math.floor(t*12);
   if(lightTick!==lastLightTick){lastLightTick=lightTick;
+    flicker.forEach((m,i)=>{const s=.82+.18*(.5+.5*Math.sin(t*(1.05+(i%3)*.13)+m.userData.phase));m.color.copy(m.userData.base).multiplyScalar(s);m.opacity=.78+.14*(.5+.5*Math.sin(t*.82+m.userData.phase))});
+    lightboxes.forEach((o,i)=>{if(Number.isFinite(o.x)&&Math.abs(o.x-currentX)>135)return;const phase=o.phase??o.mat?.userData.phase??i*.77,wave=.86+.14*(.5+.5*Math.sin(t*(1.0+(i%5)*.07)+phase)),blink=Math.sin(t*5.3+i*2.37)>.996?.45:1;if(o.mat)o.mat.emissiveIntensity=(o.mat.userData.baseIntensity||1.35)*wave*blink;if(o.halo)o.halo.opacity=.07+.09*wave*blink})
     trafficSignals.forEach((s,i)=>{const q=(t+s.phase)%9;if(s.ped){const walk=q>=4&&q<8;s.mats[0].color.set(walk?0x401014:0xff3040);s.mats[1].color.set(walk?0x28e98b:0x0d3b27)}else{const active=q<4?2:q<5.2?1:0;s.mats.forEach((m,j)=>m.emissiveIntensity=j===active?2.5:.05)}})
   }
   barberPoles.forEach((p,i)=>p.rotation.y=t*(1.45+i*.05));
@@ -1168,7 +1162,26 @@ function animate(){
     else{o.g.position.z=o.baseZ;o.g.position.x=o.baseX+Math.sin(t*.55+o.phase)*.08}
   });
 
-  // Resolution is intentionally fixed at the high-quality target; never downscale while moving.
+  // 1080p-class while moving; native/4K-class once settled. Changes are rate-limited to avoid Safari framebuffer churn.
+  const cameraMoving=Math.abs(targetX-currentX)>.035||Math.abs(targetY-currentY)>.025||Math.abs(targetZ-currentZ)>.035;
+  idleStableTime=cameraMoving?0:(idleStableTime+dt);
+  fpsFrames++;fpsTime+=dt;
+  if(fpsTime>=2.0){
+    const fps=fpsFrames/fpsTime,now=t,targetQuality=cameraMoving?QUALITY.motion:QUALITY.idle;
+    let next=renderDpr;
+    if(now-lastDprChange>4.5){
+      if(cameraMoving){
+        if(fps<43)next=Math.max(QUALITY.floor,renderDpr-.16);
+        else if(renderDpr<targetQuality&&fps>54)next=Math.min(targetQuality,renderDpr+.12);
+        else if(renderDpr>targetQuality+.08)next=Math.max(targetQuality,renderDpr-.12);
+      }else if(idleStableTime>1.4){
+        if(fps>48&&renderDpr<targetQuality)next=Math.min(targetQuality,renderDpr+.22);
+        else if(fps<32)next=Math.max(QUALITY.motion,renderDpr-.12);
+      }
+      if(Math.abs(next-renderDpr)>.05){renderDpr=next;renderer.setPixelRatio(renderDpr);lastDprChange=now}
+    }
+    fpsFrames=0;fpsTime=0
+  }
   renderer.render(scene,camera);requestAnimationFrame(animate)
 }animate();
 const initial=location.hash.slice(1);
