@@ -35,7 +35,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
       <div class="controls"><button class="ctrl square" id="prev" aria-label="Previous section">‹</button><span class="loop-readout" id="loopReadout">01 → 02 → … ∞</span><button class="ctrl square" id="next" aria-label="Next section">›</button><button class="ctrl" id="reset">HOME</button><button class="ctrl square" id="minus">−</button><button class="ctrl square" id="plus">＋</button></div>
     </header>
     <button class="now-playing blocked" id="nowPlaying" type="button" aria-label="CITYMUS audio"><span class="np-dot"></span><span id="nowPlayingText">CITYMUS · LOADING</span></button>
-    <div class="hud"><div class="chip"><b>Direct-control city</b>左滑往左 · 右滑往右 · 相鄰街區以固定世界速度移動</div><div class="chip"><b>Portfolio boards</b>個人經歷固定亮度不閃爍 · 當前看板自動切換超高解析材質</div><div class="chip"><b>Performance mode</b>無即時陰影 · instancing 路燈/標線 · adaptive resolution · 低 draw-call</div></div>
+    <div class="hud"><div class="chip"><b>Direct-control city</b>左滑往左 · 右滑往右 · 相鄰街區以固定世界速度移動</div><div class="chip"><b>Editorial billboards</b>街景只顯示超大章節標題 · 詳細經歷點開後閱讀 · 固定亮度不閃爍</div><div class="chip"><b>Performance mode</b>無即時陰影 · instancing 路燈/標線 · adaptive resolution · 低 draw-call</div></div>
     <div class="status">Focus <strong id="focusLabel">HOME</strong><div class="bar"><i id="progress"></i></div></div>
   </div>
 </div>
@@ -191,6 +191,7 @@ const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];[-1,0,1].forEach(c
 function decodeBase64(s){const bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
 const BUILDING_TINTS={hero:0x192636,about:0x202832,web:0x142332,experience:0x101a25,academic:0x26303a,writing:0x252b31,running:0x111b25,roles:0x26303a,public:0x202832,art:0x101a25};
 const BOARD_STYLE={hero:'red',about:'cream',web:'dark',experience:'dark',academic:'cream',writing:'cream',running:'dark',roles:'cream',public:'cream',art:'dark'};
+const BOARD_LABELS={hero:'林哲愷 · CHE-KAI LIN',about:'關於我',web:'網站作品',experience:'個人經歷',academic:'學習經歷',writing:'文字創作',running:'跑步紀錄',roles:'身份角色',public:'公共參與',art:'藝術檔案'};
 const loader=new GLTFLoader();const root=new THREE.Group();scene.add(root);const buildings=new Map(),clickables=[],portfolioBoards=new Map();
 const textureCache=new Map(),wallTextureCache=new Map(),posterTextureCache=new Map(),shopSignTextureCache=new Map();
 let activePortfolioHiTex=null,activePortfolioHiId=null;
@@ -250,31 +251,42 @@ function makeTexture(id,quality='base'){
   const cacheKey=id+':base';
   if(quality==='base'&&textureCache.has(cacheKey))return textureCache.get(cacheKey);
   const d=DATA[id],style=BOARD_STYLE[id]||'dark';
-  // Only the currently focused portfolio board gets the ultra-resolution texture.
-  // That makes the on-building text approach the crispness of the opened DOM drawer
-  // without keeping ten 2K+ canvases resident on a phone.
-  const Q=quality==='high'?(MOBILE_GPU?2.25:2.60):(MOBILE_GPU?1.22:1.42);
-  const W=900,H=1180,c=document.createElement('canvas');c.width=Math.round(W*Q);c.height=Math.round(H*Q);
+  const Q=quality==='high'?(MOBILE_GPU?2.35:2.75):(MOBILE_GPU?1.32:1.55);
+  const W=1400,H=820,c=document.createElement('canvas');c.width=Math.round(W*Q);c.height=Math.round(H*Q);
   const x=c.getContext('2d');x.scale(Q,Q);
-  const cream='#efe7d8',navy='#101722',red='#e43c32',black='#111317';
-  x.fillStyle=style==='cream'?cream:style==='red'?red:navy;x.fillRect(0,0,W,H);
-  x.globalAlpha=.045;for(let i=0;i<1300;i++){const g=135+Math.random()*80;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*2,1+Math.random()*2)}x.globalAlpha=1;
-  const light=style==='dark'||style==='red';
-  x.fillStyle=style==='red'?cream:red;x.fillRect(0,0,24,H);
-  x.fillStyle=light?cream:black;x.font='800 54px Arial, sans-serif';x.fillText(d.index,60,92);
-  x.font='900 80px Arial, sans-serif';let ty=190;
+  const cream='#efe7d8',navy='#0d1621',red='#e43c32',black='#111317';
+  const bg=style==='cream'?cream:style==='red'?red:navy,fg=style==='cream'?black:cream,accent=style==='red'?cream:red;
+  x.fillStyle=bg;x.fillRect(0,0,W,H);
+
+  // restrained printed grain: readable at distance, still feels like a physical city billboard
+  x.globalAlpha=.035;for(let i=0;i<900;i++){const g=145+Math.random()*70;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*3,1+Math.random()*2)}x.globalAlpha=1;
+
+  // editorial grid
+  x.fillStyle=accent;x.fillRect(0,0,26,H);
+  x.fillStyle=fg;x.textBaseline='alphabetic';
+  x.font='800 34px "SFMono-Regular",Consolas,monospace';x.fillText(d.index,74,82);
+  x.globalAlpha=.68;x.font='650 28px "Noto Sans TC",Arial,sans-serif';x.fillText(BOARD_LABELS[id]||d.nav,170,82);x.globalAlpha=1;
+
   if(id==='hero'){
-    x.font='900 102px Arial, sans-serif';x.fillStyle=cream;x.fillText('CHE-KAI',60,248);x.fillText('LIN',60,358);
-    x.font='600 31px Arial, sans-serif';x.fillText('WRITER / DESIGNER / STUDENT',60,430);ty=548;
-  }else{x.fillText(d.title,60,182);ty=282}
-  x.strokeStyle=light?'rgba(239,231,216,.22)':'rgba(17,19,23,.18)';x.lineWidth=2;x.beginPath();x.moveTo(60,ty-48);x.lineTo(834,ty-48);x.stroke();
-  x.font='600 30px "Noto Sans TC", Arial, sans-serif';
-  d.items.slice(0,id==='hero'?3:4).forEach((it,i)=>{
-    x.fillStyle=style==='red'?cream:red;x.fillRect(62,ty+i*170-16,12,12);
-    x.fillStyle=light?cream:black;const lines=wrapText(x,it[0],680).slice(0,2);lines.forEach((line,j)=>x.fillText(line,104,ty+i*170+j*42));
-    x.strokeStyle=light?'rgba(239,231,216,.12)':'rgba(17,19,23,.10)';x.beginPath();x.moveTo(104,ty+i*170+55);x.lineTo(830,ty+i*170+55);x.stroke();
-  });
-  x.fillStyle=light?'rgba(239,231,216,.68)':'rgba(17,19,23,.64)';x.font='600 20px monospace';x.fillText('CLICK TO EXPLORE  →',60,1112);
+    x.font='950 164px Arial,sans-serif';x.fillText('CHE-KAI',74,348);x.fillText('LIN',74,524);
+    x.fillStyle=accent;x.fillRect(80,584,330,12);
+    x.fillStyle=fg;x.font='700 34px Arial,sans-serif';x.fillText('WRITER × DESIGNER × STUDENT',74,668);
+  }else{
+    // Giant single-purpose title. No experience bullet points on the street façade.
+    const title=d.title;
+    let size=title.length>10?118:title.length>7?134:154;
+    x.font=`950 ${size}px Arial,"Noto Sans TC",sans-serif`;
+    const max=1220;while(x.measureText(title).width>max&&size>88){size-=4;x.font=`950 ${size}px Arial,"Noto Sans TC",sans-serif`}
+    x.fillText(title,74,420);
+
+    x.fillStyle=accent;x.fillRect(78,488,Math.min(600,Math.max(210,x.measureText(title).width*.42)),14);
+    x.fillStyle=fg;x.globalAlpha=.76;x.font='650 34px "Noto Sans TC",Arial,sans-serif';
+    x.fillText(d.intro,78,582);x.globalAlpha=1;
+
+    x.font='700 25px "SFMono-Regular",Consolas,monospace';
+    x.globalAlpha=.58;x.fillText('CLICK / TAP TO OPEN DETAILS',78,726);x.globalAlpha=1;
+  }
+
   const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.generateMipmaps=true;
   tex.minFilter=THREE.LinearMipmapLinearFilter;tex.magFilter=THREE.LinearFilter;
   tex.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());tex.needsUpdate=true;
@@ -377,20 +389,16 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     const cfg=CONFIG[id],group=new THREE.Group(); group.name=`${id}:${copy}`;
     const shell=gltf.scene.clone(true); materialize(shell,index,id); const dims=normalizeBuilding(shell,cfg.h);
     group.add(shell); group.position.set(cfg.x+copy*LOOP_SPAN,0,cfg.z); group.rotation.y=cfg.ry; root.add(group);
-    const tex=makeTexture(id),bw=Math.min(12.5,Math.max(8.8,dims.w*.9)),bh=bw*1.31;
+    const tex=makeTexture(id),bw=Math.min(15.8,Math.max(11.8,dims.w*1.08)),bh=bw*.586;
     const frame=new THREE.Mesh(new THREE.BoxGeometry(bw+.68,bh+.68,.38),new THREE.MeshStandardMaterial({color:0x06080c,roughness:.30,metalness:.84}));
-    frame.position.set(0,cfg.h*.58,dims.d*.49+.10);group.add(frame);
+    frame.position.set(0,cfg.h*.64,dims.d*.49+.10);group.add(frame);
     const haloMat=new THREE.MeshBasicMaterial({color:DATA[id].accent,transparent:true,opacity:.14,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false});
-    const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.6,bh+1.6),haloMat);halo.position.set(0,cfg.h*.58,dims.d*.49+.20);group.add(halo);
+    const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.6,bh+1.6),haloMat);halo.position.set(0,cfg.h*.64,dims.d*.49+.20);group.add(halo);
     const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});
     mat.userData.baseIntensity=1.55;mat.userData.phase=(index+copy*10)*1.11;
-    const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat); board.position.set(0,cfg.h*.58,dims.d*.49+.34); board.userData.section=id; group.add(board); clickables.push(board);
+    const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat); board.position.set(0,cfg.h*.64,dims.d*.49+.34); board.userData.section=id; group.add(board); clickables.push(board);
     if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);portfolioBoards.get(id).push(mat);
-    const lowerColor=id==='hero'?0xe43c32:(index%3===0?0xe43c32:0xd8c7aa);
-    const lowerFrame=new THREE.Mesh(new THREE.BoxGeometry(bw*.80,2.45,.28),new THREE.MeshStandardMaterial({color:0x07090d,roughness:.34,metalness:.78}));lowerFrame.position.set(0,cfg.h*.17,dims.d*.5+.17);group.add(lowerFrame);
-    const lowerMat=new THREE.MeshStandardMaterial({color:lowerColor,emissive:lowerColor,emissiveIntensity:1.35,toneMapped:false,transparent:true,opacity:.92,roughness:.25});
-    lowerMat.userData.baseIntensity=1.35;lowerMat.userData.phase=(index+copy*10)*1.37;
-    const small=new THREE.Mesh(new THREE.PlaneGeometry(bw*.78,2.2),lowerMat); small.position.set(0,cfg.h*.17,dims.d*.5+.34); group.add(small);
+    // main billboard is intentionally the only portfolio identifier on the façade
     addProjectingSign(group,id,dims,index,copy);
     buildings.set(group.name,group);
   }
