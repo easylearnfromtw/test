@@ -3,30 +3,259 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#07131f" />
-<title>CHE-KAI LIN — 3D Personal City</title>
-<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. Interactive 3D portfolio city." />
-<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#08121d" />
+<title>CHE-KAI LIN — 3D Portfolio Boulevard</title>
+<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. Interactive 3D portfolio boulevard with separated buildings and simplified navigation." />
+<style>
+:root{
+  --night:#07101b;--night2:#0d1b2b;--blue:#12324e;--red:#ef3028;--red2:#bd1f1a;
+  --paper:#f1eadf;--ink:#11151a;--muted:#8e98a3;--line:rgba(255,255,255,.16);
+  --glass:rgba(8,17,29,.72);--glass2:rgba(13,27,43,.82);--white:#f8f4ee;
+  --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
+  --display:"Arial Narrow","Helvetica Neue Condensed",Impact,"Noto Sans TC",sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--night);color:var(--white);font-family:var(--sans)}
+button{font:inherit;color:inherit} a{color:inherit;text-decoration:none}
+body::before{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}
+
+/* chrome */
+.chrome{position:fixed;inset:0;z-index:60;pointer-events:none}
+.topbar{position:absolute;top:0;left:0;right:0;height:58px;padding:0 22px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px;background:linear-gradient(180deg,rgba(3,8,14,.92),rgba(3,8,14,.48));border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);pointer-events:auto}
+.brand{font:800 17px/1 var(--sans);letter-spacing:.08em}.identity{font:10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#d6dce3;margin-left:10px}
+.topnav{display:flex;justify-content:center;gap:6px;overflow:auto hidden;scrollbar-width:none}.topnav::-webkit-scrollbar{display:none}
+.topnav button,.mode-btn,.view-btn{appearance:none;border:1px solid transparent;background:transparent;color:#aab4bf;border-radius:999px;padding:8px 10px;cursor:pointer;font:9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transition:.18s}.topnav button:hover,.topnav button.active,.mode-btn:hover,.mode-btn.active,.view-btn:hover,.view-btn.active{color:#fff;border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.05)}
+.modegroup{display:flex;gap:5px;align-items:center}.view-btn{appearance:none;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.025);color:#b8c3cd;border-radius:999px;min-width:30px;height:30px;padding:0 9px;cursor:pointer;font:9px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.view-btn.zoom{font-size:15px;padding:0;width:30px}.lang{font:10px var(--mono);color:#9aa7b4}.lang b{color:var(--red)}
+
+.hud-left{position:absolute;left:18px;bottom:18px;pointer-events:auto;display:flex;gap:8px;flex-wrap:wrap;max-width:540px}.hud-chip{border:1px solid rgba(255,255,255,.15);background:rgba(5,12,20,.72);backdrop-filter:blur(14px);border-radius:14px;padding:10px 12px;font:9px/1.45 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:#aab4bf}.hud-chip strong{display:block;color:#fff;font-size:10px;margin-bottom:3px}.hud-chip em{font-style:normal;color:var(--red)}
+.hud-right{position:absolute;right:18px;bottom:18px;width:220px;padding:12px 14px;border:1px solid rgba(255,255,255,.15);background:rgba(5,12,20,.72);backdrop-filter:blur(14px);border-radius:14px;pointer-events:none}.hud-meta{display:flex;justify-content:space-between;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9eabb7}.track{height:3px;background:rgba(255,255,255,.1);margin-top:9px;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:var(--red)}
+
+/* 3d world */
+.viewport{position:relative;width:100vw;height:100vh;overflow:hidden;touch-action:none;cursor:grab;background:
+  radial-gradient(circle at 50% 66%,rgba(239,48,40,.18),transparent 24%),
+  linear-gradient(180deg,#0a1b2d 0%,#0b2135 43%,#07121d 100%)}
+.viewport.dragging{cursor:grabbing}
+.skyline{position:absolute;inset:0;pointer-events:none;opacity:.72;background:
+  linear-gradient(90deg,transparent 0 2%,rgba(8,12,20,.92) 2% 6%,transparent 6% 9%,rgba(9,14,22,.95) 9% 14%,transparent 14% 17%,rgba(9,14,22,.95) 17% 24%,transparent 24% 28%,rgba(6,10,18,.95) 28% 32%,transparent 32% 36%,rgba(7,11,18,.95) 36% 44%,transparent 44% 50%,rgba(7,11,18,.95) 50% 56%,transparent 56% 62%,rgba(7,11,18,.95) 62% 67%,transparent 67% 73%,rgba(7,11,18,.95) 73% 79%,transparent 79% 84%,rgba(7,11,18,.95) 84% 91%,transparent 91%);
+  clip-path:polygon(0 100%,0 35%,4% 35%,4% 14%,8% 14%,8% 43%,13% 43%,13% 9%,18% 9%,18% 27%,23% 27%,23% 5%,28% 5%,28% 31%,34% 31%,34% 12%,40% 12%,40% 29%,45% 29%,45% 2%,51% 2%,51% 24%,58% 24%,58% 10%,64% 10%,64% 38%,70% 38%,70% 8%,76% 8%,76% 21%,82% 21%,82% 1%,88% 1%,88% 27%,94% 27%,94% 7%,100% 7%,100% 100%)}
+.street{position:absolute;left:50%;bottom:-7vh;width:96vw;height:56vh;transform:translateX(-50%) perspective(900px) rotateX(66deg);transform-origin:center bottom;background:
+  linear-gradient(90deg,transparent 49.7%,rgba(239,48,40,.55) 49.9% 50.1%,transparent 50.3%),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 68px),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 56px),
+  linear-gradient(180deg,rgba(18,32,44,.8),rgba(4,8,13,.96));box-shadow:0 -30px 120px rgba(239,48,40,.15) inset;border-top:1px solid rgba(255,255,255,.08);pointer-events:none}
+.plaza{position:absolute;left:50%;bottom:9vh;width:42vw;height:15vh;transform:translateX(-50%) perspective(900px) rotateX(64deg);border:1px solid rgba(255,255,255,.12);background:radial-gradient(circle,rgba(239,48,40,.16),rgba(7,15,24,.76));box-shadow:0 0 70px rgba(239,48,40,.16);pointer-events:none}.plaza::before{content:"♛";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateX(-64deg);font-size:56px;color:rgba(239,48,40,.56);text-shadow:0 0 20px rgba(239,48,40,.45)}
+.scene-wrap{position:absolute;inset:0;perspective:1400px;perspective-origin:50% 50%;overflow:visible}
+.scene{position:absolute;left:50%;top:50%;width:1px;height:1px;transform-style:preserve-3d;will-change:transform}
+
+.building{--x:0px;--y:0px;--z:0px;--w:320px;--h:480px;--ry:0deg;position:absolute;left:0;top:0;width:var(--w);height:var(--h);transform-style:preserve-3d;transform:translate3d(var(--x),var(--y),var(--z)) rotateY(var(--ry));transform-origin:center bottom;transition:filter .22s,opacity .22s;filter:drop-shadow(0 32px 34px rgba(0,0,0,.44))}
+.building.focused{filter:drop-shadow(0 30px 50px rgba(239,48,40,.30))}
+.building::after{content:"";position:absolute;left:-32px;right:-32px;bottom:-30px;height:34px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(24,39,53,.82),rgba(5,10,16,.94));transform:rotateX(78deg) translateZ(-3px);transform-origin:center top;box-shadow:0 18px 34px rgba(0,0,0,.38);pointer-events:none}
+.building.focused::after{border-color:rgba(239,48,40,.32);box-shadow:0 18px 44px rgba(239,48,40,.14)}
+.building-body{position:absolute;inset:0;transform-style:preserve-3d;background:linear-gradient(180deg,#142334,#08121d 68%,#05090e);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
+.building-body::before{content:"";position:absolute;inset:0;background:
+ repeating-linear-gradient(90deg,transparent 0 34px,rgba(85,136,178,.15) 34px 36px),
+ repeating-linear-gradient(0deg,transparent 0 40px,rgba(255,255,255,.065) 40px 43px);opacity:.82}
+.building-body::after{content:"";position:absolute;top:0;bottom:0;right:-32px;width:32px;background:linear-gradient(90deg,#08111c,#03070c);transform-origin:left center;transform:rotateY(90deg);border:1px solid rgba(255,255,255,.08)}
+.roof{position:absolute;left:12%;right:12%;top:-18px;height:18px;background:#05080d;border:1px solid rgba(255,255,255,.1);transform:translateZ(6px)}
+.antenna{position:absolute;left:50%;top:-88px;width:3px;height:72px;background:linear-gradient(#ff4a43,#293746);box-shadow:0 0 16px rgba(239,48,40,.72)}
+.antenna::after{content:"";position:absolute;left:50%;top:-7px;width:9px;height:9px;border-radius:50%;transform:translateX(-50%);background:var(--red);box-shadow:0 0 18px rgba(239,48,40,.9)}
+
+.billboard{position:absolute;left:18px;right:18px;top:24px;min-height:210px;padding:17px 18px 16px;background:var(--paper);color:var(--ink);border:1px solid rgba(0,0,0,.36);box-shadow:0 0 0 3px #080b10,0 16px 28px rgba(0,0,0,.32);transform:translateZ(34px);cursor:pointer;overflow:hidden;transition:transform .18s,box-shadow .18s,filter .18s}
+.billboard:hover{transform:translateZ(42px) scale(1.015);box-shadow:0 0 0 3px #080b10,0 18px 36px rgba(239,48,40,.24);filter:brightness(1.04)}
+.billboard.dark{background:#10161f;color:#f7f2e9}.billboard.hero-board{background:var(--red);color:#fff;text-align:center;display:grid;place-items:center;min-height:240px}
+.bb-index{position:absolute;left:16px;top:12px;font:900 26px/1 var(--display);color:var(--red)}.dark .bb-index,.hero-board .bb-index{color:#fff}
+.bb-title{margin:29px 0 14px;font:900 34px/.95 var(--display);letter-spacing:-.02em;text-transform:uppercase}.hero-board .bb-title{margin:0;font-size:48px;line-height:.82}.hero-board .bb-sub{font:10px/1.7 var(--mono);letter-spacing:.16em;text-transform:uppercase}.bb-list{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:13px;line-height:1.35}.bb-list li{padding-bottom:5px;border-bottom:1px solid rgba(0,0,0,.08)}.dark .bb-list li{border-bottom-color:rgba(255,255,255,.10)}.bb-arrow{position:absolute;right:15px;bottom:10px;font:28px/1 var(--display);color:var(--red)}.dark .bb-arrow,.hero-board .bb-arrow{color:#fff}
+.side-sign{position:absolute;right:-46px;top:70px;width:42px;min-height:190px;background:var(--red);transform-origin:left center;transform:rotateY(90deg) translateZ(1px);display:grid;place-items:center;padding:8px 4px;color:#fff;font:900 13px/1.05 var(--display);letter-spacing:.06em;text-transform:uppercase;writing-mode:vertical-rl}
+.small-board{position:absolute;left:26px;right:26px;bottom:28px;padding:10px 12px;background:#0f1720;border:1px solid rgba(255,255,255,.14);transform:translateZ(20px);font:10px/1.45 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#d8e0e7}.small-board b{color:var(--red)}
+
+/* placement — spaced like individual towers along one boulevard */
+#b-web{--x:-2000px;--y:-150px;--z:-120px;--w:360px;--h:540px;--ry:8deg}
+#b-exp{--x:-1530px;--y:220px;--z:-30px;--w:350px;--h:470px;--ry:8deg}
+#b-run{--x:-1080px;--y:315px;--z:90px;--w:310px;--h:370px;--ry:6deg}
+#b-hero{--x:-220px;--y:-205px;--z:210px;--w:440px;--h:680px;--ry:0deg}
+#b-academic{--x:830px;--y:-125px;--z:-35px;--w:350px;--h:535px;--ry:-7deg}
+#b-writing{--x:1290px;--y:-100px;--z:-120px;--w:340px;--h:510px;--ry:-8deg}
+#b-roles{--x:1760px;--y:255px;--z:85px;--w:350px;--h:410px;--ry:-6deg}
+#b-public{--x:2220px;--y:270px;--z:-10px;--w:320px;--h:410px;--ry:-7deg}
+#b-art{--x:2660px;--y:350px;--z:-135px;--w:300px;--h:330px;--ry:-8deg}
+
+/* people / traffic */
+.crowd{position:absolute;left:50%;bottom:5vh;width:88vw;height:16vh;transform:translateX(-50%);pointer-events:none;opacity:.68;background:
+ radial-gradient(ellipse at 6% 88%,#04070b 0 5px,transparent 6px),radial-gradient(ellipse at 12% 86%,#05080c 0 6px,transparent 7px),radial-gradient(ellipse at 20% 90%,#05080c 0 7px,transparent 8px),radial-gradient(ellipse at 31% 87%,#05080c 0 5px,transparent 6px),radial-gradient(ellipse at 42% 91%,#05080c 0 7px,transparent 8px),radial-gradient(ellipse at 52% 89%,#05080c 0 6px,transparent 7px),radial-gradient(ellipse at 63% 90%,#05080c 0 5px,transparent 6px),radial-gradient(ellipse at 73% 85%,#05080c 0 7px,transparent 8px),radial-gradient(ellipse at 84% 90%,#05080c 0 6px,transparent 7px),radial-gradient(ellipse at 94% 88%,#05080c 0 6px,transparent 7px)}
+
+/* detail drawer */
+.drawer{position:fixed;top:76px;right:18px;bottom:18px;width:min(420px,calc(100vw - 36px));z-index:75;transform:translateX(calc(100% + 28px));transition:transform .34s cubic-bezier(.2,.8,.2,1);background:rgba(8,17,29,.94);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);border-radius:20px;box-shadow:0 30px 100px rgba(0,0,0,.48);padding:22px;overflow:auto}.drawer.open{transform:translateX(0)}
+.drawer-close{position:sticky;top:0;float:right;appearance:none;border:1px solid rgba(255,255,255,.14);background:#0b1520;color:#fff;border-radius:999px;width:34px;height:34px;cursor:pointer}.drawer-kicker{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin:8px 0 9px}.drawer h2{margin:0 0 18px;font:900 42px/.92 var(--display);text-transform:uppercase}.drawer p{color:#b5c0cb;font-size:13px;line-height:1.7}.drawer-list{margin-top:16px;display:grid;gap:9px}.drawer-item{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.035);border-radius:14px;padding:12px 13px}.drawer-item b{display:block;font-size:13px;margin-bottom:4px}.drawer-item span{display:block;color:#9eabb7;font-size:11px;line-height:1.5}
+
+/* model mode */
+.model-layer{display:none;position:absolute;inset:0;pointer-events:none}.model .model-layer{display:block}.model .building{outline:1px dashed rgba(0,255,255,.5)}.model .building::before{content:attr(data-model);position:absolute;left:0;top:-26px;padding:4px 6px;background:#061116;color:#6ff;font:9px var(--mono);white-space:nowrap;transform:translateZ(60px)}.axis{position:absolute;left:50%;top:50%;width:240px;height:240px;transform-style:preserve-3d}.axis::before,.axis::after{content:"";position:absolute;left:0;top:0}.axis::before{width:200px;height:2px;background:#ff4242;box-shadow:0 0 8px #ff4242}.axis::after{width:2px;height:200px;background:#48ff72;box-shadow:0 0 8px #48ff72}.axis-z{position:absolute;left:0;top:0;width:2px;height:200px;background:#5ed2ff;transform-origin:top;transform:rotateX(90deg);box-shadow:0 0 8px #5ed2ff}
+
+@media(max-width:980px){
+  .topbar{grid-template-columns:1fr auto;padding:0 12px;height:auto;min-height:60px;gap:8px}.topnav{grid-column:1/-1;justify-content:flex-start;padding:4px 0 8px}.identity{display:none}.modegroup{grid-column:2;grid-row:1}.hud-right{display:none}.hud-left{left:10px;right:10px;bottom:10px;max-width:none}.hud-chip:nth-child(2){display:none}
+  .scene-wrap{perspective:1050px}.drawer{top:106px}
+}
+@media(max-width:640px){
+  .brand{font-size:14px}.mode-btn{padding:6px 8px}.view-btn{height:28px;min-width:28px;padding:0 7px}.view-btn.zoom{width:28px}.lang{display:none}.topnav button{font-size:8px;padding:6px 8px}
+  .scene-wrap{perspective:900px}.scene{transform-origin:center center}.hud-chip{font-size:8px}.drawer{top:102px;right:10px;bottom:10px;width:calc(100vw - 20px)}
+  .billboard{left:12px;right:12px;padding:14px;min-height:180px}.bb-title{font-size:28px}.bb-list{font-size:12px}.hero-board .bb-title{font-size:40px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
 <body>
-<div class="ui">
+<!-- V9: spaced boulevard + simplified pan navigation -->
+<div class="chrome">
   <header class="topbar">
-    <div class="brand">CHE-KAI LIN <small>WRITER × DESIGNER × STUDENT</small></div>
-    <div class="mantra"><span>IDEAS</span><span>PEOPLE</span><span>PROJECTS</span><span>IMPACT</span></div>
-    <div class="controls"><button class="ui-btn" id="modelBtn">MODEL MODE</button><button class="ui-btn" id="resetBtn">RESET VIEW</button></div>
+    <div><span class="brand">CHE-KAI LIN</span><span class="identity">WRITER X DESIGNER X STUDENT</span></div>
+    <nav class="topnav" id="topnav"></nav>
+    <div class="modegroup"><span class="lang"><b>EN</b> / 中文</span><button class="view-btn zoom" id="zoomOut" aria-label="Zoom out">−</button><button class="view-btn" id="resetView">RESET</button><button class="view-btn zoom" id="zoomIn" aria-label="Zoom in">＋</button><button class="mode-btn" id="modelBtn">MODEL MODE</button></div>
   </header>
-  <nav class="rail" id="rail" aria-label="Portfolio sections"></nav>
-  <div class="hint"><b>DRAG</b> to rotate · <b>WHEEL</b> to zoom · <i>CLICK BILLBOARD</i> to open</div>
-  <div class="status"><span class="dot"></span><span>Focus</span><strong id="focusLabel">Central Plaza</strong></div>
+  <div class="hud-left">
+    <div class="hud-chip"><strong>Drag / swipe</strong>抓住空白處直接移動整座城市</div>
+    <div class="hud-chip"><strong>Scroll / click</strong>滾輪沿街移動 · 點看板自動走到該棟樓</div>
+    <div class="hud-chip"><strong>Model-ready</strong><em>MODEL MODE</em> 顯示建築座標與邊界</div>
+  </div>
+  <div class="hud-right"><div class="hud-meta"><span>City focus</span><span id="focusLabel">CENTRAL</span></div><div class="track"><div class="fill" id="fill"></div></div></div>
 </div>
+
 <div class="viewport" id="viewport">
-  <div class="skyline"></div>
-  <div class="camera" id="camera"><div class="city" id="city"><div class="ground"></div><div class="avenue"></div><div class="plaza"></div><div id="buildings"></div></div></div>
+  <div class="skyline"></div><div class="street"></div><div class="plaza"></div><div class="crowd"></div>
+  <div class="scene-wrap"><main class="scene" id="scene"></main></div>
+  <div class="model-layer"><div class="axis"><div class="axis-z"></div></div></div>
 </div>
-<aside class="drawer" id="drawer" aria-hidden="true">
+
+<aside class="drawer" id="drawer" aria-live="polite">
   <button class="drawer-close" id="drawerClose" aria-label="Close">×</button>
-  <div class="drawer-no" id="drawerNo">01</div><h2 id="drawerTitle">ABOUT</h2><p class="lede" id="drawerLede"></p><div class="detail-list" id="drawerList"></div><div class="drawer-footer">CHE-KAI LIN · PERSONAL CITY · EDITION 2026</div>
+  <div class="drawer-kicker" id="drawerKicker">District</div>
+  <h2 id="drawerTitle">About</h2>
+  <p id="drawerIntro"></p>
+  <div class="drawer-list" id="drawerList"></div>
 </aside>
-<script src="app.js"></script>
+
+<script>
+const DATA={
+  hero:{nav:'Home',index:'00',title:'CHE-KAI LIN',type:'hero',intro:'WRITER X DESIGNER X STUDENT',items:[
+    ['林哲愷 / Che-Kai Lin','個人網站以 3D 城市廣場作為入口。'],
+    ['Identity','Writer X Designer X Student'],
+    ['Direction','Design · Writing · Academic · Public Life']
+  ]},
+  about:{nav:'About',index:'01',title:'ABOUT',intro:'背景、個性、興趣與價值觀。',items:[
+    ['背景','個人基本介紹與成長脈絡'],['個性','創作與思考方式'],['興趣','網站、設計、文字、藝術、公共事務'],['價值觀','持續探索、跨域學習、把想法做成作品']
+  ]},
+  web:{nav:'Web Works',index:'02',title:'WEB WORKS',intro:'Selected digital projects.',items:[
+    ['SignWell 欣緯生醫','醫療與產業內容平台'],['Tai-Wan Way 閒台文','互動式中文與台灣文化網站'],['CITYMUS','音樂與城市視覺品牌'],['健人','獨立網站概念與前端視覺實驗']
+  ]},
+  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',items:[
+    ['Newtalk 新頭殼 投書刊載','公開評論與文字刊載經歷'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷']
+  ]},
+  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',items:[
+    ['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']
+  ]},
+  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',items:[
+    ['文章創作','觀點與長短文寫作'],['時事觀察','公共議題與社會觀察'],['散文／隨筆','個人文字與記錄'],['競賽作品','文學與主題創作']
+  ]},
+  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',items:[
+    ['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','組別名次 103 / 1581'],['訓練紀錄','跑步與體能進程'],['比賽成績','競賽紀錄持續累積']
+  ]},
+  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',items:[
+    ['欣緯科技有限公司董事','Director'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美萱','Founding Vice President'],['市三重高中前扶輪少年團團員','Member']
+  ]},
+  public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',items:[
+    ['台灣民眾黨青年團第二屆員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']
+  ]},
+  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',items:[
+    ['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration'],['攝影紀錄','Photography'],['靈感收藏','Visual references'],['未來計劃','Future works']
+  ]}
+};
+
+const BUILDINGS=[
+  {id:'web',el:'b-web',model:'x -2000 / y -150 / z -120'},
+  {id:'experience',el:'b-exp',model:'x -1530 / y 220 / z -30'},
+  {id:'running',el:'b-run',model:'x -1080 / y 315 / z 90'},
+  {id:'hero',el:'b-hero',model:'x -220 / y -205 / z 210'},
+  {id:'academic',el:'b-academic',model:'x 830 / y -125 / z -35'},
+  {id:'writing',el:'b-writing',model:'x 1290 / y -100 / z -120'},
+  {id:'roles',el:'b-roles',model:'x 1760 / y 255 / z 85'},
+  {id:'public',el:'b-public',model:'x 2220 / y 270 / z -10'},
+  {id:'art',el:'b-art',model:'x 2660 / y 350 / z -135'}
+];
+
+const scene=document.getElementById('scene'),viewport=document.getElementById('viewport'),drawer=document.getElementById('drawer');
+const drawerTitle=document.getElementById('drawerTitle'),drawerIntro=document.getElementById('drawerIntro'),drawerList=document.getElementById('drawerList'),drawerKicker=document.getElementById('drawerKicker');
+const topnav=document.getElementById('topnav'),focusLabel=document.getElementById('focusLabel'),fill=document.getElementById('fill');
+
+function boardHTML(d){
+  const list=d.items.slice(0,d.type==='hero'?3:4).map(x=>`<li>${x[0]}</li>`).join('');
+  if(d.type==='hero') return `<div class="billboard hero-board" data-open="hero"><div><div class="bb-title">CHE-KAI<br>LIN</div><div class="bb-sub">WRITER / DESIGNER / STUDENT</div></div><span class="bb-arrow">→</span></div>`;
+  return `<div class="billboard ${['web','experience','running'].includes(Object.keys(DATA).find(k=>DATA[k]===d))?'dark':''}" data-open="${Object.keys(DATA).find(k=>DATA[k]===d)}"><div class="bb-index">${d.index}</div><h2 class="bb-title">${d.title}</h2><ul class="bb-list">${list}</ul><span class="bb-arrow">→</span></div>`;
+}
+
+function buildCity(){
+  BUILDINGS.forEach((b,i)=>{
+    const d=DATA[b.id];
+    const el=document.createElement('section');el.className='building';el.id=b.el;el.dataset.section=b.id;el.dataset.model=b.model;
+    el.innerHTML=`<div class="building-body"><div class="roof"></div>${i%3===0?'<div class="antenna"></div>':''}${boardHTML(d)}<div class="side-sign">${d.title}</div><div class="small-board">${b.id==='hero'?'<b>EXPLORE</b> / LEARN / CREATE / CONNECT':'CHE-KAI LIN · '+d.nav}</div></div>`;
+    scene.appendChild(el);
+  });
+  ['about'].forEach(id=>{
+    const d=DATA[id],el=document.createElement('section');el.className='building';el.id='b-about';el.dataset.section=id;el.dataset.model='x 360 / y 75 / z 180';
+    el.style.cssText='--x:360px;--y:75px;--z:180px;--w:300px;--h:360px;--ry:-3deg';
+    el.innerHTML=`<div class="building-body">${boardHTML(d)}<div class="small-board"><b>WHO AM I?</b> · PERSONAL PROFILE</div></div>`;scene.appendChild(el)
+  });
+}
+
+function buildNav(){
+  ['hero','about','web','experience','academic','writing','running','roles','public','art'].forEach((id,i)=>{
+    const b=document.createElement('button');b.textContent=DATA[id].nav;b.dataset.target=id;if(i===0)b.classList.add('active');b.onclick=()=>focus(id,true);topnav.appendChild(b)
+  })
+}
+
+function openDrawer(id){
+  const d=DATA[id];drawerKicker.textContent=`${d.index} / ${d.nav}`;drawerTitle.textContent=d.title;drawerIntro.textContent=d.intro;drawerList.innerHTML=d.items.map(x=>`<div class="drawer-item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');drawer.classList.add('open')
+}
+document.getElementById('drawerClose').onclick=()=>drawer.classList.remove('open');
+
+let cam={panX:0,panY:0,zoom:.82,targetPanX:0,targetPanY:0,targetZoom:.82,drag:false,x:0,y:0,focused:'hero'};
+function baseScale(){return innerWidth<700?.66:innerWidth<1050?.78:1}
+function sceneScale(){return cam.targetZoom*baseScale()}
+function readNumber(el,name){return parseFloat(getComputedStyle(el).getPropertyValue(name))||0}
+function panLimits(){
+  const centers=[...document.querySelectorAll('.building')].map(el=>readNumber(el,'--x')+el.offsetWidth/2);
+  const min=Math.min(...centers),max=Math.max(...centers);
+  return{minX:-(max+260),maxX:-(min-260),minY:-310,maxY:260}
+}
+function clampPan(){const b=panLimits();cam.targetPanX=Math.max(b.minX,Math.min(b.maxX,cam.targetPanX));cam.targetPanY=Math.max(b.minY,Math.min(b.maxY,cam.targetPanY))}
+function focus(id,showDrawer=false){
+  const el=document.querySelector(`.building[data-section="${id}"]`);if(!el)return;
+  const x=readNumber(el,'--x'),y=readNumber(el,'--y');
+  cam.targetZoom=id==='hero'?.86:.94;
+  cam.targetPanX=-(x+el.offsetWidth/2);
+  cam.targetPanY=-(y+el.offsetHeight*.34)+115;
+  clampPan();cam.focused=id;focusLabel.textContent=DATA[id].nav.toUpperCase();
+  document.querySelectorAll('.building').forEach(x=>x.classList.toggle('focused',x.dataset.section===id));document.querySelectorAll('.topnav button').forEach(x=>x.classList.toggle('active',x.dataset.target===id));
+  const order=['hero','about','web','experience','academic','writing','running','roles','public','art'],idx=Math.max(0,order.indexOf(id));fill.style.width=((idx/(order.length-1))*100)+'%';history.replaceState(null,'','#'+id);if(showDrawer)openDrawer(id)
+}
+function render(){
+  cam.panX+=(cam.targetPanX-cam.panX)*.11;cam.panY+=(cam.targetPanY-cam.panY)*.11;cam.zoom+=(cam.targetZoom-cam.zoom)*.10;
+  const scale=cam.zoom*baseScale();
+  scene.style.transform=`translate3d(0,64px,0) rotateX(-3deg) scale(${scale}) translate3d(${cam.panX}px,${cam.panY}px,0)`;
+  requestAnimationFrame(render)
+}
+viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.billboard,.topbar,.drawer,button'))return;cam.drag=true;cam.x=e.clientX;cam.y=e.clientY;viewport.classList.add('dragging');viewport.setPointerCapture?.(e.pointerId)});
+viewport.addEventListener('pointermove',e=>{if(!cam.drag)return;const dx=e.clientX-cam.x,dy=e.clientY-cam.y,scale=Math.max(.45,sceneScale());cam.targetPanX+=dx/scale;cam.targetPanY+=dy/scale*.72;clampPan();cam.x=e.clientX;cam.y=e.clientY});
+function stop(){cam.drag=false;viewport.classList.remove('dragging')}viewport.addEventListener('pointerup',stop);viewport.addEventListener('pointercancel',stop);
+viewport.addEventListener('wheel',e=>{const scale=Math.max(.45,sceneScale());if(e.ctrlKey||e.metaKey){cam.targetZoom-=e.deltaY*.0007;cam.targetZoom=Math.max(.62,Math.min(1.22,cam.targetZoom))}else{const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;cam.targetPanX-=delta*.85/scale;clampPan()}e.preventDefault()},{passive:false});
+
+document.addEventListener('click',e=>{const bb=e.target.closest('.billboard');if(!bb)return;const id=bb.dataset.open;focus(id,true)});
+const modelBtn=document.getElementById('modelBtn');modelBtn.onclick=()=>{document.body.classList.toggle('model');modelBtn.classList.toggle('active')};
+document.getElementById('zoomIn').onclick=()=>{cam.targetZoom=Math.min(1.22,cam.targetZoom+.09)};
+document.getElementById('zoomOut').onclick=()=>{cam.targetZoom=Math.max(.62,cam.targetZoom-.09)};
+document.getElementById('resetView').onclick=()=>{drawer.classList.remove('open');focus('hero',false)};
+addEventListener('keydown',e=>{if(e.key==='Escape'){drawer.classList.remove('open');focus('hero',false)}if(e.key==='m'||e.key==='M')modelBtn.click();const step=140;if(e.key==='ArrowRight')cam.targetPanX-=step;if(e.key==='ArrowLeft')cam.targetPanX+=step;if(e.key==='ArrowUp')cam.targetPanY+=step*.55;if(e.key==='ArrowDown')cam.targetPanY-=step*.55;clampPan()});
+
+buildCity();buildNav();
+const initial=location.hash.slice(1);focus(DATA[initial]?initial:'hero',false);requestAnimationFrame(render);
+</script>
 </body>
 </html>
