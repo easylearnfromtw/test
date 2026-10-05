@@ -19,6 +19,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script>
 </head>
 <body>
+<!-- GitHub Pages ready single-file site -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -28,7 +29,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
       <nav class="nav" id="nav"></nav>
       <div class="controls"><button class="ctrl" id="reset">RESET</button><button class="ctrl square" id="minus">−</button><button class="ctrl square" id="plus">＋</button></div>
     </header>
-    <div class="hud"><div class="chip"><b>Drag / swipe</b>左右拖曳逛街 · 點看板自動前往</div><div class="chip"><b>Real 3D buildings</b>使用你上傳的 3Dcity 建築模型 · 建築採深藍黑、暖窗光、紅／米白識別配色</div><div class="chip"><b>Billboards</b>HTML 資料轉成 3D 看板 · 背景廣告會閃爍 · 仰視角鏡頭</div></div>
+    <div class="hud"><div class="chip"><b>Drag / swipe</b>左右拖曳逛街 · 點看板自動前往</div><div class="chip"><b>Real 3D buildings</b>使用你上傳的 3Dcity 建築模型 · 建築採深藍黑、暖窗光、紅／米白識別配色</div><div class="chip"><b>View</b>距離建築更遠的仰視角 · 依照你指定的中央主塔與左右分布</div></div>
     <div class="status">Focus <strong id="focusLabel">HOME</strong><div class="bar"><i id="progress"></i></div></div>
   </div>
 </div>
@@ -51,22 +52,22 @@ const DATA={
 };
 const ORDER=['web','experience','running','about','hero','writing','academic','roles','public','art'];
 const CONFIG={
- web:{x:-66,z:-5,h:30,ry:.14}, experience:{x:-50,z:-3,h:25,ry:.11}, running:{x:-34,z:-1,h:22,ry:.08}, about:{x:-18,z:-2,h:30,ry:.05}, hero:{x:0,z:0,h:43,ry:0}, writing:{x:18,z:-2,h:27,ry:-.05}, academic:{x:35,z:-1,h:33,ry:-.08}, roles:{x:52,z:-3,h:26,ry:-.11}, public:{x:68,z:-5,h:25,ry:-.14}, art:{x:84,z:-7,h:22,ry:-.16}
+ web:{x:-84,z:-5,h:30,ry:.16}, experience:{x:-62,z:-3,h:25,ry:.12}, about:{x:-10,z:-1,h:28,ry:.04}, hero:{x:0,z:0,h:43,ry:0}, academic:{x:30,z:-1,h:33,ry:-.06}, writing:{x:50,z:-2,h:27,ry:-.08}, running:{x:36,z:7,h:22,ry:-.04}, roles:{x:54,z:7,h:24,ry:-.06}, public:{x:73,z:-3,h:25,ry:-.13}, art:{x:86,z:8,h:20,ry:-.14}
 };
 const canvas=document.getElementById('webgl');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
 const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x090c17,.016);
-const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,250);camera.position.set(0,4.8,30);
+const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,250);camera.position.set(0,5.2,42);
 
-function applyResponsiveCamera(){camera.fov=innerWidth<560?66:innerWidth<920?62:58;camera.updateProjectionMatrix()}
+function applyResponsiveCamera(){camera.fov=innerWidth<560?70:innerWidth<920?62:55;camera.updateProjectionMatrix()}
 applyResponsiveCamera();
 
-let targetX=0,currentX=0,targetY=4.8,currentY=4.8,targetZ=30,currentZ=30;
-const LOOK_AT_Y=16.5;
+let targetX=0,currentX=0,targetY=5.2,currentY=5.2,targetZ=42,currentZ=42;
+const LOOK_AT_Y=17.2;
 const ambient=new THREE.HemisphereLight(0x829fd8,0x18100d,1.5);scene.add(ambient);const key=new THREE.DirectionalLight(0xffd8bb,3.2);key.position.set(-18,28,26);key.castShadow=true;scene.add(key);const fillLight=new THREE.PointLight(0x698cff,80,80,2);fillLight.position.set(8,16,14);scene.add(fillLight);const warm=new THREE.PointLight(0xff754a,70,65,2);warm.position.set(-20,8,13);scene.add(warm);
 // road
-const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metalness:.62});const road=new THREE.Mesh(new THREE.PlaneGeometry(220,42),roadMat);road.rotation.x=-Math.PI/2;road.position.set(8,.01,8);road.receiveShadow=true;scene.add(road);
-for(let x=-105;x<115;x+=8){const dash=new THREE.Mesh(new THREE.PlaneGeometry(3.1,.11),new THREE.MeshBasicMaterial({color:0xe7ddd0}));dash.rotation.x=-Math.PI/2;dash.position.set(x,.03,6);scene.add(dash)}
+const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metalness:.62});const road=new THREE.Mesh(new THREE.PlaneGeometry(260,54),roadMat);road.rotation.x=-Math.PI/2;road.position.set(6,.01,8);road.receiveShadow=true;scene.add(road);
+for(let x=-125;x<136;x+=10){const dash=new THREE.Mesh(new THREE.PlaneGeometry(4.2,.11),new THREE.MeshBasicMaterial({color:0xe7ddd0}));dash.rotation.x=-Math.PI/2;dash.position.set(x,.03,6);scene.add(dash)}
 // sidewalks
 for(const z of [-8,20]){const sw=new THREE.Mesh(new THREE.BoxGeometry(220,.6,4),new THREE.MeshStandardMaterial({color:0x252832,roughness:.75}));sw.position.set(8,.28,z);sw.receiveShadow=true;scene.add(sw)}
 // deterministic background towers + animated ads
@@ -112,7 +113,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{ORDER.forEach((id,index)=>{const 
 const nav=document.getElementById('nav');['hero','about','web','experience','academic','writing','running','roles','public','art'].forEach((id,i)=>{const b=document.createElement('button');b.textContent=DATA[id].nav;b.dataset.id=id;if(!i)b.classList.add('active');b.onclick=()=>focus(id,true);nav.appendChild(b)});
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
 function openDrawer(id){const d=DATA[id];document.getElementById('dk').textContent=`${d.index} / ${d.nav}`;document.getElementById('dt').textContent=d.title;document.getElementById('di').textContent=d.intro;document.getElementById('items').innerHTML=d.items.map(x=>`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');drawer.classList.add('open')}
-function focus(id,open=false){const cfg=CONFIG[id];if(!cfg)return;targetX=cfg.x;targetY=id==='hero'?4.6:4.3;targetZ=innerWidth<560?(id==='hero'?35:32):(id==='hero'?30:27.5);document.getElementById('focusLabel').textContent=DATA[id].nav.toUpperCase();document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));const idx=['hero','about','web','experience','academic','writing','running','roles','public','art'].indexOf(id);document.getElementById('progress').style.width=(idx/9*100)+'%';history.replaceState(null,'','#'+id);if(open)openDrawer(id)}
+function focus(id,open=false){const cfg=CONFIG[id];if(!cfg)return;targetX=cfg.x;targetY=id==='hero'?5.0:4.8;targetZ=innerWidth<560?(id==='hero'?48:44):(id==='hero'?42:39);document.getElementById('focusLabel').textContent=DATA[id].nav.toUpperCase();document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));const idx=['hero','about','web','experience','academic','writing','running','roles','public','art'].indexOf(id);document.getElementById('progress').style.width=(idx/9*100)+'%';history.replaceState(null,'','#'+id);if(open)openDrawer(id)}
 // interaction
 const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let down=null,moved=false,dragging=false,lastX=0,lastY=0;
 function pointerN(e){const r=canvas.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1}
