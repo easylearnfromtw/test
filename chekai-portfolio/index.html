@@ -164,13 +164,78 @@ function addTrafficSignal(x,z,flip=1,phase=0){
   mats.forEach((m,i)=>{const bulb=new THREE.Mesh(new THREE.SphereGeometry(.22,12,8),m);bulb.position.set(0,6.05-i*.70,.37);g.add(bulb)});
   g.position.set(x,0,z);g.rotation.y=flip<0?Math.PI:0;scene.add(g);trafficSignals.push({mats,phase})
 }
+// Mercedes-Benz GLS 580 inspired web LOD — proportions derived from the uploaded model.
+// Shared geometry keeps all moving cars cheap: only body material is unique per paint color.
+const suvBodyShape=new THREE.Shape();
+suvBodyShape.moveTo(-2.68,.42);suvBodyShape.lineTo(-2.62,.92);suvBodyShape.lineTo(-2.35,1.16);
+suvBodyShape.lineTo(-1.72,1.30);suvBodyShape.lineTo(-1.28,1.83);suvBodyShape.lineTo(-.92,2.02);
+suvBodyShape.lineTo(.92,2.02);suvBodyShape.lineTo(1.48,1.76);suvBodyShape.lineTo(2.18,1.47);
+suvBodyShape.lineTo(2.58,1.17);suvBodyShape.lineTo(2.69,.72);suvBodyShape.lineTo(2.52,.43);suvBodyShape.closePath();
+const suvBodyGeo=new THREE.ExtrudeGeometry(suvBodyShape,{depth:1.94,steps:1,bevelEnabled:true,bevelSegments:1,bevelSize:.065,bevelThickness:.065,curveSegments:1});
+suvBodyGeo.translate(0,0,-.97);suvBodyGeo.computeVertexNormals();
+
+const suvGlassShape=new THREE.Shape();
+suvGlassShape.moveTo(-1.34,1.34);suvGlassShape.lineTo(-.92,1.88);suvGlassShape.lineTo(.82,1.88);
+suvGlassShape.lineTo(1.37,1.62);suvGlassShape.lineTo(1.63,1.34);suvGlassShape.closePath();
+const suvGlassGeo=new THREE.ExtrudeGeometry(suvGlassShape,{depth:1.68,steps:1,bevelEnabled:true,bevelSegments:1,bevelSize:.025,bevelThickness:.025,curveSegments:1});
+suvGlassGeo.translate(0,0,-.84);suvGlassGeo.computeVertexNormals();
+
+const suvLowerGeo=new THREE.BoxGeometry(4.95,.34,2.02);
+const suvWheelGeo=new THREE.CylinderGeometry(.46,.46,.34,16);
+const suvRimGeo=new THREE.CylinderGeometry(.255,.255,.355,12);
+const suvGrilleGeo=new THREE.BoxGeometry(.10,.62,1.28);
+const suvLampGeo=new THREE.BoxGeometry(.08,.22,.46);
+const suvTailGeo=new THREE.BoxGeometry(.08,.28,.42);
+const suvRailGeo=new THREE.BoxGeometry(2.35,.07,.07);
+const suvMirrorGeo=new THREE.BoxGeometry(.26,.16,.30);
+const suvPlateGeo=new THREE.BoxGeometry(.035,.18,.48);
+const suvStarRingGeo=new THREE.TorusGeometry(.18,.025,6,18);
+const suvSpokeGeo=new THREE.BoxGeometry(.025,.28,.025);
+
+const suvTireMat=new THREE.MeshStandardMaterial({color:0x080a0d,roughness:.88,metalness:.06});
+const suvRimMat=new THREE.MeshStandardMaterial({color:0xaeb6bc,roughness:.22,metalness:.90});
+const suvGlassMat=new THREE.MeshStandardMaterial({color:0x0d2431,roughness:.16,metalness:.18,transparent:true,opacity:.78,depthWrite:true});
+const suvTrimMat=new THREE.MeshStandardMaterial({color:0x101318,roughness:.56,metalness:.46});
+const suvChromeMat=new THREE.MeshStandardMaterial({color:0xc9ced1,roughness:.17,metalness:.94});
+const suvHeadMat=new THREE.MeshBasicMaterial({color:0xffe5b0,toneMapped:false});
+const suvTailMat=new THREE.MeshBasicMaterial({color:0xff3445,toneMapped:false});
+const suvPlateMat=new THREE.MeshBasicMaterial({color:0xe9edf0,toneMapped:false});
+
 function makeCar(x,z,dir=1,color=0x55708e,speed=2.4){
-  const g=new THREE.Group(),bodyMat=new THREE.MeshStandardMaterial({color,roughness:.42,metalness:.48}),glass=new THREE.MeshStandardMaterial({color:0x162936,roughness:.20,metalness:.38});
-  const body=new THREE.Mesh(new THREE.BoxGeometry(4.4,1.0,1.9),bodyMat);body.position.y=.78;g.add(body);
-  const cabin=new THREE.Mesh(new THREE.BoxGeometry(2.15,.74,1.60),glass);cabin.position.set(-.25,1.52,0);g.add(cabin);
-  const under=new THREE.Mesh(new THREE.BoxGeometry(2.95,.38,2.02),new THREE.MeshBasicMaterial({color:0x090b0e}));under.position.y=.42;g.add(under);
-  const lamps=new THREE.Mesh(new THREE.BoxGeometry(.09,.22,1.25),new THREE.MeshBasicMaterial({color:0xffdda0,toneMapped:false}));lamps.position.set(dir>0?2.23:-2.23,.86,0);g.add(lamps);
-  g.position.set(x,0,z);if(dir<0)g.rotation.y=Math.PI;scene.add(g);cars.push({g,dir,speed})
+  const g=new THREE.Group();
+  const bodyMat=new THREE.MeshStandardMaterial({color,roughness:.29,metalness:.70});
+  const body=new THREE.Mesh(suvBodyGeo,bodyMat);body.position.y=.02;g.add(body);
+
+  const glass=new THREE.Mesh(suvGlassGeo,suvGlassMat);glass.position.y=.01;g.add(glass);
+  const lower=new THREE.Mesh(suvLowerGeo,suvTrimMat);lower.position.set(-.04,.49,0);g.add(lower);
+
+  // Four tires + four alloy wheels in two draw calls.
+  const tires=new THREE.InstancedMesh(suvWheelGeo,suvTireMat,4),rims=new THREE.InstancedMesh(suvRimGeo,suvRimMat,4);
+  const wm=new THREE.Matrix4(),wp=new THREE.Vector3(),wq=new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI/2,0,0)),ws=new THREE.Vector3(1,1,1);
+  [[-1.68,-1.00],[-1.68,1.00],[1.67,-1.00],[1.67,1.00]].forEach(([wx,wz],i)=>{wp.set(wx,.50,wz);wm.compose(wp,wq,ws);tires.setMatrixAt(i,wm);rims.setMatrixAt(i,wm)});
+  tires.instanceMatrix.needsUpdate=true;rims.instanceMatrix.needsUpdate=true;g.add(tires,rims);
+
+  // GLS-style upright grille and center star.
+  const grille=new THREE.Mesh(suvGrilleGeo,suvTrimMat);grille.position.set(2.68,1.03,0);g.add(grille);
+  for(const gy of [.86,1.02,1.18]){const slat=new THREE.Mesh(new THREE.BoxGeometry(.045,.035,1.16),suvChromeMat);slat.position.set(2.738,gy,0);g.add(slat)}
+  const ring=new THREE.Mesh(suvStarRingGeo,suvChromeMat);ring.position.set(2.747,1.04,0);ring.rotation.y=Math.PI/2;g.add(ring);
+  for(const a of [0,Math.PI*2/3,Math.PI*4/3]){const sp=new THREE.Mesh(suvSpokeGeo,suvChromeMat);sp.position.set(2.755,1.04,0);sp.rotation.x=a;sp.rotation.y=Math.PI/2;g.add(sp)}
+
+  // Light clusters are instanced; they are self-lit, not PointLights.
+  const heads=new THREE.InstancedMesh(suvLampGeo,suvHeadMat,2),tails=new THREE.InstancedMesh(suvTailGeo,suvTailMat,2);
+  const lm=new THREE.Matrix4();
+  [-.61,.61].forEach((lz,i)=>{lm.makeTranslation(2.70,1.28,lz);heads.setMatrixAt(i,lm);lm.makeTranslation(-2.66,1.26,lz);tails.setMatrixAt(i,lm)});
+  heads.instanceMatrix.needsUpdate=true;tails.instanceMatrix.needsUpdate=true;g.add(heads,tails);
+
+  // Roof rails and mirrors establish the SUV silhouette even at small screen size.
+  const rails=new THREE.InstancedMesh(suvRailGeo,suvChromeMat,2);
+  [-.75,.75].forEach((rz,i)=>{lm.makeTranslation(-.10,2.08,rz);rails.setMatrixAt(i,lm)});rails.instanceMatrix.needsUpdate=true;g.add(rails);
+  const mirrors=new THREE.InstancedMesh(suvMirrorGeo,bodyMat,2);
+  [-1.02,1.02].forEach((mz,i)=>{lm.makeTranslation(1.18,1.57,mz);mirrors.setMatrixAt(i,lm)});mirrors.instanceMatrix.needsUpdate=true;g.add(mirrors);
+
+  const plate=new THREE.Mesh(suvPlateGeo,suvPlateMat);plate.position.set(2.745,.72,0);g.add(plate);
+  g.position.set(x,0,z);if(dir<0)g.rotation.y=Math.PI;g.scale.setScalar(.92);
+  scene.add(g);cars.push({g,dir,speed})
 }
 function makePedestrian(x,z,phase=0,color=0xb95c4b){
   const g=new THREE.Group(),skin=new THREE.MeshStandardMaterial({color:0xd6a47d,roughness:.82}),cloth=new THREE.MeshStandardMaterial({color,roughness:.74}),dark=new THREE.MeshStandardMaterial({color:0x1a1d24,roughness:.8});
@@ -183,7 +248,7 @@ function makePedestrian(x,z,phase=0,color=0xb95c4b){
   for(const base of [-49.5,154.5]){const x=base+copy*LOOP_SPAN;addCrosswalk(x);addTrafficSignal(x-7,-6.2,1,copy+base);addTrafficSignal(x+7,18.2,-1,copy+base+.7);
     makePedestrian(x-2,-4,(copy+2)*.7+base*.01,0x8b5eb4);makePedestrian(x+2,16,(copy+3)*.9+base*.02,0xd47d3d)}
 });
-for(let i=0;i<10;i++){const dir=i%2?1:-1,z=dir>0?2.2:11.8;makeCar(-450+i*98,z,dir,[0x456b89,0xa64b4b,0xd4b85e,0x657158,0xb7b9bd][i%5],1.8+(i%4)*.34)}
+for(let i=0;i<6;i++){const dir=i%2?1:-1,z=dir>0?2.2:11.8;makeCar(-430+i*172,z,dir,[0x3d5267,0x9d4b45,0xd1c6a1,0x394047,0xb8bab9,0x20354b][i%6],1.8+(i%3)*.32)}
 
 // deterministic background towers + animated ads, repeated by loop span so wrap points stay visually seamless
 const bg=[[-92,-24,18,42],[-76,-22,14,32],[-60,-25,18,46],[-43,-24,13,36],[-25,-25,16,44],[-10,-24,12,34],[14,-24,14,42],[30,-25,18,50],[49,-24,14,38],[65,-25,18,46],[82,-23,13,34],[100,-25,16,45]];
