@@ -126,7 +126,7 @@ const LOOK_AT_Y=17.2;
 const ambient=new THREE.HemisphereLight(0x91a8ca,0x17120f,1.72);scene.add(ambient);
 const key=new THREE.DirectionalLight(0xffd8bb,2.35);key.position.set(-18,28,26);key.castShadow=false;scene.add(key);
 // road
-const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metalness:.62});const road=new THREE.Mesh(new THREE.PlaneGeometry(1100,54),roadMat);road.rotation.x=-Math.PI/2;road.position.set(0,.01,8);road.receiveShadow=true;scene.add(road);
+const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metalness:.62});const road=new THREE.Mesh(new THREE.PlaneGeometry(1100,54),roadMat);road.rotation.x=-Math.PI/2;road.position.set(0,.01,8);road.receiveShadow=false;scene.add(road);
 {
   const dashXs=[];for(let x=-550;x<551;x+=10)dashXs.push(x);
   const dashGeo=new THREE.BoxGeometry(4.2,.025,.11),dashMat=new THREE.MeshBasicMaterial({color:0xe7ddd0});
@@ -134,7 +134,7 @@ const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metaln
   dashXs.forEach((x,i)=>{m.makeTranslation(x,.035,6);dashes.setMatrixAt(i,m)});dashes.instanceMatrix.needsUpdate=true;scene.add(dashes)
 }
 // sidewalks
-for(const z of [-8,20]){const sw=new THREE.Mesh(new THREE.BoxGeometry(1100,.6,4),new THREE.MeshStandardMaterial({color:0x252832,roughness:.75}));sw.position.set(0,.28,z);sw.receiveShadow=true;scene.add(sw)}
+for(const z of [-8,20]){const sw=new THREE.Mesh(new THREE.BoxGeometry(1100,.6,4),new THREE.MeshStandardMaterial({color:0x252832,roughness:.75}));sw.position.set(0,.28,z);sw.receiveShadow=false;scene.add(sw)}
 // street lamps: instanced geometry, self-lit bulbs, zero dynamic PointLights
 const streetLightPulse=[];
 const lampMetal=new THREE.MeshStandardMaterial({color:0x11151b,roughness:.52,metalness:.72});
@@ -325,8 +325,8 @@ function makeWallPosterTexture(kind='local',seed=1){
 function addSeparator(x,seed=1){
   const frontZ=7.31;
   const wallMat=new THREE.MeshStandardMaterial({map:makeWallTexture(seed),color:0xb7b0a2,roughness:.98,metalness:.01});
-  const wall=new THREE.Mesh(new THREE.BoxGeometry(24,29,2.6),wallMat);wall.position.set(x,14.5,6);wall.castShadow=true;wall.receiveShadow=true;scene.add(wall);
-  const foot=new THREE.Mesh(new THREE.BoxGeometry(27,1.2,4.2),new THREE.MeshStandardMaterial({color:0x403d39,roughness:.9}));foot.position.set(x,.6,6.4);foot.castShadow=true;scene.add(foot);
+  const wall=new THREE.Mesh(new THREE.BoxGeometry(24,29,2.6),wallMat);wall.position.set(x,14.5,6);wall.castShadow=false;wall.receiveShadow=false;scene.add(wall);
+  const foot=new THREE.Mesh(new THREE.BoxGeometry(27,1.2,4.2),new THREE.MeshStandardMaterial({color:0x403d39,roughness:.9}));foot.position.set(x,.6,6.4);foot.castShadow=false;scene.add(foot);
   const specs=[
     ['election',-5.7,18.2,7.2,10.4,-.045],
     ['calendar',4.2,18.8,5.4,8.1,.038],
