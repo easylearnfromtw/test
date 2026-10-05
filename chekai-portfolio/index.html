@@ -8,8 +8,8 @@
 <meta name="description" content="CHE-KAI LIN — Writer X Designer X Student. A real-time 3D portfolio city built with interactive buildings and billboards." />
 <style>
 :root{--ink:#f6f2ea;--muted:#9da8b7;--panel:rgba(7,12,25,.82);--line:rgba(255,255,255,.14);--red:#e43c32;--cyan:#6f93a9;--amber:#e8a25b;--sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;--mono:"SFMono-Regular",Consolas,monospace}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 12%,#124363 0,#0c2a43 30%,#091724 62%,#05090f 100%);color:var(--ink);font-family:var(--sans)}
-button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background:linear-gradient(180deg,rgba(7,18,29,.04),rgba(5,8,13,.05) 52%,rgba(78,25,18,.13));mix-blend-mode:screen}.webgl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}.webgl.dragging{cursor:grabbing}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:linear-gradient(180deg,#6f92aa 0%,#86a7b8 35%,#b5b3bc 67%,#e5bda7 100%);color:var(--ink);font-family:var(--sans)}
+button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background:linear-gradient(180deg,rgba(20,44,62,.03),rgba(52,75,88,.025) 50%,rgba(198,119,86,.08));mix-blend-mode:screen}.webgl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}.webgl.dragging{cursor:grabbing}
 .chrome{position:absolute;inset:0;pointer-events:none;z-index:10}.topbar{height:54px;padding:0 18px;display:flex;align-items:center;justify-content:flex-start;background:linear-gradient(180deg,rgba(4,7,17,.88),rgba(4,7,17,.36));border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px);pointer-events:auto}.brand{font-weight:850;letter-spacing:.07em}.identity{margin-left:12px;color:#b8c2d1;font:9px var(--mono);letter-spacing:.14em;text-transform:uppercase}.nav{display:flex;justify-content:center;gap:4px;min-width:0;overflow:auto hidden;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav button,.ctrl{appearance:none;border:1px solid transparent;background:transparent;border-radius:999px;padding:8px 9px;color:#a9b4c4;font:9px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;cursor:pointer;transition:.2s}.nav button:hover,.nav button.active,.ctrl:hover{color:#fff;background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.12)}.controls{display:flex;gap:4px;align-items:center}.ctrl.square{width:31px;height:31px;padding:0;font-size:15px}.loop-readout{min-width:74px;text-align:center;color:#f0e7d9;font:8px/1 var(--mono);letter-spacing:.08em;white-space:nowrap}.accent{color:var(--red)}
 .now-playing{position:absolute;right:14px;top:60px;z-index:14;max-width:min(310px,52vw);display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid rgba(255,255,255,.10);border-radius:999px;background:rgba(4,8,16,.58);backdrop-filter:blur(10px);color:#d8e1ec;font:7px/1.2 var(--mono);letter-spacing:.055em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto;cursor:pointer;opacity:.88}
 .now-playing .np-dot{width:5px;height:5px;flex:0 0 auto;border-radius:50%;background:#68e39d;box-shadow:0 0 10px #68e39d;animation:npPulse 1.2s ease-in-out infinite}.now-playing.blocked .np-dot{background:#e8a25b;box-shadow:0 0 10px #e8a25b}.now-playing.muted .np-dot{background:#69788a;box-shadow:none;animation:none}.now-playing span:last-child{overflow:hidden;text-overflow:ellipsis}
@@ -117,20 +117,20 @@ function qualityTargets(){
 let QUALITY=qualityTargets(),DPR_MIN=QUALITY.floor,DPR_MAX=QUALITY.idle,DPR_IDLE_TARGET=QUALITY.idle;
 let renderDpr=QUALITY.motion;
 renderer.setPixelRatio(renderDpr);renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
-const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x090c17,.016);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x8eaabd);scene.fog=new THREE.FogExp2(0xa6b8c0,.0064);
 const staticSceneObjects=[],loopCullGroups=[];
 function freezeStatic(o){o.updateMatrix();o.matrixAutoUpdate=false;staticSceneObjects.push(o);return o}
 const sharedMaterialCache=new Map();
 function sharedMat(key,factory){if(!sharedMaterialCache.has(key))sharedMaterialCache.set(key,factory());return sharedMaterialCache.get(key)}
-const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,155);camera.position.set(CONFIG.hero.x,6.0,38);
+const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,290);camera.position.set(CONFIG.hero.x,6.0,38);
 
 function applyResponsiveCamera(){camera.fov=innerWidth<560?70:innerWidth<920?62:55;camera.updateProjectionMatrix()}
 applyResponsiveCamera();
 
 let targetX=CONFIG.hero.x,currentX=CONFIG.hero.x,targetY=6.0,currentY=6.0,targetZ=38,currentZ=38;
 const LOOK_AT_Y=15.6,LOOK_AT_Z=-15.5;
-const ambient=new THREE.HemisphereLight(0x91a8ca,0x17120f,1.72);scene.add(ambient);
-const key=new THREE.DirectionalLight(0xffd8bb,2.35);key.position.set(-18,28,26);key.castShadow=false;scene.add(key);
+const ambient=new THREE.HemisphereLight(0xbfd9e6,0x373633,2.05);scene.add(ambient);
+const key=new THREE.DirectionalLight(0xffd8bd,2.15);key.position.set(-28,36,18);key.castShadow=false;scene.add(key);
 // road
 const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metalness:.62});const road=new THREE.Mesh(new THREE.PlaneGeometry(1100,26),roadMat);road.rotation.x=-Math.PI/2;road.position.set(0,.01,7);road.receiveShadow=false;freezeStatic(road);scene.add(road);
 {
@@ -435,20 +435,77 @@ for(let i=0;i<9;i++){makePedestrian(-455+i*112,-11.2,i*.83,[0x496b83,0xa6614d,0x
 [-1,0,1].forEach(copy=>{const px=94.5+copy*LOOP_SPAN;makePedestrian(px-2.0,-11.0,2.1+copy,0x355a78,'sign','static',1);makePedestrian(px+.2,-11.0,2.8+copy,0x9d5f47,'sign','static',-1);makePedestrian(px+2.3,-11.0,3.5+copy,0x6b7652,'casual','static',1)});
 
 
+// Dawn skyline layer — OSM-inspired Taipei / New Taipei geography, procedural and GPU-light.
+const dawnCanvas=document.createElement('canvas');dawnCanvas.width=64;dawnCanvas.height=512;
+const dawnCtx=dawnCanvas.getContext('2d'),dawnGrad=dawnCtx.createLinearGradient(0,0,0,512);
+dawnGrad.addColorStop(0,'#6f93ab');dawnGrad.addColorStop(.38,'#86a7b8');dawnGrad.addColorStop(.72,'#b8b5bd');dawnGrad.addColorStop(1,'#efc4aa');
+dawnCtx.fillStyle=dawnGrad;dawnCtx.fillRect(0,0,64,512);
+const dawnTex=new THREE.CanvasTexture(dawnCanvas);dawnTex.colorSpace=THREE.SRGBColorSpace;
+const dawnSky=new THREE.Mesh(new THREE.PlaneGeometry(1500,360),new THREE.MeshBasicMaterial({map:dawnTex,depthWrite:false,depthTest:false,fog:false,toneMapped:false}));
+dawnSky.position.set(0,105,-245);dawnSky.renderOrder=-100;freezeStatic(dawnSky);scene.add(dawnSky);
+
+function mountainRidge(points,color,z,opacity=1){
+  const sh=new THREE.Shape();sh.moveTo(points[0][0],-42);
+  sh.lineTo(points[0][0],points[0][1]);
+  for(let i=1;i<points.length;i++)sh.lineTo(points[i][0],points[i][1]);
+  sh.lineTo(points[points.length-1][0],-42);sh.closePath();
+  const mesh=new THREE.Mesh(new THREE.ShapeGeometry(sh),new THREE.MeshBasicMaterial({color,transparent:opacity<1,opacity,depthWrite:true,fog:true}));
+  mesh.position.set(0,5,z);freezeStatic(mesh);scene.add(mesh);return mesh
+}
+mountainRidge([[-620,4],[-565,18],[-515,11],[-455,29],[-390,17],[-330,35],[-270,20],[-210,42],[-145,23],[-80,34],[-15,19],[55,38],[120,24],[190,44],[260,21],[330,36],[405,19],[475,31],[545,16],[620,8]],0x657a80,-165,.96);
+mountainRidge([[-640,0],[-560,11],[-480,6],[-395,18],[-315,9],[-230,22],[-145,10],[-60,17],[35,7],[120,20],[210,9],[300,17],[390,7],[485,15],[570,6],[640,2]],0x7f9295,-153,.88);
+
+function makeTaipei101(x=132,z=-118){
+  const g=new THREE.Group(),mat=new THREE.MeshLambertMaterial({color:0x607d82,emissive:0x0c1516});
+  const widths=[13.2,12.5,11.8,11.1,10.4,9.7,9.0,8.3];let y=0;
+  widths.forEach((w,i)=>{const h=5.6,b=new THREE.Mesh(new THREE.BoxGeometry(w,h,w*.72),mat);b.position.y=y+h*.5;y+=h+.35;g.add(b)});
+  const crown=new THREE.Mesh(new THREE.BoxGeometry(6.4,5.8,4.8),mat);crown.position.y=y+2.9;g.add(crown);
+  const spire=new THREE.Mesh(new THREE.CylinderGeometry(.32,.75,10,6),mat);spire.position.y=y+10.3;g.add(spire);
+  g.position.set(x,0,z);g.rotation.y=-.08;g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});scene.add(g);return g
+}
+const taipei101=makeTaipei101();
+
+function makeTamsuiBridge(x=-132,z=-126){
+  const g=new THREE.Group(),deckMat=new THREE.MeshLambertMaterial({color:0x73878c}),cableMat=new THREE.LineBasicMaterial({color:0x9aa9ab,transparent:true,opacity:.72});
+  const deck=new THREE.Mesh(new THREE.BoxGeometry(124,1.0,3.3),deckMat);deck.position.y=13;g.add(deck);
+  const tower=new THREE.Mesh(new THREE.BoxGeometry(2.0,42,2.0),deckMat);tower.position.set(14,33,0);tower.rotation.z=-.055;g.add(tower);
+  const cablePts=[];for(let px=-54;px<=58;px+=14){cablePts.push(14,52,0,px,13.6,0)}
+  const cg=new THREE.BufferGeometry();cg.setAttribute('position',new THREE.Float32BufferAttribute(cablePts,3));
+  const cables=new THREE.LineSegments(cg,cableMat);g.add(cables);
+  g.position.set(x,0,z);g.rotation.y=.025;g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});scene.add(g);return g
+}
+const tamsuiBridge=makeTamsuiBridge();
+
+// Elevated MRT: one deck, instanced piers, one lightweight moving train.
+const mrtDeckMat=new THREE.MeshLambertMaterial({color:0x69777b}),mrtPierMat=new THREE.MeshLambertMaterial({color:0x758083});
+const mrtDeck=new THREE.Mesh(new THREE.BoxGeometry(520,1.25,5.6),mrtDeckMat);mrtDeck.position.set(0,25,-83);freezeStatic(mrtDeck);scene.add(mrtDeck);
+const mrtPierGeo=new THREE.BoxGeometry(1.7,25,1.7),mrtPierXs=[];for(let x=-250;x<=250;x+=32)mrtPierXs.push(x);
+const mrtPiers=new THREE.InstancedMesh(mrtPierGeo,mrtPierMat,mrtPierXs.length),mrtM=new THREE.Matrix4();
+mrtPierXs.forEach((x,i)=>{mrtM.makeTranslation(x,12.5,-83);mrtPiers.setMatrixAt(i,mrtM)});
+mrtPiers.instanceMatrix.needsUpdate=true;freezeStatic(mrtPiers);scene.add(mrtPiers);
+
+const mrtTrain=new THREE.Group();
+const mrtBodyMat=new THREE.MeshLambertMaterial({color:0xd6dde0}),mrtGlassMat=new THREE.MeshBasicMaterial({color:0x496a78,toneMapped:false}),mrtStripeMat=new THREE.MeshBasicMaterial({color:0x2f8a72,toneMapped:false});
+for(let i=0;i<4;i++){
+  const car=new THREE.Group(),body=new THREE.Mesh(new THREE.BoxGeometry(14.5,3.5,3.7),mrtBodyMat),win=new THREE.Mesh(new THREE.BoxGeometry(10.8,1.15,3.76),mrtGlassMat),stripe=new THREE.Mesh(new THREE.BoxGeometry(14.62,.30,3.79),mrtStripeMat);
+  body.position.y=0;win.position.y=.55;stripe.position.y=-.78;car.add(body,win,stripe);car.position.x=i*15.1;mrtTrain.add(car)
+}
+mrtTrain.position.set(-255,28.25,-83);scene.add(mrtTrain);
+
 // deterministic background towers — GPU-batched materials and one window plane per tower
 const bg=[[-92,-44,18,42],[-76,-42,14,32],[-60,-46,18,46],[-43,-43,13,36],[-25,-45,16,44],[-10,-42,12,34],[14,-44,14,42],[30,-46,18,50],[49,-43,14,38],[65,-45,18,46],[82,-42,13,34],[100,-45,16,45]];
 const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];
-const bgTowerMat=new THREE.MeshLambertMaterial({color:0x111824,emissive:0x020407});
+const bgTowerMat=new THREE.MeshLambertMaterial({color:0x33424a,emissive:0x070a0b});
 const bgWindowTextureCache=new Map();
 function makeWindowBandTexture(variant=0){
   const key='bg-window-'+variant;if(bgWindowTextureCache.has(key))return bgWindowTextureCache.get(key);
   const cv=document.createElement('canvas');cv.width=64;cv.height=256;const g=cv.getContext('2d');g.clearRect(0,0,64,256);
-  const col=variant?'rgba(48,53,92,.58)':'rgba(35,57,82,.58)';
+  const col=variant?'rgba(83,104,118,.48)':'rgba(68,95,108,.46)';
   for(let y=18;y<246;y+=42){g.fillStyle=col;g.fillRect(5,y,54,13)}
   const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;bgWindowTextureCache.set(key,tx);return tx
 }
 const bgWindowMats=[0,1].map(v=>new THREE.MeshBasicMaterial({map:makeWindowBandTexture(v),transparent:true,depthWrite:false}));
-const sharedAdMats=adColors.map((col,i)=>{const m=new THREE.MeshBasicMaterial({color:col,toneMapped:false,transparent:true,opacity:.86});m.userData.base=new THREE.Color(col);m.userData.phase=i*.73;flicker.push(m);return m});
+const sharedAdMats=adColors.map((col,i)=>{const m=new THREE.MeshBasicMaterial({color:col,toneMapped:false,transparent:true,opacity:.55});m.userData.base=new THREE.Color(col);m.userData.phase=i*.73;flicker.push(m);return m});
 [-1,0,1].forEach(copy=>bg.forEach((b,i)=>{
   const [bx,z,w,h]=b,x=bx*1.5+copy*LOOP_SPAN;
   const tower=new THREE.Mesh(new THREE.BoxGeometry(w,h,10),bgTowerMat);tower.position.set(x,h/2,z);freezeStatic(tower);scene.add(tower);
@@ -853,6 +910,8 @@ function animate(){
   }
   barberPoles.forEach((p,i)=>p.rotation.y=t*(1.45+i*.05));
   cars.forEach(o=>{o.g.position.x+=o.dir*o.speed*dt;if(o.g.position.x>510)o.g.position.x=-510;if(o.g.position.x<-510)o.g.position.x=510});
+  mrtTrain.position.x+=8.4*dt;
+  if(mrtTrain.position.x>245)mrtTrain.position.x=-315;
   pedestrians.forEach(o=>{
     if(o.mode==='cross'){const u=(Math.sin(t*.55+o.phase)+1)/2;o.g.position.z=-4+u*21;o.g.position.x=o.baseX+Math.sin(t*1.1+o.phase)*.38;o.g.rotation.y=Math.sin(t*.55+o.phase)>0?0:Math.PI}
     else if(o.mode==='sidewalk'){o.g.position.x+=o.dir*o.speed*dt;if(o.g.position.x>520)o.g.position.x=-520;if(o.g.position.x<-520)o.g.position.x=520;o.g.position.z=o.baseZ+Math.sin(t*.7+o.phase)*.10;o.g.rotation.y=o.dir>0?Math.PI/2:-Math.PI/2}
