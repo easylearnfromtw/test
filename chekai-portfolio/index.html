@@ -35,7 +35,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
       <div class="controls"><button class="ctrl square" id="prev" aria-label="Previous section">‹</button><span class="loop-readout" id="loopReadout">01 → 02 → … ∞</span><button class="ctrl square" id="next" aria-label="Next section">›</button><button class="ctrl" id="reset">HOME</button><button class="ctrl square" id="minus">−</button><button class="ctrl square" id="plus">＋</button></div>
     </header>
     <button class="now-playing blocked" id="nowPlaying" type="button" aria-label="CITYMUS audio"><span class="np-dot"></span><span id="nowPlayingText">CITYMUS · LOADING</span></button>
-    <div class="hud"><div class="chip"><b>Direct-control city</b>左滑往左 · 右滑往右 · 相鄰街區以固定世界速度移動</div><div class="chip"><b>Self-lit signs</b>燈箱從材質內部發光 + 外緣光暈，不再用外部 PointLight 打亮</div><div class="chip"><b>Performance mode</b>無即時陰影 · instancing 路燈/標線 · adaptive resolution · 低 draw-call</div></div>
+    <div class="hud"><div class="chip"><b>Direct-control city</b>左滑往左 · 右滑往右 · 相鄰街區以固定世界速度移動</div><div class="chip"><b>Portfolio boards</b>個人經歷固定亮度不閃爍 · 當前看板自動切換超高解析材質</div><div class="chip"><b>Performance mode</b>無即時陰影 · instancing 路燈/標線 · adaptive resolution · 低 draw-call</div></div>
     <div class="status">Focus <strong id="focusLabel">HOME</strong><div class="bar"><i id="progress"></i></div></div>
   </div>
 </div>
@@ -112,7 +112,7 @@ const LOOP_SPAN=315, WRAP_LEFT=-173, WRAP_RIGHT=188;
 const canvas=document.getElementById('webgl');
 const MOBILE_GPU=innerWidth<760||/iPhone|iPad|Android/i.test(navigator.userAgent);
 const DPR_MAX=MOBILE_GPU?1.35:1.65,DPR_MIN=MOBILE_GPU?.92:1.0;
-const DPR_IDLE_TARGET=Math.min(devicePixelRatio,MOBILE_GPU?1.30:1.60);
+const DPR_IDLE_TARGET=Math.min(devicePixelRatio,MOBILE_GPU?1.72:2.0);
 let renderDpr=Math.min(devicePixelRatio,MOBILE_GPU?1.10:1.35);
 const renderer=new THREE.WebGLRenderer({canvas,antialias:!MOBILE_GPU,alpha:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(renderDpr);renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
@@ -191,8 +191,9 @@ const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];[-1,0,1].forEach(c
 function decodeBase64(s){const bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
 const BUILDING_TINTS={hero:0x192636,about:0x202832,web:0x142332,experience:0x101a25,academic:0x26303a,writing:0x252b31,running:0x111b25,roles:0x26303a,public:0x202832,art:0x101a25};
 const BOARD_STYLE={hero:'red',about:'cream',web:'dark',experience:'dark',academic:'cream',writing:'cream',running:'dark',roles:'cream',public:'cream',art:'dark'};
-const loader=new GLTFLoader();const root=new THREE.Group();scene.add(root);const buildings=new Map(),clickables=[];
+const loader=new GLTFLoader();const root=new THREE.Group();scene.add(root);const buildings=new Map(),clickables=[],portfolioBoards=new Map();
 const textureCache=new Map(),wallTextureCache=new Map(),posterTextureCache=new Map(),shopSignTextureCache=new Map();
+let activePortfolioHiTex=null,activePortfolioHiId=null;
 const SHOP_SIGNS={
   about:[['seven','7-ELEVEN']],
   web:[['lottery','公益彩券']],
@@ -245,16 +246,19 @@ function addBarberPole(group,dims){
 }
 function hex(c){return new THREE.Color(c)}
 function wrapText(ctx,text,maxWidth){const chars=[...text];let lines=[],line='';for(const ch of chars){const test=line+ch;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=ch}else line=test}if(line)lines.push(line);return lines}
-function makeTexture(id){
-  if(textureCache.has(id))return textureCache.get(id);
+function makeTexture(id,quality='base'){
+  const cacheKey=id+':base';
+  if(quality==='base'&&textureCache.has(cacheKey))return textureCache.get(cacheKey);
   const d=DATA[id],style=BOARD_STYLE[id]||'dark';
-  // Portfolio/info boards are the one place we spend texture resolution.
-  // The texture is cached and reused by every loop copy, so this does not multiply VRAM per building.
-  const Q=MOBILE_GPU?1.22:1.42,W=900,H=1180,c=document.createElement('canvas');c.width=Math.round(W*Q);c.height=Math.round(H*Q);
+  // Only the currently focused portfolio board gets the ultra-resolution texture.
+  // That makes the on-building text approach the crispness of the opened DOM drawer
+  // without keeping ten 2K+ canvases resident on a phone.
+  const Q=quality==='high'?(MOBILE_GPU?2.25:2.60):(MOBILE_GPU?1.22:1.42);
+  const W=900,H=1180,c=document.createElement('canvas');c.width=Math.round(W*Q);c.height=Math.round(H*Q);
   const x=c.getContext('2d');x.scale(Q,Q);
   const cream='#efe7d8',navy='#101722',red='#e43c32',black='#111317';
   x.fillStyle=style==='cream'?cream:style==='red'?red:navy;x.fillRect(0,0,W,H);
-  x.globalAlpha=.05;for(let i=0;i<1500;i++){const g=135+Math.random()*80;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*2,1+Math.random()*2)}x.globalAlpha=1;
+  x.globalAlpha=.045;for(let i=0;i<1300;i++){const g=135+Math.random()*80;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*2,1+Math.random()*2)}x.globalAlpha=1;
   const light=style==='dark'||style==='red';
   x.fillStyle=style==='red'?cream:red;x.fillRect(0,0,24,H);
   x.fillStyle=light?cream:black;x.font='800 54px Arial, sans-serif';x.fillText(d.index,60,92);
@@ -270,11 +274,24 @@ function makeTexture(id){
     x.fillStyle=light?cream:black;const lines=wrapText(x,it[0],680).slice(0,2);lines.forEach((line,j)=>x.fillText(line,104,ty+i*170+j*42));
     x.strokeStyle=light?'rgba(239,231,216,.12)':'rgba(17,19,23,.10)';x.beginPath();x.moveTo(104,ty+i*170+55);x.lineTo(830,ty+i*170+55);x.stroke();
   });
-  x.fillStyle=light?'rgba(239,231,216,.62)':'rgba(17,19,23,.60)';x.font='600 20px monospace';x.fillText('CLICK TO EXPLORE  →',60,1112);
-  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
-  tex.generateMipmaps=true;tex.minFilter=THREE.LinearMipmapLinearFilter;tex.magFilter=THREE.LinearFilter;
-  tex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());tex.needsUpdate=true;
-  textureCache.set(id,tex);return tex
+  x.fillStyle=light?'rgba(239,231,216,.68)':'rgba(17,19,23,.64)';x.font='600 20px monospace';x.fillText('CLICK TO EXPLORE  →',60,1112);
+  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.generateMipmaps=true;
+  tex.minFilter=THREE.LinearMipmapLinearFilter;tex.magFilter=THREE.LinearFilter;
+  tex.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());tex.needsUpdate=true;
+  if(quality==='base')textureCache.set(cacheKey,tex);
+  return tex
+}
+function setPortfolioBoardQuality(id){
+  if(activePortfolioHiId===id)return;
+  if(activePortfolioHiId&&portfolioBoards.has(activePortfolioHiId)){
+    const base=makeTexture(activePortfolioHiId,'base');
+    portfolioBoards.get(activePortfolioHiId).forEach(mat=>{mat.map=base;mat.emissiveMap=base;mat.needsUpdate=true})
+  }
+  if(activePortfolioHiTex){activePortfolioHiTex.dispose();activePortfolioHiTex=null}
+  activePortfolioHiId=id;
+  if(!portfolioBoards.has(id))return;
+  activePortfolioHiTex=makeTexture(id,'high');
+  portfolioBoards.get(id).forEach(mat=>{mat.map=activePortfolioHiTex;mat.emissiveMap=activePortfolioHiTex;mat.needsUpdate=true})
 }
 function normalizeBuilding(obj,height){const box=new THREE.Box3().setFromObject(obj),size=new THREE.Vector3();box.getSize(size);const s=height/size.y;obj.scale.setScalar(s);const box2=new THREE.Box3().setFromObject(obj),center=new THREE.Vector3();box2.getCenter(center);obj.position.x-=center.x;obj.position.z-=center.z;obj.position.y-=box2.min.y;return {w:size.x*s,d:size.z*s,h:height}}
 function materialize(obj,index,id){
@@ -368,12 +385,12 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});
     mat.userData.baseIntensity=1.55;mat.userData.phase=(index+copy*10)*1.11;
     const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat); board.position.set(0,cfg.h*.58,dims.d*.49+.34); board.userData.section=id; group.add(board); clickables.push(board);
-    lightboxes.push({mat,halo:haloMat,light:null});
+    if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);portfolioBoards.get(id).push(mat);
     const lowerColor=id==='hero'?0xe43c32:(index%3===0?0xe43c32:0xd8c7aa);
     const lowerFrame=new THREE.Mesh(new THREE.BoxGeometry(bw*.80,2.45,.28),new THREE.MeshStandardMaterial({color:0x07090d,roughness:.34,metalness:.78}));lowerFrame.position.set(0,cfg.h*.17,dims.d*.5+.17);group.add(lowerFrame);
     const lowerMat=new THREE.MeshStandardMaterial({color:lowerColor,emissive:lowerColor,emissiveIntensity:1.35,toneMapped:false,transparent:true,opacity:.92,roughness:.25});
     lowerMat.userData.baseIntensity=1.35;lowerMat.userData.phase=(index+copy*10)*1.37;
-    const small=new THREE.Mesh(new THREE.PlaneGeometry(bw*.78,2.2),lowerMat); small.position.set(0,cfg.h*.17,dims.d*.5+.34); group.add(small); lightboxes.push({mat:lowerMat,halo:null,light:null});
+    const small=new THREE.Mesh(new THREE.PlaneGeometry(bw*.78,2.2),lowerMat); small.position.set(0,cfg.h*.17,dims.d*.5+.34); group.add(small);
     addProjectingSign(group,id,dims,index,copy);
     buildings.set(group.name,group);
   }
@@ -395,7 +412,7 @@ function updateLoopUI(id){
 }
 function nearestLapFor(id){ return Math.round((currentX-CONFIG[id].x)/LOOP_SPAN); }
 function focus(id,open=false,lap=null){
-  const cfg=CONFIG[id]; if(!cfg) return; activeId=id;
+  const cfg=CONFIG[id]; if(!cfg) return; activeId=id;setPortfolioBoardQuality(id);
   const heroGroup=buildings.get('hero:0');if(heroGroup)heroGroup.visible=id==='hero';
   const useLap=(id==='hero')?0:(lap===null?nearestLapFor(id):lap);
   targetX=(id==='hero')?cfg.x:(cfg.x+useLap*LOOP_SPAN);
@@ -461,7 +478,7 @@ function animate(){
       else if(fps>58)next=Math.min(DPR_MAX,devicePixelRatio,renderDpr+.035);
     }else{
       // stationary portfolio panels should look like print, not a low-res game frame
-      if(fps>45)next=Math.min(DPR_IDLE_TARGET,renderDpr+.10);
+      if(fps>43)next=Math.min(DPR_IDLE_TARGET,renderDpr+.18);
       else if(fps<38)next=Math.max(MOBILE_GPU?1.05:1.10,renderDpr-.05);
     }
     if(Math.abs(next-renderDpr)>.015){renderDpr=next;renderer.setPixelRatio(renderDpr)}
