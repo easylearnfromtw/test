@@ -106,11 +106,27 @@ const CONFIG={
 };
 const LOOP_SPAN=315, WRAP_LEFT=-173, WRAP_RIGHT=188;
 const canvas=document.getElementById('webgl');
-const MOBILE_GPU=innerWidth<760||/iPhone|iPad|Android/i.test(navigator.userAgent);
-const DPR_MAX=MOBILE_GPU?1.35:1.65,DPR_MIN=MOBILE_GPU?.92:1.0;
-const DPR_IDLE_TARGET=Math.min(devicePixelRatio,MOBILE_GPU?1.72:2.0);
-let renderDpr=Math.min(devicePixelRatio,MOBILE_GPU?1.10:1.35);
-const renderer=new THREE.WebGLRenderer({canvas,antialias:!MOBILE_GPU,alpha:true,powerPreference:'high-performance'});
+const MOBILE_GPU=innerWidth<760||/iPhone|iPad|Android/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/i.test(navigator.userAgent));
+const PIXELS_1080P=1920*1080,PIXELS_4K=3840*2160;
+const renderer=new THREE.WebGLRenderer({canvas,antialias:!MOBILE_GPU,alpha:true,powerPreference:'high-performance',precision:'highp'});
+const gl=renderer.getContext(),MAX_RB_SIZE=gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)||4096;
+function dprForBudget(pixelBudget,maxDpr){
+  const cssPixels=Math.max(1,innerWidth*innerHeight);
+  const byPixels=Math.sqrt(pixelBudget/cssPixels);
+  const byFramebuffer=Math.min(MAX_RB_SIZE/Math.max(1,innerWidth),MAX_RB_SIZE/Math.max(1,innerHeight));
+  return Math.max(1,Math.min(devicePixelRatio,maxDpr,byPixels,byFramebuffer));
+}
+function qualityTargets(){
+  const motionBudget=MOBILE_GPU?PIXELS_1080P*1.02:PIXELS_1080P*1.35;
+  const idleBudget=MOBILE_GPU?Math.min(PIXELS_4K,3.45e6):PIXELS_4K;
+  return {
+    motion:dprForBudget(motionBudget,MOBILE_GPU?2.65:2.35),
+    idle:dprForBudget(idleBudget,MOBILE_GPU?3.0:3.0),
+    floor:dprForBudget(MOBILE_GPU?1.45e6:PIXELS_1080P,MOBILE_GPU?2.15:2.0)
+  };
+}
+let QUALITY=qualityTargets(),DPR_MIN=QUALITY.floor,DPR_MAX=QUALITY.idle,DPR_IDLE_TARGET=QUALITY.idle;
+let renderDpr=QUALITY.motion;
 renderer.setPixelRatio(renderDpr);renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
 const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x090c17,.016);
 const staticSceneObjects=[],loopCullGroups=[];
@@ -391,7 +407,7 @@ function makeTexture(id,quality='base'){
   const cacheKey=id+':base';
   if(quality==='base'&&textureCache.has(cacheKey))return textureCache.get(cacheKey);
   const d=DATA[id],style=BOARD_STYLE[id]||'dark';
-  const Q=quality==='high'?(MOBILE_GPU?2.35:2.75):(MOBILE_GPU?1.32:1.55);
+  const Q=quality==='high'?(MOBILE_GPU?2.80:3.00):(MOBILE_GPU?1.48:1.65);
   const W=1400,H=820,c=document.createElement('canvas');c.width=Math.round(W*Q);c.height=Math.round(H*Q);
   const x=c.getContext('2d');x.scale(Q,Q);
   const cream='#efe7d8',navy='#0d1621',red='#e43c32',black='#111317';
@@ -610,7 +626,11 @@ canvas.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
 document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus('hero',false)});
 addEventListener('keydown',e=>{if(e.key==='Escape'){drawer.classList.remove('open');focus('hero',false)}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;applyResponsiveCamera();renderer.setSize(innerWidth,innerHeight);renderDpr=Math.min(renderDpr,DPR_MAX,devicePixelRatio);renderer.setPixelRatio(renderDpr)});
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;applyResponsiveCamera();renderer.setSize(innerWidth,innerHeight);
+  QUALITY=qualityTargets();DPR_MIN=QUALITY.floor;DPR_MAX=QUALITY.idle;DPR_IDLE_TARGET=QUALITY.idle;
+  renderDpr=Math.min(renderDpr,DPR_MAX,devicePixelRatio);renderer.setPixelRatio(renderDpr)
+});
 function wrapLoop(){
   while(currentX>WRAP_RIGHT && targetX>WRAP_RIGHT){ currentX-=LOOP_SPAN; targetX-=LOOP_SPAN; }
   while(currentX<WRAP_LEFT && targetX<WRAP_LEFT){ currentX+=LOOP_SPAN; targetX+=LOOP_SPAN; }
@@ -656,17 +676,23 @@ function animate(){
     else{o.g.position.z=o.baseZ;o.g.position.x=o.baseX+Math.sin(t*.55+o.phase)*.08}
   });
 
-  // Stable adaptive resolution: avoid reallocating the framebuffer every 1–2 seconds.
+  // 1080p-class while moving; native/4K-class once settled. Changes are rate-limited to avoid Safari framebuffer churn.
   const cameraMoving=Math.abs(targetX-currentX)>.035||Math.abs(targetY-currentY)>.025||Math.abs(targetZ-currentZ)>.035;
   idleStableTime=cameraMoving?0:(idleStableTime+dt);
   fpsFrames++;fpsTime+=dt;
   if(fpsTime>=2.0){
-    const fps=fpsFrames/fpsTime,now=t;let next=renderDpr;
-    if(now-lastDprChange>5.5){
-      if(cameraMoving&&fps<45)next=Math.max(DPR_MIN,renderDpr-.10);
-      else if(!cameraMoving&&idleStableTime>2.8&&fps>53)next=Math.min(DPR_IDLE_TARGET,renderDpr+.12);
-      else if(!cameraMoving&&fps<36)next=Math.max(MOBILE_GPU?1.05:1.10,renderDpr-.06);
-      if(Math.abs(next-renderDpr)>.04){renderDpr=next;renderer.setPixelRatio(renderDpr);lastDprChange=now}
+    const fps=fpsFrames/fpsTime,now=t,targetQuality=cameraMoving?QUALITY.motion:QUALITY.idle;
+    let next=renderDpr;
+    if(now-lastDprChange>4.5){
+      if(cameraMoving){
+        if(fps<43)next=Math.max(QUALITY.floor,renderDpr-.16);
+        else if(renderDpr<targetQuality&&fps>54)next=Math.min(targetQuality,renderDpr+.12);
+        else if(renderDpr>targetQuality+.08)next=Math.max(targetQuality,renderDpr-.12);
+      }else if(idleStableTime>1.4){
+        if(fps>48&&renderDpr<targetQuality)next=Math.min(targetQuality,renderDpr+.22);
+        else if(fps<32)next=Math.max(QUALITY.motion,renderDpr-.12);
+      }
+      if(Math.abs(next-renderDpr)>.05){renderDpr=next;renderer.setPixelRatio(renderDpr);lastDprChange=now}
     }
     fpsFrames=0;fpsTime=0
   }
