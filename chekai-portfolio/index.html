@@ -3,246 +3,243 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#07121f" />
-<title>CHE-KAI LIN — 3D City Portfolio</title>
-<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. Interactive 3D city portfolio." />
+<meta name="theme-color" content="#08121d" />
+<title>CHE-KAI LIN — 3D Portfolio Square</title>
+<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. Interactive 3D city-square portfolio." />
 <style>
 :root{
-  --sky:#07121f;
-  --sky2:#0e2a44;
-  --ink:#0d1014;
-  --paper:#f2eee5;
-  --paper2:#ded8cc;
-  --red:#e3282f;
-  --red2:#ff3b43;
-  --blue:#2b6f9f;
-  --neon:#ff3148;
-  --muted:#b9c4cf;
-  --glass:rgba(7,14,23,.74);
-  --line:rgba(255,255,255,.15);
-  --shadow:0 24px 80px rgba(0,0,0,.38);
+  --night:#07101b;--night2:#0d1b2b;--blue:#12324e;--red:#ef3028;--red2:#bd1f1a;
+  --paper:#f1eadf;--ink:#11151a;--muted:#8e98a3;--line:rgba(255,255,255,.16);
+  --glass:rgba(8,17,29,.72);--glass2:rgba(13,27,43,.82);--white:#f8f4ee;
   --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
-  --serif:"Iowan Old Style","Palatino Linotype","Noto Serif TC",serif;
+  --display:"Arial Narrow","Helvetica Neue Condensed",Impact,"Noto Sans TC",sans-serif;
   --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
 }
 *{box-sizing:border-box}
-html,body{width:100%;height:100%;margin:0;overflow:hidden;background:linear-gradient(180deg,#06111e 0%,#0d2b43 44%,#07111e 100%);color:#fff;font-family:var(--sans)}
-button{font:inherit;color:inherit}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.83' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E")}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--night);color:var(--white);font-family:var(--sans)}
+button{font:inherit;color:inherit} a{color:inherit;text-decoration:none}
+body::before{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}
 
-/* fixed chrome */
-.ui{position:fixed;inset:0;z-index:40;pointer-events:none}
-.topbar{position:absolute;left:18px;right:18px;top:16px;min-height:58px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:18px;background:rgba(4,10,17,.72);backdrop-filter:blur(18px);box-shadow:0 16px 55px rgba(0,0,0,.2);pointer-events:auto}
-.brand{font-weight:800;letter-spacing:.12em;font-size:14px}.brand span{font:10px var(--mono);color:#d7dde5;margin-left:12px;letter-spacing:.1em}
-.nav{display:flex;justify-content:center;gap:4px;overflow:auto hidden;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}
-.nav button{border:0;background:transparent;padding:8px 9px;border-radius:999px;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#b9c4cf;cursor:pointer;white-space:nowrap;transition:.2s}
-.nav button:hover,.nav button.active{background:rgba(255,255,255,.09);color:#fff}.nav button.active{box-shadow:inset 0 0 0 1px rgba(255,49,72,.45)}
-.status{font:9px var(--mono);letter-spacing:.08em;color:#c4d0da;text-transform:uppercase;white-space:nowrap}
-.help{position:absolute;left:18px;bottom:18px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(4,10,17,.72);backdrop-filter:blur(14px);box-shadow:var(--shadow);pointer-events:auto;max-width:360px}.help b{display:block;font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#ff8f9c;margin-bottom:5px}.help strong{font:400 20px/1.05 var(--serif);display:block}.help small{display:block;margin-top:6px;color:#aeb9c5;font-size:10px;line-height:1.5}
-.zoomread{position:absolute;right:18px;bottom:18px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(4,10,17,.72);backdrop-filter:blur(14px);pointer-events:none;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#bdc7d2}.zoomread span{color:#fff;font-weight:700}
+/* chrome */
+.chrome{position:fixed;inset:0;z-index:60;pointer-events:none}
+.topbar{position:absolute;top:0;left:0;right:0;height:58px;padding:0 22px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px;background:linear-gradient(180deg,rgba(3,8,14,.92),rgba(3,8,14,.48));border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(14px);pointer-events:auto}
+.brand{font:800 17px/1 var(--sans);letter-spacing:.08em}.identity{font:10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#d6dce3;margin-left:10px}
+.topnav{display:flex;justify-content:center;gap:6px;overflow:auto hidden;scrollbar-width:none}.topnav::-webkit-scrollbar{display:none}
+.topnav button,.mode-btn{appearance:none;border:1px solid transparent;background:transparent;color:#aab4bf;border-radius:999px;padding:8px 10px;cursor:pointer;font:9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;transition:.18s}.topnav button:hover,.topnav button.active,.mode-btn:hover,.mode-btn.active{color:#fff;border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.05)}
+.modegroup{display:flex;gap:6px;align-items:center}.lang{font:10px var(--mono);color:#9aa7b4}.lang b{color:var(--red)}
 
-/* scene */
-.viewport{position:relative;width:100vw;height:100vh;overflow:hidden;touch-action:none;cursor:grab;perspective:1200px;perspective-origin:50% 52%}.viewport.dragging{cursor:grabbing}
-.skyglow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 32%,rgba(54,126,184,.20),transparent 28%),linear-gradient(180deg,transparent 58%,rgba(0,0,0,.20));z-index:0}
-.city{position:absolute;left:50%;top:54%;width:1760px;height:970px;transform-style:preserve-3d;transform-origin:50% 68%;will-change:transform;z-index:1}
-.ground{position:absolute;left:50%;top:56%;width:1900px;height:860px;transform:translate(-50%,-50%) rotateX(72deg) translateZ(-260px);transform-origin:center;background:
- linear-gradient(90deg,transparent 0 49.7%,rgba(255,49,72,.16) 50%,transparent 50.3%),
- repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 1px,transparent 1px 64px),
- repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 64px),
- linear-gradient(180deg,#111a23,#060a0f);box-shadow:0 0 180px rgba(0,0,0,.7);border-radius:50%;opacity:.86}
-.plaza{position:absolute;left:50%;top:61%;width:540px;height:310px;transform:translate(-50%,-50%) rotateX(68deg) translateZ(-30px);border:1px solid rgba(255,255,255,.10);border-radius:50%;background:radial-gradient(circle,rgba(255,49,72,.21),rgba(255,49,72,.03) 58%,transparent 61%);box-shadow:0 0 90px rgba(255,49,72,.12)}
-.plaza:before{content:"";position:absolute;inset:34px;border:2px solid rgba(255,255,255,.12);border-radius:50%}.plaza:after{content:"CKL";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateZ(-3deg);font:800 70px/1 var(--sans);letter-spacing:-.08em;color:rgba(255,255,255,.08)}
+.hud-left{position:absolute;left:18px;bottom:18px;pointer-events:auto;display:flex;gap:8px;flex-wrap:wrap;max-width:540px}.hud-chip{border:1px solid rgba(255,255,255,.15);background:rgba(5,12,20,.72);backdrop-filter:blur(14px);border-radius:14px;padding:10px 12px;font:9px/1.45 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:#aab4bf}.hud-chip strong{display:block;color:#fff;font-size:10px;margin-bottom:3px}.hud-chip em{font-style:normal;color:var(--red)}
+.hud-right{position:absolute;right:18px;bottom:18px;width:220px;padding:12px 14px;border:1px solid rgba(255,255,255,.15);background:rgba(5,12,20,.72);backdrop-filter:blur(14px);border-radius:14px;pointer-events:none}.hud-meta{display:flex;justify-content:space-between;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9eabb7}.track{height:3px;background:rgba(255,255,255,.1);margin-top:9px;border-radius:999px;overflow:hidden}.fill{height:100%;width:0;background:var(--red)}
 
-/* buildings */
-.building{position:absolute;transform-style:preserve-3d;cursor:pointer;transition:filter .25s,opacity .25s;outline:none}
-.building:hover{filter:brightness(1.08)}
-.building.focused{filter:brightness(1.12) saturate(1.04)}
-.building.dimmed{opacity:.32;filter:saturate(.6)}
-.block{position:relative;width:100%;height:100%;transform-style:preserve-3d}
-.face{position:absolute;inset:0;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#182330,#0c1117);box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
-.face.front{transform:translateZ(var(--depth))}
-.face.left{width:calc(var(--depth) * 2);right:auto;transform-origin:left center;transform:rotateY(-90deg) translateX(calc(var(--depth) * -1));background:linear-gradient(180deg,#111923,#070b10)}
-.face.right{width:calc(var(--depth) * 2);left:auto;right:0;transform-origin:right center;transform:rotateY(90deg) translateX(var(--depth));background:linear-gradient(180deg,#101821,#070b10)}
-.face.top{height:calc(var(--depth) * 2);bottom:auto;transform-origin:center top;transform:rotateX(90deg) translateY(calc(var(--depth) * -1));background:#243140}
-.windows{position:absolute;inset:0;opacity:.55;background-image:repeating-linear-gradient(90deg,transparent 0 18px,rgba(255,207,119,.18) 18px 21px,transparent 21px 40px),repeating-linear-gradient(0deg,transparent 0 25px,rgba(255,255,255,.04) 25px 27px,transparent 27px 48px)}
-.billboard{position:absolute;left:7%;right:7%;top:7%;bottom:7%;z-index:3;display:flex;flex-direction:column;overflow:hidden;border:2px solid rgba(255,255,255,.12);box-shadow:0 0 26px rgba(255,49,72,.15),0 14px 35px rgba(0,0,0,.35);background:var(--paper);color:#111;transition:transform .25s,box-shadow .25s}
-.building:hover .billboard{transform:translateZ(4px);box-shadow:0 0 32px rgba(255,49,72,.32),0 18px 45px rgba(0,0,0,.45)}
-.billboard.dark{background:#0b1118;color:#fff}.billboard.red{background:linear-gradient(155deg,#de252e,#b11120);color:#fff}.billboard .head{display:flex;align-items:flex-end;gap:10px;padding:12px 14px 8px;border-bottom:1px solid rgba(0,0,0,.14)}.billboard.dark .head,.billboard.red .head{border-color:rgba(255,255,255,.14)}
-.no{font:800 30px/.86 var(--sans);color:var(--red)}.dark .no,.red .no{color:#ff4853}.title{font:900 26px/.92 var(--sans);letter-spacing:-.04em;text-transform:uppercase}.body{padding:12px 14px 14px;font-size:13px;line-height:1.52;overflow:hidden}.body ul{list-style:none;margin:0;padding:0}.body li{margin:0 0 7px}.body .muted{color:#5f6268}.dark .muted,.red .muted{color:#cbd3db}.billboard .hint{margin-top:auto;padding:8px 14px 10px;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.62}
-.hero-sign .billboard{justify-content:center;align-items:center;text-align:center}.hero-sign .crown{font-size:42px;line-height:1;margin-bottom:10px}.hero-sign h1{margin:0;font:900 58px/.82 var(--sans);letter-spacing:-.08em;text-transform:uppercase}.hero-sign p{font:11px var(--mono);letter-spacing:.14em;text-transform:uppercase;margin:14px 0 0}.hero-sign .sub{font:10px var(--mono);color:#ffd6da;margin-top:20px;letter-spacing:.1em}.hero-sign .identity{margin-top:8px;font:700 10px var(--mono);letter-spacing:.18em}
+/* 3d world */
+.viewport{position:relative;width:100vw;height:100vh;overflow:hidden;touch-action:none;cursor:grab;background:
+  radial-gradient(circle at 50% 66%,rgba(239,48,40,.18),transparent 24%),
+  linear-gradient(180deg,#0a1b2d 0%,#0b2135 43%,#07121d 100%)}
+.viewport.dragging{cursor:grabbing}
+.skyline{position:absolute;inset:0;pointer-events:none;opacity:.72;background:
+  linear-gradient(90deg,transparent 0 2%,rgba(8,12,20,.92) 2% 6%,transparent 6% 9%,rgba(9,14,22,.95) 9% 14%,transparent 14% 17%,rgba(9,14,22,.95) 17% 24%,transparent 24% 28%,rgba(6,10,18,.95) 28% 32%,transparent 32% 36%,rgba(7,11,18,.95) 36% 44%,transparent 44% 50%,rgba(7,11,18,.95) 50% 56%,transparent 56% 62%,rgba(7,11,18,.95) 62% 67%,transparent 67% 73%,rgba(7,11,18,.95) 73% 79%,transparent 79% 84%,rgba(7,11,18,.95) 84% 91%,transparent 91%);
+  clip-path:polygon(0 100%,0 35%,4% 35%,4% 14%,8% 14%,8% 43%,13% 43%,13% 9%,18% 9%,18% 27%,23% 27%,23% 5%,28% 5%,28% 31%,34% 31%,34% 12%,40% 12%,40% 29%,45% 29%,45% 2%,51% 2%,51% 24%,58% 24%,58% 10%,64% 10%,64% 38%,70% 38%,70% 8%,76% 8%,76% 21%,82% 21%,82% 1%,88% 1%,88% 27%,94% 27%,94% 7%,100% 7%,100% 100%)}
+.street{position:absolute;left:50%;bottom:-7vh;width:84vw;height:54vh;transform:translateX(-50%) perspective(900px) rotateX(66deg);transform-origin:center bottom;background:
+  linear-gradient(90deg,transparent 49.7%,rgba(239,48,40,.55) 49.9% 50.1%,transparent 50.3%),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 68px),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 56px),
+  linear-gradient(180deg,rgba(18,32,44,.8),rgba(4,8,13,.96));box-shadow:0 -30px 120px rgba(239,48,40,.15) inset;border-top:1px solid rgba(255,255,255,.08);pointer-events:none}
+.plaza{position:absolute;left:50%;bottom:9vh;width:34vw;height:14vh;transform:translateX(-50%) perspective(900px) rotateX(64deg);border:1px solid rgba(255,255,255,.12);background:radial-gradient(circle,rgba(239,48,40,.16),rgba(7,15,24,.76));box-shadow:0 0 70px rgba(239,48,40,.16);pointer-events:none}.plaza::before{content:"♛";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateX(-64deg);font-size:56px;color:rgba(239,48,40,.56);text-shadow:0 0 20px rgba(239,48,40,.45)}
+.scene-wrap{position:absolute;inset:0;perspective:1400px;perspective-origin:50% 50%;overflow:visible}
+.scene{position:absolute;left:50%;top:50%;width:1px;height:1px;transform-style:preserve-3d;will-change:transform}
 
-/* stage positions */
-.hero-sign{left:710px;top:90px;width:340px;height:500px;--depth:42px;transform:translateZ(100px)}
-.about{left:730px;top:615px;width:300px;height:280px;--depth:32px;transform:translateZ(45px)}
-.web{left:90px;top:180px;width:500px;height:410px;--depth:48px;transform:rotateY(8deg) translateZ(-10px)}
-.experience{left:80px;top:610px;width:500px;height:280px;--depth:44px;transform:rotateY(8deg) translateZ(-25px)}
-.academic{left:1160px;top:145px;width:470px;height:360px;--depth:48px;transform:rotateY(-8deg) translateZ(-10px)}
-.writing{left:1240px;top:535px;width:390px;height:330px;--depth:42px;transform:rotateY(-8deg) translateZ(-24px)}
-.running{left:285px;top:895px;width:420px;height:260px;--depth:36px;transform:rotateY(5deg) translateZ(-50px)}
-.roles{left:1060px;top:900px;width:380px;height:300px;--depth:38px;transform:rotateY(-5deg) translateZ(-48px)}
-.public{left:1450px;top:850px;width:300px;height:335px;--depth:36px;transform:rotateY(-10deg) translateZ(-72px)}
-.art{left:10px;top:900px;width:250px;height:320px;--depth:34px;transform:rotateY(10deg) translateZ(-76px)}
+.building{--x:0px;--y:0px;--z:0px;--w:320px;--h:480px;--ry:0deg;position:absolute;left:0;top:0;width:var(--w);height:var(--h);transform-style:preserve-3d;transform:translate3d(var(--x),var(--y),var(--z)) rotateY(var(--ry));transform-origin:center bottom;transition:filter .22s,opacity .22s;filter:drop-shadow(0 32px 34px rgba(0,0,0,.44))}
+.building.focused{filter:drop-shadow(0 30px 50px rgba(239,48,40,.30))}
+.building-body{position:absolute;inset:0;transform-style:preserve-3d;background:linear-gradient(180deg,#142334,#08121d 68%,#05090e);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)}
+.building-body::before{content:"";position:absolute;inset:0;background:
+ repeating-linear-gradient(90deg,transparent 0 34px,rgba(85,136,178,.15) 34px 36px),
+ repeating-linear-gradient(0deg,transparent 0 40px,rgba(255,255,255,.065) 40px 43px);opacity:.82}
+.building-body::after{content:"";position:absolute;top:0;bottom:0;right:-32px;width:32px;background:linear-gradient(90deg,#08111c,#03070c);transform-origin:left center;transform:rotateY(90deg);border:1px solid rgba(255,255,255,.08)}
+.roof{position:absolute;left:12%;right:12%;top:-18px;height:18px;background:#05080d;border:1px solid rgba(255,255,255,.1);transform:translateZ(6px)}
+.antenna{position:absolute;left:50%;top:-88px;width:3px;height:72px;background:linear-gradient(#ff4a43,#293746);box-shadow:0 0 16px rgba(239,48,40,.72)}
+.antenna::after{content:"";position:absolute;left:50%;top:-7px;width:9px;height:9px;border-radius:50%;transform:translateX(-50%);background:var(--red);box-shadow:0 0 18px rgba(239,48,40,.9)}
 
-/* windows facade extras */
-.tower-strip{position:absolute;left:50%;top:12%;width:110px;height:690px;transform:translateX(-50%) translateZ(-180px);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015));border-left:1px solid rgba(255,255,255,.04);border-right:1px solid rgba(255,255,255,.04);box-shadow:0 0 60px rgba(39,108,166,.12)}
-.neonbar{position:absolute;background:var(--neon);box-shadow:0 0 14px rgba(255,49,72,.7)}
-.neonbar.n1{left:655px;top:365px;width:4px;height:440px}.neonbar.n2{left:1090px;top:300px;width:3px;height:510px}.neonbar.n3{left:620px;top:760px;width:520px;height:3px}
+.billboard{position:absolute;left:18px;right:18px;top:24px;min-height:210px;padding:17px 18px 16px;background:var(--paper);color:var(--ink);border:1px solid rgba(0,0,0,.36);box-shadow:0 0 0 3px #080b10,0 16px 28px rgba(0,0,0,.32);transform:translateZ(34px);cursor:pointer;overflow:hidden;transition:transform .18s,box-shadow .18s,filter .18s}
+.billboard:hover{transform:translateZ(42px) scale(1.015);box-shadow:0 0 0 3px #080b10,0 18px 36px rgba(239,48,40,.24);filter:brightness(1.04)}
+.billboard.dark{background:#10161f;color:#f7f2e9}.billboard.hero-board{background:var(--red);color:#fff;text-align:center;display:grid;place-items:center;min-height:240px}
+.bb-index{position:absolute;left:16px;top:12px;font:900 26px/1 var(--display);color:var(--red)}.dark .bb-index,.hero-board .bb-index{color:#fff}
+.bb-title{margin:29px 0 14px;font:900 34px/.95 var(--display);letter-spacing:-.02em;text-transform:uppercase}.hero-board .bb-title{margin:0;font-size:48px;line-height:.82}.hero-board .bb-sub{font:10px/1.7 var(--mono);letter-spacing:.16em;text-transform:uppercase}.bb-list{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:13px;line-height:1.35}.bb-list li{padding-bottom:5px;border-bottom:1px solid rgba(0,0,0,.08)}.dark .bb-list li{border-bottom-color:rgba(255,255,255,.10)}.bb-arrow{position:absolute;right:15px;bottom:10px;font:28px/1 var(--display);color:var(--red)}.dark .bb-arrow,.hero-board .bb-arrow{color:#fff}
+.side-sign{position:absolute;right:-46px;top:70px;width:42px;min-height:190px;background:var(--red);transform-origin:left center;transform:rotateY(90deg) translateZ(1px);display:grid;place-items:center;padding:8px 4px;color:#fff;font:900 13px/1.05 var(--display);letter-spacing:.06em;text-transform:uppercase;writing-mode:vertical-rl}
+.small-board{position:absolute;left:26px;right:26px;bottom:28px;padding:10px 12px;background:#0f1720;border:1px solid rgba(255,255,255,.14);transform:translateZ(20px);font:10px/1.45 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#d8e0e7}.small-board b{color:var(--red)}
+
+/* placement */
+#b-web{--x:-650px;--y:-120px;--z:-90px;--w:360px;--h:530px;--ry:10deg}
+#b-exp{--x:-760px;--y:250px;--z:-40px;--w:360px;--h:470px;--ry:12deg}
+#b-run{--x:-510px;--y:330px;--z:80px;--w:300px;--h:360px;--ry:8deg}
+#b-hero{--x:-180px;--y:-185px;--z:180px;--w:360px;--h:650px;--ry:0deg}
+#b-academic{--x:300px;--y:-110px;--z:-20px;--w:335px;--h:520px;--ry:-9deg}
+#b-writing{--x:625px;--y:-90px;--z:-90px;--w:315px;--h:500px;--ry:-12deg}
+#b-roles{--x:410px;--y:305px;--z:95px;--w:330px;--h:390px;--ry:-8deg}
+#b-public{--x:725px;--y:300px;--z:5px;--w:290px;--h:390px;--ry:-12deg}
+#b-art{--x:890px;--y:430px;--z:-120px;--w:260px;--h:310px;--ry:-14deg}
+
+/* people / traffic */
+.crowd{position:absolute;left:50%;bottom:5vh;width:88vw;height:16vh;transform:translateX(-50%);pointer-events:none;opacity:.68;background:
+ radial-gradient(ellipse at 6% 88%,#04070b 0 5px,transparent 6px),radial-gradient(ellipse at 12% 86%,#05080c 0 6px,transparent 7px),radial-gradient(ellipse at 20% 90%,#05080c 0 7px,transparent 8px),radial-gradient(ellipse at 31% 87%,#05080c 0 5px,transparent 6px),radial-gradient(ellipse at 42% 91%,#05080c 0 7px,transparent 8px),radial-gradient(ellipse at 52% 89%,#05080c 0 6px,transparent 7px),radial-gradient(ellipse at 63% 90%,#05080c 0 5px,transparent 6px),radial-gradient(ellipse at 73% 85%,#05080c 0 7px,transparent 8px),radial-gradient(ellipse at 84% 90%,#05080c 0 6px,transparent 7px),radial-gradient(ellipse at 94% 88%,#05080c 0 6px,transparent 7px)}
 
 /* detail drawer */
-.drawer{position:fixed;right:20px;top:90px;bottom:20px;width:min(450px,calc(100vw - 40px));z-index:50;pointer-events:none;opacity:0;transform:translateX(24px);transition:.28s ease;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.15);border-radius:22px;background:rgba(4,10,17,.90);backdrop-filter:blur(18px);box-shadow:0 30px 100px rgba(0,0,0,.5)}
-.drawer.open{opacity:1;transform:none;pointer-events:auto}.drawer-head{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.09)}.drawer-head .eyebrow{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#ff8d9a}.drawer-head h2{margin:7px 0 0;font:800 34px/.95 var(--sans);letter-spacing:-.05em}.close{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px}.drawer-body{padding:18px;overflow:auto}.drawer-body h3{font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#ff8d9a;margin:20px 0 9px}.drawer-body p,.drawer-body li{font-size:13px;line-height:1.65;color:#d6dee6}.drawer-body ul{margin:0;padding-left:18px}.drawer-body .grid{display:grid;gap:9px}.detail-card{padding:12px 13px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.035)}.detail-card b{display:block;margin-bottom:5px;font-size:14px;color:#fff}.detail-card span{font-size:12px;color:#b9c4cf;line-height:1.5}
+.drawer{position:fixed;top:76px;right:18px;bottom:18px;width:min(420px,calc(100vw - 36px));z-index:75;transform:translateX(calc(100% + 28px));transition:transform .34s cubic-bezier(.2,.8,.2,1);background:rgba(8,17,29,.94);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.14);border-radius:20px;box-shadow:0 30px 100px rgba(0,0,0,.48);padding:22px;overflow:auto}.drawer.open{transform:translateX(0)}
+.drawer-close{position:sticky;top:0;float:right;appearance:none;border:1px solid rgba(255,255,255,.14);background:#0b1520;color:#fff;border-radius:999px;width:34px;height:34px;cursor:pointer}.drawer-kicker{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin:8px 0 9px}.drawer h2{margin:0 0 18px;font:900 42px/.92 var(--display);text-transform:uppercase}.drawer p{color:#b5c0cb;font-size:13px;line-height:1.7}.drawer-list{margin-top:16px;display:grid;gap:9px}.drawer-item{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.035);border-radius:14px;padding:12px 13px}.drawer-item b{display:block;font-size:13px;margin-bottom:4px}.drawer-item span{display:block;color:#9eabb7;font-size:11px;line-height:1.5}
 
-@media(max-width:900px){
-  .topbar{grid-template-columns:1fr auto;gap:8px;left:10px;right:10px;top:10px}.nav{grid-column:1/-1;justify-content:flex-start}.status{font-size:8px}.brand span{display:none}.help{left:10px;right:10px;bottom:10px;max-width:none}.help small{display:none}.zoomread{display:none}
-  .viewport{perspective:900px}.city{width:1500px;height:900px}.hero-sign{left:600px;top:110px}.about{left:620px}.web{left:10px}.experience{left:10px}.academic{left:1010px}.writing{left:1090px}.running{left:190px}.roles{left:930px}.public{left:1280px}.art{left:-30px}
-  .drawer{top:132px;left:10px;right:10px;bottom:10px;width:auto}.billboard .body{font-size:12px}.title{font-size:23px}
+/* model mode */
+.model-layer{display:none;position:absolute;inset:0;pointer-events:none}.model .model-layer{display:block}.model .building{outline:1px dashed rgba(0,255,255,.5)}.model .building::before{content:attr(data-model);position:absolute;left:0;top:-26px;padding:4px 6px;background:#061116;color:#6ff;font:9px var(--mono);white-space:nowrap;transform:translateZ(60px)}.axis{position:absolute;left:50%;top:50%;width:240px;height:240px;transform-style:preserve-3d}.axis::before,.axis::after{content:"";position:absolute;left:0;top:0}.axis::before{width:200px;height:2px;background:#ff4242;box-shadow:0 0 8px #ff4242}.axis::after{width:2px;height:200px;background:#48ff72;box-shadow:0 0 8px #48ff72}.axis-z{position:absolute;left:0;top:0;width:2px;height:200px;background:#5ed2ff;transform-origin:top;transform:rotateX(90deg);box-shadow:0 0 8px #5ed2ff}
+
+@media(max-width:980px){
+  .topbar{grid-template-columns:1fr auto;padding:0 12px;height:auto;min-height:60px;gap:8px}.topnav{grid-column:1/-1;justify-content:flex-start;padding:4px 0 8px}.identity{display:none}.modegroup{grid-column:2;grid-row:1}.hud-right{display:none}.hud-left{left:10px;right:10px;bottom:10px;max-width:none}.hud-chip:nth-child(2){display:none}
+  .scene-wrap{perspective:1050px}.drawer{top:106px}
 }
 @media(max-width:640px){
-  .city{width:1320px;height:860px}.hero-sign{left:505px;top:120px;width:300px;height:455px}.hero-sign h1{font-size:49px}.about{left:520px;top:590px;width:280px}.web{left:-90px;top:200px;width:430px}.experience{left:-80px;top:620px;width:430px}.academic{left:900px;top:165px;width:410px}.writing{left:955px;top:535px;width:350px}.running{left:90px;top:885px;width:380px}.roles{left:805px;top:880px;width:350px}.public{left:1130px;top:860px;width:280px}.art{left:-120px;top:900px;width:230px}.body{font-size:11px}.no{font-size:26px}.title{font-size:21px}
+  .brand{font-size:14px}.mode-btn{padding:6px 8px}.lang{display:none}.topnav button{font-size:8px;padding:6px 8px}
+  .scene-wrap{perspective:900px}.scene{transform-origin:center center}.hud-chip{font-size:8px}.drawer{top:102px;right:10px;bottom:10px;width:calc(100vw - 20px)}
+  .billboard{left:12px;right:12px;padding:14px;min-height:180px}.bb-title{font-size:28px}.bb-list{font-size:12px}.hero-board .bb-title{font-size:40px}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="ui">
-  <div class="topbar">
-    <div class="brand">CHE-KAI LIN <span>WRITER × DESIGNER × STUDENT</span></div>
-    <nav class="nav" aria-label="3D portfolio navigation">
-      <button class="active" data-target="hero-sign">Center</button>
-      <button data-target="web">Web</button>
-      <button data-target="experience">Experience</button>
-      <button data-target="academic">Academic</button>
-      <button data-target="writing">Writing</button>
-      <button data-target="running">Running</button>
-      <button data-target="roles">Roles</button>
-      <button data-target="public">Public</button>
-      <button data-target="art">Art</button>
-    </nav>
-    <div class="status" id="status">3D CITY · READY</div>
+<div class="chrome">
+  <header class="topbar">
+    <div><span class="brand">CHE-KAI LIN</span><span class="identity">WRITER X DESIGNER X STUDENT</span></div>
+    <nav class="topnav" id="topnav"></nav>
+    <div class="modegroup"><span class="lang"><b>EN</b> / 中文</span><button class="mode-btn" id="modelBtn">MODEL MODE</button></div>
+  </header>
+  <div class="hud-left">
+    <div class="hud-chip"><strong>Drag / swipe</strong>拖曳改變城市視角 · 滾輪縮放</div>
+    <div class="hud-chip"><strong>Click billboard</strong>點看板聚焦建築並開啟內容</div>
+    <div class="hud-chip"><strong>Model-ready</strong><em>MODEL MODE</em> 顯示建築座標與邊界</div>
   </div>
-  <div class="help"><b>3D city controls</b><strong>Drag the city · click a billboard</strong><small>左右拖曳改變視角，滾輪縮放。點擊看板會聚焦建築並打開完整內容。</small></div>
-  <div class="zoomread">Zoom <span id="zoomRead">100%</span></div>
+  <div class="hud-right"><div class="hud-meta"><span>City focus</span><span id="focusLabel">CENTRAL</span></div><div class="track"><div class="fill" id="fill"></div></div></div>
 </div>
 
 <div class="viewport" id="viewport">
-  <div class="skyglow"></div>
-  <div class="city" id="city">
-    <div class="ground"></div><div class="plaza"></div><div class="tower-strip"></div>
-    <div class="neonbar n1"></div><div class="neonbar n2"></div><div class="neonbar n3"></div>
-
-    <section class="building hero-sign" id="hero-sign" data-title="CHE-KAI LIN" data-section="Center / Identity" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard red"><div class="crown">♔</div><h1>CHE-KAI<br>LIN</h1><div class="identity">WRITER × DESIGNER × STUDENT</div><div class="sub">林哲愷 · PERSONAL CITY / 2026</div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building about" id="about" data-title="ABOUT" data-section="01 / About" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">01</div><div class="title">ABOUT</div></div><div class="body"><ul><li>背景</li><li>個性</li><li>興趣</li><li>價值觀</li></ul><div class="hint">Click to open profile</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building web" id="web" data-title="WEB WORKS" data-section="02 / Web Works" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">02</div><div class="title">WEB WORKS</div></div><div class="body"><ul><li>SignWell 欣緯生醫</li><li>Tai-Wan Way 閒台文</li><li>CITYMUS</li><li>健人</li></ul><div class="hint">Ideas into products →</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building experience" id="experience" data-title="EXPERIENCE" data-section="03 / Experience" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">03</div><div class="title">EXPERIENCE</div></div><div class="body"><ul><li>Newtalk 新頭殼 投書刊載</li><li>基隆海洋文學大賽 參與</li><li>台灣聯合大學企劃 參與</li></ul><div class="hint">Published · joined · built</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building academic" id="academic" data-title="ACADEMIC" data-section="04 / Academic" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">04</div><div class="title">ACADEMIC</div></div><div class="body"><ul><li>台英學士培育計劃</li><li>國立中央大學人工智慧學系先修課程</li><li>國立清華大學經濟系先修課程</li><li>私立中原大學先修課程</li></ul><div class="hint">Learn · explore · connect</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building writing" id="writing" data-title="WRITING" data-section="05 / Writing" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">05</div><div class="title">WRITING</div></div><div class="body"><ul><li>文章創作</li><li>時事觀察</li><li>散文／隨筆</li><li>競賽作品</li></ul><div class="hint">Write to understand →</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building running" id="running" data-title="RUNNING" data-section="06 / Running" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">06</div><div class="title">RUNNING</div></div><div class="body"><ul><li>烘爐地定向越野 9K組完賽</li><li>基隆半程馬拉松 9K組完賽（103/1581）</li><li>訓練紀錄</li><li>比賽成績</li></ul><div class="hint">Run · explore · stay curious</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building roles" id="roles" data-title="ROLES" data-section="07 / Roles" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">07</div><div class="title">ROLES</div></div><div class="body"><ul><li>欣緯科技有限公司董事</li><li>欣緯生醫創辦人</li><li>閒台文創辦人</li><li>CITYMUS 創辦人</li><li>市三重見賢思琪社｜創社副社長、美萱</li><li>市三重高中前扶輪少年團團員</li></ul><div class="hint">People · projects · impact</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building public" id="public" data-title="PUBLIC" data-section="08 / Public" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">08</div><div class="title">PUBLIC</div></div><div class="body"><ul><li>台灣民眾黨青年團第二屆員</li><li>日本自民黨來台接待</li><li>核三公投街頭宣講、車掃</li><li>公共參與／政治觀察</li></ul><div class="hint">Public engagement →</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-
-    <section class="building art" id="art" data-title="ART ARCHIVE" data-section="09 / Art Archive" tabindex="0">
-      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">09</div><div class="title">ART ARCHIVE</div></div><div class="body"><ul><li>設計作品</li><li>手繪創作</li><li>攝影紀錄</li><li>靈感收藏</li><li>未來計劃</li></ul><div class="hint">Collect · create · keep going</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
-    </section>
-  </div>
+  <div class="skyline"></div><div class="street"></div><div class="plaza"></div><div class="crowd"></div>
+  <div class="scene-wrap"><main class="scene" id="scene"></main></div>
+  <div class="model-layer"><div class="axis"><div class="axis-z"></div></div></div>
 </div>
 
 <aside class="drawer" id="drawer" aria-live="polite">
-  <div class="drawer-head"><div><div class="eyebrow" id="drawerEyebrow">Section</div><h2 id="drawerTitle">Details</h2></div><button class="close" id="closeDrawer" aria-label="Close">×</button></div>
-  <div class="drawer-body" id="drawerBody"></div>
+  <button class="drawer-close" id="drawerClose" aria-label="Close">×</button>
+  <div class="drawer-kicker" id="drawerKicker">District</div>
+  <h2 id="drawerTitle">About</h2>
+  <p id="drawerIntro"></p>
+  <div class="drawer-list" id="drawerList"></div>
 </aside>
 
 <script>
-const viewport=document.getElementById('viewport');
-const city=document.getElementById('city');
-const buildings=[...document.querySelectorAll('.building')];
-const nav=[...document.querySelectorAll('.nav button')];
-const drawer=document.getElementById('drawer');
-const drawerTitle=document.getElementById('drawerTitle');
-const drawerEyebrow=document.getElementById('drawerEyebrow');
-const drawerBody=document.getElementById('drawerBody');
-const closeDrawer=document.getElementById('closeDrawer');
-const status=document.getElementById('status');
-const zoomRead=document.getElementById('zoomRead');
-
-let state={rx:-4,ry:0,zoom:.88,targetRx:-4,targetRy:0,targetZoom:.88,drag:false,sx:0,sy:0,brx:0,bry:0,focus:null};
-
-const detail={
-  'hero-sign':`<h3>Identity</h3><div class="grid"><div class="detail-card"><b>林哲愷 / Che-Kai Lin</b><span>WRITER × DESIGNER × STUDENT</span></div><div class="detail-card"><b>Personal City</b><span>這個網站把個人作品、學習、創作、社團、跑步與公共參與變成一座可探索的 3D 城市。</span></div></div>`,
-  about:`<h3>About</h3><div class="grid"><div class="detail-card"><b>背景</b><span>個人經歷與成長脈絡。</span></div><div class="detail-card"><b>個性</b><span>重視好奇心、審美、結構與持續學習。</span></div><div class="detail-card"><b>興趣</b><span>網站、視覺、寫作、藝術、運動與公共議題。</span></div><div class="detail-card"><b>價值觀</b><span>把不同興趣組成同一個完整的人。</span></div></div>`,
-  web:`<h3>Website Portfolio</h3><div class="grid"><div class="detail-card"><b>SignWell 欣緯生醫</b><span>內容、品牌與數位平台。</span></div><div class="detail-card"><b>Tai-Wan Way 閒台文</b><span>語言、文化與互動體驗。</span></div><div class="detail-card"><b>CITYMUS</b><span>音樂與城市氛圍導向的品牌實驗。</span></div><div class="detail-card"><b>健人</b><span>獨立網站概念與視覺研究。</span></div></div>`,
-  experience:`<h3>Writing / Participation</h3><div class="grid"><div class="detail-card"><b>Newtalk 新頭殼 投書刊載</b><span>公開投書刊載經歷。</span></div><div class="detail-card"><b>基隆海洋文學大賽 參與</b><span>文學競賽參與。</span></div><div class="detail-card"><b>台灣聯合大學企劃 參與</b><span>企劃與專案參與。</span></div></div>`,
-  academic:`<h3>Academic Bridge</h3><div class="grid"><div class="detail-card"><b>台英學士培育計劃</b></div><div class="detail-card"><b>國立中央大學人工智慧學系先修課程</b></div><div class="detail-card"><b>國立清華大學經濟系先修課程</b></div><div class="detail-card"><b>私立中原大學先修課程</b></div></div>`,
-  writing:`<h3>Writing</h3><div class="grid"><div class="detail-card"><b>文章創作</b></div><div class="detail-card"><b>時事觀察</b></div><div class="detail-card"><b>散文／隨筆</b></div><div class="detail-card"><b>競賽作品</b></div></div>`,
-  running:`<h3>Race Record</h3><div class="grid"><div class="detail-card"><b>烘爐地定向越野 9K組完賽</b></div><div class="detail-card"><b>基隆半程馬拉松 9K組完賽</b><span>名次：103 / 1581</span></div></div><h3>Archive</h3><p>訓練紀錄、比賽成績與之後的運動目標都可以繼續放進這一區。</p>`,
-  roles:`<h3>Leadership & Roles</h3><div class="grid"><div class="detail-card"><b>欣緯科技有限公司董事</b></div><div class="detail-card"><b>欣緯生醫創辦人</b></div><div class="detail-card"><b>閒台文創辦人</b></div><div class="detail-card"><b>CITYMUS 創辦人</b></div><div class="detail-card"><b>市三重見賢思琪社｜創社副社長、美萱</b></div><div class="detail-card"><b>市三重高中前扶輪少年團團員</b></div></div>`,
-  public:`<h3>Public Engagement</h3><div class="grid"><div class="detail-card"><b>台灣民眾黨青年團第二屆員</b></div><div class="detail-card"><b>日本自民黨來台接待</b></div><div class="detail-card"><b>核三公投街頭宣講、車掃</b></div></div><p>此區以個人經歷紀錄方式呈現，不作為競選或政黨宣傳頁。</p>`,
-  art:`<h3>Art Archive</h3><div class="grid"><div class="detail-card"><b>設計作品</b></div><div class="detail-card"><b>手繪創作</b></div><div class="detail-card"><b>攝影紀錄</b></div><div class="detail-card"><b>靈感收藏</b></div><div class="detail-card"><b>未來計劃</b></div></div><p>之後可直接換成作品圖片、作品名、年份與媒材。</p>`
+const DATA={
+  hero:{nav:'Home',index:'00',title:'CHE-KAI LIN',type:'hero',intro:'WRITER X DESIGNER X STUDENT',items:[
+    ['林哲愷 / Che-Kai Lin','個人網站以 3D 城市廣場作為入口。'],
+    ['Identity','Writer X Designer X Student'],
+    ['Direction','Design · Writing · Academic · Public Life']
+  ]},
+  about:{nav:'About',index:'01',title:'ABOUT',intro:'背景、個性、興趣與價值觀。',items:[
+    ['背景','個人基本介紹與成長脈絡'],['個性','創作與思考方式'],['興趣','網站、設計、文字、藝術、公共事務'],['價值觀','持續探索、跨域學習、把想法做成作品']
+  ]},
+  web:{nav:'Web Works',index:'02',title:'WEB WORKS',intro:'Selected digital projects.',items:[
+    ['SignWell 欣緯生醫','醫療與產業內容平台'],['Tai-Wan Way 閒台文','互動式中文與台灣文化網站'],['CITYMUS','音樂與城市視覺品牌'],['健人','獨立網站概念與前端視覺實驗']
+  ]},
+  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',items:[
+    ['Newtalk 新頭殼 投書刊載','公開評論與文字刊載經歷'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷']
+  ]},
+  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',items:[
+    ['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']
+  ]},
+  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',items:[
+    ['文章創作','觀點與長短文寫作'],['時事觀察','公共議題與社會觀察'],['散文／隨筆','個人文字與記錄'],['競賽作品','文學與主題創作']
+  ]},
+  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',items:[
+    ['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','組別名次 103 / 1581'],['訓練紀錄','跑步與體能進程'],['比賽成績','競賽紀錄持續累積']
+  ]},
+  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',items:[
+    ['欣緯科技有限公司董事','Director'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美萱','Founding Vice President'],['市三重高中前扶輪少年團團員','Member']
+  ]},
+  public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',items:[
+    ['台灣民眾黨青年團第二屆員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']
+  ]},
+  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',items:[
+    ['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration'],['攝影紀錄','Photography'],['靈感收藏','Visual references'],['未來計劃','Future works']
+  ]}
 };
 
-function apply(){
-  state.rx+=(state.targetRx-state.rx)*.12;
-  state.ry+=(state.targetRy-state.ry)*.12;
-  state.zoom+=(state.targetZoom-state.zoom)*.12;
-  city.style.transform=`translate(-50%,-54%) scale(${state.zoom}) rotateX(${state.rx}deg) rotateY(${state.ry}deg)`;
-  zoomRead.textContent=Math.round(state.zoom*100)+'%';
-  requestAnimationFrame(apply);
+const BUILDINGS=[
+  {id:'web',el:'b-web',model:'x -650 / y -120 / z -90'},
+  {id:'experience',el:'b-exp',model:'x -760 / y 250 / z -40'},
+  {id:'running',el:'b-run',model:'x -510 / y 330 / z 80'},
+  {id:'hero',el:'b-hero',model:'x -180 / y -185 / z 180'},
+  {id:'academic',el:'b-academic',model:'x 300 / y -110 / z -20'},
+  {id:'writing',el:'b-writing',model:'x 625 / y -90 / z -90'},
+  {id:'roles',el:'b-roles',model:'x 410 / y 305 / z 95'},
+  {id:'public',el:'b-public',model:'x 725 / y 300 / z 5'},
+  {id:'art',el:'b-art',model:'x 890 / y 430 / z -120'}
+];
+
+const scene=document.getElementById('scene'),viewport=document.getElementById('viewport'),drawer=document.getElementById('drawer');
+const drawerTitle=document.getElementById('drawerTitle'),drawerIntro=document.getElementById('drawerIntro'),drawerList=document.getElementById('drawerList'),drawerKicker=document.getElementById('drawerKicker');
+const topnav=document.getElementById('topnav'),focusLabel=document.getElementById('focusLabel'),fill=document.getElementById('fill');
+
+function boardHTML(d){
+  const list=d.items.slice(0,d.type==='hero'?3:4).map(x=>`<li>${x[0]}</li>`).join('');
+  if(d.type==='hero') return `<div class="billboard hero-board" data-open="hero"><div><div class="bb-title">CHE-KAI<br>LIN</div><div class="bb-sub">WRITER / DESIGNER / STUDENT</div></div><span class="bb-arrow">→</span></div>`;
+  return `<div class="billboard ${['web','experience','running'].includes(Object.keys(DATA).find(k=>DATA[k]===d))?'dark':''}" data-open="${Object.keys(DATA).find(k=>DATA[k]===d)}"><div class="bb-index">${d.index}</div><h2 class="bb-title">${d.title}</h2><ul class="bb-list">${list}</ul><span class="bb-arrow">→</span></div>`;
 }
-requestAnimationFrame(apply);
 
-function clamp(){state.targetRy=Math.max(-18,Math.min(18,state.targetRy));state.targetRx=Math.max(-10,Math.min(8,state.targetRx));state.targetZoom=Math.max(.64,Math.min(1.12,state.targetZoom))}
-function resetFocus(){state.focus=null;buildings.forEach(b=>b.classList.remove('focused','dimmed'));nav.forEach(n=>n.classList.remove('active'));nav[0].classList.add('active');state.targetRx=-4;state.targetRy=0;state.targetZoom=.88;status.textContent='3D CITY · READY';drawer.classList.remove('open')}
-function openBuilding(id){
-  const el=document.getElementById(id);if(!el)return;
-  state.focus=id;
-  buildings.forEach(b=>{b.classList.toggle('focused',b===el);b.classList.toggle('dimmed',b!==el)});
-  nav.forEach(n=>n.classList.toggle('active',n.dataset.target===id));
-  const map={web:-12,experience:-12,art:-15,academic:11,writing:12,roles:9,public:15,about:0,'hero-sign':0};
-  state.targetRy=map[id]??0;state.targetRx=-2;state.targetZoom=id==='hero-sign'?1.0:1.02;clamp();
-  drawerTitle.textContent=el.dataset.title||id;drawerEyebrow.textContent=el.dataset.section||'Section';drawerBody.innerHTML=detail[id]||'';drawer.classList.add('open');status.textContent='FOCUS · '+(el.dataset.title||id).toUpperCase();
+function buildCity(){
+  BUILDINGS.forEach((b,i)=>{
+    const d=DATA[b.id];
+    const el=document.createElement('section');el.className='building';el.id=b.el;el.dataset.section=b.id;el.dataset.model=b.model;
+    el.innerHTML=`<div class="building-body"><div class="roof"></div>${i%3===0?'<div class="antenna"></div>':''}${boardHTML(d)}<div class="side-sign">${d.title}</div><div class="small-board">${b.id==='hero'?'<b>EXPLORE</b> / LEARN / CREATE / CONNECT':'CHE-KAI LIN · '+d.nav}</div></div>`;
+    scene.appendChild(el);
+  });
+  ['about'].forEach(id=>{
+    const d=DATA[id],el=document.createElement('section');el.className='building';el.id='b-about';el.dataset.section=id;el.dataset.model='x -145 / y 40 / z 245';
+    el.style.cssText='--x:-145px;--y:40px;--z:245px;--w:290px;--h:350px;--ry:0deg';
+    el.innerHTML=`<div class="building-body">${boardHTML(d)}<div class="small-board"><b>WHO AM I?</b> · PERSONAL PROFILE</div></div>`;scene.appendChild(el)
+  });
 }
 
-buildings.forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();openBuilding(b.id)});b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openBuilding(b.id)}})});
-nav.forEach(n=>n.addEventListener('click',e=>{e.stopPropagation();openBuilding(n.dataset.target)}));
-closeDrawer.addEventListener('click',resetFocus);
+function buildNav(){
+  ['hero','about','web','experience','academic','writing','running','roles','public','art'].forEach((id,i)=>{
+    const b=document.createElement('button');b.textContent=DATA[id].nav;b.dataset.target=id;if(i===0)b.classList.add('active');b.onclick=()=>focus(id,true);topnav.appendChild(b)
+  })
+}
 
-viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.building,.drawer,.ui'))return;state.drag=true;viewport.classList.add('dragging');state.sx=e.clientX;state.sy=e.clientY;state.brx=state.targetRx;state.bry=state.targetRy;viewport.setPointerCapture?.(e.pointerId)});
-viewport.addEventListener('pointermove',e=>{if(!state.drag)return;state.targetRy=state.bry+(e.clientX-state.sx)*.035;state.targetRx=state.brx-(e.clientY-state.sy)*.028;clamp()});
-function endDrag(){state.drag=false;viewport.classList.remove('dragging')}
-viewport.addEventListener('pointerup',endDrag);viewport.addEventListener('pointercancel',endDrag);
-viewport.addEventListener('wheel',e=>{state.targetZoom-=e.deltaY*.00055;clamp();e.preventDefault()},{passive:false});
-viewport.addEventListener('click',e=>{if(!e.target.closest('.building')&&!e.target.closest('.drawer')&&!e.target.closest('.ui'))resetFocus()});
+function openDrawer(id){
+  const d=DATA[id];drawerKicker.textContent=`${d.index} / ${d.nav}`;drawerTitle.textContent=d.title;drawerIntro.textContent=d.intro;drawerList.innerHTML=d.items.map(x=>`<div class="drawer-item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');drawer.classList.add('open')
+}
+document.getElementById('drawerClose').onclick=()=>drawer.classList.remove('open');
 
-let mx=0,my=0;
-viewport.addEventListener('mousemove',e=>{if(state.drag||state.focus)return;mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5);state.targetRy=mx*5;state.targetRx=-4-my*3});
-viewport.addEventListener('mouseleave',()=>{if(!state.focus){state.targetRy=0;state.targetRx=-4}});
+let cam={yaw:0,pitch:-2,zoom:0.88,ty:40,targetYaw:0,targetPitch:-2,targetZoom:.88,targetTy:40,drag:false,x:0,y:0,focused:'hero'};
+const FOCUS={hero:{yaw:0,pitch:-2,zoom:.88,ty:40},about:{yaw:0,pitch:-1,zoom:1.15,ty:65},web:{yaw:13,pitch:-2,zoom:1.02,ty:60},experience:{yaw:16,pitch:-5,zoom:1.02,ty:-20},running:{yaw:9,pitch:-8,zoom:1.12,ty:-80},academic:{yaw:-10,pitch:-2,zoom:1.03,ty:55},writing:{yaw:-15,pitch:-2,zoom:1.02,ty:55},roles:{yaw:-9,pitch:-8,zoom:1.10,ty:-72},public:{yaw:-16,pitch:-8,zoom:1.09,ty:-75},art:{yaw:-20,pitch:-10,zoom:1.18,ty:-120}};
+function focus(id,showDrawer=false){
+  const p=FOCUS[id]||FOCUS.hero;cam.targetYaw=p.yaw;cam.targetPitch=p.pitch;cam.targetZoom=p.zoom;cam.targetTy=p.ty;cam.focused=id;focusLabel.textContent=DATA[id].nav.toUpperCase();
+  document.querySelectorAll('.building').forEach(x=>x.classList.toggle('focused',x.dataset.section===id));document.querySelectorAll('.topnav button').forEach(x=>x.classList.toggle('active',x.dataset.target===id));
+  const order=['hero','about','web','experience','academic','writing','running','roles','public','art'],idx=Math.max(0,order.indexOf(id));fill.style.width=((idx/(order.length-1))*100)+'%';history.replaceState(null,'','#'+id);if(showDrawer)openDrawer(id)
+}
 
-addEventListener('keydown',e=>{if(e.key==='Escape')resetFocus();if(e.key==='ArrowLeft'){state.targetRy-=2;clamp()}if(e.key==='ArrowRight'){state.targetRy+=2;clamp()}if(e.key==='ArrowUp'){state.targetZoom+=.04;clamp()}if(e.key==='ArrowDown'){state.targetZoom-=.04;clamp()}});
+function render(){
+  cam.yaw+=(cam.targetYaw-cam.yaw)*.08;cam.pitch+=(cam.targetPitch-cam.pitch)*.08;cam.zoom+=(cam.targetZoom-cam.zoom)*.08;cam.ty+=(cam.targetTy-cam.ty)*.08;
+  const mobile=innerWidth<700;const baseScale=mobile?.67:innerWidth<1050?.78:1;
+  scene.style.transform=`translate3d(0,${cam.ty}px,0) rotateX(${cam.pitch}deg) rotateY(${cam.yaw}deg) scale(${cam.zoom*baseScale})`;
+  requestAnimationFrame(render)
+}
+
+viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.billboard,.topbar,.drawer,button'))return;cam.drag=true;cam.x=e.clientX;cam.y=e.clientY;viewport.classList.add('dragging');viewport.setPointerCapture?.(e.pointerId)});
+viewport.addEventListener('pointermove',e=>{if(!cam.drag)return;const dx=e.clientX-cam.x,dy=e.clientY-cam.y;cam.targetYaw+=dx*.055;cam.targetPitch-=dy*.035;cam.targetYaw=Math.max(-28,Math.min(28,cam.targetYaw));cam.targetPitch=Math.max(-15,Math.min(9,cam.targetPitch));cam.x=e.clientX;cam.y=e.clientY});
+function stop(){cam.drag=false;viewport.classList.remove('dragging')}viewport.addEventListener('pointerup',stop);viewport.addEventListener('pointercancel',stop);
+viewport.addEventListener('wheel',e=>{cam.targetZoom-=e.deltaY*.00055;cam.targetZoom=Math.max(.68,Math.min(1.35,cam.targetZoom));e.preventDefault()},{passive:false});
+viewport.addEventListener('mousemove',e=>{if(cam.drag||innerWidth<900)return;const nx=(e.clientX/innerWidth-.5),ny=(e.clientY/innerHeight-.5);scene.style.setProperty('--mx',nx);scene.style.setProperty('--my',ny)});
+
+document.addEventListener('click',e=>{const bb=e.target.closest('.billboard');if(!bb)return;const id=bb.dataset.open;focus(id,true)});
+const modelBtn=document.getElementById('modelBtn');modelBtn.onclick=()=>{document.body.classList.toggle('model');modelBtn.classList.toggle('active')};
+addEventListener('keydown',e=>{if(e.key==='Escape'){drawer.classList.remove('open');focus('hero',false)}if(e.key==='m'||e.key==='M')modelBtn.click()});
+
+buildCity();buildNav();
+const initial=location.hash.slice(1);focus(DATA[initial]?initial:'hero',false);requestAnimationFrame(render);
 </script>
 </body>
 </html>
