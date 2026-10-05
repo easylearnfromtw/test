@@ -590,44 +590,105 @@ const mountainFar=mountainRidge([[-620,8],[-565,24],[-515,15],[-455,35],[-390,23
 const mountainNear=mountainRidge([[-640,4],[-560,17],[-480,11],[-395,25],[-315,15],[-230,29],[-145,16],[-60,24],[35,13],[120,27],[210,15],[300,24],[390,13],[485,22],[570,12],[640,7]],0x788d92,-132,.92);
 mountainFar.matrixAutoUpdate=true;mountainNear.matrixAutoUpdate=true;
 
-function makeTaipei101(x=0,z=-78){
+function makeXinyiSkyline(x=0,z=-103){
   const g=new THREE.Group();
-  const coreMat=new THREE.MeshLambertMaterial({color:0x43686d,emissive:0x071113});
-  const edgeMat=new THREE.MeshLambertMaterial({color:0x739095,emissive:0x0a1416});
-  const darkMat=new THREE.MeshLambertMaterial({color:0x29484e,emissive:0x050b0d});
-  const glassMat=new THREE.MeshBasicMaterial({color:0x8fb8c0,transparent:true,opacity:.22,depthWrite:false,toneMapped:false});
-  const warmMat=new THREE.MeshBasicMaterial({color:0xe4c995,transparent:true,opacity:.28,depthWrite:false,toneMapped:false});
+
+  const towerMat=new THREE.MeshLambertMaterial({color:0x405860,emissive:0x061013});
+  const towerAltMat=new THREE.MeshLambertMaterial({color:0x506a70,emissive:0x071214});
+  const edgeMat=new THREE.MeshLambertMaterial({color:0x718d92,emissive:0x091417});
+  const darkMat=new THREE.MeshLambertMaterial({color:0x293f45,emissive:0x04090b});
+  const glassMat=new THREE.MeshBasicMaterial({color:0x92b7c0,transparent:true,opacity:.17,depthWrite:false,toneMapped:false});
+  const glassDarkMat=new THREE.MeshBasicMaterial({color:0x628895,transparent:true,opacity:.15,depthWrite:false,toneMapped:false});
+  const warmMat=new THREE.MeshBasicMaterial({color:0xe7c78f,transparent:true,opacity:.20,depthWrite:false,toneMapped:false});
+
+  function addWindowBands(group,w,h,d,rows=6){
+    for(let i=1;i<=rows;i++){
+      const y=(h/(rows+1))*i;
+      const band=new THREE.Mesh(new THREE.PlaneGeometry(w*.76,.16),glassMat);
+      band.position.set(0,y,d*.5+.018);group.add(band)
+    }
+  }
+
+  function addTower(px,w,h,d,style='plain',mat=towerMat){
+    const tg=new THREE.Group();
+    if(style==='taper'){
+      const lower=new THREE.Mesh(new THREE.BoxGeometry(w,h*.56,d),mat);lower.position.y=h*.28;tg.add(lower);
+      const upper=new THREE.Mesh(new THREE.BoxGeometry(w*.78,h*.44,d*.84),towerAltMat);upper.position.set(w*.07,h*.78,0);tg.add(upper);
+      const crown=new THREE.Mesh(new THREE.BoxGeometry(w*.52,2.6,d*.58),edgeMat);crown.position.set(w*.12,h+1.3,0);tg.add(crown);
+      const pane=new THREE.Mesh(new THREE.PlaneGeometry(w*.58,h*.70),glassMat);pane.position.set(w*.06,h*.49,d*.5+.02);tg.add(pane);
+    }else if(style==='split'){
+      const left=new THREE.Mesh(new THREE.BoxGeometry(w*.48,h,d),mat);left.position.set(-w*.27,h*.5,0);tg.add(left);
+      const right=new THREE.Mesh(new THREE.BoxGeometry(w*.40,h*.88,d*.92),towerAltMat);right.position.set(w*.28,h*.44,-.1);tg.add(right);
+      const spine=new THREE.Mesh(new THREE.BoxGeometry(.42,h*1.02,d*.98),edgeMat);spine.position.set(0,h*.51,.02);tg.add(spine);
+    }else{
+      const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);body.position.y=h*.5;tg.add(body);
+      if(style==='shoulder'){
+        const shoulder=new THREE.Mesh(new THREE.BoxGeometry(w+1.0,.46,d+.65),edgeMat);shoulder.position.y=h-.22;tg.add(shoulder)
+      }
+      if(style==='glass'){
+        const pane=new THREE.Mesh(new THREE.PlaneGeometry(w*.72,h*.76),glassMat);pane.position.set(0,h*.53,d*.5+.018);tg.add(pane)
+      }else addWindowBands(tg,w,h,d,Math.max(3,Math.floor(h/7)));
+    }
+    tg.position.x=px;g.add(tg);return tg
+  }
+
+  // Taipei 101 — central anchor of the Xinyi skyline.
+  const t101=new THREE.Group();
+  const coreMat=new THREE.MeshLambertMaterial({color:0x42686d,emissive:0x071113});
   let y=0;
-  const podium=new THREE.Mesh(new THREE.BoxGeometry(17.8,5.0,12.8),darkMat);podium.position.y=2.5;g.add(podium);y=5.0;
+  const podium=new THREE.Mesh(new THREE.BoxGeometry(17.8,5.0,12.8),darkMat);podium.position.y=2.5;t101.add(podium);y=5.0;
   const tierWidths=[15.4,14.8,14.0,13.2,12.4,11.6,10.8,10.0];
   tierWidths.forEach((w,i)=>{
     const h=5.5;
-    const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,w*.70),coreMat);body.position.y=y+h*.5;g.add(body);
-    const shoulder=new THREE.Mesh(new THREE.BoxGeometry(w+1.05,.52,w*.70+.78),edgeMat);shoulder.position.y=y+h-.18;g.add(shoulder);
-    const inset=new THREE.Mesh(new THREE.BoxGeometry(w*.86,.34,w*.70+.18),darkMat);inset.position.y=y+.55;g.add(inset);
-    const frontGlass=new THREE.Mesh(new THREE.PlaneGeometry(w*.70,h*.55),glassMat);
-    frontGlass.position.set(0,y+h*.50,w*.35+.012);g.add(frontGlass);
-    // three slim vertical facade ribs make the distant silhouette read as 101 rather than stacked boxes.
+    const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,w*.70),coreMat);body.position.y=y+h*.5;t101.add(body);
+    const shoulder=new THREE.Mesh(new THREE.BoxGeometry(w+1.05,.52,w*.70+.78),edgeMat);shoulder.position.y=y+h-.18;t101.add(shoulder);
+    const inset=new THREE.Mesh(new THREE.BoxGeometry(w*.86,.34,w*.70+.18),darkMat);inset.position.y=y+.55;t101.add(inset);
+    const pane=new THREE.Mesh(new THREE.PlaneGeometry(w*.70,h*.55),glassMat);pane.position.set(0,y+h*.50,w*.35+.018);t101.add(pane);
     for(const rx of [-.28,0,.28]){
-      const rib=new THREE.Mesh(new THREE.BoxGeometry(.16,h*.70,.12),edgeMat);
-      rib.position.set(w*rx,y+h*.48,w*.35+.055);g.add(rib)
+      const rib=new THREE.Mesh(new THREE.BoxGeometry(.15,h*.70,.11),edgeMat);
+      rib.position.set(w*rx,y+h*.48,w*.35+.06);t101.add(rib)
     }
-    if(i<3){
-      const glow=new THREE.Mesh(new THREE.PlaneGeometry(w*.46,.14),warmMat);
-      glow.position.set(0,y+h*.34,w*.35+.075);g.add(glow)
-    }
+    if(i<3){const glow=new THREE.Mesh(new THREE.PlaneGeometry(w*.46,.12),warmMat);glow.position.set(0,y+h*.34,w*.35+.08);t101.add(glow)}
     y+=h+.34;
   });
-  const crown1=new THREE.Mesh(new THREE.BoxGeometry(7.8,4.6,5.8),edgeMat);crown1.position.y=y+2.3;g.add(crown1);y+=4.6;
-  const crown2=new THREE.Mesh(new THREE.BoxGeometry(5.4,4.0,4.1),darkMat);crown2.position.y=y+2.0;g.add(crown2);y+=4.0;
-  const antennaBase=new THREE.Mesh(new THREE.CylinderGeometry(.70,1.10,3.6,8),edgeMat);antennaBase.position.y=y+1.8;g.add(antennaBase);y+=3.6;
-  const spire=new THREE.Mesh(new THREE.CylinderGeometry(.16,.44,12.5,8),edgeMat);spire.position.y=y+6.25;g.add(spire);
-  g.position.set(x,1.5,z);g.scale.setScalar(1.22);g.rotation.y=-.06;
+  const crown1=new THREE.Mesh(new THREE.BoxGeometry(7.8,4.6,5.8),edgeMat);crown1.position.y=y+2.3;t101.add(crown1);y+=4.6;
+  const crown2=new THREE.Mesh(new THREE.BoxGeometry(5.4,4.0,4.1),darkMat);crown2.position.y=y+2.0;t101.add(crown2);y+=4.0;
+  const antennaBase=new THREE.Mesh(new THREE.CylinderGeometry(.70,1.10,3.6,8),edgeMat);antennaBase.position.y=y+1.8;t101.add(antennaBase);y+=3.6;
+  const spire=new THREE.Mesh(new THREE.CylinderGeometry(.16,.44,12.5,8),edgeMat);spire.position.y=y+6.25;t101.add(spire);
+  t101.position.set(12,1.5,0);t101.scale.setScalar(1.14);t101.rotation.y=-.055;g.add(t101);
+
+  // Xinyi commercial / office cluster. Vary height, setbacks and glass treatment to avoid a generic block row.
+  addTower(-66,8.2,29,7.0,'shoulder',darkMat);
+  addTower(-54,10.0,39,8.4,'glass',towerMat);
+  addTower(-39,12.2,57,9.8,'taper',towerAltMat);      // Nanshan-like vertical landmark
+  addTower(-22,9.4,43,8.0,'split',towerMat);
+  addTower(-8,7.8,31,7.2,'shoulder',darkMat);
+
+  addTower(39,10.8,47,9.0,'glass',towerAltMat);
+  addTower(54,8.6,36,7.5,'shoulder',towerMat);
+  addTower(68,11.2,42,9.4,'split',towerAltMat);
+  addTower(84,7.2,27,6.6,'plain',darkMat);
+
+  // Lower department-store / podium masses make the skyline read as a district rather than isolated towers.
+  const podiumMat=new THREE.MeshLambertMaterial({color:0x34464c,emissive:0x050b0d});
+  [
+    [-56,26,7,12],[-28,24,8,13],[-2,28,7,14],[30,30,8,14],[61,27,7,13]
+  ].forEach(([px,w,h,d],i)=>{
+    const p=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),podiumMat);p.position.set(px,h*.5,-1.8);g.add(p);
+    const glass=new THREE.Mesh(new THREE.PlaneGeometry(w*.78,.85),glassDarkMat);glass.position.set(px,h*.62,d*.5-1.77);g.add(glass)
+  });
+
+  // Sparse dawn-lit strips; enough to suggest occupied towers without turning the skyline into neon.
+  [-54,-22,39,68].forEach((px,i)=>{
+    const glow=new THREE.Mesh(new THREE.PlaneGeometry(5.5,.16),warmMat);glow.position.set(px,11+i*5,5.15);g.add(glow)
+  });
+
+  g.position.set(x,0,z);
+  g.rotation.y=-.018;
   g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});
   scene.add(g);return g
 }
-const taipei101=makeTaipei101();
-
+const xinyiSkyline=makeXinyiSkyline();
 
 // Elevated MRT: one deck, instanced piers, one lightweight moving train.
 const mrtDeckMat=new THREE.MeshLambertMaterial({color:0x69777b}),mrtPierMat=new THREE.MeshLambertMaterial({color:0x758083});
@@ -1053,8 +1114,9 @@ function animate(){
   currentY=moveToward(currentY,targetY,7.5*dt);
   currentZ=moveToward(currentZ,targetZ,13*dt);
   wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.lookAt(currentX,LOOK_AT_Y,LOOK_AT_Z);
-  const landmarkSpread=innerWidth<560?22:innerWidth<920?34:48;
-  taipei101.position.x=currentX+landmarkSpread;
+  const landmarkSpread=innerWidth<560?14:innerWidth<920?22:32;
+  // skyline follows the viewport but at a slightly slower rate than foreground, creating distant parallax
+  xinyiSkyline.position.x=currentX*.92+landmarkSpread;
   mountainFar.position.x=currentX*.20;
   mountainNear.position.x=currentX*.13;
   oceanUniforms.uTime.value=t;
