@@ -14,11 +14,11 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .now-playing{position:absolute;right:14px;top:60px;z-index:14;max-width:min(310px,52vw);display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid rgba(255,255,255,.10);border-radius:999px;background:rgba(4,8,16,.58);backdrop-filter:blur(10px);color:#d8e1ec;font:7px/1.2 var(--mono);letter-spacing:.055em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto;cursor:pointer;opacity:.88}
 .now-playing .np-dot{width:5px;height:5px;flex:0 0 auto;border-radius:50%;background:#68e39d;box-shadow:0 0 10px #68e39d;animation:npPulse 1.2s ease-in-out infinite}.now-playing.blocked .np-dot{background:#e8a25b;box-shadow:0 0 10px #e8a25b}.now-playing.muted .np-dot{background:#69788a;box-shadow:none;animation:none}.now-playing span:last-child{overflow:hidden;text-overflow:ellipsis}
 @keyframes npPulse{50%{opacity:.35;transform:scale(.72)}}
-.hud{position:absolute;left:16px;bottom:16px;display:flex;gap:8px;flex-wrap:wrap;max-width:650px}.chip{padding:9px 11px;border:1px solid var(--line);border-radius:12px;background:rgba(5,10,22,.66);backdrop-filter:blur(12px);font:8px/1.45 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#abb7c7;pointer-events:none}.chip b{display:block;color:#fff;font-size:9px;margin-bottom:2px}.status{position:absolute;right:16px;bottom:16px;min-width:190px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(5,10,22,.66);backdrop-filter:blur(12px);font:8px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9eabbc}.status strong{color:#fff;float:right}.bar{height:3px;margin-top:9px;background:rgba(255,255,255,.10);border-radius:4px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#fff;transition:width .3s}
+.hud{display:none}.chip{display:none}.chip b{display:block;color:#fff;font-size:9px;margin-bottom:2px}.status{position:absolute;right:16px;bottom:16px;min-width:190px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(5,10,22,.66);backdrop-filter:blur(12px);font:8px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9eabbc}.status strong{color:#fff;float:right}.bar{height:3px;margin-top:9px;background:rgba(255,255,255,.10);border-radius:4px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#fff;transition:width .3s}
 .loop-flash{display:none}
 .drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.loading{position:absolute;inset:0;display:grid;place-items:center;z-index:30;background:#080d19;transition:opacity .5s}.loading.done{opacity:0;pointer-events:none}.loading div{text-align:center;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase}.loading strong{display:block;font:800 28px var(--sans);letter-spacing:.08em;margin-bottom:8px}
-@media(max-width:920px){.topbar{grid-template-columns:1fr auto;height:auto;min-height:58px;padding:8px 10px}.nav{grid-column:1/-1;justify-content:flex-start}.identity{display:none}.status{display:none}.hud{left:10px;right:10px;bottom:10px}.chip:nth-child(2){display:none}.drawer{top:105px;right:10px;bottom:10px;width:calc(100vw - 20px)}}
-@media(max-width:560px){.topbar,.now-playing,.chip,.status{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.now-playing{top:60px;right:8px;max-width:62vw;font-size:6px}.brand{font-size:14px}.nav button{font-size:8px;padding:6px 7px}.controls #reset{display:none}.loop-readout{min-width:58px;font-size:7px}.chip{font-size:7px}.drawer h2{font-size:36px}}
+@media(max-width:920px){.topbar{grid-template-columns:1fr auto;height:auto;min-height:58px;padding:8px 10px}.nav{grid-column:1/-1;justify-content:flex-start}.identity{display:none}.status{display:none}.hud{display:none}.chip:nth-child(2){display:none}.drawer{top:105px;right:10px;bottom:10px;width:calc(100vw - 20px)}}
+@media(max-width:560px){.topbar,.now-playing,.chip,.status{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.now-playing{top:60px;right:8px;max-width:62vw;font-size:6px}.brand{font-size:14px}.nav button{font-size:8px;padding:6px 7px}.controls #reset{display:none}.loop-readout{min-width:58px;font-size:7px}.chip{display:none}.drawer h2{font-size:36px}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script>
 </head>
@@ -31,7 +31,6 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
   <div class="chrome">
     <header class="topbar"><span class="brand">CHE-KAI LIN</span></header>
     <button class="now-playing blocked" id="nowPlaying" type="button" aria-label="CITYMUS audio"><span class="np-dot"></span><span id="nowPlayingText">CITYMUS · LOADING</span></button>
-    <div class="hud"><div class="chip"><b>Street hierarchy</b>前側人行道 → 車道 → 後側人行道 → 店面建築 → 遠景樓群</div><div class="chip"><b>Traffic variety</b>GLS SUV · 復古廂型車 · 小型車／計程車 · 多種路人與少量舉牌人群</div><div class="chip"><b>Performance mode</b>共用幾何 · instancing · 無即時陰影 · adaptive resolution</div></div>
     <div class="status">Focus <strong id="focusLabel">HOME</strong><div class="bar"><i id="progress"></i></div></div>
   </div>
 </div>
@@ -509,13 +508,24 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     const shell=gltf.scene.clone(true); materialize(shell,index,id); const dims=normalizeBuilding(shell,cfg.h);
     group.add(shell); group.position.set(cfg.x+copy*LOOP_SPAN,0,cfg.z); group.rotation.y=cfg.ry; root.add(group);
     const tex=makeTexture(id),bw=Math.min(15.8,Math.max(11.8,dims.w*1.08)),bh=bw*.586;
-    const frame=new THREE.Mesh(new THREE.BoxGeometry(bw+.68,bh+.68,.38),new THREE.MeshStandardMaterial({color:0x06080c,roughness:.30,metalness:.84}));
-    frame.position.set(0,cfg.h*.64,dims.d*.49+.10);group.add(frame);
-    const haloMat=new THREE.MeshBasicMaterial({color:DATA[id].accent,transparent:true,opacity:.14,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false});
-    const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.6,bh+1.6),haloMat);halo.position.set(0,cfg.h*.64,dims.d*.49+.20);group.add(halo);
-    const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
+    const boardY=cfg.h*.64,boardZ=dims.d*.50+1.05;
+    const frameMat=new THREE.MeshStandardMaterial({color:0x06080c,roughness:.30,metalness:.84});
+    const frameT=.22,frameD=.12;
+    const topBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
+    const bottomBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
+    const leftBar=new THREE.Mesh(new THREE.BoxGeometry(frameT,bh+.46,frameD),frameMat);
+    const rightBar=new THREE.Mesh(new THREE.BoxGeometry(frameT,bh+.46,frameD),frameMat);
+    topBar.position.set(0,boardY+bh*.5+.12,boardZ-.08);
+    bottomBar.position.set(0,boardY-bh*.5-.12,boardZ-.08);
+    leftBar.position.set(-bw*.5-.12,boardY,boardZ-.08);
+    rightBar.position.set(bw*.5+.12,boardY,boardZ-.08);
+    group.add(topBar,bottomBar,leftBar,rightBar);
+    const haloMat=new THREE.MeshBasicMaterial({color:DATA[id].accent,transparent:true,opacity:.11,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,toneMapped:false});
+    const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.25,bh+1.25),haloMat);halo.position.set(0,boardY,boardZ-.16);group.add(halo);
+    const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});
     mat.userData.baseIntensity=1.55;mat.userData.phase=(index+copy*10)*1.11;
-    const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat); board.position.set(0,cfg.h*.64,dims.d*.49+.34); board.userData.section=id; group.add(board); clickables.push(board);
+    const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat);
+    board.position.set(0,boardY,boardZ);board.renderOrder=6;board.userData.section=id;group.add(board);clickables.push(board);
     if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);portfolioBoards.get(id).push(mat);
     // main billboard is intentionally the only portfolio identifier on the façade
     addProjectingSign(group,id,dims,index,copy);
