@@ -758,28 +758,189 @@ function makeShopSignTexture(kind,label){
   x.strokeStyle='rgba(255,255,255,.42)';x.lineWidth=7;x.strokeRect(8,8,c.width-16,c.height-16);
   const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.generateMipmaps=false;tex.minFilter=THREE.LinearFilter;tex.magFilter=THREE.LinearFilter;tex.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());shopSignTextureCache.set(key,tex);return tex
 }
+// Taiwan PRO facade kit — deterministic, low-poly and shared-material.
+// Details are attached around the existing GLTF shell; the building loader itself stays untouched.
+const TW_PROFILES=[
+  {name:'old-tile-shop',balcony:1,bay:0,roof:1,patina:3,interior:'altar',awning:1},
+  {name:'glass-mixed-use',balcony:0,bay:1,roof:0,patina:1,interior:'dining',awning:0},
+  {name:'dense-residential',balcony:1,bay:1,roof:1,patina:2,interior:null,awning:0},
+  {name:'corner-commercial',balcony:0,bay:1,roof:1,patina:1,interior:'kitchen',awning:1},
+  {name:'weathered-shop-house',balcony:1,bay:0,roof:1,patina:3,interior:null,awning:1},
+  {name:'renovated-old-house',balcony:0,bay:1,roof:0,patina:2,interior:'living',awning:0}
+];
+function twProfile(index){return TW_PROFILES[(index*5+1)%TW_PROFILES.length]}
+
+const twUnitBox=new THREE.BoxGeometry(1,1,1);
+const twUnitPlane=new THREE.PlaneGeometry(1,1);
+const twThinCylinder=new THREE.CylinderGeometry(1,1,1,8);
+const twMats={
+  concrete:sharedMat('tw-concrete',()=>new THREE.MeshLambertMaterial({color:0x817e74})),
+  dirtyConcrete:sharedMat('tw-dirty-concrete',()=>new THREE.MeshLambertMaterial({color:0x625f58})),
+  aluminum:sharedMat('tw-aluminum',()=>new THREE.MeshLambertMaterial({color:0x8e989b})),
+  darkMetal:sharedMat('tw-dark-metal',()=>new THREE.MeshLambertMaterial({color:0x3c4245})),
+  corrugated:sharedMat('tw-corrugated',()=>new THREE.MeshLambertMaterial({color:0x6f7b79})),
+  awning:sharedMat('tw-awning',()=>new THREE.MeshLambertMaterial({color:0x9b7b61})),
+  ac:sharedMat('tw-ac',()=>new THREE.MeshLambertMaterial({color:0xd6d8d2})),
+  wood:sharedMat('tw-wood',()=>new THREE.MeshLambertMaterial({color:0x76503a})),
+  shrine:sharedMat('tw-shrine',()=>new THREE.MeshBasicMaterial({color:0xb52e26,toneMapped:false})),
+  gold:sharedMat('tw-gold',()=>new THREE.MeshBasicMaterial({color:0xe0aa45,toneMapped:false})),
+  kitchen:sharedMat('tw-kitchen',()=>new THREE.MeshLambertMaterial({color:0xbcc0bc})),
+  appliance:sharedMat('tw-appliance',()=>new THREE.MeshLambertMaterial({color:0xe1e3de})),
+  darkRoom:sharedMat('tw-room-dark',()=>new THREE.MeshBasicMaterial({color:0x171818,toneMapped:false})),
+  glass:sharedMat('tw-clear-glass',()=>new THREE.MeshBasicMaterial({color:0xc8e5ea,transparent:true,opacity:.24,depthWrite:false,toneMapped:false,side:THREE.DoubleSide})),
+  warmGlass:sharedMat('tw-warm-glass',()=>new THREE.MeshBasicMaterial({color:0xf0c99b,transparent:true,opacity:.13,depthWrite:false,toneMapped:false,side:THREE.DoubleSide})),
+  tank:sharedMat('tw-water-tank',()=>new THREE.MeshLambertMaterial({color:0x2f3f45}))
+};
+function twBox(parent,mat,x,y,z,sx,sy,sz){
+  const m=new THREE.Mesh(twUnitBox,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=false;m.receiveShadow=false;parent.add(m);return m
+}
+function twPlane(parent,mat,x,y,z,sx,sy){
+  const m=new THREE.Mesh(twUnitPlane,mat);m.position.set(x,y,z);m.scale.set(sx,sy,1);m.castShadow=false;m.receiveShadow=false;parent.add(m);return m
+}
+
+const facadePatinaCache=new Map();
+function makeFacadePatinaTexture(variant=0){
+  if(facadePatinaCache.has(variant))return facadePatinaCache.get(variant);
+  const cv=document.createElement('canvas');cv.width=512;cv.height=768;const x=cv.getContext('2d'),r=seeded(9100+variant*191);
+  x.clearRect(0,0,cv.width,cv.height);
+  // Taiwanese small-tile / patched-cement traces.
+  if(variant===1||variant===2){
+    x.strokeStyle=variant===1?'rgba(194,184,163,.15)':'rgba(164,173,168,.13)';x.lineWidth=1;
+    const cell=variant===1?19:25;
+    for(let xx=0;xx<cv.width;xx+=cell){x.beginPath();x.moveTo(xx,0);x.lineTo(xx,cv.height);x.stroke()}
+    for(let yy=0;yy<cv.height;yy+=cell){x.beginPath();x.moveTo(0,yy);x.lineTo(cv.width,yy);x.stroke()}
+  }
+  for(let i=0;i<34+variant*5;i++){
+    const px=r()*cv.width,top=r()*cv.height*.72,w=4+r()*20,h=35+r()*190;
+    const gr=x.createLinearGradient(px,top,px,top+h);
+    gr.addColorStop(0,'rgba(42,39,34,0)');gr.addColorStop(.35,`rgba(47,44,38,${.035+r()*.07})`);gr.addColorStop(1,'rgba(35,33,29,0)');
+    x.fillStyle=gr;x.fillRect(px,top,w,h)
+  }
+  for(let i=0;i<18;i++){
+    const px=r()*cv.width,py=cv.height*(.65+r()*.34),rw=18+r()*85,rh=8+r()*44;
+    x.fillStyle=`rgba(31,32,29,${.025+r()*.06})`;x.fillRect(px,py,rw,rh)
+  }
+  const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;tx.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());facadePatinaCache.set(variant,tx);return tx
+}
+function addFacadePatina(facade,width,height,profile){
+  const mat=new THREE.MeshBasicMaterial({map:makeFacadePatinaTexture(profile.patina),transparent:true,opacity:.90,depthWrite:false,toneMapped:false});
+  const p=twPlane(facade,mat,0,height*.48,-1.47,width*.47,height*.44);p.renderOrder=2
+}
+
+function addTaiwanBalcony(facade,width,height,index,profile){
+  if(!profile.balcony)return;
+  const r=seeded(3301+index*97),w=Math.min(width*.34,4.4),d=.95+r()*.35;
+  const x=(index%2?-1:1)*Math.min(width*.22,3.0),y=Math.min(9.2,height*.30);
+  twBox(facade,twMats.concrete,x,y,-1.42+d*.5,w,.14,d);
+  const frontZ=-1.42+d;
+  for(const px of [-w*.5,0,w*.5])twBox(facade,twMats.darkMetal,x+px,y+1.05,frontZ,.055,2.10,.055);
+  for(const yy of [y+.45,y+1.45,y+2.05])twBox(facade,twMats.darkMetal,x,yy,frontZ,w,.05,.05);
+  // laundry pole + one AC outdoor unit make the silhouette read immediately as Taiwan.
+  twBox(facade,twMats.aluminum,x,y+2.22,frontZ+.08,w*.92,.035,.035);
+  twBox(facade,twMats.ac,x+w*.34,y+.48,frontZ+.11,.76,.48,.46);
+}
+function addBayWindow(facade,width,height,index,profile){
+  if(!profile.bay)return;
+  const w=Math.min(width*.30,3.8),h=2.45,x=(index%2?1:-1)*Math.min(width*.24,3.0),y=Math.min(9.0,height*.32),d=.78;
+  twBox(facade,twMats.aluminum,x,y,-1.42+d*.5,w,h,d);
+  const pane=twPlane(facade,twMats.glass,x,y,-1.42+d+.015,w*.88,h*.80);pane.renderOrder=4;
+  for(const dx of [-w*.30,0,w*.30])twBox(facade,twMats.darkMetal,x+dx,y,-1.42+d+.035,.035,h*.82,.035);
+}
+
+function addTaiwanInterior(facade,width,height,index,type){
+  if(!type)return;
+  // Recess illusion: dark room + local objects + clear outer glass, only on selected buildings.
+  const w=Math.min(width*.30,3.9),h=2.55,x=(index%2?-1:1)*Math.min(width*.21,2.7),y=Math.min(11.0,height*.40);
+  const back=twPlane(facade,twMats.darkRoom,x,y,-1.43,w,h);back.renderOrder=3;
+  twBox(facade,twMats.darkMetal,x-w*.5,y,-1.34,.07,h+.18,.12);
+  twBox(facade,twMats.darkMetal,x+w*.5,y,-1.34,.07,h+.18,.12);
+  twBox(facade,twMats.darkMetal,x,y+h*.5,-1.34,w,.07,.12);
+  twBox(facade,twMats.darkMetal,x,y-h*.5,-1.34,w,.07,.12);
+  if(type==='altar'){
+    twBox(facade,twMats.wood,x,y-.60,-1.30,1.30,.45,.28);
+    twBox(facade,twMats.shrine,x,y+.18,-1.29,.72,1.05,.16);
+    twPlane(facade,twMats.gold,x,y+.30,-1.19,.34,.52);
+    twBox(facade,twMats.gold,x-.48,y-.31,-1.17,.08,.20,.08);twBox(facade,twMats.gold,x+.48,y-.31,-1.17,.08,.20,.08);
+  }else if(type==='dining'){
+    twBox(facade,twMats.wood,x,y-.48,-1.27,1.45,.16,.60);
+    for(const dx of [-.72,.72])twBox(facade,twMats.wood,x+dx,y-.47,-1.21,.28,.70,.28);
+  }else if(type==='kitchen'){
+    twBox(facade,twMats.kitchen,x-.25,y-.56,-1.28,1.75,.62,.42);
+    twBox(facade,twMats.appliance,x+w*.30,y-.12,-1.26,.50,1.65,.44);
+    twBox(facade,twMats.darkMetal,x-.25,y-.19,-1.16,.72,.05,.05);
+  }else{
+    twBox(facade,twMats.wood,x,y-.56,-1.28,1.65,.48,.46);
+    twBox(facade,twMats.appliance,x-.65,y+.05,-1.23,.56,.66,.16);
+  }
+  const glass=twPlane(facade,twMats.warmGlass,x,y,-1.10,w*.96,h*.94);glass.renderOrder=5;
+}
+function addStreetAwning(facade,width,index,profile){
+  if(!profile.awning)return;
+  const w=Math.min(width*.42,5.5),x=(index%2?-1:1)*Math.min(width*.16,2.0);
+  const aw=twBox(facade,twMats.awning,x,3.05,-.92,w,.11,1.25);aw.rotation.x=-.10;
+  twBox(facade,twMats.darkMetal,x-w*.46,2.40,-.98,.06,1.25,.06);
+  twBox(facade,twMats.darkMetal,x+w*.46,2.40,-.98,.06,1.25,.06);
+}
+function addRooftopTaiwanAddon(group,dims,height,index,profile){
+  if(!profile.roof)return;
+  const r=seeded(7147+index*211),w=Math.min(dims.w*.48,6.1),d=Math.min(dims.d*.58,4.6),h=1.8+r()*.7;
+  const x=(index%2?-.14:.12)*dims.w,z=(r()-.5)*Math.max(.5,dims.d-d);
+  twBox(group,twMats.dirtyConcrete,x,height+h*.5+.05,z,w,h,d);
+  const roof=twBox(group,twMats.corrugated,x,height+h+.14,z,w+.25,.14,d+.38);roof.rotation.z=(index%2?-.025:.025);
+  // black rooftop water tank / service tank, common in dense Taiwanese roofs.
+  if(index%3!==1){
+    const tank=new THREE.Mesh(twThinCylinder,twMats.tank);tank.scale.set(.58,.72,.58);tank.position.set(x+w*.28,height+h+1.00,z);group.add(tank)
+  }
+}
+function addTaiwanFacadeKit(group,facade,dims,width,height,index){
+  const profile=twProfile(index);
+  addFacadePatina(facade,width,height,profile);
+  addTaiwanBalcony(facade,width,height,index,profile);
+  addBayWindow(facade,width,height,index,profile);
+  // Interior windows are intentionally sparse: only four unique buildings get one visible local room.
+  if([0,1,3,5].includes(index))addTaiwanInterior(facade,width,height,index,profile.interior);
+  addStreetAwning(facade,width,index,profile);
+  addRooftopTaiwanAddon(group,dims,height,index,profile);
+}
+
 const MINI_SIGN_LABELS=['早餐','飲料','洗衣','手機維修','五金','機車','冷氣','影印','咖啡','藥局'];
 const miniSignTextureCache=new Map();
-function makeMiniSignTexture(label,variant=0){
-  const key=label+':'+variant;if(miniSignTextureCache.has(key))return miniSignTextureCache.get(key);
-  const cv=document.createElement('canvas');cv.width=256;cv.height=128;const g=cv.getContext('2d');
-  const pals=[['#ece1c5','#20242a'],['#b9322d','#f4ead3'],['#173d62','#f4ead3'],['#e1b24b','#22262b'],['#2c705d','#f5e8c9']];
-  const p=pals[variant%pals.length];g.fillStyle=p[0];g.fillRect(0,0,256,128);g.fillStyle=p[1];
-  g.font='900 42px "Noto Sans TC",Arial,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(label,128,64);
-  g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=5;g.strokeRect(5,5,246,118);
+function makeMiniSignTexture(label,variant=0,shape='long'){
+  const key=label+':'+variant+':'+shape;if(miniSignTextureCache.has(key))return miniSignTextureCache.get(key);
+  const vertical=shape==='vertical'||shape==='lshape',square=shape==='square';
+  const cv=document.createElement('canvas');cv.width=vertical?192:square?256:384;cv.height=vertical?384:square?256:128;const g=cv.getContext('2d');
+  const pals=[['#ece1c5','#20242a'],['#b9322d','#f4ead3'],['#173d62','#f4ead3'],['#e1b24b','#22262b'],['#2c705d','#f5e8c9'],['#596b70','#f3ead5']];
+  const p=pals[variant%pals.length];g.fillStyle=p[0];g.fillRect(0,0,cv.width,cv.height);g.fillStyle=p[1];g.textAlign='center';g.textBaseline='middle';
+  if(vertical){
+    const chars=[...label].slice(0,5);g.font='900 42px "Noto Sans TC",Arial,sans-serif';
+    chars.forEach((ch,i)=>g.fillText(ch,cv.width*.5,64+i*62));
+  }else{
+    g.font=square?'900 46px "Noto Sans TC",Arial,sans-serif':'900 44px "Noto Sans TC",Arial,sans-serif';
+    g.fillText(label,cv.width*.5,cv.height*.5);
+  }
+  // Slightly imperfect old lightbox frame.
+  g.strokeStyle='rgba(255,255,255,.38)';g.lineWidth=5;g.strokeRect(6,6,cv.width-12,cv.height-12);
   const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;miniSignTextureCache.set(key,tx);return tx
 }
 function addMiniSigns(facade,id,worldBox,index,copy){
   if(id==='hero')return;
-  const width=worldBox.max.x-worldBox.min.x,count=index%3===0?3:2;
+  const width=worldBox.max.x-worldBox.min.x;
+  const shapes=['long','vertical','square','lshape'];
+  const count=index%3===0?2:1;
   for(let i=0;i<count;i++){
-    const label=MINI_SIGN_LABELS[(index*3+i*2+copy+20)%MINI_SIGN_LABELS.length],tex=makeMiniSignTexture(label,index+i);
+    const shape=shapes[(index+i*2)%shapes.length];
+    const label=MINI_SIGN_LABELS[(index*3+i*2+20)%MINI_SIGN_LABELS.length],tex=makeMiniSignTexture(label,index+i,shape);
     const mat=new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide});
-    const w=2.7+(i%2)*.45,h=1.35,localX=-width*.28+i*3.15;
-    const sign=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);
-    sign.position.set(localX,3.2+i*.75,.42);sign.rotation.z=(i%2?-.035:.025);sign.renderOrder=8;facade.add(sign);
-    const bracket=new THREE.Mesh(new THREE.BoxGeometry(.10,.10,.68),utilityMetalMat);
-    bracket.position.set(localX,sign.position.y+h*.55,.08);facade.add(bracket)
+    const localX=(i?-.24:.28)*width*(index%2?1:-1),y=3.8+i*1.15;
+    let w=4.5,h=1.12;
+    if(shape==='vertical'){w=1.45;h=3.65}
+    else if(shape==='square'){w=2.20;h=2.20}
+    else if(shape==='lshape'){w=2.05;h=3.15}
+    const sign=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);sign.position.set(localX,y,.52);sign.rotation.z=(i%2?-.025:.018);sign.renderOrder=8;facade.add(sign);
+    if(shape==='lshape'){
+      const side=new THREE.Mesh(new THREE.PlaneGeometry(1.45,h),mat);side.position.set(localX+w*.5,y,1.24);side.rotation.y=Math.PI/2;side.renderOrder=8;facade.add(side)
+    }
+    const bracket=new THREE.Mesh(twUnitBox,utilityMetalMat);bracket.position.set(localX,y+h*.52,.12);bracket.scale.set(.10,.10,.80);facade.add(bracket)
   }
 }
 function addProjectingSign(facade,id,worldBox,index,copy){
@@ -1008,8 +1169,12 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     // independent world-space safe layer: always faces viewer and sits beyond every rotated/protruding wall
     facade.position.set(worldCenter.x,0,worldBox.max.z+1.55);root.add(facade);
     loopCullGroups.push(group,facade);facadeLayers.set(`${id}:${copy}`,facade);
-    const tex=makeTexture(id),worldW=worldBox.max.x-worldBox.min.x,bw=Math.min(15.8,Math.max(11.8,worldW*.96)),bh=bw*.586;
-    const boardY=cfg.h*.64,boardZ=.18;
+    const worldW=worldBox.max.x-worldBox.min.x;
+    addTaiwanFacadeKit(group,facade,dims,worldW,cfg.h,index);
+    // Primary portfolio boards also vary subtly by block: long / editorial / compact.
+    const boardRatio=[.50,.586,.68][index%3],boardWidthFactor=[.92,.98,.84][index%3];
+    const tex=makeTexture(id),bw=Math.min(15.8,Math.max(10.8,worldW*boardWidthFactor)),bh=bw*boardRatio;
+    const boardY=cfg.h*(.60+(index%3)*.025),boardZ=.18;
     const frameMat=new THREE.MeshStandardMaterial({color:id==='hero'?0x174B3A:0x06080c,roughness:id==='hero'?.48:.30,metalness:id==='hero'?.28:.84});
     const frameT=.22,frameD=.12;
     const topBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
