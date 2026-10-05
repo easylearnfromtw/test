@@ -74,6 +74,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/loaders/GLTFLoader.js';
+import { mergeGeometries } from 'https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/utils/BufferGeometryUtils.js';
 
 // CITYMUS background music. Browsers may block audible autoplay; we try immediately,
 // then transparently resume on the first user gesture (required by iOS/Safari policy).
@@ -131,7 +132,7 @@ const LOOP_SPAN=315, WRAP_LEFT=-173, WRAP_RIGHT=188;
 const canvas=document.getElementById('webgl');
 const MOBILE_GPU=innerWidth<760||/iPhone|iPad|Android/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/i.test(navigator.userAgent));
 const PIXELS_2K=2560*1440;
-const renderer=new THREE.WebGLRenderer({canvas,antialias:!MOBILE_GPU,alpha:false,stencil:false,depth:true,powerPreference:'high-performance',precision:'highp'});
+const renderer=new THREE.WebGLRenderer({canvas,antialias:!MOBILE_GPU,alpha:false,stencil:false,depth:true,desynchronized:true,powerPreference:'high-performance',precision:'highp'});
 const gl=renderer.getContext(),MAX_RB_SIZE=gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)||4096;
 function dprForBudget(pixelBudget,maxDpr){
   const cssPixels=Math.max(1,innerWidth*innerHeight);
@@ -698,13 +699,17 @@ mrtPiers.instanceMatrix.needsUpdate=true;freezeStatic(mrtPiers);scene.add(mrtPie
 
 const mrtTrain=new THREE.Group();
 const mrtBodyMat=new THREE.MeshLambertMaterial({color:0xd6dde0}),mrtGlassMat=new THREE.MeshBasicMaterial({color:0x496a78,toneMapped:false}),mrtStripeMat=new THREE.MeshBasicMaterial({color:0x2f8a72,toneMapped:false});
+const mrtBodyGeo=new THREE.BoxGeometry(14.5,3.5,3.7),mrtGlassGeo=new THREE.BoxGeometry(10.8,1.15,3.76),mrtStripeGeo=new THREE.BoxGeometry(14.62,.30,3.79);
+const mrtBodies=new THREE.InstancedMesh(mrtBodyGeo,mrtBodyMat,4),mrtWindows=new THREE.InstancedMesh(mrtGlassGeo,mrtGlassMat,4),mrtStripes=new THREE.InstancedMesh(mrtStripeGeo,mrtStripeMat,4);
 for(let i=0;i<4;i++){
-  const car=new THREE.Group(),body=new THREE.Mesh(new THREE.BoxGeometry(14.5,3.5,3.7),mrtBodyMat),win=new THREE.Mesh(new THREE.BoxGeometry(10.8,1.15,3.76),mrtGlassMat),stripe=new THREE.Mesh(new THREE.BoxGeometry(14.62,.30,3.79),mrtStripeMat);
-  body.position.y=0;win.position.y=.55;stripe.position.y=-.78;car.add(body,win,stripe);car.position.x=i*15.1;mrtTrain.add(car)
+  mrtM.makeTranslation(i*15.1,0,0);mrtBodies.setMatrixAt(i,mrtM);
+  mrtM.makeTranslation(i*15.1,.55,0);mrtWindows.setMatrixAt(i,mrtM);
+  mrtM.makeTranslation(i*15.1,-.78,0);mrtStripes.setMatrixAt(i,mrtM)
 }
+[mrtBodies,mrtWindows,mrtStripes].forEach(m=>{m.instanceMatrix.setUsage(THREE.StaticDrawUsage);m.instanceMatrix.needsUpdate=true;m.frustumCulled=true;mrtTrain.add(m)});
 mrtTrain.position.set(-255,28.25,-57);scene.add(mrtTrain);
 
-// deterministic background towers — GPU-batched materials and one window plane per tower
+// deterministic background towers — aggressively batched, visually identical
 const bg=[[-92,-96,18,31],[-76,-92,14,24],[-60,-98,18,34],[-43,-94,13,27],[-25,-97,16,32],[-10,-92,12,25],[14,-95,14,31],[30,-99,18,36],[49,-94,14,28],[65,-97,18,34],[82,-92,13,25],[100,-96,16,33]];
 const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];
 const bgTowerMat=new THREE.MeshLambertMaterial({color:0x52656a,emissive:0x080d0f});
@@ -717,13 +722,24 @@ function makeWindowBandTexture(variant=0){
   const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;bgWindowTextureCache.set(key,tx);return tx
 }
 const bgWindowMats=[0,1].map(v=>new THREE.MeshBasicMaterial({map:makeWindowBandTexture(v),transparent:true,depthWrite:false}));
-const sharedAdMats=adColors.map((col,i)=>{const m=new THREE.MeshBasicMaterial({color:col,toneMapped:false,transparent:true,opacity:.55});m.userData.base=new THREE.Color(col);m.userData.phase=i*.73;flicker.push(m);return m});
-[-1,0,1].forEach(copy=>bg.forEach((b,i)=>{
-  const [bx,z,w,h]=b,x=bx*1.5+copy*LOOP_SPAN;
-  const tower=new THREE.Mesh(new THREE.BoxGeometry(w,h,10),bgTowerMat);tower.position.set(x,h/2,z);freezeStatic(tower);scene.add(tower);
-  const win=new THREE.Mesh(new THREE.PlaneGeometry(w*.72,Math.max(8,h-10)),bgWindowMats[i%2]);win.position.set(x,h*.51,z+5.01);freezeStatic(win);scene.add(win);
-  const ad=new THREE.Mesh(new THREE.PlaneGeometry(w*.64,Math.min(8,h*.2)),sharedAdMats[i%sharedAdMats.length]);ad.position.set(x,h*.66,z+5.03);freezeStatic(ad);scene.add(ad)
-}));
+const sharedAdMats=adColors.map(col=>new THREE.MeshBasicMaterial({color:col,toneMapped:false,transparent:true,opacity:.50,depthWrite:false}));
+const bgEntries=[];[-1,0,1].forEach(copy=>bg.forEach((b,i)=>bgEntries.push({copy,b,i})));
+const bgUnitBox=new THREE.BoxGeometry(1,1,1),bgUnitPlane=new THREE.PlaneGeometry(1,1),bgM=new THREE.Matrix4(),bgP=new THREE.Vector3(),bgQ=new THREE.Quaternion(),bgS=new THREE.Vector3();
+
+const bgTowers=new THREE.InstancedMesh(bgUnitBox,bgTowerMat,bgEntries.length);
+bgEntries.forEach((e,idx)=>{const [bx,z,w,h]=e.b,x=bx*1.5+e.copy*LOOP_SPAN;bgP.set(x,h*.5,z);bgS.set(w,h,10);bgM.compose(bgP,bgQ,bgS);bgTowers.setMatrixAt(idx,bgM)});
+bgTowers.instanceMatrix.setUsage(THREE.StaticDrawUsage);bgTowers.instanceMatrix.needsUpdate=true;freezeStatic(bgTowers);scene.add(bgTowers);
+
+[0,1].forEach(v=>{
+  const entries=bgEntries.filter(e=>e.i%2===v),mesh=new THREE.InstancedMesh(bgUnitPlane,bgWindowMats[v],entries.length);
+  entries.forEach((e,idx)=>{const [bx,z,w,h]=e.b,x=bx*1.5+e.copy*LOOP_SPAN;bgP.set(x,h*.51,z+5.01);bgS.set(w*.72,Math.max(8,h-10),1);bgM.compose(bgP,bgQ,bgS);mesh.setMatrixAt(idx,bgM)});
+  mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);mesh.instanceMatrix.needsUpdate=true;freezeStatic(mesh);scene.add(mesh)
+});
+for(let variant=0;variant<sharedAdMats.length;variant++){
+  const entries=bgEntries.filter(e=>e.i%sharedAdMats.length===variant),mesh=new THREE.InstancedMesh(bgUnitPlane,sharedAdMats[variant],entries.length);
+  entries.forEach((e,idx)=>{const [bx,z,w,h]=e.b,x=bx*1.5+e.copy*LOOP_SPAN;bgP.set(x,h*.66,z+5.03);bgS.set(w*.64,Math.min(8,h*.2),1);bgM.compose(bgP,bgQ,bgS);mesh.setMatrixAt(idx,bgM)});
+  mesh.instanceMatrix.setUsage(THREE.StaticDrawUsage);mesh.instanceMatrix.needsUpdate=true;freezeStatic(mesh);scene.add(mesh)
+}
 function decodeBase64(s){const bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
 const BUILDING_TINTS={hero:0x192636,about:0x202832,web:0x142332,experience:0x101a25,academic:0x26303a,writing:0x252b31,running:0x111b25,roles:0x26303a,public:0x202832,art:0x101a25};
 const BOARD_STYLE={hero:'red',about:'cream',web:'dark',experience:'dark',academic:'cream',writing:'cream',running:'dark',roles:'cream',public:'cream',art:'dark'};
@@ -792,10 +808,30 @@ const twMats={
   tank:sharedMat('tw-water-tank',()=>new THREE.MeshLambertMaterial({color:0x2f3f45}))
 };
 function twBox(parent,mat,x,y,z,sx,sy,sz){
-  const m=new THREE.Mesh(twUnitBox,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=false;m.receiveShadow=false;parent.add(m);return m
+  const m=new THREE.Mesh(twUnitBox,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=false;m.receiveShadow=false;m.userData.twStatic=true;parent.add(m);return m
 }
 function twPlane(parent,mat,x,y,z,sx,sy){
   const m=new THREE.Mesh(twUnitPlane,mat);m.position.set(x,y,z);m.scale.set(sx,sy,1);m.castShadow=false;m.receiveShadow=false;parent.add(m);return m
+}
+function collapseTwStatic(parent){
+  parent.updateMatrixWorld(true);
+  const invParent=new THREE.Matrix4().copy(parent.matrixWorld).invert(),rel=new THREE.Matrix4(),buckets=new Map(),targets=[];
+  parent.traverse(o=>{
+    if(!o.isMesh||!o.userData.twStatic||Array.isArray(o.material))return;
+    const mat=o.material,key=mat.uuid;
+    if(!buckets.has(key))buckets.set(key,{mat,items:[]});
+    rel.multiplyMatrices(invParent,o.matrixWorld);
+    const geo=o.geometry.clone();geo.applyMatrix4(rel);buckets.get(key).items.push(geo);targets.push(o)
+  });
+  const mergedOriginals=new Set();
+  buckets.forEach(({mat,items})=>{
+    if(items.length<2){items.forEach(g=>g.dispose());return}
+    const merged=mergeGeometries(items,false);items.forEach(g=>g.dispose());
+    if(!merged)return;
+    const mesh=new THREE.Mesh(merged,mat);mesh.castShadow=false;mesh.receiveShadow=false;mesh.matrixAutoUpdate=false;mesh.updateMatrix();parent.add(mesh);
+    parent.traverse(o=>{if(o.isMesh&&o.userData.twStatic&&!Array.isArray(o.material)&&o.material===mat)mergedOriginals.add(o)})
+  });
+  mergedOriginals.forEach(o=>{if(o.parent)o.parent.remove(o)})
 }
 
 const facadePatinaCache=new Map();
@@ -889,7 +925,7 @@ function addRooftopTaiwanAddon(group,dims,height,index,profile){
   const roof=twBox(group,twMats.corrugated,x,height+h+.14,z,w+.25,.14,d+.38);roof.rotation.z=(index%2?-.025:.025);
   // black rooftop water tank / service tank, common in dense Taiwanese roofs.
   if(index%3!==1){
-    const tank=new THREE.Mesh(twThinCylinder,twMats.tank);tank.scale.set(.58,.72,.58);tank.position.set(x+w*.28,height+h+1.00,z);group.add(tank)
+    const tank=new THREE.Mesh(twThinCylinder,twMats.tank);tank.scale.set(.58,.72,.58);tank.position.set(x+w*.28,height+h+1.00,z);tank.userData.twStatic=true;group.add(tank)
   }
 }
 function addTaiwanFacadeKit(group,facade,dims,width,height,index){
@@ -1196,6 +1232,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     // main billboard is intentionally the only portfolio identifier on the façade
     addProjectingSign(facade,id,worldBox,index,copy);
     addMiniSigns(facade,id,worldBox,index,copy);
+    collapseTwStatic(group);collapseTwStatic(facade);
     const dynamicSet=new Set(barberPoles);
     group.traverse(n=>{if(n!==group){n.updateMatrix();n.matrixAutoUpdate=false}});
     facade.traverse(n=>{if(n!==facade&&!dynamicSet.has(n)){n.updateMatrix();n.matrixAutoUpdate=false}});
@@ -1204,8 +1241,14 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
   // Opening is now a DOM intro card; no one-off hero building is generated.
   [-1,0,1].forEach(copy=>cycleBuildings.forEach((id,index)=>spawn(id,index,copy)));
   [-1,0,1].forEach(copy=>{ addSeparator(-49.5+copy*LOOP_SPAN,copy*2+11); addSeparator(154.5+copy*LOOP_SPAN,copy*2+12); });
-  renderer.compile(scene,camera);
-  document.getElementById('loading').classList.add('done');focus('hero',false)
+  scene.traverse(o=>{
+    if(!o.isMesh)return;
+    const mats=Array.isArray(o.material)?o.material:[o.material];
+    mats.forEach(m=>{if(m&&m.transparent&&m.side===THREE.DoubleSide)m.forceSinglePass=true})
+  });
+  const reveal=()=>{document.getElementById('loading').classList.add('done');focus('hero',false)};
+  if(renderer.compileAsync)renderer.compileAsync(scene,camera).then(reveal).catch(()=>{renderer.compile(scene,camera);reveal()});
+  else{renderer.compile(scene,camera);reveal()}
 },undefined,e=>{console.error(e);document.querySelector('#loading div').innerHTML='<strong>MODEL ERROR</strong>3D MODEL COULD NOT LOAD';});
 // nav/drawer
 const CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
@@ -1276,7 +1319,8 @@ function animate(){
   currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);
   currentY=moveToward(currentY,targetY,7.5*dt);
   currentZ=moveToward(currentZ,targetZ,13*dt);
-  wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.lookAt(currentX,LOOK_AT_Y,LOOK_AT_Z);
+  wrapLoop();camera.position.set(currentX,currentY,currentZ);
+  camera.rotation.set(Math.atan2(LOOK_AT_Y-currentY,currentZ-LOOK_AT_Z),0,0);
   const landmarkSpread=innerWidth<560?14:innerWidth<920?22:32;
   // skyline follows the viewport but at a slightly slower rate than foreground, creating distant parallax
   xinyiSkyline.position.x=currentX*.965+landmarkSpread;
@@ -1297,16 +1341,14 @@ function animate(){
   if(cullTick!==lastCullTick){lastCullTick=cullTick;
     loopCullGroups.forEach(g=>{
       const dist=Math.abs(g.position.x-currentX);
-      if(g.visible){if(dist>235)g.visible=false}
-      else if(dist<200)g.visible=true;
+      if(g.visible){if(dist>300)g.visible=false}
+      else if(dist<260)g.visible=true;
     })
   }
 
-  // Decorative lighting at 8 Hz: visually continuous, less CPU→GPU material churn.
-  const lightTick=Math.floor(t*8);
+  // No building or billboard luminance flicker. Traffic signals alone update at 4 Hz.
+  const lightTick=Math.floor(t*4);
   if(lightTick!==lastLightTick){lastLightTick=lightTick;
-    flicker.forEach((m,i)=>{const s=.82+.18*(.5+.5*Math.sin(t*(1.05+(i%3)*.13)+m.userData.phase));m.color.copy(m.userData.base).multiplyScalar(s);m.opacity=.78+.14*(.5+.5*Math.sin(t*.82+m.userData.phase))});
-    lightboxes.forEach((o,i)=>{if(Number.isFinite(o.x)&&Math.abs(o.x-currentX)>135)return;const phase=o.phase??o.mat?.userData.phase??i*.77,wave=.86+.14*(.5+.5*Math.sin(t*(1.0+(i%5)*.07)+phase)),blink=Math.sin(t*5.3+i*2.37)>.996?.45:1;if(o.mat)o.mat.emissiveIntensity=(o.mat.userData.baseIntensity||1.35)*wave*blink;if(o.halo)o.halo.opacity=.07+.09*wave*blink})
     trafficSignals.forEach((s,i)=>{const q=(t+s.phase)%9;if(s.ped){const walk=q>=4&&q<8;s.mats[0].color.set(walk?0x401014:0xff3040);s.mats[1].color.set(walk?0x28e98b:0x0d3b27)}else{const active=q<4?2:q<5.2?1:0;s.mats.forEach((m,j)=>m.emissiveIntensity=j===active?2.5:.05)}})
   }
   barberPoles.forEach((p,i)=>p.rotation.y=t*(1.45+i*.05));
