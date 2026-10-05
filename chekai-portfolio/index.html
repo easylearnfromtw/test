@@ -175,6 +175,96 @@ const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metaln
 // sidewalks
 const sidewalkMat=new THREE.MeshStandardMaterial({color:0x252832,roughness:.75});
 for(const z of [-9.2,22.2]){const sw=new THREE.Mesh(new THREE.BoxGeometry(1100,.6,4),sidewalkMat);sw.position.set(0,.28,z);sw.receiveShadow=false;freezeStatic(sw);scene.add(sw)}
+// Coastal-road foreground: guardrail → concrete seawall → animated dawn ocean.
+const coastMetal=new THREE.MeshLambertMaterial({color:0xa8b1b4});
+const coastDarkMetal=new THREE.MeshLambertMaterial({color:0x767f83});
+const coastConcrete=new THREE.MeshLambertMaterial({color:0x686861});
+const coastConcreteTop=new THREE.MeshLambertMaterial({color:0x818078});
+
+// Guardrail at the sea-facing edge of the front sidewalk.
+const coastPostXs=[];for(let x=-548;x<=548;x+=7.5)coastPostXs.push(x);
+const coastPostGeo=new THREE.BoxGeometry(.14,1.28,.16);
+const coastPosts=new THREE.InstancedMesh(coastPostGeo,coastDarkMetal,coastPostXs.length),coastMat4=new THREE.Matrix4();
+coastPostXs.forEach((x,i)=>{coastMat4.makeTranslation(x,1.00,24.05);coastPosts.setMatrixAt(i,coastMat4)});
+coastPosts.instanceMatrix.needsUpdate=true;freezeStatic(coastPosts);scene.add(coastPosts);
+for(const y of [1.18,1.64]){
+  const rail=new THREE.Mesh(new THREE.BoxGeometry(1100,.10,.13),coastMetal);rail.position.set(0,y,24.05);freezeStatic(rail);scene.add(rail)
+}
+// Amber roadside reflectors, sparse and instanced.
+const reflectorXs=[];for(let x=-540;x<=540;x+=30)reflectorXs.push(x);
+const reflectorGeo=new THREE.BoxGeometry(.22,.18,.055),reflectorMat=new THREE.MeshBasicMaterial({color:0xffbf59,toneMapped:false});
+const reflectors=new THREE.InstancedMesh(reflectorGeo,reflectorMat,reflectorXs.length);
+reflectorXs.forEach((x,i)=>{coastMat4.makeTranslation(x,1.50,23.965);reflectors.setMatrixAt(i,coastMat4)});
+reflectors.instanceMatrix.needsUpdate=true;freezeStatic(reflectors);scene.add(reflectors);
+
+// Raised seawall and sloped concrete revetment.
+const seaWall=new THREE.Mesh(new THREE.BoxGeometry(1100,1.55,1.65),coastConcrete);seaWall.position.set(0,.28,25.35);freezeStatic(seaWall);scene.add(seaWall);
+const seaWallCap=new THREE.Mesh(new THREE.BoxGeometry(1100,.18,1.92),coastConcreteTop);seaWallCap.position.set(0,1.08,25.35);freezeStatic(seaWallCap);scene.add(seaWallCap);
+const revetment=new THREE.Mesh(new THREE.PlaneGeometry(1100,7.2),coastConcrete);
+revetment.rotation.x=-Math.PI/2-.17;revetment.position.set(0,-.16,28.7);freezeStatic(revetment);scene.add(revetment);
+
+// GPU ocean shader: flat geometry, procedural moving ripples and dawn shimmer.
+const oceanUniforms={uTime:{value:0},uDawn:{value:new THREE.Color(0xf0c49f)}};
+const oceanMat=new THREE.ShaderMaterial({
+  uniforms:oceanUniforms,
+  vertexShader:`
+    varying vec2 vUv;
+    void main(){
+      vUv=uv;
+      gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+    }`,
+  fragmentShader:`
+    precision highp float;
+    varying vec2 vUv;
+    uniform float uTime;
+    uniform vec3 uDawn;
+    float wave(vec2 p,float s,float f,float t){return sin((p.x*s+p.y*f)+t);}
+    void main(){
+      vec2 p=vUv;
+      float w1=wave(p,44.0,18.0,uTime*1.20);
+      float w2=wave(p,73.0,-26.0,uTime*.82);
+      float w3=wave(p,115.0,42.0,uTime*1.45);
+      float rip=(w1*.46+w2*.32+w3*.22);
+      vec3 deep=vec3(.055,.205,.265);
+      vec3 nearC=vec3(.105,.335,.400);
+      vec3 col=mix(deep,nearC,clamp(p.y*.82+.12,0.0,1.0));
+      col+=rip*.018;
+      float horizon=smoothstep(.18,.92,p.y);
+      float shimmer=pow(max(0.0,sin(p.x*95.0+uTime*1.65)*.5+.5),9.0);
+      shimmer*=pow(max(0.0,sin(p.y*150.0-uTime*.85)*.5+.5),7.0);
+      float dawnBand=exp(-pow((p.x-.50)*3.0,2.0))*horizon;
+      col+=uDawn*(shimmer*.12+dawnBand*.055);
+      gl_FragColor=vec4(col,1.0);
+    }`,
+  depthWrite:true,
+  fog:false,
+  toneMapped:false
+});
+const ocean=new THREE.Mesh(new THREE.PlaneGeometry(1100,92),oceanMat);
+ocean.rotation.x=-Math.PI/2;ocean.position.set(0,-.48,72.0);scene.add(ocean);
+
+// Irregular foam texture reused by three shore-break strips.
+const foamCanvas=document.createElement('canvas');foamCanvas.width=1024;foamCanvas.height=96;
+const foamCtx=foamCanvas.getContext('2d');foamCtx.clearRect(0,0,1024,96);
+for(let i=0;i<230;i++){
+  const x=Math.random()*1024,y=22+Math.random()*54,len=8+Math.random()*48;
+  foamCtx.strokeStyle=`rgba(245,250,248,${.06+Math.random()*.24})`;foamCtx.lineWidth=.7+Math.random()*2.2;
+  foamCtx.beginPath();foamCtx.moveTo(x,y);foamCtx.quadraticCurveTo(x+len*.45,y-4+Math.random()*8,x+len,y+Math.random()*4-2);foamCtx.stroke()
+}
+const foamTex=new THREE.CanvasTexture(foamCanvas);foamTex.colorSpace=THREE.SRGBColorSpace;foamTex.wrapS=THREE.RepeatWrapping;foamTex.repeat.set(9,1);foamTex.generateMipmaps=false;foamTex.minFilter=THREE.LinearFilter;
+const surfStrips=[];
+[0,1,2].forEach(i=>{
+  const fm=new THREE.MeshBasicMaterial({map:foamTex,transparent:true,opacity:.36-i*.06,depthWrite:false,toneMapped:false,side:THREE.DoubleSide});
+  const strip=new THREE.Mesh(new THREE.PlaneGeometry(1100,2.5+i*.7),fm);
+  strip.rotation.x=-Math.PI/2;strip.position.set(0,-.31,27.1+i*1.15);strip.renderOrder=3;scene.add(strip);
+  surfStrips.push({mesh:strip,baseZ:27.1+i*1.15,phase:i*1.7})
+});
+
+// Broad additive dawn reflection band on the water.
+const oceanGlintMat=new THREE.MeshBasicMaterial({color:0xffd7aa,transparent:true,opacity:.075,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false});
+const oceanGlint=new THREE.Mesh(new THREE.PlaneGeometry(260,20),oceanGlintMat);
+oceanGlint.rotation.x=-Math.PI/2;oceanGlint.position.set(0,-.27,32.5);scene.add(oceanGlint);
+
 // continuous city block ground under all portfolio buildings and background structures
 const landCanvas=document.createElement('canvas');landCanvas.width=256;landCanvas.height=256;
 const landCtx=landCanvas.getContext('2d');landCtx.fillStyle='#34322d';landCtx.fillRect(0,0,256,256);
@@ -501,27 +591,43 @@ const mountainNear=mountainRidge([[-640,4],[-560,17],[-480,11],[-395,25],[-315,1
 mountainFar.matrixAutoUpdate=true;mountainNear.matrixAutoUpdate=true;
 
 function makeTaipei101(x=0,z=-78){
-  const g=new THREE.Group(),mat=new THREE.MeshLambertMaterial({color:0x496a70,emissive:0x081315});
-  const widths=[13.2,12.5,11.8,11.1,10.4,9.7,9.0,8.3];let y=0;
-  widths.forEach((w,i)=>{const h=5.6,b=new THREE.Mesh(new THREE.BoxGeometry(w,h,w*.72),mat);b.position.y=y+h*.5;y+=h+.35;g.add(b)});
-  const crown=new THREE.Mesh(new THREE.BoxGeometry(6.4,5.8,4.8),mat);crown.position.y=y+2.9;g.add(crown);
-  const spire=new THREE.Mesh(new THREE.CylinderGeometry(.32,.75,10,6),mat);spire.position.y=y+10.3;g.add(spire);
-  g.position.set(x,4,z);g.scale.setScalar(1.28);g.rotation.y=-.08;
-  g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});scene.add(g);return g
+  const g=new THREE.Group();
+  const coreMat=new THREE.MeshLambertMaterial({color:0x43686d,emissive:0x071113});
+  const edgeMat=new THREE.MeshLambertMaterial({color:0x739095,emissive:0x0a1416});
+  const darkMat=new THREE.MeshLambertMaterial({color:0x29484e,emissive:0x050b0d});
+  const glassMat=new THREE.MeshBasicMaterial({color:0x8fb8c0,transparent:true,opacity:.22,depthWrite:false,toneMapped:false});
+  const warmMat=new THREE.MeshBasicMaterial({color:0xe4c995,transparent:true,opacity:.28,depthWrite:false,toneMapped:false});
+  let y=0;
+  const podium=new THREE.Mesh(new THREE.BoxGeometry(17.8,5.0,12.8),darkMat);podium.position.y=2.5;g.add(podium);y=5.0;
+  const tierWidths=[15.4,14.8,14.0,13.2,12.4,11.6,10.8,10.0];
+  tierWidths.forEach((w,i)=>{
+    const h=5.5;
+    const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,w*.70),coreMat);body.position.y=y+h*.5;g.add(body);
+    const shoulder=new THREE.Mesh(new THREE.BoxGeometry(w+1.05,.52,w*.70+.78),edgeMat);shoulder.position.y=y+h-.18;g.add(shoulder);
+    const inset=new THREE.Mesh(new THREE.BoxGeometry(w*.86,.34,w*.70+.18),darkMat);inset.position.y=y+.55;g.add(inset);
+    const frontGlass=new THREE.Mesh(new THREE.PlaneGeometry(w*.70,h*.55),glassMat);
+    frontGlass.position.set(0,y+h*.50,w*.35+.012);g.add(frontGlass);
+    // three slim vertical facade ribs make the distant silhouette read as 101 rather than stacked boxes.
+    for(const rx of [-.28,0,.28]){
+      const rib=new THREE.Mesh(new THREE.BoxGeometry(.16,h*.70,.12),edgeMat);
+      rib.position.set(w*rx,y+h*.48,w*.35+.055);g.add(rib)
+    }
+    if(i<3){
+      const glow=new THREE.Mesh(new THREE.PlaneGeometry(w*.46,.14),warmMat);
+      glow.position.set(0,y+h*.34,w*.35+.075);g.add(glow)
+    }
+    y+=h+.34;
+  });
+  const crown1=new THREE.Mesh(new THREE.BoxGeometry(7.8,4.6,5.8),edgeMat);crown1.position.y=y+2.3;g.add(crown1);y+=4.6;
+  const crown2=new THREE.Mesh(new THREE.BoxGeometry(5.4,4.0,4.1),darkMat);crown2.position.y=y+2.0;g.add(crown2);y+=4.0;
+  const antennaBase=new THREE.Mesh(new THREE.CylinderGeometry(.70,1.10,3.6,8),edgeMat);antennaBase.position.y=y+1.8;g.add(antennaBase);y+=3.6;
+  const spire=new THREE.Mesh(new THREE.CylinderGeometry(.16,.44,12.5,8),edgeMat);spire.position.y=y+6.25;g.add(spire);
+  g.position.set(x,1.5,z);g.scale.setScalar(1.22);g.rotation.y=-.06;
+  g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});
+  scene.add(g);return g
 }
 const taipei101=makeTaipei101();
 
-function makeTamsuiBridge(x=0,z=-86){
-  const g=new THREE.Group(),deckMat=new THREE.MeshLambertMaterial({color:0x73878c}),cableMat=new THREE.LineBasicMaterial({color:0x9aa9ab,transparent:true,opacity:.72});
-  const deck=new THREE.Mesh(new THREE.BoxGeometry(96,1.0,3.3),deckMat);deck.position.y=17;g.add(deck);
-  const tower=new THREE.Mesh(new THREE.BoxGeometry(2.2,50,2.0),deckMat);tower.position.set(10,42,0);tower.rotation.z=-.055;g.add(tower);
-  const cablePts=[];for(let px=-42;px<=44;px+=12){cablePts.push(10,66,0,px,17.6,0)}
-  const cg=new THREE.BufferGeometry();cg.setAttribute('position',new THREE.Float32BufferAttribute(cablePts,3));
-  const cables=new THREE.LineSegments(cg,cableMat);g.add(cables);
-  g.position.set(x,0,z);g.scale.setScalar(.92);g.rotation.y=.025;
-  g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});scene.add(g);return g
-}
-const tamsuiBridge=makeTamsuiBridge();
 
 // Elevated MRT: one deck, instanced piers, one lightweight moving train.
 const mrtDeckMat=new THREE.MeshLambertMaterial({color:0x69777b}),mrtPierMat=new THREE.MeshLambertMaterial({color:0x758083});
@@ -949,9 +1055,18 @@ function animate(){
   wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.lookAt(currentX,LOOK_AT_Y,LOOK_AT_Z);
   const landmarkSpread=innerWidth<560?22:innerWidth<920?34:48;
   taipei101.position.x=currentX+landmarkSpread;
-  tamsuiBridge.position.x=currentX-landmarkSpread*.92;
   mountainFar.position.x=currentX*.20;
   mountainNear.position.x=currentX*.13;
+  oceanUniforms.uTime.value=t;
+  ocean.position.x=currentX;
+  oceanGlint.position.x=currentX+landmarkSpread*.18;
+  oceanGlintMat.opacity=.055+.045*(.5+.5*Math.sin(t*.72));
+  surfStrips.forEach((s,i)=>{
+    const run=.5+.5*Math.sin(t*(1.05+i*.08)+s.phase);
+    s.mesh.position.x=currentX;
+    s.mesh.position.z=s.baseZ-run*(1.15+i*.20);
+    s.mesh.material.opacity=.18+run*(.22-i*.025);
+  });
   // Coarse culling: only keep the current and adjacent loop copies submitted to WebGL.
   const cullTick=Math.floor(t*4);
   if(cullTick!==lastCullTick){lastCullTick=cullTick;
