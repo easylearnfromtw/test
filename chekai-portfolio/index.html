@@ -311,12 +311,13 @@ for(let i=0;i<9;i++){makePedestrian(-455+i*112,-11.2,i*.83,[0x496b83,0xa6614d,0x
 const bg=[[-92,-44,18,42],[-76,-42,14,32],[-60,-46,18,46],[-43,-43,13,36],[-25,-45,16,44],[-10,-42,12,34],[14,-44,14,42],[30,-46,18,50],[49,-43,14,38],[65,-45,18,46],[82,-42,13,34],[100,-45,16,45]];
 const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];
 const bgTowerMat=new THREE.MeshLambertMaterial({color:0x111824,emissive:0x020407});
+const bgWindowTextureCache=new Map();
 function makeWindowBandTexture(variant=0){
-  const key='bg-window-'+variant;if(textureCache.has(key))return textureCache.get(key);
+  const key='bg-window-'+variant;if(bgWindowTextureCache.has(key))return bgWindowTextureCache.get(key);
   const cv=document.createElement('canvas');cv.width=64;cv.height=256;const g=cv.getContext('2d');g.clearRect(0,0,64,256);
   const col=variant?'rgba(48,53,92,.58)':'rgba(35,57,82,.58)';
   for(let y=18;y<246;y+=42){g.fillStyle=col;g.fillRect(5,y,54,13)}
-  const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;textureCache.set(key,tx);return tx
+  const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;bgWindowTextureCache.set(key,tx);return tx
 }
 const bgWindowMats=[0,1].map(v=>new THREE.MeshBasicMaterial({map:makeWindowBandTexture(v),transparent:true,depthWrite:false}));
 const sharedAdMats=adColors.map((col,i)=>{const m=new THREE.MeshBasicMaterial({color:col,toneMapped:false,transparent:true,opacity:.86});m.userData.base=new THREE.Color(col);m.userData.phase=i*.73;flicker.push(m);return m});
@@ -561,6 +562,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
   const openingHero=buildings.get('hero:0');if(openingHero)openingHero.visible=true;
   [-1,0,1].forEach(copy=>cycleBuildings.forEach((id,index)=>spawn(id,index,copy)));
   [-1,0,1].forEach(copy=>{ addSeparator(-49.5+copy*LOOP_SPAN,copy*2+11); addSeparator(154.5+copy*LOOP_SPAN,copy*2+12); });
+  renderer.compile(scene,camera);
   document.getElementById('loading').classList.add('done'); focus('hero',false)
 },undefined,e=>{console.error(e);document.querySelector('#loading div').innerHTML='<strong>MODEL ERROR</strong>3D MODEL COULD NOT LOAD';});
 // nav/drawer
