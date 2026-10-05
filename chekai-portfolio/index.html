@@ -563,8 +563,9 @@ function makePedestrian(x,z,phase=0,color=0xb95c4b,variant='casual',mode='cross'
     makePedestrian(x-2,-4,(copy+2)*.7+base*.01,0x8b5eb4,copy%2?'backpack':'casual','cross',1);makePedestrian(x+2,16,(copy+3)*.9+base*.02,0xd47d3d,copy%2?'longhair':'tall','cross',-1)}
 });
 [
-  ['gls',-440,2.2,1,0x3d5267,2.10],['compact',-292,11.8,-1,0x2d5067,2.28],['van',-135,2.2,1,0xb59b63,1.76],
-  ['gls',32,11.8,-1,0x9d4b45,1.98],['taxi',198,2.2,1,0xd9ad32,2.22],['compact',362,11.8,-1,0xb7b9bd,2.06],['gls',492,2.2,1,0x24384b,1.86]
+  ['gls',-330,2.2,1,0x3d5267,2.10],['compact',-245,11.8,-1,0x2d5067,2.28],['van',-155,2.2,1,0xb59b63,1.76],
+  ['gls',-60,11.8,-1,0x9d4b45,1.98],['taxi',35,2.2,1,0xd9ad32,2.22],['compact',130,11.8,-1,0xb7b9bd,2.06],
+  ['gls',225,2.2,1,0x24384b,1.86],['compact',315,11.8,-1,0x6e7781,2.16]
 ].forEach(([type,x,z,dir,color,speed])=>{if(type==='van')makeVintageVan(x,z,dir,color,speed);else if(type==='compact')makeCompactCar(x,z,dir,color,speed,false);else if(type==='taxi')makeCompactCar(x,z,dir,color,speed,true);else makeCar(x,z,dir,color,speed)});
 for(let i=0;i<9;i++){makePedestrian(-455+i*112,-11.2,i*.83,[0x496b83,0xa6614d,0x6b7450,0x7c5c8f,0xc08a45][i%5],['casual','backpack','longhair','short','tall'][i%5],'sidewalk',i%2?1:-1)}
 [-1,0,1].forEach(copy=>{const px=94.5+copy*LOOP_SPAN;makePedestrian(px-2.0,-11.0,2.1+copy,0x355a78,'sign','static',1);makePedestrian(px+.2,-11.0,2.8+copy,0x9d5f47,'sign','static',-1);makePedestrian(px+2.3,-11.0,3.5+copy,0x6b7652,'casual','static',1)});
@@ -591,7 +592,7 @@ const mountainFar=mountainRidge([[-620,8],[-565,24],[-515,15],[-455,35],[-390,23
 const mountainNear=mountainRidge([[-640,4],[-560,17],[-480,11],[-395,25],[-315,15],[-230,29],[-145,16],[-60,24],[35,13],[120,27],[210,15],[300,24],[390,13],[485,22],[570,12],[640,7]],0x788d92,-132,.92);
 mountainFar.matrixAutoUpdate=true;mountainNear.matrixAutoUpdate=true;
 
-function makeXinyiSkyline(x=0,z=-103){
+function makeXinyiSkyline(x=0,z=-74){
   const g=new THREE.Group();
 
   const towerMat=new THREE.MeshLambertMaterial({color:0x405860,emissive:0x061013});
@@ -684,7 +685,7 @@ function makeXinyiSkyline(x=0,z=-103){
     const glow=new THREE.Mesh(new THREE.PlaneGeometry(5.5,.16),warmMat);glow.position.set(px,11+i*5,5.15);g.add(glow)
   });
 
-  g.position.set(x,0,z);
+  g.position.set(x,7.5,z);g.scale.setScalar(1.18);
   g.rotation.y=-.018;
   g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});
   scene.add(g);return g
@@ -693,10 +694,10 @@ const xinyiSkyline=makeXinyiSkyline();
 
 // Elevated MRT: one deck, instanced piers, one lightweight moving train.
 const mrtDeckMat=new THREE.MeshLambertMaterial({color:0x69777b}),mrtPierMat=new THREE.MeshLambertMaterial({color:0x758083});
-const mrtDeck=new THREE.Mesh(new THREE.BoxGeometry(520,1.25,5.6),mrtDeckMat);mrtDeck.position.set(0,25,-83);freezeStatic(mrtDeck);scene.add(mrtDeck);
+const mrtDeck=new THREE.Mesh(new THREE.BoxGeometry(520,1.25,5.6),mrtDeckMat);mrtDeck.position.set(0,25,-57);freezeStatic(mrtDeck);scene.add(mrtDeck);
 const mrtPierGeo=new THREE.BoxGeometry(1.7,25,1.7),mrtPierXs=[];for(let x=-250;x<=250;x+=32)mrtPierXs.push(x);
 const mrtPiers=new THREE.InstancedMesh(mrtPierGeo,mrtPierMat,mrtPierXs.length),mrtM=new THREE.Matrix4();
-mrtPierXs.forEach((x,i)=>{mrtM.makeTranslation(x,12.5,-83);mrtPiers.setMatrixAt(i,mrtM)});
+mrtPierXs.forEach((x,i)=>{mrtM.makeTranslation(x,12.5,-57);mrtPiers.setMatrixAt(i,mrtM)});
 mrtPiers.instanceMatrix.needsUpdate=true;freezeStatic(mrtPiers);scene.add(mrtPiers);
 
 const mrtTrain=new THREE.Group();
@@ -705,12 +706,12 @@ for(let i=0;i<4;i++){
   const car=new THREE.Group(),body=new THREE.Mesh(new THREE.BoxGeometry(14.5,3.5,3.7),mrtBodyMat),win=new THREE.Mesh(new THREE.BoxGeometry(10.8,1.15,3.76),mrtGlassMat),stripe=new THREE.Mesh(new THREE.BoxGeometry(14.62,.30,3.79),mrtStripeMat);
   body.position.y=0;win.position.y=.55;stripe.position.y=-.78;car.add(body,win,stripe);car.position.x=i*15.1;mrtTrain.add(car)
 }
-mrtTrain.position.set(-255,28.25,-83);scene.add(mrtTrain);
+mrtTrain.position.set(-255,28.25,-57);scene.add(mrtTrain);
 
 // deterministic background towers — GPU-batched materials and one window plane per tower
-const bg=[[-92,-44,18,42],[-76,-42,14,32],[-60,-46,18,46],[-43,-43,13,36],[-25,-45,16,44],[-10,-42,12,34],[14,-44,14,42],[30,-46,18,50],[49,-43,14,38],[65,-45,18,46],[82,-42,13,34],[100,-45,16,45]];
+const bg=[[-92,-96,18,31],[-76,-92,14,24],[-60,-98,18,34],[-43,-94,13,27],[-25,-97,16,32],[-10,-92,12,25],[14,-95,14,31],[30,-99,18,36],[49,-94,14,28],[65,-97,18,34],[82,-92,13,25],[100,-96,16,33]];
 const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];
-const bgTowerMat=new THREE.MeshLambertMaterial({color:0x33424a,emissive:0x070a0b});
+const bgTowerMat=new THREE.MeshLambertMaterial({color:0x52656a,emissive:0x080d0f});
 const bgWindowTextureCache=new Map();
 function makeWindowBandTexture(variant=0){
   const key='bg-window-'+variant;if(bgWindowTextureCache.has(key))return bgWindowTextureCache.get(key);
@@ -1117,7 +1118,7 @@ function animate(){
   wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.lookAt(currentX,LOOK_AT_Y,LOOK_AT_Z);
   const landmarkSpread=innerWidth<560?14:innerWidth<920?22:32;
   // skyline follows the viewport but at a slightly slower rate than foreground, creating distant parallax
-  xinyiSkyline.position.x=currentX*.92+landmarkSpread;
+  xinyiSkyline.position.x=currentX*.965+landmarkSpread;
   mountainFar.position.x=currentX*.20;
   mountainNear.position.x=currentX*.13;
   oceanUniforms.uTime.value=t;
@@ -1146,7 +1147,13 @@ function animate(){
     trafficSignals.forEach((s,i)=>{const q=(t+s.phase)%9;if(s.ped){const walk=q>=4&&q<8;s.mats[0].color.set(walk?0x401014:0xff3040);s.mats[1].color.set(walk?0x28e98b:0x0d3b27)}else{const active=q<4?2:q<5.2?1:0;s.mats.forEach((m,j)=>m.emissiveIntensity=j===active?2.5:.05)}})
   }
   barberPoles.forEach((p,i)=>p.rotation.y=t*(1.45+i*.05));
-  cars.forEach(o=>{o.g.position.x+=o.dir*o.speed*dt;if(o.g.position.x>510)o.g.position.x=-510;if(o.g.position.x<-510)o.g.position.x=510});
+  cars.forEach((o,i)=>{
+    o.g.position.x+=o.dir*o.speed*dt;
+    let rel=o.g.position.x-currentX;
+    const span=360;
+    while(rel>span*.5){o.g.position.x-=span;rel-=span}
+    while(rel<-span*.5){o.g.position.x+=span;rel+=span}
+  });
   mrtTrain.position.x+=8.4*dt;
   if(mrtTrain.position.x>245)mrtTrain.position.x=-315;
   pedestrians.forEach(o=>{
