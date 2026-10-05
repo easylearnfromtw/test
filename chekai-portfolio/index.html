@@ -279,102 +279,7 @@ for(let x=0;x<=256;x+=64){landCtx.beginPath();landCtx.moveTo(x,0);landCtx.lineTo
 for(let y=0;y<=256;y+=64){landCtx.beginPath();landCtx.moveTo(0,y);landCtx.lineTo(256,y);landCtx.stroke()}
 const landTex=new THREE.CanvasTexture(landCanvas);landTex.colorSpace=THREE.SRGBColorSpace;landTex.wrapS=landTex.wrapT=THREE.RepeatWrapping;landTex.repeat.set(34,3.2);landTex.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
 const landMat=new THREE.MeshLambertMaterial({map:landTex,color:0x5a574e});
-const cityLandNear=new THREE.Mesh(new THREE.PlaneGeometry(1100,22),landMat);
-cityLandNear.rotation.x=-Math.PI/2;cityLandNear.position.set(0,-.015,-21.9);freezeStatic(cityLandNear);scene.add(cityLandNear);
-const cityLandFar=new THREE.Mesh(new THREE.PlaneGeometry(1100,20),landMat);
-cityLandFar.rotation.x=-Math.PI/2;cityLandFar.position.set(0,-.035,-66.0);freezeStatic(cityLandFar);scene.add(cityLandFar);
-
-// Midground urban river: calm water, concrete embankments, promenades and low bridges.
-// This creates a natural spatial transition between the portfolio street and Xinyi skyline.
-const riverConcrete=new THREE.MeshLambertMaterial({color:0x6b6962});
-const riverConcreteTop=new THREE.MeshLambertMaterial({color:0x85827a});
-const riverRailMat=new THREE.MeshLambertMaterial({color:0x767e81});
-
-const riverUniforms={uTime:{value:0},uSky:{value:new THREE.Color(0xb8cbd2)},uWarm:{value:new THREE.Color(0xe9c3a5)}};
-const riverMat=new THREE.ShaderMaterial({
-  uniforms:riverUniforms,
-  vertexShader:`
-    varying vec2 vUv;
-    void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}
-  `,
-  fragmentShader:`
-    precision highp float;
-    varying vec2 vUv;
-    uniform float uTime;
-    uniform vec3 uSky;
-    uniform vec3 uWarm;
-    void main(){
-      vec2 p=vUv;
-      float a=sin(p.x*36.0+uTime*.72+p.y*7.0);
-      float b=sin(p.x*67.0-uTime*.48-p.y*20.0);
-      float c=sin(p.x*104.0+uTime*.34+p.y*33.0);
-      float ripple=a*.48+b*.31+c*.21;
-      vec3 deep=vec3(.075,.175,.205);
-      vec3 light=vec3(.15,.30,.34);
-      vec3 col=mix(deep,light,clamp(.18+p.y*.72,0.0,1.0));
-      col+=ripple*.010;
-      float skyBand=smoothstep(.35,.95,p.y);
-      col+=uSky*skyBand*.035;
-      float glint=pow(max(0.0,sin(p.x*88.0+uTime*.62)*.5+.5),12.0);
-      glint*=pow(max(0.0,sin(p.y*62.0-uTime*.34)*.5+.5),8.0);
-      col+=uWarm*glint*.07;
-      gl_FragColor=vec4(col,1.0);
-    }
-  `,
-  toneMapped:false,
-  fog:true
-});
-const river=new THREE.Mesh(new THREE.PlaneGeometry(1100,21.5),riverMat);
-river.rotation.x=-Math.PI/2;river.position.set(0,-.11,-44.0);scene.add(river);
-
-// Concrete embankments and narrow riverside promenades.
-const nearBank=new THREE.Mesh(new THREE.BoxGeometry(1100,1.25,2.2),riverConcrete);
-nearBank.position.set(0,.34,-32.25);freezeStatic(nearBank);scene.add(nearBank);
-const farBank=new THREE.Mesh(new THREE.BoxGeometry(1100,1.25,2.2),riverConcrete);
-farBank.position.set(0,.34,-55.75);freezeStatic(farBank);scene.add(farBank);
-const nearBankCap=new THREE.Mesh(new THREE.BoxGeometry(1100,.16,2.65),riverConcreteTop);
-nearBankCap.position.set(0,1.00,-32.25);freezeStatic(nearBankCap);scene.add(nearBankCap);
-const farBankCap=new THREE.Mesh(new THREE.BoxGeometry(1100,.16,2.65),riverConcreteTop);
-farBankCap.position.set(0,1.00,-55.75);freezeStatic(farBankCap);scene.add(farBankCap);
-const nearPromenade=new THREE.Mesh(new THREE.BoxGeometry(1100,.22,3.1),riverConcreteTop);
-nearPromenade.position.set(0,.08,-29.6);freezeStatic(nearPromenade);scene.add(nearPromenade);
-const farPromenade=new THREE.Mesh(new THREE.BoxGeometry(1100,.22,3.1),riverConcreteTop);
-farPromenade.position.set(0,.08,-58.4);freezeStatic(farPromenade);scene.add(farPromenade);
-
-// River railings are instanced, so the added detail costs very few draw calls.
-const riverPostXs=[];for(let x=-545;x<=545;x+=10)riverPostXs.push(x);
-const riverPostGeo=new THREE.BoxGeometry(.10,1.0,.10),riverPostM=new THREE.Matrix4();
-for(const z of [-30.9,-57.1]){
-  const posts=new THREE.InstancedMesh(riverPostGeo,riverRailMat,riverPostXs.length);
-  riverPostXs.forEach((x,i)=>{riverPostM.makeTranslation(x,.78,z);posts.setMatrixAt(i,riverPostM)});
-  posts.instanceMatrix.needsUpdate=true;freezeStatic(posts);scene.add(posts);
-  for(const y of [1.00,1.34]){
-    const rail=new THREE.Mesh(new THREE.BoxGeometry(1100,.07,.08),riverRailMat);
-    rail.position.set(0,y,z);freezeStatic(rail);scene.add(rail)
-  }
-}
-
-// Low cross-river bridges, repeated per seamless city loop.
-const riverBridgeMat=new THREE.MeshLambertMaterial({color:0x7a8386});
-const riverBridgeDark=new THREE.MeshLambertMaterial({color:0x5e676a});
-[-1,0,1].forEach(copy=>{
-  const bx=72+copy*LOOP_SPAN;
-  const deck=new THREE.Mesh(new THREE.BoxGeometry(9.8,.72,27.4),riverBridgeMat);
-  deck.position.set(bx,2.10,-44.0);freezeStatic(deck);scene.add(deck);
-  for(const bz of [-50.0,-44.0,-38.0]){
-    const pier=new THREE.Mesh(new THREE.BoxGeometry(1.0,2.0,1.15),riverBridgeDark);
-    pier.position.set(bx,1.00,bz);freezeStatic(pier);scene.add(pier)
-  }
-  for(const sx of [-4.25,4.25]){
-    const curb=new THREE.Mesh(new THREE.BoxGeometry(.18,.48,27.4),riverBridgeDark);
-    curb.position.set(bx+sx,2.48,-44.0);freezeStatic(curb);scene.add(curb)
-  }
-});
-
-// A very soft warm reflection under the moving Xinyi skyline.
-const riverGlintMat=new THREE.MeshBasicMaterial({color:0xffd8b3,transparent:true,opacity:.055,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false});
-const riverGlint=new THREE.Mesh(new THREE.PlaneGeometry(150,7.0),riverGlintMat);
-riverGlint.rotation.x=-Math.PI/2;riverGlint.position.set(0,-.07,-44.0);riverGlint.renderOrder=2;scene.add(riverGlint);
+const cityLand=new THREE.Mesh(new THREE.PlaneGeometry(1100,46),landMat);cityLand.rotation.x=-Math.PI/2;cityLand.position.set(0,-.015,-34.2);freezeStatic(cityLand);scene.add(cityLand);
 // street lamps: instanced geometry, self-lit bulbs, zero dynamic PointLights
 const streetLightPulse=[],flicker=[],lightboxes=[],barberPoles=[],cars=[],pedestrians=[],trafficSignals=[];
 const lampMetal=new THREE.MeshStandardMaterial({color:0x11151b,roughness:.52,metalness:.72});
@@ -1229,9 +1134,6 @@ function animate(){
   const landmarkSpread=innerWidth<560?14:innerWidth<920?22:32;
   // skyline follows the viewport but at a slightly slower rate than foreground, creating distant parallax
   xinyiSkyline.position.x=currentX*.965+landmarkSpread;
-  riverUniforms.uTime.value=t;
-  riverGlint.position.x=xinyiSkyline.position.x;
-  riverGlintMat.opacity=.035+.035*(.5+.5*Math.sin(t*.55));
   mountainFar.position.x=currentX*.20;
   mountainNear.position.x=currentX*.13;
   oceanUniforms.uTime.value=t;
