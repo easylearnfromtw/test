@@ -111,8 +111,9 @@ const CONFIG={
 const LOOP_SPAN=315, WRAP_LEFT=-173, WRAP_RIGHT=188;
 const canvas=document.getElementById('webgl');
 const MOBILE_GPU=innerWidth<760||/iPhone|iPad|Android/i.test(navigator.userAgent);
-const DPR_MAX=MOBILE_GPU?1.12:1.40,DPR_MIN=MOBILE_GPU?.78:.90;
-let renderDpr=Math.min(devicePixelRatio,MOBILE_GPU?1.0:1.25);
+const DPR_MAX=MOBILE_GPU?1.35:1.65,DPR_MIN=MOBILE_GPU?.92:1.0;
+const DPR_IDLE_TARGET=Math.min(devicePixelRatio,MOBILE_GPU?1.30:1.60);
+let renderDpr=Math.min(devicePixelRatio,MOBILE_GPU?1.10:1.35);
 const renderer=new THREE.WebGLRenderer({canvas,antialias:!MOBILE_GPU,alpha:true,powerPreference:'high-performance'});
 renderer.setPixelRatio(renderDpr);renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
 const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x090c17,.016);
@@ -246,13 +247,16 @@ function hex(c){return new THREE.Color(c)}
 function wrapText(ctx,text,maxWidth){const chars=[...text];let lines=[],line='';for(const ch of chars){const test=line+ch;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=ch}else line=test}if(line)lines.push(line);return lines}
 function makeTexture(id){
   if(textureCache.has(id))return textureCache.get(id);
-  const d=DATA[id],style=BOARD_STYLE[id]||'dark',c=document.createElement('canvas');c.width=900;c.height=1180;const x=c.getContext('2d');
+  const d=DATA[id],style=BOARD_STYLE[id]||'dark';
+  // Portfolio/info boards are the one place we spend texture resolution.
+  // The texture is cached and reused by every loop copy, so this does not multiply VRAM per building.
+  const Q=MOBILE_GPU?1.22:1.42,W=900,H=1180,c=document.createElement('canvas');c.width=Math.round(W*Q);c.height=Math.round(H*Q);
+  const x=c.getContext('2d');x.scale(Q,Q);
   const cream='#efe7d8',navy='#101722',red='#e43c32',black='#111317';
-  x.fillStyle=style==='cream'?cream:style==='red'?red:navy;x.fillRect(0,0,c.width,c.height);
-  // subtle printed texture, not neon
-  x.globalAlpha=.055;for(let i=0;i<1900;i++){const g=135+Math.random()*80;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*c.width,Math.random()*c.height,1+Math.random()*2,1+Math.random()*2)}x.globalAlpha=1;
+  x.fillStyle=style==='cream'?cream:style==='red'?red:navy;x.fillRect(0,0,W,H);
+  x.globalAlpha=.05;for(let i=0;i<1500;i++){const g=135+Math.random()*80;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*2,1+Math.random()*2)}x.globalAlpha=1;
   const light=style==='dark'||style==='red';
-  x.fillStyle=style==='red'?cream:red;x.fillRect(0,0,24,c.height);
+  x.fillStyle=style==='red'?cream:red;x.fillRect(0,0,24,H);
   x.fillStyle=light?cream:black;x.font='800 54px Arial, sans-serif';x.fillText(d.index,60,92);
   x.font='900 80px Arial, sans-serif';let ty=190;
   if(id==='hero'){
@@ -266,8 +270,11 @@ function makeTexture(id){
     x.fillStyle=light?cream:black;const lines=wrapText(x,it[0],680).slice(0,2);lines.forEach((line,j)=>x.fillText(line,104,ty+i*170+j*42));
     x.strokeStyle=light?'rgba(239,231,216,.12)':'rgba(17,19,23,.10)';x.beginPath();x.moveTo(104,ty+i*170+55);x.lineTo(830,ty+i*170+55);x.stroke();
   });
-  x.fillStyle=light?'rgba(239,231,216,.58)':'rgba(17,19,23,.55)';x.font='600 20px monospace';x.fillText('CLICK TO EXPLORE  →',60,1112);
-  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.generateMipmaps=false;tex.minFilter=THREE.LinearFilter;tex.magFilter=THREE.LinearFilter;tex.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());tex.needsUpdate=true;textureCache.set(id,tex);return tex
+  x.fillStyle=light?'rgba(239,231,216,.62)':'rgba(17,19,23,.60)';x.font='600 20px monospace';x.fillText('CLICK TO EXPLORE  →',60,1112);
+  const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
+  tex.generateMipmaps=true;tex.minFilter=THREE.LinearMipmapLinearFilter;tex.magFilter=THREE.LinearFilter;
+  tex.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());tex.needsUpdate=true;
+  textureCache.set(id,tex);return tex
 }
 function normalizeBuilding(obj,height){const box=new THREE.Box3().setFromObject(obj),size=new THREE.Vector3();box.getSize(size);const s=height/size.y;obj.scale.setScalar(s);const box2=new THREE.Box3().setFromObject(obj),center=new THREE.Vector3();box2.getCenter(center);obj.position.x-=center.x;obj.position.z-=center.z;obj.position.y-=box2.min.y;return {w:size.x*s,d:size.z*s,h:height}}
 function materialize(obj,index,id){
@@ -444,9 +451,22 @@ function animate(){
   cars.forEach(o=>{o.g.position.x+=o.dir*o.speed*dt;if(o.g.position.x>510)o.g.position.x=-510;if(o.g.position.x<-510)o.g.position.x=510});
   pedestrians.forEach(o=>{const u=(Math.sin(t*.55+o.phase)+1)/2;o.g.position.z=-4+u*20;o.g.position.x=o.baseX+Math.sin(t*1.1+o.phase)*.45;o.g.rotation.y=Math.sin(t*.55+o.phase)>0?0:Math.PI});
 
-  // adaptive render resolution: protects smoothness without permanently lowering desktop quality
+  // Motion prioritizes fps; once the camera settles, recover high-DPI text/detail.
+  const cameraMoving=Math.abs(targetX-currentX)>.035||Math.abs(targetY-currentY)>.025||Math.abs(targetZ-currentZ)>.035;
   fpsFrames++;fpsTime+=dt;
-  if(fpsTime>=2.2){const fps=fpsFrames/fpsTime;let next=renderDpr;if(fps<48)next=Math.max(DPR_MIN,renderDpr-.10);else if(fps>58)next=Math.min(DPR_MAX,devicePixelRatio,renderDpr+.05);if(Math.abs(next-renderDpr)>.01){renderDpr=next;renderer.setPixelRatio(renderDpr)}fpsFrames=0;fpsTime=0}
+  if(fpsTime>=1.6){
+    const fps=fpsFrames/fpsTime;let next=renderDpr;
+    if(cameraMoving){
+      if(fps<50)next=Math.max(DPR_MIN,renderDpr-.08);
+      else if(fps>58)next=Math.min(DPR_MAX,devicePixelRatio,renderDpr+.035);
+    }else{
+      // stationary portfolio panels should look like print, not a low-res game frame
+      if(fps>45)next=Math.min(DPR_IDLE_TARGET,renderDpr+.10);
+      else if(fps<38)next=Math.max(MOBILE_GPU?1.05:1.10,renderDpr-.05);
+    }
+    if(Math.abs(next-renderDpr)>.015){renderDpr=next;renderer.setPixelRatio(renderDpr)}
+    fpsFrames=0;fpsTime=0
+  }
   renderer.render(scene,camera);requestAnimationFrame(animate)
 }animate();
 const initial=location.hash.slice(1);if(DATA[initial])focus(initial,false);
