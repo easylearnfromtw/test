@@ -3,208 +3,246 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#07131f" />
-<title>CHE-KAI LIN 林哲愷 — 3D City Portfolio</title>
-<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. Interactive 3D billboard city portfolio." />
+<meta name="theme-color" content="#07121f" />
+<title>CHE-KAI LIN — 3D City Portfolio</title>
+<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. Interactive 3D city portfolio." />
 <style>
 :root{
-  --night:#07131f; --night2:#0d2740; --ink:#101318; --paper:#eee9df; --red:#e7332f; --red2:#ff4a43;
-  --blue:#6ac8ff; --muted:#aeb8c4; --line:rgba(255,255,255,.17); --glass:rgba(7,14,23,.74);
+  --sky:#07121f;
+  --sky2:#0e2a44;
+  --ink:#0d1014;
+  --paper:#f2eee5;
+  --paper2:#ded8cc;
+  --red:#e3282f;
+  --red2:#ff3b43;
+  --blue:#2b6f9f;
+  --neon:#ff3148;
+  --muted:#b9c4cf;
+  --glass:rgba(7,14,23,.74);
+  --line:rgba(255,255,255,.15);
+  --shadow:0 24px 80px rgba(0,0,0,.38);
   --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
-  --display:"Arial Narrow","Avenir Next Condensed","Noto Sans TC",sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype","Noto Serif TC",serif;
   --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
-  --cam-x:0px; --cam-y:0px; --yaw:0deg; --pitch:0deg; --zoom:1;
 }
 *{box-sizing:border-box}
-html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--night);color:#fff;font-family:var(--sans)}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:linear-gradient(180deg,#06111e 0%,#0d2b43 44%,#07111e 100%);color:#fff;font-family:var(--sans)}
 button{font:inherit;color:inherit}
-body::after{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.10;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E")}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.83' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E")}
 
-/* top chrome */
-.topbar{position:fixed;z-index:70;left:0;right:0;top:0;height:58px;padding:0 22px;display:flex;align-items:center;gap:22px;background:linear-gradient(180deg,rgba(5,12,20,.92),rgba(5,12,20,.48));border-bottom:1px solid rgba(255,255,255,.13);backdrop-filter:blur(12px)}
-.logo{font:800 17px/1 var(--display);letter-spacing:.08em;white-space:nowrap}.identity{font:10px/1 var(--mono);letter-spacing:.18em;color:#d9dce1;white-space:nowrap}.top-spacer{flex:1}.top-links{display:flex;gap:18px;font:9px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#d9dce1}.top-links button{border:0;background:transparent;cursor:pointer;padding:8px 0}.top-links button:hover{color:var(--red2)}
-.lang{font:10px var(--mono);letter-spacing:.08em}.lang b{color:var(--red2)}
-
-.side-index{position:fixed;z-index:68;right:12px;top:86px;display:grid;gap:4px;padding:8px 6px;border-left:1px solid rgba(255,255,255,.12);background:rgba(5,12,20,.24);backdrop-filter:blur(8px)}
-.side-index button{width:34px;height:30px;border:0;background:transparent;color:rgba(255,255,255,.46);font:10px var(--mono);cursor:pointer;border-radius:7px}.side-index button:hover,.side-index button.active{color:#fff;background:rgba(231,51,47,.16);box-shadow:inset 2px 0 0 var(--red2)}
-
-.help{position:fixed;z-index:65;left:18px;bottom:14px;font:9px/1.65 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55)}
-.help b{color:#fff}.reset{position:fixed;z-index:65;right:18px;bottom:15px;border:1px solid rgba(255,255,255,.18);background:rgba(5,12,20,.52);backdrop-filter:blur(8px);color:#fff;border-radius:999px;padding:8px 12px;font:9px var(--mono);letter-spacing:.1em;cursor:pointer}
+/* fixed chrome */
+.ui{position:fixed;inset:0;z-index:40;pointer-events:none}
+.topbar{position:absolute;left:18px;right:18px;top:16px;min-height:58px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:18px;background:rgba(4,10,17,.72);backdrop-filter:blur(18px);box-shadow:0 16px 55px rgba(0,0,0,.2);pointer-events:auto}
+.brand{font-weight:800;letter-spacing:.12em;font-size:14px}.brand span{font:10px var(--mono);color:#d7dde5;margin-left:12px;letter-spacing:.1em}
+.nav{display:flex;justify-content:center;gap:4px;overflow:auto hidden;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}
+.nav button{border:0;background:transparent;padding:8px 9px;border-radius:999px;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#b9c4cf;cursor:pointer;white-space:nowrap;transition:.2s}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,.09);color:#fff}.nav button.active{box-shadow:inset 0 0 0 1px rgba(255,49,72,.45)}
+.status{font:9px var(--mono);letter-spacing:.08em;color:#c4d0da;text-transform:uppercase;white-space:nowrap}
+.help{position:absolute;left:18px;bottom:18px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(4,10,17,.72);backdrop-filter:blur(14px);box-shadow:var(--shadow);pointer-events:auto;max-width:360px}.help b{display:block;font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#ff8f9c;margin-bottom:5px}.help strong{font:400 20px/1.05 var(--serif);display:block}.help small{display:block;margin-top:6px;color:#aeb9c5;font-size:10px;line-height:1.5}
+.zoomread{position:absolute;right:18px;bottom:18px;padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(4,10,17,.72);backdrop-filter:blur(14px);pointer-events:none;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#bdc7d2}.zoomread span{color:#fff;font-weight:700}
 
 /* scene */
-.stage{position:fixed;inset:58px 0 0;perspective:1350px;perspective-origin:50% 46%;overflow:hidden;cursor:grab;background:
-  radial-gradient(circle at 50% 32%,rgba(67,126,179,.28),transparent 26%),
-  linear-gradient(180deg,#0a2540 0%,#07131f 59%,#050b12 100%)}
-.stage.dragging{cursor:grabbing}
-.skyline{position:absolute;inset:0;pointer-events:none;opacity:.9;background:
-  linear-gradient(90deg,transparent 0 4%,rgba(11,25,39,.95) 4% 8%,transparent 8% 11%,rgba(9,21,34,.98) 11% 17%,transparent 17% 22%,rgba(8,20,32,.98) 22% 28%,transparent 28% 72%,rgba(9,21,34,.98) 72% 80%,transparent 80% 84%,rgba(9,21,34,.98) 84% 92%,transparent 92%),
-  repeating-linear-gradient(0deg,transparent 0 22px,rgba(255,192,109,.08) 23px 25px)}
-.city{position:absolute;left:50%;top:50%;width:1780px;height:900px;transform-style:preserve-3d;transform:translate3d(calc(-50% + var(--cam-x)),calc(-47% + var(--cam-y)),0) rotateX(var(--pitch)) rotateY(var(--yaw)) scale(var(--zoom));transition:transform .18s ease-out;will-change:transform}
-.stage.dragging .city{transition:none}
-
-/* ground / plaza */
-.ground{position:absolute;left:50%;bottom:-135px;width:1500px;height:620px;transform-style:preserve-3d;transform:translateX(-50%) rotateX(67deg) translateZ(-120px);transform-origin:center bottom;background:
-  linear-gradient(90deg,transparent 49.5%,rgba(231,51,47,.5) 49.7% 50.3%,transparent 50.5%),
-  repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 90px),
-  repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 76px),
-  linear-gradient(180deg,rgba(23,42,59,.35),rgba(5,12,20,.92));border:1px solid rgba(255,255,255,.08);box-shadow:0 0 90px rgba(255,35,35,.12) inset}
-.ground::before{content:"";position:absolute;left:50%;top:120px;width:440px;height:280px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.14);border-radius:50%;box-shadow:0 0 0 28px rgba(231,51,47,.08),0 0 60px rgba(231,51,47,.18)}
-.ground::after{content:"CKL";position:absolute;left:50%;top:210px;transform:translateX(-50%);font:900 86px var(--display);letter-spacing:-.06em;color:rgba(231,51,47,.20)}
-.steps{position:absolute;left:50%;bottom:155px;width:360px;height:120px;transform:translateX(-50%) translateZ(45px) rotateX(56deg);background:repeating-linear-gradient(0deg,#202b35 0 8px,#111a22 8px 15px);box-shadow:0 22px 38px rgba(0,0,0,.5),0 0 28px rgba(231,51,47,.18)}
-.plaza-label{position:absolute;left:50%;bottom:300px;transform:translateX(-50%) translateZ(40px);font:9px var(--mono);letter-spacing:.28em;color:rgba(255,255,255,.56);white-space:nowrap}
+.viewport{position:relative;width:100vw;height:100vh;overflow:hidden;touch-action:none;cursor:grab;perspective:1200px;perspective-origin:50% 52%}.viewport.dragging{cursor:grabbing}
+.skyglow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 32%,rgba(54,126,184,.20),transparent 28%),linear-gradient(180deg,transparent 58%,rgba(0,0,0,.20));z-index:0}
+.city{position:absolute;left:50%;top:54%;width:1760px;height:970px;transform-style:preserve-3d;transform-origin:50% 68%;will-change:transform;z-index:1}
+.ground{position:absolute;left:50%;top:56%;width:1900px;height:860px;transform:translate(-50%,-50%) rotateX(72deg) translateZ(-260px);transform-origin:center;background:
+ linear-gradient(90deg,transparent 0 49.7%,rgba(255,49,72,.16) 50%,transparent 50.3%),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 1px,transparent 1px 64px),
+ repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 64px),
+ linear-gradient(180deg,#111a23,#060a0f);box-shadow:0 0 180px rgba(0,0,0,.7);border-radius:50%;opacity:.86}
+.plaza{position:absolute;left:50%;top:61%;width:540px;height:310px;transform:translate(-50%,-50%) rotateX(68deg) translateZ(-30px);border:1px solid rgba(255,255,255,.10);border-radius:50%;background:radial-gradient(circle,rgba(255,49,72,.21),rgba(255,49,72,.03) 58%,transparent 61%);box-shadow:0 0 90px rgba(255,49,72,.12)}
+.plaza:before{content:"";position:absolute;inset:34px;border:2px solid rgba(255,255,255,.12);border-radius:50%}.plaza:after{content:"CKL";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotateZ(-3deg);font:800 70px/1 var(--sans);letter-spacing:-.08em;color:rgba(255,255,255,.08)}
 
 /* buildings */
-.tower{position:absolute;left:50%;bottom:218px;width:var(--w);height:var(--h);transform-style:preserve-3d;transform:translateX(calc(-50% + var(--x))) translateY(var(--y)) translateZ(var(--z)) rotateY(var(--ry));transition:transform .45s cubic-bezier(.2,.8,.2,1),filter .35s,opacity .35s;filter:drop-shadow(0 34px 32px rgba(0,0,0,.46))}
-.tower::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#172938,#0b141d 62%,#091019);border:1px solid rgba(255,255,255,.10);box-shadow:inset 0 0 0 2px rgba(0,0,0,.3);transform:translateZ(-18px)}
-.tower::after{content:"";position:absolute;top:0;bottom:0;width:42px;background:linear-gradient(180deg,#1c3041,#071018);border:1px solid rgba(255,255,255,.07);right:-42px;transform-origin:left center;transform:rotateY(90deg)}
-.tower.focused{transform:translateX(calc(-50% + var(--x))) translateY(calc(var(--y) - 18px)) translateZ(calc(var(--z) + 150px)) rotateY(0deg) scale(1.05);z-index:20;filter:drop-shadow(0 40px 40px rgba(0,0,0,.62)) drop-shadow(0 0 32px rgba(231,51,47,.18))}
-.city.has-focus .tower:not(.focused){filter:brightness(.58) saturate(.65) blur(.4px);opacity:.62}
-.facade-grid{position:absolute;inset:0;pointer-events:none;opacity:.6;background:repeating-linear-gradient(90deg,transparent 0 28px,rgba(120,190,236,.12) 29px 31px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,192,109,.08) 39px 41px)}
-.billboard{position:absolute;left:7%;right:7%;top:7%;bottom:7%;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,rgba(16,18,22,.98),rgba(8,11,16,.98));box-shadow:0 0 0 6px #070b0f,0 0 0 8px rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.38),0 0 22px rgba(231,51,47,.06);overflow:hidden;cursor:pointer;text-align:left;padding:16px 17px;transition:transform .24s,box-shadow .24s,border-color .24s}
-.billboard::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(145deg,rgba(255,255,255,.06),transparent 25% 70%,rgba(231,51,47,.06))}
-.billboard:hover{transform:translateZ(18px) scale(1.018);border-color:rgba(255,255,255,.36);box-shadow:0 0 0 6px #070b0f,0 0 0 8px rgba(255,255,255,.1),0 18px 36px rgba(0,0,0,.46),0 0 24px rgba(231,51,47,.16)}
-.billboard:active{transform:translateZ(8px) scale(.995)}
-.billboard.paper{background:linear-gradient(155deg,#f2ede3,#dcd6ca);color:var(--ink)}
-.billboard.red{background:linear-gradient(145deg,#d52c28,#7f1414);color:#fff}
-.board-head{display:flex;align-items:flex-start;gap:10px;font:900 clamp(18px,1.8vw,34px)/.9 var(--display);letter-spacing:-.035em;text-transform:uppercase;position:relative;z-index:2}.board-no{color:var(--red2);font-size:.7em;min-width:31px}.paper .board-head{color:#101318}.red .board-no{color:#fff}.board-list{position:relative;z-index:2;margin:18px 0 0;padding:0;list-style:none;font-size:clamp(11px,.83vw,15px);line-height:1.72}.board-list li{white-space:normal}.board-list.compact{font-size:clamp(10px,.72vw,13px);line-height:1.62}.board-list .accent{color:var(--red2)}.paper .board-list .accent{color:#c1221e}
-.board-kicker{position:absolute;right:12px;bottom:10px;font:8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.48)}.paper .board-kicker{color:rgba(16,19,24,.45)}
-.visual{position:absolute;inset:auto 12px 12px auto;width:76px;height:62px;opacity:.92;pointer-events:none}.visual.code{background:repeating-linear-gradient(0deg,#b9d8ea 0 2px,transparent 2px 7px);border:1px solid rgba(255,255,255,.3);transform:skewY(-5deg)}.visual.books{background:linear-gradient(#111 0 0) 5px 6px/62px 10px no-repeat,linear-gradient(#333 0 0) 0 24px/72px 12px no-repeat,linear-gradient(#111 0 0) 9px 44px/58px 10px no-repeat}.visual.pen{width:11px;height:70px;background:#111;border-radius:7px;transform:rotate(23deg);right:35px;bottom:12px;box-shadow:inset 0 0 0 2px #777}.visual.shoe{width:74px;height:32px;border-radius:70% 20% 26% 24%;background:#111;transform:rotate(-8deg);bottom:17px}.visual.shoe::after{content:"";position:absolute;left:8px;right:7px;bottom:-4px;height:5px;background:#ddd;border-radius:3px}.visual.badge{width:44px;height:58px;border-radius:8px;background:linear-gradient(#d5d7d8 0 20%,#b4b9be 20%);border:3px solid #191d23;box-shadow:0 0 0 2px #cbd0d4;right:25px}.visual.megaphone{width:70px;height:45px;clip-path:polygon(0 32%,68% 0,68% 100%,0 68%);background:#14181d}.visual.camera{width:68px;height:45px;border-radius:5px;background:#111}.visual.camera::before{content:"";position:absolute;width:31px;height:31px;border-radius:50%;left:19px;top:7px;border:5px solid #a8adb0;background:#20252c}.visual.chair{border:5px solid #111;border-top-width:14px;background:transparent;transform:skewY(-5deg)}.visual.globe{width:58px;height:58px;border-radius:50%;border:2px solid #9bd4f6;box-shadow:inset 0 0 0 12px rgba(106,200,255,.08);right:18px;bottom:14px}
+.building{position:absolute;transform-style:preserve-3d;cursor:pointer;transition:filter .25s,opacity .25s;outline:none}
+.building:hover{filter:brightness(1.08)}
+.building.focused{filter:brightness(1.12) saturate(1.04)}
+.building.dimmed{opacity:.32;filter:saturate(.6)}
+.block{position:relative;width:100%;height:100%;transform-style:preserve-3d}
+.face{position:absolute;inset:0;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#182330,#0c1117);box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+.face.front{transform:translateZ(var(--depth))}
+.face.left{width:calc(var(--depth) * 2);right:auto;transform-origin:left center;transform:rotateY(-90deg) translateX(calc(var(--depth) * -1));background:linear-gradient(180deg,#111923,#070b10)}
+.face.right{width:calc(var(--depth) * 2);left:auto;right:0;transform-origin:right center;transform:rotateY(90deg) translateX(var(--depth));background:linear-gradient(180deg,#101821,#070b10)}
+.face.top{height:calc(var(--depth) * 2);bottom:auto;transform-origin:center top;transform:rotateX(90deg) translateY(calc(var(--depth) * -1));background:#243140}
+.windows{position:absolute;inset:0;opacity:.55;background-image:repeating-linear-gradient(90deg,transparent 0 18px,rgba(255,207,119,.18) 18px 21px,transparent 21px 40px),repeating-linear-gradient(0deg,transparent 0 25px,rgba(255,255,255,.04) 25px 27px,transparent 27px 48px)}
+.billboard{position:absolute;left:7%;right:7%;top:7%;bottom:7%;z-index:3;display:flex;flex-direction:column;overflow:hidden;border:2px solid rgba(255,255,255,.12);box-shadow:0 0 26px rgba(255,49,72,.15),0 14px 35px rgba(0,0,0,.35);background:var(--paper);color:#111;transition:transform .25s,box-shadow .25s}
+.building:hover .billboard{transform:translateZ(4px);box-shadow:0 0 32px rgba(255,49,72,.32),0 18px 45px rgba(0,0,0,.45)}
+.billboard.dark{background:#0b1118;color:#fff}.billboard.red{background:linear-gradient(155deg,#de252e,#b11120);color:#fff}.billboard .head{display:flex;align-items:flex-end;gap:10px;padding:12px 14px 8px;border-bottom:1px solid rgba(0,0,0,.14)}.billboard.dark .head,.billboard.red .head{border-color:rgba(255,255,255,.14)}
+.no{font:800 30px/.86 var(--sans);color:var(--red)}.dark .no,.red .no{color:#ff4853}.title{font:900 26px/.92 var(--sans);letter-spacing:-.04em;text-transform:uppercase}.body{padding:12px 14px 14px;font-size:13px;line-height:1.52;overflow:hidden}.body ul{list-style:none;margin:0;padding:0}.body li{margin:0 0 7px}.body .muted{color:#5f6268}.dark .muted,.red .muted{color:#cbd3db}.billboard .hint{margin-top:auto;padding:8px 14px 10px;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.62}
+.hero-sign .billboard{justify-content:center;align-items:center;text-align:center}.hero-sign .crown{font-size:42px;line-height:1;margin-bottom:10px}.hero-sign h1{margin:0;font:900 58px/.82 var(--sans);letter-spacing:-.08em;text-transform:uppercase}.hero-sign p{font:11px var(--mono);letter-spacing:.14em;text-transform:uppercase;margin:14px 0 0}.hero-sign .sub{font:10px var(--mono);color:#ffd6da;margin-top:20px;letter-spacing:.1em}.hero-sign .identity{margin-top:8px;font:700 10px var(--mono);letter-spacing:.18em}
 
-/* central identity tower */
-.center-identity{position:absolute;left:50%;bottom:300px;width:280px;height:520px;transform-style:preserve-3d;transform:translateX(-50%) translateZ(55px);z-index:8;filter:drop-shadow(0 30px 28px rgba(0,0,0,.5))}
-.center-identity .panel{position:absolute;left:10px;right:10px;border:7px solid #080c11;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
-.id-top{top:0;height:235px;background:linear-gradient(145deg,#e23832,#7d1414);display:grid;place-items:center;text-align:center;padding:20px}.crown{font-size:41px;line-height:1}.name{font:900 48px/.83 var(--display);letter-spacing:-.055em;text-transform:uppercase}.id-role{margin-top:14px;font:10px/1.5 var(--mono);letter-spacing:.09em;text-transform:uppercase}
-.id-about{top:245px;height:205px;background:#eee8dc;color:#111;padding:16px}.id-about .board-head{font-size:28px}.id-about ul{margin-top:16px;font-size:13px;line-height:1.65}
-.id-bottom{top:460px;height:120px;background:linear-gradient(180deg,#15263a,#0b1520);padding:15px 18px;font:11px/1.45 var(--mono);letter-spacing:.08em;text-transform:uppercase}.id-bottom b{display:block;color:var(--red2);font:italic 22px/1 var(--display);letter-spacing:-.02em;margin-bottom:10px}
+/* stage positions */
+.hero-sign{left:710px;top:90px;width:340px;height:500px;--depth:42px;transform:translateZ(100px)}
+.about{left:730px;top:615px;width:300px;height:280px;--depth:32px;transform:translateZ(45px)}
+.web{left:90px;top:180px;width:500px;height:410px;--depth:48px;transform:rotateY(8deg) translateZ(-10px)}
+.experience{left:80px;top:610px;width:500px;height:280px;--depth:44px;transform:rotateY(8deg) translateZ(-25px)}
+.academic{left:1160px;top:145px;width:470px;height:360px;--depth:48px;transform:rotateY(-8deg) translateZ(-10px)}
+.writing{left:1240px;top:535px;width:390px;height:330px;--depth:42px;transform:rotateY(-8deg) translateZ(-24px)}
+.running{left:285px;top:895px;width:420px;height:260px;--depth:36px;transform:rotateY(5deg) translateZ(-50px)}
+.roles{left:1060px;top:900px;width:380px;height:300px;--depth:38px;transform:rotateY(-5deg) translateZ(-48px)}
+.public{left:1450px;top:850px;width:300px;height:335px;--depth:36px;transform:rotateY(-10deg) translateZ(-72px)}
+.art{left:10px;top:900px;width:250px;height:320px;--depth:34px;transform:rotateY(10deg) translateZ(-76px)}
 
-/* tower placement */
-.t2{--x:-650px;--y:30px;--z:-20px;--ry:9deg;--w:360px;--h:510px}
-.t3{--x:-660px;--y:360px;--z:-30px;--ry:9deg;--w:350px;--h:280px}
-.t4{--x:-330px;--y:230px;--z:0px;--ry:5deg;--w:360px;--h:360px}
-.t5{--x:420px;--y:10px;--z:10px;--ry:-8deg;--w:360px;--h:410px}
-.t6{--x:705px;--y:20px;--z:-25px;--ry:-10deg;--w:310px;--h:395px}
-.t7{--x:385px;--y:380px;--z:0px;--ry:-7deg;--w:295px;--h:250px}
-.t8{--x:685px;--y:385px;--z:-20px;--ry:-10deg;--w:290px;--h:265px}
-.t9{--x:770px;--y:635px;--z:-45px;--ry:-11deg;--w:300px;--h:205px}
+/* windows facade extras */
+.tower-strip{position:absolute;left:50%;top:12%;width:110px;height:690px;transform:translateX(-50%) translateZ(-180px);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015));border-left:1px solid rgba(255,255,255,.04);border-right:1px solid rgba(255,255,255,.04);box-shadow:0 0 60px rgba(39,108,166,.12)}
+.neonbar{position:absolute;background:var(--neon);box-shadow:0 0 14px rgba(255,49,72,.7)}
+.neonbar.n1{left:655px;top:365px;width:4px;height:440px}.neonbar.n2{left:1090px;top:300px;width:3px;height:510px}.neonbar.n3{left:620px;top:760px;width:520px;height:3px}
 
 /* detail drawer */
-.drawer{position:fixed;z-index:90;right:18px;top:74px;bottom:18px;width:min(430px,calc(100vw - 36px));transform:translateX(calc(100% + 28px));transition:transform .38s cubic-bezier(.2,.8,.2,1);background:rgba(8,14,22,.94);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:24px 22px;box-shadow:0 30px 80px rgba(0,0,0,.46);overflow:auto}.drawer.open{transform:translateX(0)}
-.drawer-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);cursor:pointer;font-size:18px}.drawer-no{font:10px var(--mono);letter-spacing:.14em;color:var(--red2);text-transform:uppercase}.drawer h2{margin:10px 42px 12px 0;font:900 42px/.92 var(--display);text-transform:uppercase;letter-spacing:-.04em}.drawer p{color:#b8c1cb;font-size:13px;line-height:1.7}.drawer-list{list-style:none;padding:0;margin:22px 0 0;border-top:1px solid rgba(255,255,255,.13)}.drawer-list li{padding:13px 0;border-bottom:1px solid rgba(255,255,255,.10);font-size:13px;line-height:1.5}.drawer-list small{display:block;margin-top:4px;color:#8f9aa6;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase}.drawer-foot{margin-top:24px;color:#687687;font:9px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.drawer{position:fixed;right:20px;top:90px;bottom:20px;width:min(450px,calc(100vw - 40px));z-index:50;pointer-events:none;opacity:0;transform:translateX(24px);transition:.28s ease;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.15);border-radius:22px;background:rgba(4,10,17,.90);backdrop-filter:blur(18px);box-shadow:0 30px 100px rgba(0,0,0,.5)}
+.drawer.open{opacity:1;transform:none;pointer-events:auto}.drawer-head{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,.09)}.drawer-head .eyebrow{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#ff8d9a}.drawer-head h2{margin:7px 0 0;font:800 34px/.95 var(--sans);letter-spacing:-.05em}.close{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px}.drawer-body{padding:18px;overflow:auto}.drawer-body h3{font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#ff8d9a;margin:20px 0 9px}.drawer-body p,.drawer-body li{font-size:13px;line-height:1.65;color:#d6dee6}.drawer-body ul{margin:0;padding-left:18px}.drawer-body .grid{display:grid;gap:9px}.detail-card{padding:12px 13px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.035)}.detail-card b{display:block;margin-bottom:5px;font-size:14px;color:#fff}.detail-card span{font-size:12px;color:#b9c4cf;line-height:1.5}
 
-@media(max-width:950px){
- .topbar{height:54px;padding:0 12px;gap:12px}.identity{display:none}.top-links{display:none}.stage{inset:54px 0 0}.side-index{right:5px;top:70px}.help{display:none}.city{width:1500px;height:820px;--zoom:.82}.center-identity{transform:translateX(-50%) translateZ(55px) scale(.9)}
- .tower{transform:translateX(calc(-50% + var(--x))) translateY(var(--y)) translateZ(var(--z)) rotateY(var(--ry)) scale(.92)}
- .tower.focused{transform:translateX(calc(-50% + var(--x))) translateY(calc(var(--y) - 10px)) translateZ(calc(var(--z) + 130px)) rotateY(0deg) scale(.98)}
+@media(max-width:900px){
+  .topbar{grid-template-columns:1fr auto;gap:8px;left:10px;right:10px;top:10px}.nav{grid-column:1/-1;justify-content:flex-start}.status{font-size:8px}.brand span{display:none}.help{left:10px;right:10px;bottom:10px;max-width:none}.help small{display:none}.zoomread{display:none}
+  .viewport{perspective:900px}.city{width:1500px;height:900px}.hero-sign{left:600px;top:110px}.about{left:620px}.web{left:10px}.experience{left:10px}.academic{left:1010px}.writing{left:1090px}.running{left:190px}.roles{left:930px}.public{left:1280px}.art{left:-30px}
+  .drawer{top:132px;left:10px;right:10px;bottom:10px;width:auto}.billboard .body{font-size:12px}.title{font-size:23px}
 }
-@media(max-width:620px){
- .logo{font-size:15px}.lang{font-size:9px}.side-index{top:64px;background:rgba(5,12,20,.55)}.side-index button{width:30px;height:28px}.reset{right:10px;bottom:10px}.stage{perspective:1050px}
- .city{width:1450px;height:820px;--zoom:.68}.center-identity{bottom:305px}.drawer{top:64px;right:10px;bottom:10px;width:calc(100vw - 20px)}
- .billboard{padding:13px}.board-head{font-size:23px}.board-list{font-size:11px}.board-list.compact{font-size:10px}
+@media(max-width:640px){
+  .city{width:1320px;height:860px}.hero-sign{left:505px;top:120px;width:300px;height:455px}.hero-sign h1{font-size:49px}.about{left:520px;top:590px;width:280px}.web{left:-90px;top:200px;width:430px}.experience{left:-80px;top:620px;width:430px}.academic{left:900px;top:165px;width:410px}.writing{left:955px;top:535px;width:350px}.running{left:90px;top:885px;width:380px}.roles{left:805px;top:880px;width:350px}.public{left:1130px;top:860px;width:280px}.art{left:-120px;top:900px;width:230px}.body{font-size:11px}.no{font-size:26px}.title{font-size:21px}
 }
-@media(prefers-reduced-motion:reduce){*{transition:none!important}.city{transform:translate3d(-50%,-47%,0) scale(var(--zoom))!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="logo">CHE-KAI LIN</div>
-  <div class="identity">WRITER / DESIGNER / STUDENT</div>
-  <div class="top-spacer"></div>
-  <nav class="top-links"><button data-section="2">Projects</button><button data-section="3">Experience</button><button data-section="9">Archive</button></nav>
-  <div class="lang"><b>EN</b> / 中文</div>
-</header>
+<div class="ui">
+  <div class="topbar">
+    <div class="brand">CHE-KAI LIN <span>WRITER × DESIGNER × STUDENT</span></div>
+    <nav class="nav" aria-label="3D portfolio navigation">
+      <button class="active" data-target="hero-sign">Center</button>
+      <button data-target="web">Web</button>
+      <button data-target="experience">Experience</button>
+      <button data-target="academic">Academic</button>
+      <button data-target="writing">Writing</button>
+      <button data-target="running">Running</button>
+      <button data-target="roles">Roles</button>
+      <button data-target="public">Public</button>
+      <button data-target="art">Art</button>
+    </nav>
+    <div class="status" id="status">3D CITY · READY</div>
+  </div>
+  <div class="help"><b>3D city controls</b><strong>Drag the city · click a billboard</strong><small>左右拖曳改變視角，滾輪縮放。點擊看板會聚焦建築並打開完整內容。</small></div>
+  <div class="zoomread">Zoom <span id="zoomRead">100%</span></div>
+</div>
 
-<nav class="side-index" aria-label="Billboard index">
-  <button data-section="1">01</button><button data-section="2">02</button><button data-section="3">03</button><button data-section="4">04</button><button data-section="5">05</button><button data-section="6">06</button><button data-section="7">07</button><button data-section="8">08</button><button data-section="9">09</button>
-</nav>
-
-<div class="stage" id="stage">
-  <div class="skyline"></div>
+<div class="viewport" id="viewport">
+  <div class="skyglow"></div>
   <div class="city" id="city">
-    <div class="ground"></div><div class="steps"></div><div class="plaza-label">CENTRAL PLAZA · DRAG TO ORBIT · CLICK BILLBOARDS</div>
+    <div class="ground"></div><div class="plaza"></div><div class="tower-strip"></div>
+    <div class="neonbar n1"></div><div class="neonbar n2"></div><div class="neonbar n3"></div>
 
-    <section class="center-identity" data-section="1">
-      <div class="panel id-top"><div><div class="crown">♕</div><div class="name">CHE-KAI<br>LIN</div><div class="id-role">WRITER / DESIGNER / STUDENT</div></div></div>
-      <button class="panel id-about billboard paper" data-section="1" aria-label="Open About"><div class="board-head"><span class="board-no">01</span>ABOUT</div><ul class="board-list"><li>背景</li><li>個性</li><li>興趣</li><li>價值觀</li></ul><div class="visual chair"></div></button>
-      <div class="panel id-bottom"><b>MORE THAN A GAME.</b>EXPLORE · LEARN · CREATE · CONNECT</div>
+    <section class="building hero-sign" id="hero-sign" data-title="CHE-KAI LIN" data-section="Center / Identity" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard red"><div class="crown">♔</div><h1>CHE-KAI<br>LIN</h1><div class="identity">WRITER × DESIGNER × STUDENT</div><div class="sub">林哲愷 · PERSONAL CITY / 2026</div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
     </section>
 
-    <section class="tower t2" data-tower-section="2"><div class="facade-grid"></div><button class="billboard" data-section="2"><div class="board-head"><span class="board-no">02</span>WEB WORKS</div><ul class="board-list"><li>SignWell 欣緯生醫</li><li>Tai-Wan Way 閒台文</li><li>CITYMUS</li><li>健人</li></ul><div class="visual code"></div><div class="board-kicker">Ideas into products</div></button></section>
+    <section class="building about" id="about" data-title="ABOUT" data-section="01 / About" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">01</div><div class="title">ABOUT</div></div><div class="body"><ul><li>背景</li><li>個性</li><li>興趣</li><li>價值觀</li></ul><div class="hint">Click to open profile</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
 
-    <section class="tower t3" data-tower-section="3"><div class="facade-grid"></div><button class="billboard" data-section="3"><div class="board-head"><span class="board-no">03</span>EXPERIENCE</div><ul class="board-list compact"><li>Newtalk 新頭殼 投書刊載</li><li>基隆海洋文學大賽 參與</li><li>台灣聯合大學企劃 參與</li></ul><div class="visual globe"></div><div class="board-kicker">Published · Joined · Tried</div></button></section>
+    <section class="building web" id="web" data-title="WEB WORKS" data-section="02 / Web Works" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">02</div><div class="title">WEB WORKS</div></div><div class="body"><ul><li>SignWell 欣緯生醫</li><li>Tai-Wan Way 閒台文</li><li>CITYMUS</li><li>健人</li></ul><div class="hint">Ideas into products →</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
 
-    <section class="tower t4" data-tower-section="4"><div class="facade-grid"></div><button class="billboard paper" data-section="4"><div class="board-head"><span class="board-no">04</span>ACADEMIC</div><ul class="board-list compact"><li>台英學士培育計劃</li><li>國立中央大學人工智慧學系先修課程</li><li>國立清華大學經濟系先修課程</li><li>私立中原大學先修課程</li></ul><div class="visual books"></div><div class="board-kicker">Learn · Explore · Grow</div></button></section>
+    <section class="building experience" id="experience" data-title="EXPERIENCE" data-section="03 / Experience" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">03</div><div class="title">EXPERIENCE</div></div><div class="body"><ul><li>Newtalk 新頭殼 投書刊載</li><li>基隆海洋文學大賽 參與</li><li>台灣聯合大學企劃 參與</li></ul><div class="hint">Published · joined · built</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
 
-    <section class="tower t5" data-tower-section="5"><div class="facade-grid"></div><button class="billboard paper" data-section="5"><div class="board-head"><span class="board-no">05</span>WRITING</div><ul class="board-list"><li>文章創作</li><li>時事觀察</li><li>散文／隨筆</li><li>競賽作品</li></ul><div class="visual pen"></div><div class="board-kicker">Write to understand</div></button></section>
+    <section class="building academic" id="academic" data-title="ACADEMIC" data-section="04 / Academic" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">04</div><div class="title">ACADEMIC</div></div><div class="body"><ul><li>台英學士培育計劃</li><li>國立中央大學人工智慧學系先修課程</li><li>國立清華大學經濟系先修課程</li><li>私立中原大學先修課程</li></ul><div class="hint">Learn · explore · connect</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
 
-    <section class="tower t6" data-tower-section="6"><div class="facade-grid"></div><button class="billboard" data-section="6"><div class="board-head"><span class="board-no">06</span>RUNNING</div><ul class="board-list compact"><li>烘爐地定向越野 9K組完賽</li><li>基隆半程馬拉松 9K組完賽（103/1581）</li><li>訓練紀錄</li><li>比賽成績</li></ul><div class="visual shoe"></div><div class="board-kicker">Run · Explore · Stay curious</div></button></section>
+    <section class="building writing" id="writing" data-title="WRITING" data-section="05 / Writing" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">05</div><div class="title">WRITING</div></div><div class="body"><ul><li>文章創作</li><li>時事觀察</li><li>散文／隨筆</li><li>競賽作品</li></ul><div class="hint">Write to understand →</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
 
-    <section class="tower t7" data-tower-section="7"><div class="facade-grid"></div><button class="billboard paper" data-section="7"><div class="board-head"><span class="board-no">07</span>ROLES</div><ul class="board-list compact"><li>欣緯科技有限公司董事</li><li>欣緯生醫創辦人</li><li>閒台文創辦人</li><li>CITYMUS創辦人</li><li>市三重見賢思琪社 創社副社長、美萱</li><li>市三重高中前扶輪少年團團員</li></ul><div class="visual badge"></div></button></section>
+    <section class="building running" id="running" data-title="RUNNING" data-section="06 / Running" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">06</div><div class="title">RUNNING</div></div><div class="body"><ul><li>烘爐地定向越野 9K組完賽</li><li>基隆半程馬拉松 9K組完賽（103/1581）</li><li>訓練紀錄</li><li>比賽成績</li></ul><div class="hint">Run · explore · stay curious</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
 
-    <section class="tower t8" data-tower-section="8"><div class="facade-grid"></div><button class="billboard paper" data-section="8"><div class="board-head"><span class="board-no">08</span>PUBLIC</div><ul class="board-list compact"><li>台灣民眾黨青年團第二屆員</li><li>日本自民黨來台接待</li><li>核三公投街頭宣講、車掃</li></ul><div class="visual megaphone"></div><div class="board-kicker">Public engagement</div></button></section>
+    <section class="building roles" id="roles" data-title="ROLES" data-section="07 / Roles" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">07</div><div class="title">ROLES</div></div><div class="body"><ul><li>欣緯科技有限公司董事</li><li>欣緯生醫創辦人</li><li>閒台文創辦人</li><li>CITYMUS 創辦人</li><li>市三重見賢思琪社｜創社副社長、美萱</li><li>市三重高中前扶輪少年團團員</li></ul><div class="hint">People · projects · impact</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
 
-    <section class="tower t9" data-tower-section="9"><div class="facade-grid"></div><button class="billboard" data-section="9"><div class="board-head"><span class="board-no">09</span>ART ARCHIVE</div><ul class="board-list compact"><li>設計作品</li><li>手繪創作</li><li>攝影紀錄</li><li>靈感收藏</li><li>未來計劃</li></ul><div class="visual camera"></div><div class="board-kicker">Collect · Create · Keep going</div></button></section>
+    <section class="building public" id="public" data-title="PUBLIC" data-section="08 / Public" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard"><div class="head"><div class="no">08</div><div class="title">PUBLIC</div></div><div class="body"><ul><li>台灣民眾黨青年團第二屆員</li><li>日本自民黨來台接待</li><li>核三公投街頭宣講、車掃</li><li>公共參與／政治觀察</li></ul><div class="hint">Public engagement →</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
+
+    <section class="building art" id="art" data-title="ART ARCHIVE" data-section="09 / Art Archive" tabindex="0">
+      <div class="block"><div class="face front"><div class="windows"></div><div class="billboard dark"><div class="head"><div class="no">09</div><div class="title">ART ARCHIVE</div></div><div class="body"><ul><li>設計作品</li><li>手繪創作</li><li>攝影紀錄</li><li>靈感收藏</li><li>未來計劃</li></ul><div class="hint">Collect · create · keep going</div></div></div></div><div class="face left"></div><div class="face right"></div><div class="face top"></div></div>
+    </section>
   </div>
 </div>
 
-<div class="help"><b>DRAG</b> to shift view · <b>MOVE</b> pointer for parallax · <b>WHEEL</b> to zoom · <b>CLICK</b> a billboard</div>
-<button class="reset" id="reset">RESET VIEW</button>
-
 <aside class="drawer" id="drawer" aria-live="polite">
-  <button class="drawer-close" id="drawerClose" aria-label="Close">×</button>
-  <div class="drawer-no" id="drawerNo">01 / ABOUT</div>
-  <h2 id="drawerTitle">ABOUT</h2>
-  <p id="drawerText"></p>
-  <ul class="drawer-list" id="drawerList"></ul>
-  <div class="drawer-foot">CHE-KAI LIN · PERSONAL CITY ARCHIVE · 2026</div>
+  <div class="drawer-head"><div><div class="eyebrow" id="drawerEyebrow">Section</div><h2 id="drawerTitle">Details</h2></div><button class="close" id="closeDrawer" aria-label="Close">×</button></div>
+  <div class="drawer-body" id="drawerBody"></div>
 </aside>
 
 <script>
-const DATA={
-  1:{title:'ABOUT',text:'這裡是整座城市的中央入口。不是傳統履歷首頁，而是讓背景、個性、興趣與價值觀成為後續所有作品與經歷的起點。',items:[['林哲愷 / Che-Kai Lin','Name'],['WRITER X DESIGNER X STUDENT','Identity'],['Web Design · Visual Culture · Writing · Art · Public Affairs','Focus'],['不同的興趣、經歷與嘗試，組成現在的我。','Personal note']]},
-  2:{title:'WEB WORKS',text:'網站作品集中在同一棟數位建築，之後可把每個看板再連到獨立作品內頁。',items:[['SignWell 欣緯生醫','Website'],['Tai-Wan Way 閒台文','Website'],['CITYMUS','Website / music project'],['健人','Website experiment']]},
-  3:{title:'EXPERIENCE',text:'文字刊載、競賽與企劃參與等個人經歷，集中成為一棟 Experience building。',items:[['Newtalk 新頭殼 投書刊載','Published writing'],['基隆海洋文學大賽 參與','Literature competition'],['台灣聯合大學企劃 參與','Project participation']]},
-  4:{title:'ACADEMIC',text:'跨領域的先修與培育計劃，用獨立學術看板呈現，避免和其他經歷混在一起。',items:[['台英學士培育計劃','Academic program'],['國立中央大學人工智慧學系先修課程','Pre-college course'],['國立清華大學經濟系先修課程','Pre-college course'],['私立中原大學先修課程','Pre-college course']]},
-  5:{title:'WRITING',text:'文字是這個網站的一條獨立主線，可逐步放入真正文章與作品。',items:[['文章創作','Writing'],['時事觀察','Commentary'],['散文／隨筆','Essay'],['競賽作品','Competition works']]},
-  6:{title:'RUNNING',text:'運動經歷被當成生活與成長的一部分，而不是履歷底部的一個附註。',items:[['烘爐地定向越野 9K組完賽','Race'],['基隆半程馬拉松 9K組完賽（103/1581）','Race · rank 103/1581'],['訓練紀錄','Archive'],['比賽成績','Archive']]},
-  7:{title:'ROLES',text:'公司、創辦專案與學生社團角色集中於 Roles tower。',items:[['欣緯科技有限公司董事','Director'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS創辦人','Founder'],['市三重見賢思琪社 創社副社長、美萱','Student organization'],['市三重高中前扶輪少年團團員','Club member']]},
-  8:{title:'PUBLIC',text:'公共參與以個人經歷方式紀錄，不做成競選網站。',items:[['台灣民眾黨青年團第二屆員','Youth / public affairs'],['日本自民黨來台接待','International reception'],['核三公投街頭宣講、車掃','Public issue participation']]},
-  9:{title:'ART ARCHIVE',text:'藝術作品集與靈感資料庫。等你放入真實作品後，可以把每個作品變成可點擊的畫廊看板。',items:[['設計作品','Design'],['手繪創作','Drawing'],['攝影紀錄','Photography'],['靈感收藏','Archive'],['未來計劃','Future']]}
+const viewport=document.getElementById('viewport');
+const city=document.getElementById('city');
+const buildings=[...document.querySelectorAll('.building')];
+const nav=[...document.querySelectorAll('.nav button')];
+const drawer=document.getElementById('drawer');
+const drawerTitle=document.getElementById('drawerTitle');
+const drawerEyebrow=document.getElementById('drawerEyebrow');
+const drawerBody=document.getElementById('drawerBody');
+const closeDrawer=document.getElementById('closeDrawer');
+const status=document.getElementById('status');
+const zoomRead=document.getElementById('zoomRead');
+
+let state={rx:-4,ry:0,zoom:.88,targetRx:-4,targetRy:0,targetZoom:.88,drag:false,sx:0,sy:0,brx:0,bry:0,focus:null};
+
+const detail={
+  'hero-sign':`<h3>Identity</h3><div class="grid"><div class="detail-card"><b>林哲愷 / Che-Kai Lin</b><span>WRITER × DESIGNER × STUDENT</span></div><div class="detail-card"><b>Personal City</b><span>這個網站把個人作品、學習、創作、社團、跑步與公共參與變成一座可探索的 3D 城市。</span></div></div>`,
+  about:`<h3>About</h3><div class="grid"><div class="detail-card"><b>背景</b><span>個人經歷與成長脈絡。</span></div><div class="detail-card"><b>個性</b><span>重視好奇心、審美、結構與持續學習。</span></div><div class="detail-card"><b>興趣</b><span>網站、視覺、寫作、藝術、運動與公共議題。</span></div><div class="detail-card"><b>價值觀</b><span>把不同興趣組成同一個完整的人。</span></div></div>`,
+  web:`<h3>Website Portfolio</h3><div class="grid"><div class="detail-card"><b>SignWell 欣緯生醫</b><span>內容、品牌與數位平台。</span></div><div class="detail-card"><b>Tai-Wan Way 閒台文</b><span>語言、文化與互動體驗。</span></div><div class="detail-card"><b>CITYMUS</b><span>音樂與城市氛圍導向的品牌實驗。</span></div><div class="detail-card"><b>健人</b><span>獨立網站概念與視覺研究。</span></div></div>`,
+  experience:`<h3>Writing / Participation</h3><div class="grid"><div class="detail-card"><b>Newtalk 新頭殼 投書刊載</b><span>公開投書刊載經歷。</span></div><div class="detail-card"><b>基隆海洋文學大賽 參與</b><span>文學競賽參與。</span></div><div class="detail-card"><b>台灣聯合大學企劃 參與</b><span>企劃與專案參與。</span></div></div>`,
+  academic:`<h3>Academic Bridge</h3><div class="grid"><div class="detail-card"><b>台英學士培育計劃</b></div><div class="detail-card"><b>國立中央大學人工智慧學系先修課程</b></div><div class="detail-card"><b>國立清華大學經濟系先修課程</b></div><div class="detail-card"><b>私立中原大學先修課程</b></div></div>`,
+  writing:`<h3>Writing</h3><div class="grid"><div class="detail-card"><b>文章創作</b></div><div class="detail-card"><b>時事觀察</b></div><div class="detail-card"><b>散文／隨筆</b></div><div class="detail-card"><b>競賽作品</b></div></div>`,
+  running:`<h3>Race Record</h3><div class="grid"><div class="detail-card"><b>烘爐地定向越野 9K組完賽</b></div><div class="detail-card"><b>基隆半程馬拉松 9K組完賽</b><span>名次：103 / 1581</span></div></div><h3>Archive</h3><p>訓練紀錄、比賽成績與之後的運動目標都可以繼續放進這一區。</p>`,
+  roles:`<h3>Leadership & Roles</h3><div class="grid"><div class="detail-card"><b>欣緯科技有限公司董事</b></div><div class="detail-card"><b>欣緯生醫創辦人</b></div><div class="detail-card"><b>閒台文創辦人</b></div><div class="detail-card"><b>CITYMUS 創辦人</b></div><div class="detail-card"><b>市三重見賢思琪社｜創社副社長、美萱</b></div><div class="detail-card"><b>市三重高中前扶輪少年團團員</b></div></div>`,
+  public:`<h3>Public Engagement</h3><div class="grid"><div class="detail-card"><b>台灣民眾黨青年團第二屆員</b></div><div class="detail-card"><b>日本自民黨來台接待</b></div><div class="detail-card"><b>核三公投街頭宣講、車掃</b></div></div><p>此區以個人經歷紀錄方式呈現，不作為競選或政黨宣傳頁。</p>`,
+  art:`<h3>Art Archive</h3><div class="grid"><div class="detail-card"><b>設計作品</b></div><div class="detail-card"><b>手繪創作</b></div><div class="detail-card"><b>攝影紀錄</b></div><div class="detail-card"><b>靈感收藏</b></div><div class="detail-card"><b>未來計劃</b></div></div><p>之後可直接換成作品圖片、作品名、年份與媒材。</p>`
 };
 
-const stage=document.getElementById('stage'),city=document.getElementById('city'),drawer=document.getElementById('drawer');
-const drawerNo=document.getElementById('drawerNo'),drawerTitle=document.getElementById('drawerTitle'),drawerText=document.getElementById('drawerText'),drawerList=document.getElementById('drawerList');
-const indexButtons=[...document.querySelectorAll('[data-section]')].filter(x=>x.tagName==='BUTTON');
-let cam={x:0,y:0,yaw:0,pitch:0,zoom:1,drag:false,startX:0,startY:0,baseX:0,baseY:0};
-function applyCamera(){document.documentElement.style.setProperty('--cam-x',cam.x+'px');document.documentElement.style.setProperty('--cam-y',cam.y+'px');document.documentElement.style.setProperty('--yaw',cam.yaw+'deg');document.documentElement.style.setProperty('--pitch',cam.pitch+'deg');document.documentElement.style.setProperty('--zoom',cam.zoom)}
-function focusSection(n){
-  const d=DATA[n]; if(!d)return;
-  document.querySelectorAll('.tower').forEach(t=>t.classList.toggle('focused',Number(t.dataset.towerSection)===Number(n)));
-  city.classList.toggle('has-focus',Number(n)!==1);
-  indexButtons.forEach(b=>b.classList.toggle('active',Number(b.dataset.section)===Number(n)));
-  drawerNo.textContent=String(n).padStart(2,'0')+' / '+d.title;drawerTitle.textContent=d.title;drawerText.textContent=d.text;
-  drawerList.innerHTML=d.items.map(([a,b])=>`<li>${a}<small>${b}</small></li>`).join('');drawer.classList.add('open');
-  const tower=document.querySelector(`[data-tower-section="${n}"]`);
-  if(tower){const x=parseFloat(getComputedStyle(tower).getPropertyValue('--x'))||0;cam.x=Math.max(-120,Math.min(120,-x*.13));cam.yaw=Math.max(-4.5,Math.min(4.5,-x/155));cam.zoom=1.035;} else {cam.x=0;cam.yaw=0;cam.zoom=1.02}
-  applyCamera();history.replaceState(null,'','#'+n);
+function apply(){
+  state.rx+=(state.targetRx-state.rx)*.12;
+  state.ry+=(state.targetRy-state.ry)*.12;
+  state.zoom+=(state.targetZoom-state.zoom)*.12;
+  city.style.transform=`translate(-50%,-54%) scale(${state.zoom}) rotateX(${state.rx}deg) rotateY(${state.ry}deg)`;
+  zoomRead.textContent=Math.round(state.zoom*100)+'%';
+  requestAnimationFrame(apply);
 }
-function clearFocus(){document.querySelectorAll('.tower').forEach(t=>t.classList.remove('focused'));city.classList.remove('has-focus');drawer.classList.remove('open');indexButtons.forEach(b=>b.classList.remove('active'));cam.x=0;cam.y=0;cam.yaw=0;cam.pitch=0;cam.zoom=1;applyCamera();history.replaceState(null,' ',location.pathname+location.search)}
+requestAnimationFrame(apply);
 
-document.querySelectorAll('.billboard').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();focusSection(Number(b.dataset.section))}));
-indexButtons.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();focusSection(Number(b.dataset.section))}));
-document.getElementById('drawerClose').addEventListener('click',clearFocus);document.getElementById('reset').addEventListener('click',clearFocus);
+function clamp(){state.targetRy=Math.max(-18,Math.min(18,state.targetRy));state.targetRx=Math.max(-10,Math.min(8,state.targetRx));state.targetZoom=Math.max(.64,Math.min(1.12,state.targetZoom))}
+function resetFocus(){state.focus=null;buildings.forEach(b=>b.classList.remove('focused','dimmed'));nav.forEach(n=>n.classList.remove('active'));nav[0].classList.add('active');state.targetRx=-4;state.targetRy=0;state.targetZoom=.88;status.textContent='3D CITY · READY';drawer.classList.remove('open')}
+function openBuilding(id){
+  const el=document.getElementById(id);if(!el)return;
+  state.focus=id;
+  buildings.forEach(b=>{b.classList.toggle('focused',b===el);b.classList.toggle('dimmed',b!==el)});
+  nav.forEach(n=>n.classList.toggle('active',n.dataset.target===id));
+  const map={web:-12,experience:-12,art:-15,academic:11,writing:12,roles:9,public:15,about:0,'hero-sign':0};
+  state.targetRy=map[id]??0;state.targetRx=-2;state.targetZoom=id==='hero-sign'?1.0:1.02;clamp();
+  drawerTitle.textContent=el.dataset.title||id;drawerEyebrow.textContent=el.dataset.section||'Section';drawerBody.innerHTML=detail[id]||'';drawer.classList.add('open');status.textContent='FOCUS · '+(el.dataset.title||id).toUpperCase();
+}
 
-stage.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;cam.drag=true;cam.startX=e.clientX;cam.startY=e.clientY;cam.baseX=cam.x;cam.baseY=cam.y;stage.classList.add('dragging');stage.setPointerCapture?.(e.pointerId)});
-stage.addEventListener('pointermove',e=>{
-  const r=stage.getBoundingClientRect();
-  if(cam.drag){const dx=e.clientX-cam.startX,dy=e.clientY-cam.startY;cam.x=Math.max(-170,Math.min(170,cam.baseX+dx*.65));cam.y=Math.max(-70,Math.min(70,cam.baseY+dy*.35));cam.yaw=Math.max(-6,Math.min(6,cam.x/40));cam.pitch=Math.max(-2.5,Math.min(2.5,-cam.y/35));applyCamera();return}
-  if(!drawer.classList.contains('open')){const nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;cam.yaw=nx*2.1;cam.pitch=-ny*1.1;applyCamera()}
-});
-function endDrag(){cam.drag=false;stage.classList.remove('dragging')}
-stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);stage.addEventListener('pointerleave',()=>{if(!cam.drag&&!drawer.classList.contains('open')){cam.yaw=0;cam.pitch=0;applyCamera()}});
-stage.addEventListener('wheel',e=>{cam.zoom=Math.max(.82,Math.min(1.12,cam.zoom-e.deltaY*.00045));applyCamera();e.preventDefault()},{passive:false});
-stage.addEventListener('dblclick',clearFocus);
-addEventListener('keydown',e=>{if(e.key==='Escape')clearFocus();if(/^[1-9]$/.test(e.key))focusSection(Number(e.key))});
-const initial=Number(location.hash.slice(1));if(DATA[initial])setTimeout(()=>focusSection(initial),180);else applyCamera();
+buildings.forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();openBuilding(b.id)});b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openBuilding(b.id)}})});
+nav.forEach(n=>n.addEventListener('click',e=>{e.stopPropagation();openBuilding(n.dataset.target)}));
+closeDrawer.addEventListener('click',resetFocus);
+
+viewport.addEventListener('pointerdown',e=>{if(e.target.closest('.building,.drawer,.ui'))return;state.drag=true;viewport.classList.add('dragging');state.sx=e.clientX;state.sy=e.clientY;state.brx=state.targetRx;state.bry=state.targetRy;viewport.setPointerCapture?.(e.pointerId)});
+viewport.addEventListener('pointermove',e=>{if(!state.drag)return;state.targetRy=state.bry+(e.clientX-state.sx)*.035;state.targetRx=state.brx-(e.clientY-state.sy)*.028;clamp()});
+function endDrag(){state.drag=false;viewport.classList.remove('dragging')}
+viewport.addEventListener('pointerup',endDrag);viewport.addEventListener('pointercancel',endDrag);
+viewport.addEventListener('wheel',e=>{state.targetZoom-=e.deltaY*.00055;clamp();e.preventDefault()},{passive:false});
+viewport.addEventListener('click',e=>{if(!e.target.closest('.building')&&!e.target.closest('.drawer')&&!e.target.closest('.ui'))resetFocus()});
+
+let mx=0,my=0;
+viewport.addEventListener('mousemove',e=>{if(state.drag||state.focus)return;mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5);state.targetRy=mx*5;state.targetRx=-4-my*3});
+viewport.addEventListener('mouseleave',()=>{if(!state.focus){state.targetRy=0;state.targetRx=-4}});
+
+addEventListener('keydown',e=>{if(e.key==='Escape')resetFocus();if(e.key==='ArrowLeft'){state.targetRy-=2;clamp()}if(e.key==='ArrowRight'){state.targetRy+=2;clamp()}if(e.key==='ArrowUp'){state.targetZoom+=.04;clamp()}if(e.key==='ArrowDown'){state.targetZoom-=.04;clamp()}});
 </script>
 </body>
 </html>
