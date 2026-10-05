@@ -19,7 +19,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .intro{position:fixed;inset:0;z-index:18;display:grid;place-items:center;padding:76px 18px 28px;pointer-events:none;transition:opacity .42s ease,visibility .42s ease}
 .intro::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(12,31,35,.10),rgba(5,14,20,.28));backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 .intro.hidden{opacity:0;visibility:hidden}
-.intro-card{position:relative;width:min(620px,calc(100vw - 34px));padding:30px 30px 25px;background:#f7f2e7;color:#174b3a;border:3px solid #174b3a;box-shadow:0 24px 70px rgba(7,20,27,.28),8px 8px 0 rgba(23,75,58,.14);pointer-events:auto;overflow:hidden}
+.intro-card{position:relative;width:min(620px,calc(100vw - 34px));padding:30px 30px 25px;background:#f7f2e7;color:#174b3a;border:3px solid #174b3a;box-shadow:0 24px 70px rgba(7,20,27,.28),8px 8px 0 rgba(23,75,58,.14);pointer-events:none;overflow:hidden}
 .intro-card::before,.intro-card::after{content:"";position:absolute;width:42px;height:42px;border-color:#174b3a;opacity:.32;pointer-events:none}
 .intro-card::before{left:13px;top:13px;border-left:2px solid;border-top:2px solid}.intro-card::after{right:13px;bottom:13px;border-right:2px solid;border-bottom:2px solid}
 .intro-kicker{display:flex;align-items:center;gap:10px;font:800 11px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase}
@@ -31,7 +31,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .intro-meta{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:27px}
 .intro-swipe{display:flex;align-items:center;gap:12px;font:800 11px/1.25 var(--mono);letter-spacing:.08em}
 .intro-arrows{font-size:25px;letter-spacing:.18em;animation:introNudge 1.6s ease-in-out infinite}
-.intro-enter{appearance:none;border:0;background:#f3bf53;color:#1c2924;padding:12px 15px;font:900 12px/1 var(--mono);letter-spacing:.08em;cursor:pointer;box-shadow:3px 3px 0 #174b3a}
+.intro-enter{pointer-events:auto;appearance:none;border:0;background:#f3bf53;color:#1c2924;padding:12px 15px;font:900 12px/1 var(--mono);letter-spacing:.08em;cursor:pointer;box-shadow:3px 3px 0 #174b3a}
 .intro-seal{position:absolute;right:27px;top:26px;width:58px;height:58px;background:#c94a43;color:#f7f2e7;display:grid;place-items:center;text-align:center;font:900 14px/1.05 "Noto Sans TC",sans-serif;transform:rotate(-6deg);border:3px double #f7f2e7}
 @keyframes introNudge{0%,100%{transform:translateX(0);opacity:.62}50%{transform:translateX(7px);opacity:1}}
 @media(max-width:560px){.intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
