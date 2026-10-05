@@ -136,7 +136,7 @@ const roadMat=new THREE.MeshStandardMaterial({color:0x0d1018,roughness:.3,metaln
 // sidewalks
 for(const z of [-8,20]){const sw=new THREE.Mesh(new THREE.BoxGeometry(1100,.6,4),new THREE.MeshStandardMaterial({color:0x252832,roughness:.75}));sw.position.set(0,.28,z);sw.receiveShadow=false;scene.add(sw)}
 // street lamps: instanced geometry, self-lit bulbs, zero dynamic PointLights
-const streetLightPulse=[];
+const streetLightPulse=[],flicker=[],lightboxes=[],barberPoles=[],cars=[],pedestrians=[],trafficSignals=[];
 const lampMetal=new THREE.MeshStandardMaterial({color:0x11151b,roughness:.52,metalness:.72});
 const lampBulbMat=new THREE.MeshBasicMaterial({color:0xffd39b,toneMapped:false});
 const poleGeo=new THREE.CylinderGeometry(.11,.15,5.8,8),armGeo=new THREE.BoxGeometry(1.35,.10,.10),hoodGeo=new THREE.BoxGeometry(.72,.20,.46),bulbGeo=new THREE.SphereGeometry(.16,8,6);
@@ -185,7 +185,7 @@ function makePedestrian(x,z,phase=0,color=0xb95c4b){
 for(let i=0;i<10;i++){const dir=i%2?1:-1,z=dir>0?2.2:11.8;makeCar(-450+i*98,z,dir,[0x456b89,0xa64b4b,0xd4b85e,0x657158,0xb7b9bd][i%5],1.8+(i%4)*.34)}
 
 // deterministic background towers + animated ads, repeated by loop span so wrap points stay visually seamless
-const flicker=[],lightboxes=[],barberPoles=[],cars=[],pedestrians=[],trafficSignals=[];const bg=[[-92,-24,18,42],[-76,-22,14,32],[-60,-25,18,46],[-43,-24,13,36],[-25,-25,16,44],[-10,-24,12,34],[14,-24,14,42],[30,-25,18,50],[49,-24,14,38],[65,-25,18,46],[82,-23,13,34],[100,-25,16,45]];
+const bg=[[-92,-24,18,42],[-76,-22,14,32],[-60,-25,18,46],[-43,-24,13,36],[-25,-25,16,44],[-10,-24,12,34],[14,-24,14,42],[30,-25,18,50],[49,-24,14,38],[65,-25,18,46],[82,-23,13,34],[100,-25,16,45]];
 const adColors=[0xe43c32,0xd9c8aa,0x31546c,0xb7352f,0xe7b16d];[-1,0,1].forEach(copy=>bg.forEach((b,i)=>{const [bx,z,w,h]=b,x=bx*1.5+copy*LOOP_SPAN;const m=new THREE.MeshStandardMaterial({color:0x111824,roughness:.54,metalness:.35});const tower=new THREE.Mesh(new THREE.BoxGeometry(w,h,10),m);tower.position.set(x,h/2,z);scene.add(tower);for(let y=6;y<h-5;y+=8){const win=new THREE.Mesh(new THREE.PlaneGeometry(w*.72,1.6),new THREE.MeshBasicMaterial({color:i%2?0x30355c:0x233952,transparent:true,opacity:.55}));win.position.set(x,y,z+5.01);scene.add(win)}const am=new THREE.MeshBasicMaterial({color:adColors[i%adColors.length],toneMapped:false,transparent:true,opacity:.86});am.userData.base=new THREE.Color(adColors[i%adColors.length]);am.userData.phase=i*.73+copy*.41;const ad=new THREE.Mesh(new THREE.PlaneGeometry(w*.64,Math.min(8,h*.2)),am);ad.position.set(x,h*.66,z+5.03);scene.add(ad);flicker.push(am)}));
 function decodeBase64(s){const bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
 const BUILDING_TINTS={hero:0x192636,about:0x202832,web:0x142332,experience:0x101a25,academic:0x26303a,writing:0x252b31,running:0x111b25,roles:0x26303a,public:0x202832,art:0x101a25};
