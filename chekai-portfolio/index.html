@@ -287,18 +287,29 @@ function roadSignTexture(type){
 }
 const roadSignFrameMat=new THREE.MeshLambertMaterial({color:0xb7bec0});
 const roadSignPoleMat=new THREE.MeshLambertMaterial({color:0x6d7478});
+const ROAD_SIGN_SAFE_Z=-7.55; // rear sidewalk, road-facing edge; intentionally well in front of building geometry
 function addRoadGuideSign(type,x,z,y,w,h,poles=2){
   const g=new THREE.Group(),tex=roadSignTexture(type);
-  const board=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide}));
-  board.position.set(0,y,0);g.add(board);
-  const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.22,h+.22,.12),roadSignFrameMat);frame.position.set(0,y,-.10);g.add(frame);
-  for(let i=0;i<poles;i++){const px=poles===1?0:(i?1:-1)*w*.30;const pole=new THREE.Mesh(new THREE.CylinderGeometry(.08,.10,y-h*.48,7),roadSignPoleMat);pole.position.set(px,(y-h*.48)/2,0);g.add(pole)}
-  g.position.set(x,0,z);g.rotation.y=0;g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});scene.add(g);return g
+  const boardMat=new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide});
+  const board=new THREE.Mesh(new THREE.PlaneGeometry(w,h),boardMat);
+  board.position.set(0,y,.08);board.renderOrder=12;g.add(board);
+  const frame=new THREE.Mesh(new THREE.BoxGeometry(w+.22,h+.22,.12),roadSignFrameMat);frame.position.set(0,y,0);g.add(frame);
+  const poleHeight=Math.max(.8,y-h*.48);
+  for(let i=0;i<poles;i++){
+    const px=poles===1?0:(i?1:-1)*w*.30;
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.08,.10,poleHeight,7),roadSignPoleMat);
+    pole.position.set(px,poleHeight/2,-.02);g.add(pole)
+  }
+  const footing=new THREE.Mesh(new THREE.BoxGeometry(Math.max(1.5,w*.72),.18,.74),new THREE.MeshLambertMaterial({color:0x6c6a63}));
+  footing.position.set(0,.09,-.04);g.add(footing);
+  g.position.set(x,0,ROAD_SIGN_SAFE_Z);g.rotation.y=0;
+  g.traverse(n=>{if(n!==g){n.updateMatrix();n.matrixAutoUpdate=false}});
+  scene.add(g);return g
 }
-addRoadGuideSign('vertical',-118,-11.7,5.5,4.5,6.2,2);
-addRoadGuideSign('exit',-36,-11.9,5.3,7.6,4.5,2);
-addRoadGuideSign('diagram',55,-11.8,5.4,5.9,5.9,2);
-addRoadGuideSign('small',132,-11.7,4.8,5.4,3.4,1);
+addRoadGuideSign('vertical',-126,ROAD_SIGN_SAFE_Z,5.5,4.5,6.2,2);
+addRoadGuideSign('exit',-46,ROAD_SIGN_SAFE_Z,5.3,7.6,4.5,2);
+addRoadGuideSign('diagram',48,ROAD_SIGN_SAFE_Z,5.4,5.9,5.9,2);
+addRoadGuideSign('small',139,ROAD_SIGN_SAFE_Z,4.8,5.4,3.4,1);
 
 // road-only traffic layer: cars, zebra crossings, pedestrians and signals stay inside the roadway footprint
 const crosswalkCanvas=document.createElement('canvas');crosswalkCanvas.width=256;crosswalkCanvas.height=256;const cxw=crosswalkCanvas.getContext('2d');cxw.clearRect(0,0,256,256);for(let i=0;i<11;i++){cxw.fillStyle='rgba(233,229,220,.82)';cxw.fillRect(8+i*23,0,13,256)}
