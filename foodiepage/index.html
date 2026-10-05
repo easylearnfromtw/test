@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#f6f1e7" />
+<title>Foodie Page｜腹地圖</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app">
+  <section class="map-pane" aria-label="腹地圖示意地圖">
+    <div class="map-wrap" id="mapWrap">
+      <svg class="map-svg" id="mapSvg" viewBox="0 0 1000 760" role="img" aria-label="台北與三重風格化餐飲地圖，非精確導航地圖">
+        <rect class="map-bg" width="1000" height="760"/>
+        <path class="river" d="M0 420 C160 355 250 395 356 449 C470 507 536 467 636 397 C726 334 829 341 1000 404 L1000 760 L0 760Z"/>
+        <path class="park" d="M710 86c86-33 150-8 180 44 31 54-11 113-84 130-72 17-130-14-145-66-15-50 1-83 49-108z"/>
+        <g opacity=".96">
+          <rect class="block" x="45" y="66" width="168" height="110" rx="18"/><rect class="block" x="235" y="52" width="150" height="137" rx="18"/><rect class="block" x="408" y="67" width="183" height="99" rx="18"/><rect class="block" x="620" y="47" width="145" height="116" rx="18"/>
+          <rect class="block" x="72" y="207" width="124" height="148" rx="18"/><rect class="block" x="222" y="214" width="190" height="126" rx="18"/><rect class="block" x="440" y="199" width="144" height="153" rx="18"/><rect class="block" x="611" y="197" width="194" height="138" rx="18"/>
+          <rect class="block" x="824" y="210" width="126" height="151" rx="18"/><rect class="block" x="86" y="495" width="155" height="118" rx="18"/><rect class="block" x="266" y="509" width="154" height="123" rx="18"/><rect class="block" x="652" y="480" width="126" height="122" rx="18"/><rect class="block" x="805" y="472" width="150" height="142" rx="18"/>
+        </g>
+        <g>
+          <path class="road" d="M0 270 C170 240 280 285 400 260 S680 186 1000 240"/><path class="road-line" d="M0 270 C170 240 280 285 400 260 S680 186 1000 240"/>
+          <path class="road" d="M110 0 C140 170 143 290 180 430 S258 650 314 760"/><path class="road-line" d="M110 0 C140 170 143 290 180 430 S258 650 314 760"/>
+          <path class="road" d="M390 0 C376 181 402 314 472 437 S555 637 582 760"/><path class="road-line" d="M390 0 C376 181 402 314 472 437 S555 637 582 760"/>
+          <path class="road" d="M840 0 C812 154 827 308 763 425 S694 642 692 760"/><path class="road-line" d="M840 0 C812 154 827 308 763 425 S694 642 692 760"/>
+          <path class="road-minor" d="M0 128 H1000"/><path class="road-minor" d="M0 356 H1000"/><path class="road-minor" d="M67 645 H980"/>
+        </g>
+        <text class="district" x="86" y="104">三重</text><text class="district" x="455" y="110">中山</text><text class="district" x="773" y="325">松山</text><text class="district" x="695" y="555">大安</text><text class="water-label" x="410" y="556">淡水河 · Tamsui River</text>
+        <text class="street" x="248" y="249">重新路</text><text class="street" x="505" y="345">民權東路</text><text class="street" x="132" y="618">集美街</text><text class="street" x="713" y="628">忠孝東路</text>
+      </svg>
+      <button class="pin active award" style="left:23%;top:33%" data-id="1"><span class="pin-bubble"><span class="dot"></span>4.8</span></button>
+      <button class="pin" style="left:36%;top:45%" data-id="2"><span class="pin-bubble"><span class="dot"></span>4.6</span></button>
+      <button class="pin award" style="left:55%;top:29%" data-id="3"><span class="pin-bubble"><span class="dot"></span>4.7</span></button>
+      <button class="pin" style="left:69%;top:53%" data-id="4"><span class="pin-bubble"><span class="dot"></span>4.5</span></button>
+      <button class="pin" style="left:81%;top:36%" data-id="5"><span class="pin-bubble"><span class="dot"></span>4.4</span></button>
+      <button class="pin" style="left:47%;top:67%" data-id="6"><span class="pin-bubble"><span class="dot"></span>4.9</span></button>
+    </div>
+
+    <div class="topbar">
+      <div class="brand-pill"><div class="brand-mark">腹</div><div><div class="brand-name">腹地圖</div><div class="brand-en">FOODIE PAGE</div></div></div>
+      <label class="search"><span>⌕</span><input id="searchInput" placeholder="店家、料理、捷運站，或『300元內不排隊』"/><kbd>⌘K</kbd></label>
+      <button class="round-btn" id="locateBtn" aria-label="定位">◎</button>
+    </div>
+    <div class="filters" id="filters">
+      <button class="chip active">現在營業</button><button class="chip">不排隊</button><button class="chip">300 元內</button><button class="chip">必比登</button><button class="chip">一個人吃</button><button class="chip">宵夜</button><button class="chip">咖啡</button>
+    </div>
+    <div class="map-caption">示意地圖 · 無任何地圖 API · 不作導航用途</div>
+    <button class="floating-random" id="randomBtn">🎲 幫我決定</button>
+
+    <aside class="drawer show" id="drawer">
+      <button class="drawer-close" id="drawerClose">×</button>
+      <div class="drawer-top"><div class="thumb noodle"><div class="badge">Bib Gourmand</div></div><div><div class="eyebrow">三重 · 450m</div><h3 id="drawerTitle">巷口牛肉麵研究所</h3><div class="meta">牛肉麵 · $ · 目前營業</div><div class="metrics"><span class="metric good">再訪 93%</span><span class="metric warn">排 10 分</span></div></div></div>
+      <div class="drawer-actions"><button class="btn red" id="discussBtn">看 27 則討論</button><button class="btn ghost" id="saveBtn">♡ 收藏</button></div>
+    </aside>
+  </section>
+
+  <aside class="side">
+    <div class="sheet-handle"></div>
+    <div class="side-head"><div><div class="eyebrow">YOUR FOOD TERRITORY</div><h1>今天，吃哪裡？</h1></div><div class="profile">FP</div></div>
+    <div class="tabbar"><button class="tab active">附近</button><button class="tab">討論</button><button class="tab">榜單</button><button class="tab">收藏</button></div>
+    <div class="content">
+      <section class="hero"><small>腹地圖 · Beta concept</small><h2>不是找店，是找到「現在最適合你的那一間」。</h2><p>把地點、菜色、排隊狀況與真實討論疊在同一張地圖上。</p><div class="hero-actions"><button class="btn red" id="heroRandom">幫我選今天晚餐</button><button class="btn light">建立我的腹地</button></div></section>
+
+      <div class="section-title"><h3>你附近正在紅</h3><span>三重 → 台北</span></div>
+      <div class="cards" id="cards">
+        <article class="card" data-id="1"><div class="card-top"><div class="thumb noodle"><div class="badge">Bib Gourmand</div></div><div class="card-body"><div class="title-row"><h4>巷口牛肉麵研究所</h4><button class="save">♡</button></div><div class="meta">三重 · 牛肉麵 · 450m · $</div><div class="metrics"><span class="metric good">口味 4.8</span><span class="metric warn">排 10 分</span><span class="metric">再訪 93%</span></div><div class="comment"><strong>在地人 Leo：</strong>「牛筋比牛肉更值得點，最近平日六點前幾乎不用排。」</div></div></div></article>
+        <article class="card" data-id="2"><div class="card-top"><div class="thumb cafe"><div class="badge">適合聊天</div></div><div class="card-body"><div class="title-row"><h4>河岸咖啡室</h4><button class="save">♡</button></div><div class="meta">三重 · 咖啡 · 800m · $$</div><div class="metrics"><span class="metric good">安靜 4.7</span><span class="metric">插座多</span><span class="metric">再訪 88%</span></div><div class="comment"><strong>最近討論：</strong>「週末下午兩點後容易滿，靠窗位可看河景。」</div></div></div></article>
+        <article class="card" data-id="3"><div class="card-top"><div class="thumb hotpot"><div class="badge">2026 新進榜</div></div><div class="card-body"><div class="title-row"><h4>小鍋計畫</h4><button class="save">♡</button></div><div class="meta">中山 · 個人鍋 · 2.1km · $$</div><div class="metrics"><span class="metric good">CP 4.7</span><span class="metric red">排 35 分</span><span class="metric">份量 4.6</span></div><div class="comment"><strong>即時：</strong>「14 分鐘前：牛肋條還有，吧台不用候位。」</div></div></div></article>
+      </div>
+
+      <div class="section-title" style="margin-top:18px"><h3>現在的城市狀態</h3><span>由社群回報</span></div>
+      <div class="live-grid"><div class="live"><small>附近平均候位</small><div class="big">12<span style="font-size:14px"> 分</span></div><small>比昨晚少 7 分鐘</small></div><div class="live"><small>今晚仍營業</small><div class="big">186<span style="font-size:14px"> 家</span></div><small>1.5 km 內</small></div></div>
+
+      <div class="section-title" style="margin-top:18px"><h3>在地人正在聊</h3><span>論壇 × 地點</span></div>
+      <div class="cards"><article class="card"><div class="eyebrow">#三重 #宵夜</div><h4 style="margin:7px 0 6px">凌晨 1 點後，重新路還有什麼不是連鎖的？</h4><div class="meta">38 則回覆 · 6 家店被標記 · 12 分鐘前</div></article><article class="card"><div class="eyebrow">#牛肉麵 #價格更新</div><h4 style="margin:7px 0 6px">這家最近漲到 190 了，還值得排嗎？</h4><div class="meta">27 則回覆 · 82% 投「還會去」</div></article></div>
+    </div>
+  </aside>
+</div>
+<nav class="bottom-nav"><button class="active"><span>⌖</span>地圖</button><button><span>◫</span>討論</button><button><span>♡</span>收藏</button><button><span>◉</span>我的腹地</button></nav>
+<div class="toast" id="toast">已更新</div>
+<script src="app.js"></script>
+</body>
+</html>
