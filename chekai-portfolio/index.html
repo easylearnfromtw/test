@@ -549,11 +549,15 @@ function makeTexture(id,quality='base'){
   const W=1400,H=820,c=document.createElement('canvas');c.width=Math.round(W*Q);c.height=Math.round(H*Q);
   const x=c.getContext('2d');x.scale(Q,Q);
   const cream='#efe7d8',navy='#0d1621',red='#e43c32',black='#111317';
-  const bg=style==='cream'?cream:style==='red'?red:navy,fg=style==='cream'?black:cream,accent=style==='red'?cream:red;
+  const twCream='#F7F2E7',twGreen='#174B3A',twRed='#C94A43',twGold='#F3BF53';
+  const bg=id==='hero'?twCream:(style==='cream'?cream:style==='red'?red:navy);
+  const fg=id==='hero'?twGreen:(style==='cream'?black:cream),accent=id==='hero'?twRed:(style==='red'?cream:red);
   x.fillStyle=bg;x.fillRect(0,0,W,H);
 
-  // restrained printed grain: readable at distance, still feels like a physical city billboard
-  x.globalAlpha=.035;for(let i=0;i<900;i++){const g=145+Math.random()*70;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*3,1+Math.random()*2)}x.globalAlpha=1;
+  // restrained paper / print grain
+  x.globalAlpha=id==='hero'?.022:.035;
+  for(let i=0;i<(id==='hero'?520:900);i++){const g=145+Math.random()*70;x.fillStyle=`rgb(${g},${g},${g})`;x.fillRect(Math.random()*W,Math.random()*H,1+Math.random()*3,1+Math.random()*2)}
+  x.globalAlpha=1;
 
   // clean billboard face: no decorative divider lines
   x.fillStyle=fg;x.textBaseline='alphabetic';
@@ -563,10 +567,45 @@ function makeTexture(id,quality='base'){
   }
 
   if(id==='hero'){
-    x.fillStyle=fg;
-    x.font='950 188px "Noto Sans TC",Arial,sans-serif';x.fillText('林哲愷',74,390);
-    x.globalAlpha=.82;x.font='800 58px Arial,sans-serif';x.fillText('CHE-KAI LIN',80,500);x.globalAlpha=1;
-    x.font='650 30px Arial,sans-serif';x.globalAlpha=.62;x.fillText('WRITER × DESIGNER × STUDENT',80,650);x.globalAlpha=1;
+    // Tai-Wan Way inspired editorial print board: cream paper, ink green, vermilion seal, mustard ticket.
+    x.fillStyle=twGreen;
+    x.font='950 220px "Noto Sans TC",Arial,sans-serif';
+    x.fillText('林',88,360);x.fillText('哲',470,360);x.fillText('愷',850,360);
+
+    // tiny roman name behaves like publication metadata, not a second headline
+    x.globalAlpha=.82;x.font='800 42px "SFMono-Regular",Consolas,monospace';
+    x.fillText('CHE-KAI LIN',94,458);x.globalAlpha=1;
+
+    // mustard editorial ticket
+    x.save();x.translate(100,560);x.rotate(-.015);
+    x.fillStyle=twGold;x.fillRect(0,0,310,76);
+    x.fillStyle='#1B201D';x.font='900 30px "Noto Sans TC",Arial,sans-serif';x.fillText('個人作品集',26,50);
+    x.restore();
+
+    // quiet metadata
+    x.fillStyle=twGreen;x.globalAlpha=.68;x.font='700 25px "SFMono-Regular",Consolas,monospace';
+    x.fillText('WORKS / WRITING / ROLES / ARCHIVE',100,704);x.globalAlpha=1;
+
+    // physical print registration marks — short, never crossing the title
+    x.strokeStyle=twGreen;x.globalAlpha=.42;x.lineWidth=3;
+    [[56,56],[W-56,56],[56,H-56],[W-56,H-56]].forEach(([cx,cy],i)=>{
+      const sx=i%2? -1:1,sy=i>1?-1:1;
+      x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+sx*36,cy);x.moveTo(cx,cy);x.lineTo(cx,cy+sy*36);x.stroke()
+    });
+    x.globalAlpha=1;
+
+    // vermilion seal
+    x.save();x.translate(1160,585);x.rotate(-.075);
+    x.fillStyle=twRed;x.fillRect(-78,-78,156,156);
+    x.strokeStyle=twCream;x.lineWidth=7;x.strokeRect(-62,-62,124,124);
+    x.fillStyle=twCream;x.textAlign='center';x.textBaseline='middle';
+    x.font='900 39px "Noto Sans TC",Arial,sans-serif';x.fillText('哲愷',0,-19);x.fillText('之印',0,27);
+    x.restore();x.textAlign='left';x.textBaseline='alphabetic';
+
+    // faint registration circles
+    x.strokeStyle=twRed;x.globalAlpha=.16;x.lineWidth=2;
+    for(const [rx,ry] of [[1210,165],[1265,165],[1238,137],[1238,193]]){x.beginPath();x.arc(rx,ry,16,0,Math.PI*2);x.stroke()}
+    x.globalAlpha=1;
   }else{
     // Giant single-purpose title. No experience bullet points on the street façade.
     const title=d.title;
@@ -689,7 +728,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     group.add(shell); group.position.set(cfg.x+copy*LOOP_SPAN,0,cfg.z); group.rotation.y=cfg.ry; root.add(group);loopCullGroups.push(group);
     const tex=makeTexture(id),bw=Math.min(15.8,Math.max(11.8,dims.w*1.08)),bh=bw*.586;
     const boardY=cfg.h*.64,boardZ=dims.d*.50+1.05;
-    const frameMat=new THREE.MeshStandardMaterial({color:0x06080c,roughness:.30,metalness:.84});
+    const frameMat=new THREE.MeshStandardMaterial({color:id==='hero'?0x174B3A:0x06080c,roughness:id==='hero'?.48:.30,metalness:id==='hero'?.28:.84});
     const frameT=.22,frameD=.12;
     const topBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
     const bottomBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
@@ -700,7 +739,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     leftBar.position.set(-bw*.5-.12,boardY,boardZ-.08);
     rightBar.position.set(bw*.5+.12,boardY,boardZ-.08);
     group.add(topBar,bottomBar,leftBar,rightBar);
-    const haloMat=new THREE.MeshBasicMaterial({color:DATA[id].accent,transparent:true,opacity:.11,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,toneMapped:false});
+    const haloMat=new THREE.MeshBasicMaterial({color:id==='hero'?0xf4e7c8:DATA[id].accent,transparent:true,opacity:id==='hero'?.045:.11,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,toneMapped:false});
     const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.25,bh+1.25),haloMat);halo.position.set(0,boardY,boardZ-.16);group.add(halo);
     const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});
     mat.userData.baseIntensity=1.55;mat.userData.phase=(index+copy*10)*1.11;
