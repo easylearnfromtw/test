@@ -158,7 +158,7 @@ const streetLightPulse=[],flicker=[],lightboxes=[],barberPoles=[],cars=[],pedest
 const lampMetal=new THREE.MeshStandardMaterial({color:0x11151b,roughness:.52,metalness:.72});
 const lampBulbMat=new THREE.MeshBasicMaterial({color:0xffd39b,toneMapped:false});
 const poleGeo=new THREE.CylinderGeometry(.11,.15,5.8,8),armGeo=new THREE.BoxGeometry(1.35,.10,.10),hoodGeo=new THREE.BoxGeometry(.72,.20,.46),bulbGeo=new THREE.SphereGeometry(.16,8,6);
-const lampDefs=[];for(let x=-510;x<=510;x+=58){lampDefs.push([x,-8.7,1],[x,21.7,-1])}
+const lampDefs=[];for(let x=-510;x<=510;x+=44){lampDefs.push([x,-8.7,1],[x,21.7,-1])}
 const lampPoles=new THREE.InstancedMesh(poleGeo,lampMetal,lampDefs.length),lampArms=new THREE.InstancedMesh(armGeo,lampMetal,lampDefs.length),lampHoods=new THREE.InstancedMesh(hoodGeo,lampMetal,lampDefs.length),lampBulbs=new THREE.InstancedMesh(bulbGeo,lampBulbMat,lampDefs.length);
 const lm=new THREE.Matrix4(),lp=new THREE.Vector3(),lq=new THREE.Quaternion(),ls=new THREE.Vector3(1,1,1),le=new THREE.Euler();
 lampDefs.forEach(([x,z,side],i)=>{
@@ -168,6 +168,36 @@ lampDefs.forEach(([x,z,side],i)=>{
   lm.makeTranslation(x+side*1.18,5.66,z);lampBulbs.setMatrixAt(i,lm)
 });
 [lampPoles,lampArms,lampHoods,lampBulbs].forEach(o=>{o.instanceMatrix.needsUpdate=true;o.frustumCulled=true;freezeStatic(o);scene.add(o)});
+
+// Taiwan-style utility poles behind the rear sidewalk.
+// Poles/crossarms/transformer boxes are instanced; all overhead wires share one LineSegments draw call.
+const utilityPoleMat=new THREE.MeshLambertMaterial({color:0x3c3d3f});
+const utilityMetalMat=new THREE.MeshLambertMaterial({color:0x26292d});
+const utilityPoleGeo=new THREE.CylinderGeometry(.16,.22,8.8,8);
+const utilityCrossGeo=new THREE.BoxGeometry(2.2,.12,.12);
+const utilityBoxGeo=new THREE.BoxGeometry(.62,.84,.46);
+const utilityDefs=[];for(let x=-500;x<=500;x+=76)utilityDefs.push(x);
+const utilityPoles=new THREE.InstancedMesh(utilityPoleGeo,utilityPoleMat,utilityDefs.length);
+const utilityCrossbars=new THREE.InstancedMesh(utilityCrossGeo,utilityMetalMat,utilityDefs.length);
+const utilityBoxes=new THREE.InstancedMesh(utilityBoxGeo,utilityMetalMat,Math.ceil(utilityDefs.length/3));
+const um=new THREE.Matrix4();let ub=0;
+utilityDefs.forEach((x,i)=>{
+  um.makeTranslation(x,4.4,-12.9);utilityPoles.setMatrixAt(i,um);
+  um.makeTranslation(x,8.35,-12.9);utilityCrossbars.setMatrixAt(i,um);
+  if(i%3===1){um.makeTranslation(x+.38,6.35,-12.65);utilityBoxes.setMatrixAt(ub++,um)}
+});
+[utilityPoles,utilityCrossbars,utilityBoxes].forEach(o=>{o.instanceMatrix.needsUpdate=true;freezeStatic(o);scene.add(o)});
+const wirePts=[];
+for(let i=0;i<utilityDefs.length-1;i++){
+  const x1=utilityDefs[i],x2=utilityDefs[i+1],mid=(x1+x2)*.5;
+  for(const [y,z] of [[8.58,-13.32],[8.40,-12.92],[8.23,-12.53]]){
+    // Two straight segments with a subtle sag; cheap but visually convincing at street scale.
+    wirePts.push(x1,y,z, mid,y-.34,z, mid,y-.34,z, x2,y,z)
+  }
+}
+const wireGeo=new THREE.BufferGeometry();wireGeo.setAttribute('position',new THREE.Float32BufferAttribute(wirePts,3));
+const wireMat=new THREE.LineBasicMaterial({color:0x151719,transparent:true,opacity:.82});
+const utilityWires=new THREE.LineSegments(wireGeo,wireMat);freezeStatic(utilityWires);scene.add(utilityWires);
 // road-only traffic layer: cars, zebra crossings, pedestrians and signals stay inside the roadway footprint
 const crosswalkCanvas=document.createElement('canvas');crosswalkCanvas.width=256;crosswalkCanvas.height=256;const cxw=crosswalkCanvas.getContext('2d');cxw.clearRect(0,0,256,256);for(let i=0;i<11;i++){cxw.fillStyle='rgba(233,229,220,.82)';cxw.fillRect(8+i*23,0,13,256)}
 const crosswalkTex=new THREE.CanvasTexture(crosswalkCanvas);crosswalkTex.colorSpace=THREE.SRGBColorSpace;crosswalkTex.generateMipmaps=false;crosswalkTex.minFilter=THREE.LinearFilter;
@@ -180,6 +210,18 @@ function addTrafficSignal(x,z,flip=1,phase=0){
   const mats=[0xff3848,0xffc33a,0x43e477].map(col=>{const m=new THREE.MeshStandardMaterial({color:0x282d32,emissive:col,emissiveIntensity:.08,roughness:.22});return m});
   mats.forEach((m,i)=>{const bulb=new THREE.Mesh(new THREE.SphereGeometry(.22,12,8),m);bulb.position.set(0,6.05-i*.70,.37);g.add(bulb)});
   g.position.set(x,0,z);g.rotation.y=flip<0?Math.PI:0;scene.add(g);trafficSignals.push({mats,phase})
+}
+const pedSignalPoleGeo=new THREE.CylinderGeometry(.07,.09,3.55,7),pedSignalHeadGeo=new THREE.BoxGeometry(.54,.92,.38);
+const pedSignalPoleMat=new THREE.MeshLambertMaterial({color:0x171a1e}),pedSignalDarkMat=new THREE.MeshLambertMaterial({color:0x22272c});
+function addPedSignal(x,z,flip=1,phase=0){
+  const g=new THREE.Group();
+  const pole=new THREE.Mesh(pedSignalPoleGeo,pedSignalPoleMat);pole.position.y=1.78;g.add(pole);
+  const head=new THREE.Mesh(pedSignalHeadGeo,pedSignalDarkMat);head.position.set(0,3.62,.12);g.add(head);
+  const red=new THREE.MeshBasicMaterial({color:0x401014,toneMapped:false}),green=new THREE.MeshBasicMaterial({color:0x0d3b27,toneMapped:false});
+  const rg=new THREE.Mesh(new THREE.CircleGeometry(.13,10),red),gg=new THREE.Mesh(new THREE.CircleGeometry(.13,10),green);
+  rg.position.set(0,3.82,.315);gg.position.set(0,3.46,.315);g.add(rg,gg);
+  g.position.set(x,0,z);g.rotation.y=flip<0?Math.PI:0;scene.add(g);
+  trafficSignals.push({mats:[red,green],phase,ped:true})
 }
 // Mercedes-Benz GLS 580 inspired web LOD — proportions derived from the uploaded model.
 // Shared geometry keeps all moving cars cheap: only body material is unique per paint color.
@@ -313,7 +355,7 @@ function makePedestrian(x,z,phase=0,color=0xb95c4b,variant='casual',mode='cross'
   pedestrians.push({g,phase,baseX:x,baseZ:z,mode,dir,speed:.48+(Math.abs(Math.sin(phase))*0.36)})
 }
 [-1,0,1].forEach(copy=>{
-  for(const base of [-49.5,154.5]){const x=base+copy*LOOP_SPAN;addCrosswalk(x);addTrafficSignal(x-7,-5.8,1,copy+base);addTrafficSignal(x+7,19.2,-1,copy+base+.7);
+  for(const base of [-49.5,154.5]){const x=base+copy*LOOP_SPAN;addCrosswalk(x);addTrafficSignal(x-7,-5.8,1,copy+base);addTrafficSignal(x+7,19.2,-1,copy+base+.7);addPedSignal(x-4.8,-7.8,1,copy+base+.2);addPedSignal(x+4.8,20.8,-1,copy+base+.9);
     makePedestrian(x-2,-4,(copy+2)*.7+base*.01,0x8b5eb4,copy%2?'backpack':'casual','cross',1);makePedestrian(x+2,16,(copy+3)*.9+base*.02,0xd47d3d,copy%2?'longhair':'tall','cross',-1)}
 });
 [
@@ -377,6 +419,32 @@ function makeShopSignTexture(kind,label){
   const chars=[...label],vertical=chars.length<=7; if(vertical){chars.forEach((ch,i)=>x.fillText(ch,c.width/2,170+i*78))}else{x.save();x.translate(c.width/2,c.height/2);x.rotate(-Math.PI/2);x.font='900 54px Arial,sans-serif';x.fillText(label,0,0);x.restore()}
   x.strokeStyle='rgba(255,255,255,.42)';x.lineWidth=7;x.strokeRect(8,8,c.width-16,c.height-16);
   const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;tex.generateMipmaps=false;tex.minFilter=THREE.LinearFilter;tex.magFilter=THREE.LinearFilter;tex.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());shopSignTextureCache.set(key,tex);return tex
+}
+const MINI_SIGN_LABELS=['早餐','飲料','洗衣','手機維修','五金','機車','冷氣','影印','咖啡','藥局'];
+const miniSignTextureCache=new Map();
+function makeMiniSignTexture(label,variant=0){
+  const key=label+':'+variant;if(miniSignTextureCache.has(key))return miniSignTextureCache.get(key);
+  const cv=document.createElement('canvas');cv.width=256;cv.height=128;const g=cv.getContext('2d');
+  const pals=[['#ece1c5','#20242a'],['#b9322d','#f4ead3'],['#173d62','#f4ead3'],['#e1b24b','#22262b'],['#2c705d','#f5e8c9']];
+  const p=pals[variant%pals.length];g.fillStyle=p[0];g.fillRect(0,0,256,128);g.fillStyle=p[1];
+  g.font='900 42px "Noto Sans TC",Arial,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(label,128,64);
+  g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=5;g.strokeRect(5,5,246,118);
+  const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;miniSignTextureCache.set(key,tx);return tx
+}
+function addMiniSigns(group,id,dims,index,copy){
+  if(id==='hero')return;
+  const count=index%3===0?3:2;
+  for(let i=0;i<count;i++){
+    const label=MINI_SIGN_LABELS[(index*3+i*2+copy+20)%MINI_SIGN_LABELS.length],tex=makeMiniSignTexture(label,index+i);
+    const mat=new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide});
+    const w=2.7+(i%2)*.45,h=1.35;
+    const sign=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);
+    sign.position.set(-dims.w*.34+i*3.2,3.2+i*.75,dims.d*.5+1.12);
+    sign.rotation.z=(i%2?-.035:.025);group.add(sign);
+    // one tiny bracket makes the sign feel physically mounted without a new material.
+    const bracket=new THREE.Mesh(new THREE.BoxGeometry(.10,.10,.72),utilityMetalMat);
+    bracket.position.set(sign.position.x,sign.position.y+h*.55,dims.d*.5+.55);group.add(bracket)
+  }
 }
 function addProjectingSign(group,id,dims,index,copy){
   const def=SHOP_SIGNS[id]?.[0];if(!def)return;const [kind,label]=def,tex=makeShopSignTexture(kind,label),h=kind==='seven'?6.6:5.3,d=3.4,w=.72;
@@ -571,6 +639,7 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);portfolioBoards.get(id).push(mat);
     // main billboard is intentionally the only portfolio identifier on the façade
     addProjectingSign(group,id,dims,index,copy);
+    addMiniSigns(group,id,dims,index,copy);
     const dynamicSet=new Set(barberPoles);
     group.traverse(n=>{if(n!==group&&!dynamicSet.has(n)){n.updateMatrix();n.matrixAutoUpdate=false}});
     buildings.set(group.name,group);
@@ -666,7 +735,7 @@ function animate(){
   if(lightTick!==lastLightTick){lastLightTick=lightTick;
     flicker.forEach((m,i)=>{const s=.82+.18*(.5+.5*Math.sin(t*(1.05+(i%3)*.13)+m.userData.phase));m.color.copy(m.userData.base).multiplyScalar(s);m.opacity=.78+.14*(.5+.5*Math.sin(t*.82+m.userData.phase))});
     lightboxes.forEach((o,i)=>{if(Number.isFinite(o.x)&&Math.abs(o.x-currentX)>135)return;const phase=o.phase??o.mat?.userData.phase??i*.77,wave=.86+.14*(.5+.5*Math.sin(t*(1.0+(i%5)*.07)+phase)),blink=Math.sin(t*5.3+i*2.37)>.996?.45:1;if(o.mat)o.mat.emissiveIntensity=(o.mat.userData.baseIntensity||1.35)*wave*blink;if(o.halo)o.halo.opacity=.07+.09*wave*blink})
-    trafficSignals.forEach((s,i)=>{const q=(t+s.phase)%9,active=q<4?2:q<5.2?1:0;s.mats.forEach((m,j)=>m.emissiveIntensity=j===active?2.5:.05)})
+    trafficSignals.forEach((s,i)=>{const q=(t+s.phase)%9;if(s.ped){const walk=q>=4&&q<8;s.mats[0].color.set(walk?0x401014:0xff3040);s.mats[1].color.set(walk?0x28e98b:0x0d3b27)}else{const active=q<4?2:q<5.2?1:0;s.mats.forEach((m,j)=>m.emissiveIntensity=j===active?2.5:.05)}})
   }
   barberPoles.forEach((p,i)=>p.rotation.y=t*(1.45+i*.05));
   cars.forEach(o=>{o.g.position.x+=o.dir*o.speed*dt;if(o.g.position.x>510)o.g.position.x=-510;if(o.g.position.x<-510)o.g.position.x=510});
