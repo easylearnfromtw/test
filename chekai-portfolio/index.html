@@ -381,12 +381,16 @@ function makeTexture(id,quality='base'){
 
   // clean billboard face: no decorative divider lines
   x.fillStyle=fg;x.textBaseline='alphabetic';
-  x.font='800 34px "SFMono-Regular",Consolas,monospace';x.fillText(d.index,74,82);
-  x.globalAlpha=.68;x.font='650 28px "Noto Sans TC",Arial,sans-serif';x.fillText(BOARD_LABELS[id]||d.nav,170,82);x.globalAlpha=1;
+  if(id!=='hero'){
+    x.font='800 34px "SFMono-Regular",Consolas,monospace';x.fillText(d.index,74,82);
+    x.globalAlpha=.68;x.font='650 28px "Noto Sans TC",Arial,sans-serif';x.fillText(BOARD_LABELS[id]||d.nav,170,82);x.globalAlpha=1;
+  }
 
   if(id==='hero'){
-    x.font='950 164px Arial,sans-serif';x.fillText('CHE-KAI',74,348);x.fillText('LIN',74,524);
-    x.fillStyle=fg;x.font='700 34px Arial,sans-serif';x.fillText('WRITER × DESIGNER × STUDENT',74,668);
+    x.fillStyle=fg;
+    x.font='950 188px "Noto Sans TC",Arial,sans-serif';x.fillText('林哲愷',74,390);
+    x.globalAlpha=.82;x.font='800 58px Arial,sans-serif';x.fillText('CHE-KAI LIN',80,500);x.globalAlpha=1;
+    x.font='650 30px Arial,sans-serif';x.globalAlpha=.62;x.fillText('WRITER × DESIGNER × STUDENT',80,650);x.globalAlpha=1;
   }else{
     // Giant single-purpose title. No experience bullet points on the street façade.
     const title=d.title;
@@ -518,13 +522,14 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     buildings.set(group.name,group);
   }
   spawn('hero',4,0);
+  const openingHero=buildings.get('hero:0');if(openingHero)openingHero.visible=true;
   [-1,0,1].forEach(copy=>cycleBuildings.forEach((id,index)=>spawn(id,index,copy)));
   [-1,0,1].forEach(copy=>{ addSeparator(-49.5+copy*LOOP_SPAN,copy*2+11); addSeparator(154.5+copy*LOOP_SPAN,copy*2+12); });
   document.getElementById('loading').classList.add('done'); focus('hero',false)
 },undefined,e=>{console.error(e);document.querySelector('#loading div').innerHTML='<strong>MODEL ERROR</strong>3D MODEL COULD NOT LOAD';});
 // nav/drawer
 const CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
-let activeId='hero',cycleCursor=0;
+let activeId='hero',cycleCursor=0,openingHeroRetired=false;
 const nav=document.getElementById('nav');if(nav)['hero',...CYCLE].forEach((id,i)=>{const b=document.createElement('button');b.textContent=id==='hero'?'Home':DATA[id].index+' '+DATA[id].nav;b.dataset.id=id;if(!i)b.classList.add('active');b.onclick=()=>focus(id,true);nav.appendChild(b)});
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
 function openDrawer(id){const d=DATA[id];document.getElementById('dk').textContent=`${d.index} / ${d.nav}`;document.getElementById('dt').textContent=d.title;document.getElementById('di').textContent=d.intro;document.getElementById('items').innerHTML=d.items.map(x=>`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');drawer.classList.add('open')}
@@ -535,8 +540,9 @@ function updateLoopUI(id){
 }
 function nearestLapFor(id){ return Math.round((currentX-CONFIG[id].x)/LOOP_SPAN); }
 function focus(id,open=false,lap=null){
-  const cfg=CONFIG[id]; if(!cfg) return; activeId=id;setPortfolioBoardQuality(id);
-  const heroGroup=buildings.get('hero:0');if(heroGroup)heroGroup.visible=id==='hero';
+  const cfg=CONFIG[id]; if(!cfg) return;
+  const wasHero=activeId==='hero';activeId=id;setPortfolioBoardQuality(id);
+  if(wasHero&&id!=='hero')openingHeroRetired=true;
   const useLap=(id==='hero')?0:(lap===null?nearestLapFor(id):lap);
   targetX=(id==='hero')?cfg.x:(cfg.x+useLap*LOOP_SPAN);
   targetY=id==='hero'?6.0:5.8;
@@ -579,6 +585,13 @@ function animate(){
   currentY=moveToward(currentY,targetY,7.5*dt);
   currentZ=moveToward(currentZ,targetZ,13*dt);
   wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.lookAt(currentX,LOOK_AT_Y,LOOK_AT_Z);
+  const openingHero=buildings.get('hero:0');
+  if(openingHero&&openingHeroRetired&&openingHero.visible){
+    const dx=Math.abs(currentX-CONFIG.hero.x);
+    // Keep it alive during the departure so it physically slides off-screen.
+    // Once comfortably outside the view, remove it forever from the loop.
+    if(dx>48)openingHero.visible=false;
+  }
 
   // signage flicker at ~12 Hz instead of touching dozens of materials every frame
   const lightTick=Math.floor(t*12);
@@ -613,6 +626,6 @@ function animate(){
   }
   renderer.render(scene,camera);requestAnimationFrame(animate)
 }animate();
-const initial=location.hash.slice(1);if(DATA[initial])focus(initial,false);
+const initial=location.hash.slice(1);if(DATA[initial]){if(initial!=='hero')openingHeroRetired=true;focus(initial,false)}
 </script>
 </body></html>
