@@ -3,361 +3,208 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#F2E9DA" />
-<title>CHE-KAI LIN 林哲愷 — Personal Atlas V5</title>
-<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. An interactive horizontal atlas of web works, art, leadership and public engagement." />
+<meta name="theme-color" content="#07131f" />
+<title>CHE-KAI LIN 林哲愷 — 3D City Portfolio</title>
+<meta name="description" content="Che-Kai Lin 林哲愷 — Writer X Designer X Student. Interactive 3D billboard city portfolio." />
 <style>
 :root{
-  --shell:#f2e9da;
-  --paper:#faf6ef;
-  --sand:#dfccb0;
-  --sand2:#caae89;
-  --wood:#8d684b;
-  --olive:#465043;
-  --ink:#24251f;
-  --muted:#716960;
-  --line:rgba(36,37,31,.16);
-  --line2:rgba(36,37,31,.08);
-  --glass:rgba(250,246,239,.78);
-  --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,"Noto Serif TC","Songti TC",serif;
+  --night:#07131f; --night2:#0d2740; --ink:#101318; --paper:#eee9df; --red:#e7332f; --red2:#ff4a43;
+  --blue:#6ac8ff; --muted:#aeb8c4; --line:rgba(255,255,255,.17); --glass:rgba(7,14,23,.74);
   --sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;
+  --display:"Arial Narrow","Avenir Next Condensed","Noto Sans TC",sans-serif;
   --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  --cam-x:0px; --cam-y:0px; --yaw:0deg; --pitch:0deg; --zoom:1;
 }
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--shell);color:var(--ink);font-family:var(--sans)}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--night);color:#fff;font-family:var(--sans)}
 button{font:inherit;color:inherit}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}
+body::after{content:"";position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.10;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E")}
 
-/* fixed UI */
-.chrome{position:fixed;inset:0;pointer-events:none;z-index:20}
-.header{position:absolute;left:22px;right:22px;top:18px;height:64px;border:1px solid var(--line);border-radius:22px;background:rgba(250,246,239,.76);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;padding:0 17px;box-shadow:0 18px 70px rgba(36,37,31,.07);pointer-events:auto}
-.brand{font:700 11px/1 var(--sans);letter-spacing:.15em;text-transform:uppercase;white-space:nowrap}
-.brand span{font-family:var(--serif);font-size:14px;font-weight:400;letter-spacing:.02em;text-transform:none;margin-left:8px;color:var(--wood)}
-.marker-nav{display:flex;justify-content:center;align-items:center;gap:4px;min-width:0}
-.marker{appearance:none;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;font:9px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:.2s;white-space:nowrap}
-.marker:before{content:"";width:6px;height:6px;border-radius:50%;border:1px solid currentColor;transition:.2s}
-.marker:hover,.marker.active{color:var(--ink);background:rgba(70,80,67,.07)}
-.marker.active:before{background:var(--wood);border-color:var(--wood);box-shadow:0 0 0 4px rgba(141,104,75,.11)}
-.clock{font:10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+/* top chrome */
+.topbar{position:fixed;z-index:70;left:0;right:0;top:0;height:58px;padding:0 22px;display:flex;align-items:center;gap:22px;background:linear-gradient(180deg,rgba(5,12,20,.92),rgba(5,12,20,.48));border-bottom:1px solid rgba(255,255,255,.13);backdrop-filter:blur(12px)}
+.logo{font:800 17px/1 var(--display);letter-spacing:.08em;white-space:nowrap}.identity{font:10px/1 var(--mono);letter-spacing:.18em;color:#d9dce1;white-space:nowrap}.top-spacer{flex:1}.top-links{display:flex;gap:18px;font:9px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#d9dce1}.top-links button{border:0;background:transparent;cursor:pointer;padding:8px 0}.top-links button:hover{color:var(--red2)}
+.lang{font:10px var(--mono);letter-spacing:.08em}.lang b{color:var(--red2)}
 
-.guide{position:absolute;left:24px;bottom:22px;border:1px solid var(--line);border-radius:18px;background:rgba(250,246,239,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:14px 16px;pointer-events:auto;box-shadow:0 18px 60px rgba(36,37,31,.06)}
-.guide-top{font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--wood);margin-bottom:6px}
-.guide strong{display:block;font:400 22px/1 var(--serif);letter-spacing:-.035em;margin-bottom:4px}
-.guide p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.side-index{position:fixed;z-index:68;right:12px;top:86px;display:grid;gap:4px;padding:8px 6px;border-left:1px solid rgba(255,255,255,.12);background:rgba(5,12,20,.24);backdrop-filter:blur(8px)}
+.side-index button{width:34px;height:30px;border:0;background:transparent;color:rgba(255,255,255,.46);font:10px var(--mono);cursor:pointer;border-radius:7px}.side-index button:hover,.side-index button.active{color:#fff;background:rgba(231,51,47,.16);box-shadow:inset 2px 0 0 var(--red2)}
 
-.progressbox{position:absolute;right:24px;bottom:22px;width:260px;border:1px solid var(--line);border-radius:18px;background:rgba(250,246,239,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:13px 15px;pointer-events:none;box-shadow:0 18px 60px rgba(36,37,31,.06)}
-.progressmeta{display:flex;justify-content:space-between;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
-.track{height:4px;border-radius:99px;background:rgba(36,37,31,.1);overflow:hidden}.fill{height:100%;width:0;background:var(--olive);border-radius:99px}
+.help{position:fixed;z-index:65;left:18px;bottom:14px;font:9px/1.65 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.help b{color:#fff}.reset{position:fixed;z-index:65;right:18px;bottom:15px;border:1px solid rgba(255,255,255,.18);background:rgba(5,12,20,.52);backdrop-filter:blur(8px);color:#fff;border-radius:999px;padding:8px 12px;font:9px var(--mono);letter-spacing:.1em;cursor:pointer}
 
-/* map */
-.viewport{width:100vw;height:100vh;overflow:hidden;touch-action:none;cursor:grab;position:relative}
-.viewport.dragging{cursor:grabbing}
-.world{position:absolute;left:0;top:0;width:6100px;height:1550px;will-change:transform;background:
-  radial-gradient(circle at 8% 23%,rgba(223,204,176,.78),transparent 12%),
-  radial-gradient(circle at 47% 68%,rgba(202,174,137,.15),transparent 16%),
-  radial-gradient(circle at 82% 28%,rgba(70,80,67,.08),transparent 12%),
-  linear-gradient(rgba(36,37,31,.028) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(36,37,31,.028) 1px,transparent 1px);
-background-size:auto,auto,auto,80px 80px,80px 80px}
-.world:after{content:"PERSONAL ATLAS · TAIWAN · 2026";position:absolute;right:140px;bottom:86px;font:10px var(--mono);letter-spacing:.2em;color:rgba(36,37,31,.26)}
-.route-svg{position:absolute;left:0;top:0;width:6100px;height:1550px;pointer-events:none;overflow:visible}
-.route-line{fill:none;stroke:rgba(70,80,67,.30);stroke-width:2;stroke-dasharray:6 10;stroke-linecap:round}
-.route-shadow{fill:none;stroke:rgba(141,104,75,.08);stroke-width:38;stroke-linecap:round}
-.node{fill:var(--paper);stroke:rgba(70,80,67,.48);stroke-width:2}.node-inner{fill:var(--wood)}
+/* scene */
+.stage{position:fixed;inset:58px 0 0;perspective:1350px;perspective-origin:50% 46%;overflow:hidden;cursor:grab;background:
+  radial-gradient(circle at 50% 32%,rgba(67,126,179,.28),transparent 26%),
+  linear-gradient(180deg,#0a2540 0%,#07131f 59%,#050b12 100%)}
+.stage.dragging{cursor:grabbing}
+.skyline{position:absolute;inset:0;pointer-events:none;opacity:.9;background:
+  linear-gradient(90deg,transparent 0 4%,rgba(11,25,39,.95) 4% 8%,transparent 8% 11%,rgba(9,21,34,.98) 11% 17%,transparent 17% 22%,rgba(8,20,32,.98) 22% 28%,transparent 28% 72%,rgba(9,21,34,.98) 72% 80%,transparent 80% 84%,rgba(9,21,34,.98) 84% 92%,transparent 92%),
+  repeating-linear-gradient(0deg,transparent 0 22px,rgba(255,192,109,.08) 23px 25px)}
+.city{position:absolute;left:50%;top:50%;width:1780px;height:900px;transform-style:preserve-3d;transform:translate3d(calc(-50% + var(--cam-x)),calc(-47% + var(--cam-y)),0) rotateX(var(--pitch)) rotateY(var(--yaw)) scale(var(--zoom));transition:transform .18s ease-out;will-change:transform}
+.stage.dragging .city{transition:none}
 
-.place{position:absolute}
-.card{border:1px solid var(--line);border-radius:30px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 24px 90px rgba(36,37,31,.08);overflow:hidden}
-.card:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.27),transparent 36%)}
-.kicker{position:relative;z-index:1;font:10px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--wood);margin-bottom:20px}
-.bigtitle{position:relative;z-index:1;margin:0;font:400 62px/.88 var(--serif);letter-spacing:-.055em}
-.bodycopy{position:relative;z-index:1;color:var(--muted);font-size:14px;line-height:1.7}
+/* ground / plaza */
+.ground{position:absolute;left:50%;bottom:-135px;width:1500px;height:620px;transform-style:preserve-3d;transform:translateX(-50%) rotateX(67deg) translateZ(-120px);transform-origin:center bottom;background:
+  linear-gradient(90deg,transparent 49.5%,rgba(231,51,47,.5) 49.7% 50.3%,transparent 50.5%),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 90px),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 76px),
+  linear-gradient(180deg,rgba(23,42,59,.35),rgba(5,12,20,.92));border:1px solid rgba(255,255,255,.08);box-shadow:0 0 90px rgba(255,35,35,.12) inset}
+.ground::before{content:"";position:absolute;left:50%;top:120px;width:440px;height:280px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.14);border-radius:50%;box-shadow:0 0 0 28px rgba(231,51,47,.08),0 0 60px rgba(231,51,47,.18)}
+.ground::after{content:"CKL";position:absolute;left:50%;top:210px;transform:translateX(-50%);font:900 86px var(--display);letter-spacing:-.06em;color:rgba(231,51,47,.20)}
+.steps{position:absolute;left:50%;bottom:155px;width:360px;height:120px;transform:translateX(-50%) translateZ(45px) rotateX(56deg);background:repeating-linear-gradient(0deg,#202b35 0 8px,#111a22 8px 15px);box-shadow:0 22px 38px rgba(0,0,0,.5),0 0 28px rgba(231,51,47,.18)}
+.plaza-label{position:absolute;left:50%;bottom:300px;transform:translateX(-50%) translateZ(40px);font:9px var(--mono);letter-spacing:.28em;color:rgba(255,255,255,.56);white-space:nowrap}
 
-/* 01 Hero */
-.hero{left:150px;top:230px;width:760px;height:520px;padding:34px 36px;background:linear-gradient(150deg,rgba(250,246,239,.85),rgba(242,233,218,.76))}
-.hero .atlasno{position:absolute;right:30px;top:28px;font:10px var(--mono);color:var(--muted);letter-spacing:.1em}
-.hero h1{position:relative;z-index:1;margin:4px 0 18px;font:400 112px/.78 var(--serif);letter-spacing:-.082em;max-width:7ch}.hero h1 i{font-style:italic;color:var(--wood)}
-.hero .cn{position:relative;z-index:1;display:flex;align-items:center;gap:16px;font:400 25px/1 var(--serif);letter-spacing:.3em;margin-bottom:28px}.hero .cn:before{content:"";width:68px;height:1px;background:var(--ink)}
-.hero .identity{position:relative;z-index:1;display:inline-flex;align-items:center;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.22);font:700 10px var(--sans);letter-spacing:.17em;text-transform:uppercase}
-.hero .statement{position:absolute;left:36px;bottom:34px;max-width:27ch;font:400 22px/1.18 var(--serif);letter-spacing:-.025em;color:var(--ink)}.hero .statement em{color:var(--olive);font-style:italic}
-.hero .coord{position:absolute;right:30px;bottom:33px;text-align:right;font:9px/1.55 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* buildings */
+.tower{position:absolute;left:50%;bottom:218px;width:var(--w);height:var(--h);transform-style:preserve-3d;transform:translateX(calc(-50% + var(--x))) translateY(var(--y)) translateZ(var(--z)) rotateY(var(--ry));transition:transform .45s cubic-bezier(.2,.8,.2,1),filter .35s,opacity .35s;filter:drop-shadow(0 34px 32px rgba(0,0,0,.46))}
+.tower::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#172938,#0b141d 62%,#091019);border:1px solid rgba(255,255,255,.10);box-shadow:inset 0 0 0 2px rgba(0,0,0,.3);transform:translateZ(-18px)}
+.tower::after{content:"";position:absolute;top:0;bottom:0;width:42px;background:linear-gradient(180deg,#1c3041,#071018);border:1px solid rgba(255,255,255,.07);right:-42px;transform-origin:left center;transform:rotateY(90deg)}
+.tower.focused{transform:translateX(calc(-50% + var(--x))) translateY(calc(var(--y) - 18px)) translateZ(calc(var(--z) + 150px)) rotateY(0deg) scale(1.05);z-index:20;filter:drop-shadow(0 40px 40px rgba(0,0,0,.62)) drop-shadow(0 0 32px rgba(231,51,47,.18))}
+.city.has-focus .tower:not(.focused){filter:brightness(.58) saturate(.65) blur(.4px);opacity:.62}
+.facade-grid{position:absolute;inset:0;pointer-events:none;opacity:.6;background:repeating-linear-gradient(90deg,transparent 0 28px,rgba(120,190,236,.12) 29px 31px),repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,192,109,.08) 39px 41px)}
+.billboard{position:absolute;left:7%;right:7%;top:7%;bottom:7%;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,rgba(16,18,22,.98),rgba(8,11,16,.98));box-shadow:0 0 0 6px #070b0f,0 0 0 8px rgba(255,255,255,.08),0 10px 28px rgba(0,0,0,.38),0 0 22px rgba(231,51,47,.06);overflow:hidden;cursor:pointer;text-align:left;padding:16px 17px;transition:transform .24s,box-shadow .24s,border-color .24s}
+.billboard::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(145deg,rgba(255,255,255,.06),transparent 25% 70%,rgba(231,51,47,.06))}
+.billboard:hover{transform:translateZ(18px) scale(1.018);border-color:rgba(255,255,255,.36);box-shadow:0 0 0 6px #070b0f,0 0 0 8px rgba(255,255,255,.1),0 18px 36px rgba(0,0,0,.46),0 0 24px rgba(231,51,47,.16)}
+.billboard:active{transform:translateZ(8px) scale(.995)}
+.billboard.paper{background:linear-gradient(155deg,#f2ede3,#dcd6ca);color:var(--ink)}
+.billboard.red{background:linear-gradient(145deg,#d52c28,#7f1414);color:#fff}
+.board-head{display:flex;align-items:flex-start;gap:10px;font:900 clamp(18px,1.8vw,34px)/.9 var(--display);letter-spacing:-.035em;text-transform:uppercase;position:relative;z-index:2}.board-no{color:var(--red2);font-size:.7em;min-width:31px}.paper .board-head{color:#101318}.red .board-no{color:#fff}.board-list{position:relative;z-index:2;margin:18px 0 0;padding:0;list-style:none;font-size:clamp(11px,.83vw,15px);line-height:1.72}.board-list li{white-space:normal}.board-list.compact{font-size:clamp(10px,.72vw,13px);line-height:1.62}.board-list .accent{color:var(--red2)}.paper .board-list .accent{color:#c1221e}
+.board-kicker{position:absolute;right:12px;bottom:10px;font:8px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.48)}.paper .board-kicker{color:rgba(16,19,24,.45)}
+.visual{position:absolute;inset:auto 12px 12px auto;width:76px;height:62px;opacity:.92;pointer-events:none}.visual.code{background:repeating-linear-gradient(0deg,#b9d8ea 0 2px,transparent 2px 7px);border:1px solid rgba(255,255,255,.3);transform:skewY(-5deg)}.visual.books{background:linear-gradient(#111 0 0) 5px 6px/62px 10px no-repeat,linear-gradient(#333 0 0) 0 24px/72px 12px no-repeat,linear-gradient(#111 0 0) 9px 44px/58px 10px no-repeat}.visual.pen{width:11px;height:70px;background:#111;border-radius:7px;transform:rotate(23deg);right:35px;bottom:12px;box-shadow:inset 0 0 0 2px #777}.visual.shoe{width:74px;height:32px;border-radius:70% 20% 26% 24%;background:#111;transform:rotate(-8deg);bottom:17px}.visual.shoe::after{content:"";position:absolute;left:8px;right:7px;bottom:-4px;height:5px;background:#ddd;border-radius:3px}.visual.badge{width:44px;height:58px;border-radius:8px;background:linear-gradient(#d5d7d8 0 20%,#b4b9be 20%);border:3px solid #191d23;box-shadow:0 0 0 2px #cbd0d4;right:25px}.visual.megaphone{width:70px;height:45px;clip-path:polygon(0 32%,68% 0,68% 100%,0 68%);background:#14181d}.visual.camera{width:68px;height:45px;border-radius:5px;background:#111}.visual.camera::before{content:"";position:absolute;width:31px;height:31px;border-radius:50%;left:19px;top:7px;border:5px solid #a8adb0;background:#20252c}.visual.chair{border:5px solid #111;border-top-width:14px;background:transparent;transform:skewY(-5deg)}.visual.globe{width:58px;height:58px;border-radius:50%;border:2px solid #9bd4f6;box-shadow:inset 0 0 0 12px rgba(106,200,255,.08);right:18px;bottom:14px}
 
-/* 02 Profile */
-.profile{left:1120px;top:140px;width:620px;height:610px;padding:32px}
-.profile .bigtitle{font-size:64px}
-.profile .lead{margin:23px 0 0;font:400 24px/1.2 var(--serif);letter-spacing:-.026em;max-width:28ch}
-.profile .lead em{font-style:italic;color:var(--wood)}
-.facts{position:relative;z-index:1;margin-top:30px;border-top:1px solid var(--line)}
-.fact{display:grid;grid-template-columns:118px 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--line2)}
-.fact b{font:9px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}.fact span{font-size:13px;line-height:1.5}
-.profile-stamp{position:absolute;right:32px;bottom:31px;width:74px;height:74px;border:1px solid rgba(141,104,75,.34);border-radius:50%;display:grid;place-items:center;text-align:center;font:8px/1.4 var(--mono);letter-spacing:.12em;color:var(--wood);transform:rotate(-8deg);opacity:.72}
+/* central identity tower */
+.center-identity{position:absolute;left:50%;bottom:300px;width:280px;height:520px;transform-style:preserve-3d;transform:translateX(-50%) translateZ(55px);z-index:8;filter:drop-shadow(0 30px 28px rgba(0,0,0,.5))}
+.center-identity .panel{position:absolute;left:10px;right:10px;border:7px solid #080c11;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.id-top{top:0;height:235px;background:linear-gradient(145deg,#e23832,#7d1414);display:grid;place-items:center;text-align:center;padding:20px}.crown{font-size:41px;line-height:1}.name{font:900 48px/.83 var(--display);letter-spacing:-.055em;text-transform:uppercase}.id-role{margin-top:14px;font:10px/1.5 var(--mono);letter-spacing:.09em;text-transform:uppercase}
+.id-about{top:245px;height:205px;background:#eee8dc;color:#111;padding:16px}.id-about .board-head{font-size:28px}.id-about ul{margin-top:16px;font-size:13px;line-height:1.65}
+.id-bottom{top:460px;height:120px;background:linear-gradient(180deg,#15263a,#0b1520);padding:15px 18px;font:11px/1.45 var(--mono);letter-spacing:.08em;text-transform:uppercase}.id-bottom b{display:block;color:var(--red2);font:italic 22px/1 var(--display);letter-spacing:-.02em;margin-bottom:10px}
 
-/* 03 web */
-.web{left:1960px;top:265px;width:1050px;height:670px;padding:32px}
-.webhead{display:grid;grid-template-columns:1fr 300px;gap:30px;align-items:end;margin-bottom:23px}.webhead p{margin:0;text-align:right;font:11px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.works{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.work{position:relative;min-height:205px;border:1px solid var(--line);border-radius:21px;padding:14px;display:grid;grid-template-columns:112px 1fr;gap:16px;align-items:stretch;background:rgba(255,255,255,.20);overflow:hidden;transition:transform .28s,background .28s,border-color .28s,box-shadow .28s}.work:hover{transform:translateY(-5px);background:rgba(255,255,255,.38);border-color:rgba(36,37,31,.25);box-shadow:0 18px 45px rgba(36,37,31,.07)}
-.work-copy{position:relative;z-index:2;padding:5px 28px 4px 0;display:flex;flex-direction:column;justify-content:center}.work .num{font:9px var(--mono);color:var(--muted);letter-spacing:.08em;text-transform:uppercase}.work h4{margin:14px 0 9px;font:400 34px/1 var(--serif);letter-spacing:-.045em}.work p{margin:0;color:var(--muted);font-size:11px;line-height:1.62;max-width:31ch}.work .arrow{position:absolute;right:16px;top:14px;font:20px var(--serif);color:var(--wood);z-index:3}
-.landmark{position:relative;min-height:176px;border:1px solid var(--line2);border-radius:15px;background:linear-gradient(155deg,rgba(223,204,176,.52),rgba(250,246,239,.45));overflow:hidden;transition:transform .32s cubic-bezier(.2,.7,.2,1),background .32s}.work:hover .landmark{transform:scale(.97);background:linear-gradient(155deg,rgba(223,204,176,.68),rgba(250,246,239,.56))}.landmark:after{content:"";position:absolute;left:12px;right:12px;bottom:12px;height:1px;background:rgba(36,37,31,.16)}
-.landmark-signwell:before{content:"";position:absolute;left:25px;right:25px;bottom:28px;height:92px;background:repeating-linear-gradient(90deg,var(--olive) 0 9px,transparent 9px 17px);clip-path:polygon(0 100%,0 30%,10% 30%,10% 8%,22% 8%,22% 44%,36% 44%,36% 0,51% 0,51% 25%,66% 25%,66% 12%,81% 12%,81% 50%,100% 50%,100% 100%);opacity:.88}
-.landmark-taiwan:before{content:"";position:absolute;width:72px;height:94px;left:50%;bottom:27px;transform:translateX(-50%);border:10px solid var(--wood);border-bottom-width:15px;border-radius:38px 38px 5px 5px;box-shadow:inset 0 0 0 1px rgba(250,246,239,.35)}.landmark-taiwan span{position:absolute;width:46px;height:7px;left:50%;top:39px;transform:translateX(-50%);background:var(--olive);border-radius:2px}
-.landmark-city:before{content:"";position:absolute;width:92px;height:92px;border-radius:50%;left:50%;top:32px;transform:translateX(-50%);background:repeating-radial-gradient(circle,var(--ink) 0 2px,#34362f 2px 5px);box-shadow:0 0 0 8px rgba(141,104,75,.13)}.landmark-city span{position:absolute;width:20px;height:20px;border-radius:50%;left:50%;top:68px;transform:translateX(-50%);background:var(--sand2);border:4px solid var(--paper)}
-.landmark-lab:before{content:"";position:absolute;inset:24px;background:linear-gradient(rgba(70,80,67,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(70,80,67,.16) 1px,transparent 1px);background-size:18px 18px;border:1px solid rgba(70,80,67,.2);border-radius:5px}.landmark-lab span{position:absolute;left:34px;bottom:38px;width:56px;height:34px;border-left:7px solid var(--wood);border-bottom:7px solid var(--wood);transform:skewX(-15deg)}
+/* tower placement */
+.t2{--x:-650px;--y:30px;--z:-20px;--ry:9deg;--w:360px;--h:510px}
+.t3{--x:-660px;--y:360px;--z:-30px;--ry:9deg;--w:350px;--h:280px}
+.t4{--x:-330px;--y:230px;--z:0px;--ry:5deg;--w:360px;--h:360px}
+.t5{--x:420px;--y:10px;--z:10px;--ry:-8deg;--w:360px;--h:410px}
+.t6{--x:705px;--y:20px;--z:-25px;--ry:-10deg;--w:310px;--h:395px}
+.t7{--x:385px;--y:380px;--z:0px;--ry:-7deg;--w:295px;--h:250px}
+.t8{--x:685px;--y:385px;--z:-20px;--ry:-10deg;--w:290px;--h:265px}
+.t9{--x:770px;--y:635px;--z:-45px;--ry:-11deg;--w:300px;--h:205px}
 
-/* 04 art */
-.art{left:3260px;top:120px;width:1020px;height:770px;padding:31px}
-.arthead{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:end;margin-bottom:22px}.arthead p{margin:0;font-size:12px;line-height:1.65;color:var(--muted)}
-.gallery{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr .72fr .95fr;grid-auto-rows:208px;gap:11px}.tile{position:relative;border:1px solid var(--line);border-radius:19px;overflow:hidden;background:var(--sand)}.tile:nth-child(1){grid-row:span 2}.tile:nth-child(4){grid-column:span 2}
-.tile:before{content:"";position:absolute;inset:0;transition:transform .4s}.tile:hover:before{transform:scale(1.035)}
-.tile:nth-child(1):before{background:radial-gradient(circle at 63% 30%,var(--paper) 0 12%,transparent 12.5%),linear-gradient(135deg,var(--olive) 0 35%,var(--sand) 35% 66%,var(--wood) 66%)}
-.tile:nth-child(2):before{background:repeating-linear-gradient(90deg,var(--paper) 0 16px,var(--sand) 16px 32px)}
-.tile:nth-child(3):before{background:radial-gradient(circle at 55% 30%,rgba(70,80,67,.38),transparent 27%),linear-gradient(160deg,var(--paper),var(--sand))}
-.tile:nth-child(4):before{background:linear-gradient(12deg,transparent 42%,rgba(36,37,31,.3) 42.5% 43.3%,transparent 44%),linear-gradient(100deg,var(--sand),var(--paper))}
-.tile:nth-child(5):before{background:conic-gradient(from 90deg at 50% 50%,var(--olive),var(--sand),var(--wood),var(--paper),var(--olive))}
-.label{position:absolute;z-index:2;left:12px;bottom:12px;padding:8px 10px;border-radius:11px;background:rgba(250,246,239,.9);border:1px solid rgba(36,37,31,.12);font:9px/1.5 var(--mono);letter-spacing:.05em;text-transform:uppercase}.label strong{display:block}.label span{color:var(--muted)}
+/* detail drawer */
+.drawer{position:fixed;z-index:90;right:18px;top:74px;bottom:18px;width:min(430px,calc(100vw - 36px));transform:translateX(calc(100% + 28px));transition:transform .38s cubic-bezier(.2,.8,.2,1);background:rgba(8,14,22,.94);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:24px 22px;box-shadow:0 30px 80px rgba(0,0,0,.46);overflow:auto}.drawer.open{transform:translateX(0)}
+.drawer-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);cursor:pointer;font-size:18px}.drawer-no{font:10px var(--mono);letter-spacing:.14em;color:var(--red2);text-transform:uppercase}.drawer h2{margin:10px 42px 12px 0;font:900 42px/.92 var(--display);text-transform:uppercase;letter-spacing:-.04em}.drawer p{color:#b8c1cb;font-size:13px;line-height:1.7}.drawer-list{list-style:none;padding:0;margin:22px 0 0;border-top:1px solid rgba(255,255,255,.13)}.drawer-list li{padding:13px 0;border-bottom:1px solid rgba(255,255,255,.10);font-size:13px;line-height:1.5}.drawer-list small{display:block;margin-top:4px;color:#8f9aa6;font:9px var(--mono);letter-spacing:.08em;text-transform:uppercase}.drawer-foot{margin-top:24px;color:#687687;font:9px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase}
 
-/* 05 experience */
-.exp{left:4520px;top:300px;width:1020px;height:820px;padding:31px}
-.exp .bigtitle{font-size:58px}.roles{position:relative;z-index:1;margin-top:22px;border-top:1px solid var(--line)}
-.role{display:grid;grid-template-columns:52px 1fr auto;gap:16px;align-items:start;padding:15px 0;border-bottom:1px solid var(--line2)}.rno{font:9px var(--mono);letter-spacing:.08em;color:var(--muted);padding-top:6px}.role h4{margin:0 0 5px;font:400 24px/1.05 var(--serif);letter-spacing:-.035em}.role p{margin:0;color:var(--muted);font-size:11px;line-height:1.55}.tag{padding:6px 9px;border:1px solid var(--line);border-radius:999px;font:8px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-
-/* 06 public */
-.public{left:5550px;top:160px;width:430px;height:970px;padding:29px;background:linear-gradient(180deg,rgba(70,80,67,.95),rgba(61,70,58,.96));color:var(--paper);border-color:rgba(250,246,239,.18)}
-.public .kicker{color:rgba(250,246,239,.58)}.public .bigtitle{font-size:54px}.public .bodycopy{color:rgba(250,246,239,.62)}.publiccards{position:relative;z-index:1;display:grid;gap:10px;margin-top:28px}.publiccard{padding:17px;border:1px solid rgba(250,246,239,.16);border-radius:17px;background:rgba(255,255,255,.035)}.publiccard .pn{font:9px var(--mono);letter-spacing:.08em;color:rgba(250,246,239,.48);margin-bottom:12px}.publiccard h4{margin:0 0 8px;font:400 25px/1.05 var(--serif);letter-spacing:-.035em}.publiccard p{margin:0;color:rgba(250,246,239,.62);font-size:11px;line-height:1.55}
-.publicnote{position:absolute;left:29px;right:29px;bottom:26px;border-top:1px solid rgba(250,246,239,.16);padding-top:14px;font:8px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:rgba(250,246,239,.42)}
-
-.coastline{position:absolute;border:1px solid rgba(141,104,75,.13);border-radius:50%;pointer-events:none}.coast-a{left:2870px;top:930px;width:820px;height:270px;transform:rotate(-4deg);box-shadow:0 0 0 34px rgba(202,174,137,.035),0 0 0 68px rgba(202,174,137,.022)}.coast-b{left:90px;top:910px;width:1100px;height:250px;transform:rotate(3deg);border-color:rgba(70,80,67,.09)}
-
-.map-label{position:absolute;font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(36,37,31,.34)}
-.label1{left:930px;top:420px}.label2{left:1770px;top:490px}.label3{left:3060px;top:450px}.label4{left:4320px;top:570px}.label5{left:5480px;top:650px}
-
-@media(max-width:980px){
-  .header{left:12px;right:12px;top:12px;height:auto;min-height:62px;grid-template-columns:1fr auto;padding:10px 12px}.marker-nav{grid-column:1/-1;justify-content:flex-start;overflow:auto hidden;padding-top:2px}.clock{grid-column:2;grid-row:1}.marker{padding:7px 9px}.guide{left:12px;bottom:12px;max-width:285px;padding:11px 13px}.guide strong{font-size:19px}.guide p{display:none}.progressbox{right:12px;bottom:12px;width:150px}
-  .world{width:5320px;height:1320px}.route-svg{width:5320px;height:1320px}.world:after{display:none}
-  .hero{left:100px;top:220px;width:640px;height:470px}.hero h1{font-size:86px}.profile{left:900px;top:150px;width:540px;height:580px}.web{left:1600px;top:230px;width:850px;height:690px}.art{left:2620px;top:140px;width:830px;height:730px}.exp{left:3620px;top:250px;width:830px;height:850px}.public{left:4620px;top:150px;width:520px;height:920px}.map-label{display:none}
+@media(max-width:950px){
+ .topbar{height:54px;padding:0 12px;gap:12px}.identity{display:none}.top-links{display:none}.stage{inset:54px 0 0}.side-index{right:5px;top:70px}.help{display:none}.city{width:1500px;height:820px;--zoom:.82}.center-identity{transform:translateX(-50%) translateZ(55px) scale(.9)}
+ .tower{transform:translateX(calc(-50% + var(--x))) translateY(var(--y)) translateZ(var(--z)) rotateY(var(--ry)) scale(.92)}
+ .tower.focused{transform:translateX(calc(-50% + var(--x))) translateY(calc(var(--y) - 10px)) translateZ(calc(var(--z) + 130px)) rotateY(0deg) scale(.98)}
 }
-@media(max-width:640px){
-  .brand span{display:none}.clock{font-size:8px}.header{border-radius:17px}.marker-nav{gap:0}.marker{font-size:8px}.marker:before{width:5px;height:5px}
-  .progressbox{display:none}.guide{right:12px;max-width:none}.guide-top{font-size:8px}.guide strong{font-size:17px}
-  .world{width:4740px;height:1160px}.route-svg{width:4740px;height:1160px}
-  .hero{left:70px;top:210px;width:540px;height:430px;padding:27px}.hero h1{font-size:74px}.hero .cn{font-size:19px}.hero .statement{left:27px;bottom:28px;font-size:19px}.hero .coord{right:25px;bottom:28px}
-  .profile{left:760px;top:180px;width:480px;height:560px;padding:27px}.profile .bigtitle{font-size:52px}.profile .lead{font-size:21px}.fact{grid-template-columns:95px 1fr}
-  .web{left:1390px;top:180px;width:700px;height:730px;padding:27px}.bigtitle{font-size:52px}.webhead{grid-template-columns:1fr}.webhead p{display:none}.works{grid-template-columns:1fr 1fr}.work{min-height:235px;grid-template-columns:84px 1fr;padding:11px;gap:12px}.landmark{min-height:205px}.work h4{font-size:27px}.work p{font-size:10px}.work-copy{padding-right:17px}.profile-stamp{display:none}
-  .art{left:2240px;top:160px;width:700px;height:710px;padding:27px}.arthead{grid-template-columns:1fr}.arthead p{display:none}.gallery{grid-template-columns:1.15fr .85fr;grid-auto-rows:188px}.tile:nth-child(1){grid-row:span 2}.tile:nth-child(4){grid-column:auto}
-  .exp{left:3090px;top:190px;width:720px;height:820px;padding:27px}.exp .bigtitle{font-size:50px}.role{grid-template-columns:42px 1fr}.role .tag{display:none}.role h4{font-size:21px}
-  .public{left:3960px;top:160px;width:620px;height:850px;padding:27px}.public .bigtitle{font-size:48px}.publiccards{grid-template-columns:1fr 1fr}.publiccard:last-child{grid-column:1/-1}.publicnote{left:27px;right:27px}
+@media(max-width:620px){
+ .logo{font-size:15px}.lang{font-size:9px}.side-index{top:64px;background:rgba(5,12,20,.55)}.side-index button{width:30px;height:28px}.reset{right:10px;bottom:10px}.stage{perspective:1050px}
+ .city{width:1450px;height:820px;--zoom:.68}.center-identity{bottom:305px}.drawer{top:64px;right:10px;bottom:10px;width:calc(100vw - 20px)}
+ .billboard{padding:13px}.board-head{font-size:23px}.board-list{font-size:11px}.board-list.compact{font-size:10px}
 }
-@media(pointer:coarse){.work:hover,.work:hover .landmark,.tile:hover:before{transform:none}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.city{transform:translate3d(-50%,-47%,0) scale(var(--zoom))!important}}
 </style>
 </head>
 <body>
-<div class="chrome">
-  <header class="header">
-    <div class="brand">CKL / PERSONAL ATLAS <span>林哲愷</span></div>
-    <nav class="marker-nav" aria-label="Map chapters">
-      <button class="marker active" data-target="hero">Origin</button>
-      <button class="marker" data-target="profile">Profile</button>
-      <button class="marker" data-target="web">Web</button>
-      <button class="marker" data-target="art">Art</button>
-      <button class="marker" data-target="exp">Roles</button>
-      <button class="marker" data-target="public">Public</button>
-    </nav>
-    <div class="clock" id="clock">Taipei · --:--:--</div>
-  </header>
-  <div class="guide">
-    <div class="guide-top">Horizontal field guide</div>
-    <strong>Drag / swipe to explore →</strong>
-    <p>滑鼠滾輪也會轉為左右移動。這是一張可漫遊的個人地圖，不是傳統下拉式作品集。</p>
-  </div>
-  <div class="progressbox">
-    <div class="progressmeta"><span>Atlas progress</span><span id="percent">00%</span></div>
-    <div class="track"><div class="fill" id="fill"></div></div>
+<header class="topbar">
+  <div class="logo">CHE-KAI LIN</div>
+  <div class="identity">WRITER / DESIGNER / STUDENT</div>
+  <div class="top-spacer"></div>
+  <nav class="top-links"><button data-section="2">Projects</button><button data-section="3">Experience</button><button data-section="9">Archive</button></nav>
+  <div class="lang"><b>EN</b> / 中文</div>
+</header>
+
+<nav class="side-index" aria-label="Billboard index">
+  <button data-section="1">01</button><button data-section="2">02</button><button data-section="3">03</button><button data-section="4">04</button><button data-section="5">05</button><button data-section="6">06</button><button data-section="7">07</button><button data-section="8">08</button><button data-section="9">09</button>
+</nav>
+
+<div class="stage" id="stage">
+  <div class="skyline"></div>
+  <div class="city" id="city">
+    <div class="ground"></div><div class="steps"></div><div class="plaza-label">CENTRAL PLAZA · DRAG TO ORBIT · CLICK BILLBOARDS</div>
+
+    <section class="center-identity" data-section="1">
+      <div class="panel id-top"><div><div class="crown">♕</div><div class="name">CHE-KAI<br>LIN</div><div class="id-role">WRITER / DESIGNER / STUDENT</div></div></div>
+      <button class="panel id-about billboard paper" data-section="1" aria-label="Open About"><div class="board-head"><span class="board-no">01</span>ABOUT</div><ul class="board-list"><li>背景</li><li>個性</li><li>興趣</li><li>價值觀</li></ul><div class="visual chair"></div></button>
+      <div class="panel id-bottom"><b>MORE THAN A GAME.</b>EXPLORE · LEARN · CREATE · CONNECT</div>
+    </section>
+
+    <section class="tower t2" data-tower-section="2"><div class="facade-grid"></div><button class="billboard" data-section="2"><div class="board-head"><span class="board-no">02</span>WEB WORKS</div><ul class="board-list"><li>SignWell 欣緯生醫</li><li>Tai-Wan Way 閒台文</li><li>CITYMUS</li><li>健人</li></ul><div class="visual code"></div><div class="board-kicker">Ideas into products</div></button></section>
+
+    <section class="tower t3" data-tower-section="3"><div class="facade-grid"></div><button class="billboard" data-section="3"><div class="board-head"><span class="board-no">03</span>EXPERIENCE</div><ul class="board-list compact"><li>Newtalk 新頭殼 投書刊載</li><li>基隆海洋文學大賽 參與</li><li>台灣聯合大學企劃 參與</li></ul><div class="visual globe"></div><div class="board-kicker">Published · Joined · Tried</div></button></section>
+
+    <section class="tower t4" data-tower-section="4"><div class="facade-grid"></div><button class="billboard paper" data-section="4"><div class="board-head"><span class="board-no">04</span>ACADEMIC</div><ul class="board-list compact"><li>台英學士培育計劃</li><li>國立中央大學人工智慧學系先修課程</li><li>國立清華大學經濟系先修課程</li><li>私立中原大學先修課程</li></ul><div class="visual books"></div><div class="board-kicker">Learn · Explore · Grow</div></button></section>
+
+    <section class="tower t5" data-tower-section="5"><div class="facade-grid"></div><button class="billboard paper" data-section="5"><div class="board-head"><span class="board-no">05</span>WRITING</div><ul class="board-list"><li>文章創作</li><li>時事觀察</li><li>散文／隨筆</li><li>競賽作品</li></ul><div class="visual pen"></div><div class="board-kicker">Write to understand</div></button></section>
+
+    <section class="tower t6" data-tower-section="6"><div class="facade-grid"></div><button class="billboard" data-section="6"><div class="board-head"><span class="board-no">06</span>RUNNING</div><ul class="board-list compact"><li>烘爐地定向越野 9K組完賽</li><li>基隆半程馬拉松 9K組完賽（103/1581）</li><li>訓練紀錄</li><li>比賽成績</li></ul><div class="visual shoe"></div><div class="board-kicker">Run · Explore · Stay curious</div></button></section>
+
+    <section class="tower t7" data-tower-section="7"><div class="facade-grid"></div><button class="billboard paper" data-section="7"><div class="board-head"><span class="board-no">07</span>ROLES</div><ul class="board-list compact"><li>欣緯科技有限公司董事</li><li>欣緯生醫創辦人</li><li>閒台文創辦人</li><li>CITYMUS創辦人</li><li>市三重見賢思琪社 創社副社長、美萱</li><li>市三重高中前扶輪少年團團員</li></ul><div class="visual badge"></div></button></section>
+
+    <section class="tower t8" data-tower-section="8"><div class="facade-grid"></div><button class="billboard paper" data-section="8"><div class="board-head"><span class="board-no">08</span>PUBLIC</div><ul class="board-list compact"><li>台灣民眾黨青年團第二屆員</li><li>日本自民黨來台接待</li><li>核三公投街頭宣講、車掃</li></ul><div class="visual megaphone"></div><div class="board-kicker">Public engagement</div></button></section>
+
+    <section class="tower t9" data-tower-section="9"><div class="facade-grid"></div><button class="billboard" data-section="9"><div class="board-head"><span class="board-no">09</span>ART ARCHIVE</div><ul class="board-list compact"><li>設計作品</li><li>手繪創作</li><li>攝影紀錄</li><li>靈感收藏</li><li>未來計劃</li></ul><div class="visual camera"></div><div class="board-kicker">Collect · Create · Keep going</div></button></section>
   </div>
 </div>
 
-<div class="viewport" id="viewport">
-  <main class="world" id="world">
-    <svg class="route-svg" viewBox="0 0 6100 1550" preserveAspectRatio="none" aria-hidden="true">
-      <path class="route-shadow" d="M 540 515 C 930 450, 1220 465, 1440 430 S 2060 520, 2470 590 S 3140 515, 3670 430 S 4430 560, 4940 675 S 5500 620, 5750 650"/>
-      <path class="route-line" d="M 540 515 C 930 450, 1220 465, 1440 430 S 2060 520, 2470 590 S 3140 515, 3670 430 S 4430 560, 4940 675 S 5500 620, 5750 650"/>
-      <circle class="node" cx="540" cy="515" r="12"/><circle class="node-inner" cx="540" cy="515" r="4"/>
-      <circle class="node" cx="1435" cy="432" r="12"/><circle class="node-inner" cx="1435" cy="432" r="4"/>
-      <circle class="node" cx="2460" cy="588" r="12"/><circle class="node-inner" cx="2460" cy="588" r="4"/>
-      <circle class="node" cx="3670" cy="430" r="12"/><circle class="node-inner" cx="3670" cy="430" r="4"/>
-      <circle class="node" cx="4940" cy="675" r="12"/><circle class="node-inner" cx="4940" cy="675" r="4"/>
-      <circle class="node" cx="5750" cy="650" r="12"/><circle class="node-inner" cx="5750" cy="650" r="4"/>
-    </svg>
+<div class="help"><b>DRAG</b> to shift view · <b>MOVE</b> pointer for parallax · <b>WHEEL</b> to zoom · <b>CLICK</b> a billboard</div>
+<button class="reset" id="reset">RESET VIEW</button>
 
-    <div class="map-label label1">01 — identity field</div>
-    <div class="map-label label2">02 — selected digital works</div>
-    <div class="map-label label3">03 — visual archive</div>
-    <div class="map-label label4">04 — roles & organizations</div>
-    <div class="map-label label5">05 — public record</div>
+<aside class="drawer" id="drawer" aria-live="polite">
+  <button class="drawer-close" id="drawerClose" aria-label="Close">×</button>
+  <div class="drawer-no" id="drawerNo">01 / ABOUT</div>
+  <h2 id="drawerTitle">ABOUT</h2>
+  <p id="drawerText"></p>
+  <ul class="drawer-list" id="drawerList"></ul>
+  <div class="drawer-foot">CHE-KAI LIN · PERSONAL CITY ARCHIVE · 2026</div>
+</aside>
 
-    <section class="place card hero" id="hero">
-      <div class="atlasno">ATLAS / 01</div>
-      <div class="kicker">Che-Kai Lin · Taipei, Taiwan</div>
-      <h1>Che-Kai <i>Lin</i></h1>
-      <div class="cn">林 哲 愷</div>
-      <div class="identity">WRITER X DESIGNER X STUDENT</div>
-      <div class="statement">A personal world shaped by <em>culture, design, ideas and public life.</em></div>
-      <div class="coord">Personal archive<br>Edition 2026</div>
-    </section>
-
-    <section class="place card profile" id="profile">
-      <div class="kicker">02 / Profile · 人物誌</div>
-      <h2 class="bigtitle">A maker with an editorial eye.</h2>
-      <p class="lead">我喜歡把零散的想法變成有結構的東西——網站、視覺、文字，以及一個能被慢慢累積的 <em>personal archive.</em></p>
-      <div class="profile-stamp" aria-hidden="true">ARCHIVE<br>NO. 002</div>
-      <div class="facts">
-        <div class="fact"><b>Name</b><span>林哲愷 / Che-Kai Lin</span></div>
-        <div class="fact"><b>Identity</b><span>Writer X Designer X Student</span></div>
-        <div class="fact"><b>Focus</b><span>Web Design · Visual Culture · Art · Public Affairs</span></div>
-        <div class="fact"><b>Direction</b><span>Culture-led digital work with restrained, enduring aesthetics.</span></div>
-      </div>
-    </section>
-
-    <section class="place card web" id="web">
-      <div class="webhead">
-        <div><div class="kicker">03 / Selected Digital Works</div><h2 class="bigtitle">Web Works</h2></div>
-        <p>Concept · Interface · Identity · Interaction<br>Selected projects from an evolving practice.</p>
-      </div>
-      <div class="works">
-        <article class="work"><div class="landmark landmark-signwell" aria-hidden="true"></div><div class="work-copy"><div class="num">W / 01 · Editorial House</div><span class="arrow">↗</span><h4>SignWell</h4><p>欣緯生醫。以醫療、產業內容與編輯感為核心的數位平台；在 Atlas 裡，它是一座資訊密度高但秩序克制的「編輯館」。</p></div></article>
-        <article class="work"><div class="landmark landmark-taiwan" aria-hidden="true"><span></span></div><div class="work-copy"><div class="num">W / 02 · Culture Gate</div><span class="arrow">↗</span><h4>Tai-Wan Way</h4><p>閒台文。把中文學習、台灣文化、聲音與遊戲化機制做成可探索的數位體驗，像進入一座文化入口。</p></div></article>
-        <article class="work"><div class="landmark landmark-city" aria-hidden="true"><span></span></div><div class="work-copy"><div class="num">W / 03 · Sound Pavilion</div><span class="arrow">↗</span><h4>CITYMUS</h4><p>音樂、都會與視覺氣氛導向的品牌實驗。以唱片與城市夜色為意象，強調介面節奏與氛圍。</p></div></article>
-        <article class="work"><div class="landmark landmark-lab" aria-hidden="true"><span></span></div><div class="work-copy"><div class="num">W / 04 · Field Laboratory</div><span class="arrow">↗</span><h4>健人</h4><p>獨立網站概念與視覺研究。它被定位成地圖上的實驗站，用來測試品牌語言、版面與互動邏輯。</p></div></article>
-      </div>
-    </section>
-
-    <section class="place card art" id="art">
-      <div class="arthead">
-        <div><div class="kicker">04 / Visual Archive</div><h2 class="bigtitle">Art Works</h2></div>
-        <p>攝影、平面、插畫、海報、視覺研究與尚未命名的作品，都可以被收進這個區域。現在先保留為作品展示槽。</p>
-      </div>
-      <div class="gallery">
-        <div class="tile"><div class="label"><strong>Artwork 01</strong><span>image · title · year · medium</span></div></div>
-        <div class="tile"><div class="label"><strong>Artwork 02</strong><span>image · title · year</span></div></div>
-        <div class="tile"><div class="label"><strong>Artwork 03</strong><span>image · title · year</span></div></div>
-        <div class="tile"><div class="label"><strong>Artwork 04</strong><span>image · title · year</span></div></div>
-        <div class="tile"><div class="label"><strong>Artwork 05</strong><span>image · title · year</span></div></div>
-      </div>
-    </section>
-
-    <section class="place card exp" id="exp">
-      <div class="kicker">05 / Leadership & Roles · 經歷與角色</div>
-      <h2 class="bigtitle">Things I build,<br>teams I belong to.</h2>
-      <div class="roles">
-        <article class="role"><div class="rno">01</div><div><h4>欣緯科技有限公司董事</h4><p>參與公司發展方向、治理與整體視野規劃。</p></div><span class="tag">Director</span></article>
-        <article class="role"><div class="rno">02</div><div><h4>欣緯生醫創辦人</h4><p>建立品牌概念、內容方向與數位平台語言。</p></div><span class="tag">Founder</span></article>
-        <article class="role"><div class="rno">03</div><div><h4>閒台文創辦人</h4><p>策劃以語言、文化與互動體驗為核心的網站專案。</p></div><span class="tag">Founder</span></article>
-        <article class="role"><div class="rno">04</div><div><h4>CITYMUS 創辦人</h4><p>發展音樂與城市氣氛導向的數位品牌實驗。</p></div><span class="tag">Founder</span></article>
-        <article class="role"><div class="rno">05</div><div><h4>市三重見賢思琪社｜創社副社長、美萱</h4><p>創社期間參與社團定位、組織協作、活動推進與視覺相關工作。</p></div><span class="tag">Founding VP</span></article>
-      </div>
-    </section>
-
-
-    <div class="coastline coast-a" aria-hidden="true"></div>
-    <div class="coastline coast-b" aria-hidden="true"></div>
-
-    <section class="place card public" id="public">
-      <div class="kicker">06 / Public Engagement</div>
-      <h2 class="bigtitle">Public<br>Record</h2>
-      <p class="bodycopy">公共參與以人物經歷的方式保存，不做成競選宣傳頁，讓整體仍然維持個人作品集的基調。</p>
-      <div class="publiccards">
-        <article class="publiccard"><div class="pn">P / 01</div><h4>台灣民眾黨青年團第二屆員</h4><p>青年政治與公共事務參與經歷。</p></article>
-        <article class="publiccard"><div class="pn">P / 02</div><h4>日本自民黨來台接待</h4><p>參與國際來訪接待與交流相關事務。</p></article>
-        <article class="publiccard"><div class="pn">P / 03</div><h4>核三公投街頭宣講、車掃</h4><p>公共議題宣講、現場溝通與行動參與。</p></article>
-      </div>
-      <div class="publicnote">Biographical record · not campaign advertising · personal archive 2026</div>
-    </section>
-  </main>
-</div>
 <script>
-const viewport=document.getElementById('viewport');
-const world=document.getElementById('world');
-const markers=[...document.querySelectorAll('.marker')];
-const clock=document.getElementById('clock');
-const fill=document.getElementById('fill');
-const percent=document.getElementById('percent');
-const chapterIds=markers.map(b=>b.dataset.target);
-let s={x:0,y:0,tx:0,ty:0,drag:false,sx:0,sy:0,bx:0,by:0,lastX:0,lastY:0,vx:0,vy:0,active:'hero'};
+const DATA={
+  1:{title:'ABOUT',text:'這裡是整座城市的中央入口。不是傳統履歷首頁，而是讓背景、個性、興趣與價值觀成為後續所有作品與經歷的起點。',items:[['林哲愷 / Che-Kai Lin','Name'],['WRITER X DESIGNER X STUDENT','Identity'],['Web Design · Visual Culture · Writing · Art · Public Affairs','Focus'],['不同的興趣、經歷與嘗試，組成現在的我。','Personal note']]},
+  2:{title:'WEB WORKS',text:'網站作品集中在同一棟數位建築，之後可把每個看板再連到獨立作品內頁。',items:[['SignWell 欣緯生醫','Website'],['Tai-Wan Way 閒台文','Website'],['CITYMUS','Website / music project'],['健人','Website experiment']]},
+  3:{title:'EXPERIENCE',text:'文字刊載、競賽與企劃參與等個人經歷，集中成為一棟 Experience building。',items:[['Newtalk 新頭殼 投書刊載','Published writing'],['基隆海洋文學大賽 參與','Literature competition'],['台灣聯合大學企劃 參與','Project participation']]},
+  4:{title:'ACADEMIC',text:'跨領域的先修與培育計劃，用獨立學術看板呈現，避免和其他經歷混在一起。',items:[['台英學士培育計劃','Academic program'],['國立中央大學人工智慧學系先修課程','Pre-college course'],['國立清華大學經濟系先修課程','Pre-college course'],['私立中原大學先修課程','Pre-college course']]},
+  5:{title:'WRITING',text:'文字是這個網站的一條獨立主線，可逐步放入真正文章與作品。',items:[['文章創作','Writing'],['時事觀察','Commentary'],['散文／隨筆','Essay'],['競賽作品','Competition works']]},
+  6:{title:'RUNNING',text:'運動經歷被當成生活與成長的一部分，而不是履歷底部的一個附註。',items:[['烘爐地定向越野 9K組完賽','Race'],['基隆半程馬拉松 9K組完賽（103/1581）','Race · rank 103/1581'],['訓練紀錄','Archive'],['比賽成績','Archive']]},
+  7:{title:'ROLES',text:'公司、創辦專案與學生社團角色集中於 Roles tower。',items:[['欣緯科技有限公司董事','Director'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS創辦人','Founder'],['市三重見賢思琪社 創社副社長、美萱','Student organization'],['市三重高中前扶輪少年團團員','Club member']]},
+  8:{title:'PUBLIC',text:'公共參與以個人經歷方式紀錄，不做成競選網站。',items:[['台灣民眾黨青年團第二屆員','Youth / public affairs'],['日本自民黨來台接待','International reception'],['核三公投街頭宣講、車掃','Public issue participation']]},
+  9:{title:'ART ARCHIVE',text:'藝術作品集與靈感資料庫。等你放入真實作品後，可以把每個作品變成可點擊的畫廊看板。',items:[['設計作品','Design'],['手繪創作','Drawing'],['攝影紀錄','Photography'],['靈感收藏','Archive'],['未來計劃','Future']]}
+};
 
-function time(){
-  clock.textContent='Taipei · '+new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date())
+const stage=document.getElementById('stage'),city=document.getElementById('city'),drawer=document.getElementById('drawer');
+const drawerNo=document.getElementById('drawerNo'),drawerTitle=document.getElementById('drawerTitle'),drawerText=document.getElementById('drawerText'),drawerList=document.getElementById('drawerList');
+const indexButtons=[...document.querySelectorAll('[data-section]')].filter(x=>x.tagName==='BUTTON');
+let cam={x:0,y:0,yaw:0,pitch:0,zoom:1,drag:false,startX:0,startY:0,baseX:0,baseY:0};
+function applyCamera(){document.documentElement.style.setProperty('--cam-x',cam.x+'px');document.documentElement.style.setProperty('--cam-y',cam.y+'px');document.documentElement.style.setProperty('--yaw',cam.yaw+'deg');document.documentElement.style.setProperty('--pitch',cam.pitch+'deg');document.documentElement.style.setProperty('--zoom',cam.zoom)}
+function focusSection(n){
+  const d=DATA[n]; if(!d)return;
+  document.querySelectorAll('.tower').forEach(t=>t.classList.toggle('focused',Number(t.dataset.towerSection)===Number(n)));
+  city.classList.toggle('has-focus',Number(n)!==1);
+  indexButtons.forEach(b=>b.classList.toggle('active',Number(b.dataset.section)===Number(n)));
+  drawerNo.textContent=String(n).padStart(2,'0')+' / '+d.title;drawerTitle.textContent=d.title;drawerText.textContent=d.text;
+  drawerList.innerHTML=d.items.map(([a,b])=>`<li>${a}<small>${b}</small></li>`).join('');drawer.classList.add('open');
+  const tower=document.querySelector(`[data-tower-section="${n}"]`);
+  if(tower){const x=parseFloat(getComputedStyle(tower).getPropertyValue('--x'))||0;cam.x=Math.max(-120,Math.min(120,-x*.13));cam.yaw=Math.max(-4.5,Math.min(4.5,-x/155));cam.zoom=1.035;} else {cam.x=0;cam.yaw=0;cam.zoom=1.02}
+  applyCamera();history.replaceState(null,'','#'+n);
 }
-time();setInterval(time,1000);
+function clearFocus(){document.querySelectorAll('.tower').forEach(t=>t.classList.remove('focused'));city.classList.remove('has-focus');drawer.classList.remove('open');indexButtons.forEach(b=>b.classList.remove('active'));cam.x=0;cam.y=0;cam.yaw=0;cam.pitch=0;cam.zoom=1;applyCamera();history.replaceState(null,' ',location.pathname+location.search)}
 
-function metrics(){return{w:world.offsetWidth,h:world.offsetHeight}}
-function bounds(){
-  const {w,h}=metrics();
-  const minX=Math.min(0,viewport.clientWidth-w),minY=Math.min(0,viewport.clientHeight-h);
-  s.tx=Math.max(minX,Math.min(0,s.tx));
-  s.ty=Math.max(minY,Math.min(0,s.ty));
-}
-function chapterFromPosition(){
-  const viewportCenter=-s.x+viewport.clientWidth/2;
-  let best=chapterIds[0],distance=Infinity;
-  chapterIds.forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    const d=Math.abs((el.offsetLeft+el.offsetWidth/2)-viewportCenter);
-    if(d<distance){distance=d;best=id}
-  });
-  if(best!==s.active){
-    s.active=best;
-    markers.forEach(b=>b.classList.toggle('active',b.dataset.target===best));
-    if(location.hash!=='#'+best) history.replaceState(null,'','#'+best);
-  }
-}
-function animate(){
-  s.x+=(s.tx-s.x)*.13;s.y+=(s.ty-s.y)*.13;
-  world.style.transform=`translate3d(${s.x}px,${s.y}px,0)`;
-  const {w}=metrics(),max=Math.max(1,w-viewport.clientWidth),p=Math.max(0,Math.min(1,-s.x/max));
-  fill.style.width=(p*100).toFixed(1)+'%';percent.textContent=String(Math.round(p*100)).padStart(2,'0')+'%';
-  chapterFromPosition();
-  requestAnimationFrame(animate)
-}
-function center(id,updateHash=true){
-  const el=document.getElementById(id);if(!el)return;
-  s.tx=viewport.clientWidth/2-(el.offsetLeft+el.offsetWidth/2);
-  s.ty=viewport.clientHeight/2-(el.offsetTop+el.offsetHeight/2);
-  bounds();s.active=id;
-  markers.forEach(b=>b.classList.toggle('active',b.dataset.target===id));
-  if(updateHash) history.replaceState(null,'','#'+id);
-}
-markers.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();center(b.dataset.target)}));
+document.querySelectorAll('.billboard').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();focusSection(Number(b.dataset.section))}));
+indexButtons.forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();focusSection(Number(b.dataset.section))}));
+document.getElementById('drawerClose').addEventListener('click',clearFocus);document.getElementById('reset').addEventListener('click',clearFocus);
 
-function start(x,y){
-  s.drag=true;viewport.classList.add('dragging');
-  s.sx=s.lastX=x;s.sy=s.lastY=y;s.bx=s.tx;s.by=s.ty;s.vx=s.vy=0
-}
-function move(x,y){
-  if(!s.drag)return;
-  const dx=x-s.lastX,dy=y-s.lastY;s.vx=dx;s.vy=dy;s.lastX=x;s.lastY=y;
-  s.tx=s.bx+(x-s.sx);s.ty=s.by+(y-s.sy)*.54;bounds()
-}
-function stop(){
-  if(!s.drag)return;
-  s.drag=false;viewport.classList.remove('dragging');
-  s.tx+=s.vx*9;s.ty+=s.vy*3;bounds()
-}
-viewport.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;start(e.clientX,e.clientY);viewport.setPointerCapture?.(e.pointerId)});
-viewport.addEventListener('pointermove',e=>move(e.clientX,e.clientY));
-viewport.addEventListener('pointerup',stop);viewport.addEventListener('pointercancel',stop);
-viewport.addEventListener('wheel',e=>{
-  const horizontal=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
-  s.tx-=horizontal*1.08;
-  if(Math.abs(e.deltaX)>Math.abs(e.deltaY)&&Math.abs(e.deltaY)>2)s.ty-=e.deltaY*.22;
-  bounds();e.preventDefault();
-},{passive:false});
-addEventListener('keydown',e=>{
-  const k=110;
-  if(e.key==='ArrowRight')s.tx-=k;if(e.key==='ArrowLeft')s.tx+=k;if(e.key==='ArrowDown')s.ty-=k;if(e.key==='ArrowUp')s.ty+=k;
-  if(e.key==='Home')center('hero');if(e.key==='End')center('public');bounds()
+stage.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;cam.drag=true;cam.startX=e.clientX;cam.startY=e.clientY;cam.baseX=cam.x;cam.baseY=cam.y;stage.classList.add('dragging');stage.setPointerCapture?.(e.pointerId)});
+stage.addEventListener('pointermove',e=>{
+  const r=stage.getBoundingClientRect();
+  if(cam.drag){const dx=e.clientX-cam.startX,dy=e.clientY-cam.startY;cam.x=Math.max(-170,Math.min(170,cam.baseX+dx*.65));cam.y=Math.max(-70,Math.min(70,cam.baseY+dy*.35));cam.yaw=Math.max(-6,Math.min(6,cam.x/40));cam.pitch=Math.max(-2.5,Math.min(2.5,-cam.y/35));applyCamera();return}
+  if(!drawer.classList.contains('open')){const nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;cam.yaw=nx*2.1;cam.pitch=-ny*1.1;applyCamera()}
 });
-addEventListener('resize',()=>{bounds();center(s.active,false)});
-const initial=location.hash.slice(1);center(chapterIds.includes(initial)?initial:'hero',false);
-requestAnimationFrame(animate);
+function endDrag(){cam.drag=false;stage.classList.remove('dragging')}
+stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);stage.addEventListener('pointerleave',()=>{if(!cam.drag&&!drawer.classList.contains('open')){cam.yaw=0;cam.pitch=0;applyCamera()}});
+stage.addEventListener('wheel',e=>{cam.zoom=Math.max(.82,Math.min(1.12,cam.zoom-e.deltaY*.00045));applyCamera();e.preventDefault()},{passive:false});
+stage.addEventListener('dblclick',clearFocus);
+addEventListener('keydown',e=>{if(e.key==='Escape')clearFocus();if(/^[1-9]$/.test(e.key))focusSection(Number(e.key))});
+const initial=Number(location.hash.slice(1));if(DATA[initial])setTimeout(()=>focusSection(initial),180);else applyCamera();
 </script>
 </body>
 </html>
