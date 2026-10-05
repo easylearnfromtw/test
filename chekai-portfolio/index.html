@@ -516,7 +516,7 @@ function decodeBase64(s){const bin=atob(s),u=new Uint8Array(bin.length);for(let 
 const BUILDING_TINTS={hero:0x192636,about:0x202832,web:0x142332,experience:0x101a25,academic:0x26303a,writing:0x252b31,running:0x111b25,roles:0x26303a,public:0x202832,art:0x101a25};
 const BOARD_STYLE={hero:'red',about:'cream',web:'dark',experience:'dark',academic:'cream',writing:'cream',running:'dark',roles:'cream',public:'cream',art:'dark'};
 const BOARD_LABELS={hero:'林哲愷 · CHE-KAI LIN',about:'關於我',web:'網站作品',experience:'個人經歷',academic:'學習經歷',writing:'文字創作',running:'跑步紀錄',roles:'身份角色',public:'公共參與',art:'藝術檔案'};
-const loader=new GLTFLoader();const root=new THREE.Group();scene.add(root);const buildings=new Map(),clickables=[],portfolioBoards=new Map();
+const loader=new GLTFLoader();const root=new THREE.Group();scene.add(root);const buildings=new Map(),facadeLayers=new Map(),clickables=[],portfolioBoards=new Map();
 const textureCache=new Map(),wallTextureCache=new Map(),posterTextureCache=new Map(),shopSignTextureCache=new Map();
 let activePortfolioHiTex=null,activePortfolioHiId=null;
 const SHOP_SIGNS={
@@ -557,42 +557,44 @@ function makeMiniSignTexture(label,variant=0){
   g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=5;g.strokeRect(5,5,246,118);
   const tx=new THREE.CanvasTexture(cv);tx.colorSpace=THREE.SRGBColorSpace;tx.generateMipmaps=false;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;miniSignTextureCache.set(key,tx);return tx
 }
-function addMiniSigns(group,id,dims,index,copy){
+function addMiniSigns(facade,id,worldBox,index,copy){
   if(id==='hero')return;
-  const count=index%3===0?3:2;
+  const width=worldBox.max.x-worldBox.min.x,count=index%3===0?3:2;
   for(let i=0;i<count;i++){
     const label=MINI_SIGN_LABELS[(index*3+i*2+copy+20)%MINI_SIGN_LABELS.length],tex=makeMiniSignTexture(label,index+i);
     const mat=new THREE.MeshBasicMaterial({map:tex,toneMapped:false,side:THREE.DoubleSide});
-    const w=2.7+(i%2)*.45,h=1.35;
+    const w=2.7+(i%2)*.45,h=1.35,localX=-width*.28+i*3.15;
     const sign=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);
-    sign.position.set(-dims.w*.34+i*3.2,3.2+i*.75,dims.frontZ+1.22);
-    sign.rotation.z=(i%2?-.035:.025);group.add(sign);
-    // one tiny bracket makes the sign feel physically mounted without a new material.
-    const bracket=new THREE.Mesh(new THREE.BoxGeometry(.10,.10,.72),utilityMetalMat);
-    bracket.position.set(sign.position.x,sign.position.y+h*.55,dims.frontZ+.78);group.add(bracket)
+    sign.position.set(localX,3.2+i*.75,.42);sign.rotation.z=(i%2?-.035:.025);sign.renderOrder=8;facade.add(sign);
+    const bracket=new THREE.Mesh(new THREE.BoxGeometry(.10,.10,.68),utilityMetalMat);
+    bracket.position.set(localX,sign.position.y+h*.55,.08);facade.add(bracket)
   }
 }
-function addProjectingSign(group,id,dims,index,copy){
-  const def=SHOP_SIGNS[id]?.[0];if(!def)return;const [kind,label]=def,tex=makeShopSignTexture(kind,label),h=kind==='seven'?6.6:5.3,d=3.4,w=.72;
-  const dark=new THREE.MeshStandardMaterial({color:0x07090d,roughness:.32,metalness:.72});
+function addProjectingSign(facade,id,worldBox,index,copy){
+  const def=SHOP_SIGNS[id]?.[0];if(!def)return;
+  const [kind,label]=def,tex=makeShopSignTexture(kind,label),h=kind==='seven'?6.6:5.3,d=3.4,w=.72;
+  const dark=sharedMat('projecting-dark',()=>new THREE.MeshStandardMaterial({color:0x07090d,roughness:.32,metalness:.72}));
   const face=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.85,roughness:.32,metalness:0,toneMapped:false});
   face.userData.baseIntensity=1.85;face.userData.phase=(index+copy*11)*1.31;
+  const width=worldBox.max.x-worldBox.min.x;
   const box=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),[face,face,dark,dark,dark,dark]);
-  box.position.set(dims.w*.48,Math.min(id==='art'?11:15,cfgSafeHeight(id)*.55),dims.frontZ+d*.5+.42);box.castShadow=false;group.add(box);
+  box.position.set(width*.43,Math.min(id==='art'?11:15,cfgSafeHeight(id)*.55),d*.5+.52);box.castShadow=false;box.renderOrder=7;facade.add(box);
   const haloColor=kind==='cosmed'?0xff6f9a:kind==='px'?0xffdb44:kind==='seven'?0x5ce38f:0xffa14a;
-  const haloMat=new THREE.MeshBasicMaterial({color:haloColor,transparent:true,opacity:.10,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,side:THREE.DoubleSide});
-  const halo=new THREE.Mesh(new THREE.BoxGeometry(w+.20,h+.38,d+.22),haloMat);halo.position.copy(box.position);group.add(halo);
-  lightboxes.push({mat:face,halo:haloMat,light:null,x:group.position.x});
-  if(kind==='barber')addBarberPole(group,dims);
+  const haloMat=new THREE.MeshBasicMaterial({color:haloColor,transparent:true,opacity:.08,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,side:THREE.DoubleSide});
+  const halo=new THREE.Mesh(new THREE.BoxGeometry(w+.16,h+.30,d+.14),haloMat);halo.position.copy(box.position);facade.add(halo);
+  lightboxes.push({mat:face,halo:haloMat,light:null,x:facade.position.x});
+  if(kind==='barber')addBarberPole(facade,worldBox)
 }
 function cfgSafeHeight(id){return CONFIG[id]?.h||24}
-function addBarberPole(group,dims){
+function addBarberPole(facade,worldBox){
   const c=document.createElement('canvas');c.width=128;c.height=512;const x=c.getContext('2d');x.fillStyle='#f6f3ec';x.fillRect(0,0,128,512);
   for(let y=-160;y<680;y+=96){x.save();x.translate(64,y);x.rotate(-.58);x.fillStyle='#d33e3e';x.fillRect(-180,-20,360,34);x.fillStyle='#2d65a1';x.fillRect(-180,22,360,34);x.restore()}
   const tex=new THREE.CanvasTexture(c);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.colorSpace=THREE.SRGBColorSpace;
   const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:.9,roughness:.20});
-  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,4.7,18),mat);pole.position.set(-dims.w*.44,8.7,dims.frontZ+1.18);group.add(pole);
-  const capMat=new THREE.MeshStandardMaterial({color:0xb8c2c8,metalness:.8,roughness:.2});for(const y of [6.25,11.15]){const cap=new THREE.Mesh(new THREE.SphereGeometry(.47,14,10),capMat);cap.position.set(pole.position.x,y,pole.position.z);group.add(cap)}
+  const width=worldBox.max.x-worldBox.min.x;
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,4.7,18),mat);pole.position.set(-width*.40,8.7,.72);facade.add(pole);
+  const capMat=sharedMat('barber-cap',()=>new THREE.MeshStandardMaterial({color:0xb8c2c8,metalness:.8,roughness:.2}));
+  for(const y of [6.25,11.15]){const cap=new THREE.Mesh(new THREE.SphereGeometry(.47,14,10),capMat);cap.position.set(pole.position.x,y,pole.position.z);facade.add(cap)}
   barberPoles.push(pole)
 }
 function hex(c){return new THREE.Color(c)}
@@ -786,10 +788,16 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
   const cycleBuildings=['about','web','experience','academic','writing','running','roles','public','art'];
   function spawn(id,index,copy=0){
     const cfg=CONFIG[id],group=new THREE.Group(); group.name=`${id}:${copy}`;
-    const shell=gltf.scene.clone(true); materialize(shell,index,id); const dims=normalizeBuilding(shell,cfg.h);
-    group.add(shell); group.position.set(cfg.x+copy*LOOP_SPAN,0,cfg.z); group.rotation.y=cfg.ry; root.add(group);loopCullGroups.push(group);
-    const tex=makeTexture(id),bw=Math.min(15.8,Math.max(11.8,dims.w*1.08)),bh=bw*.586;
-    const boardY=cfg.h*.64,boardZ=dims.frontZ+1.30;
+    const shell=gltf.scene.clone(true);materialize(shell,index,id);const dims=normalizeBuilding(shell,cfg.h);
+    group.add(shell);group.position.set(cfg.x+copy*LOOP_SPAN,0,cfg.z);group.rotation.y=cfg.ry;root.add(group);
+    group.updateMatrixWorld(true);
+    const worldBox=new THREE.Box3().setFromObject(shell),worldCenter=new THREE.Vector3();worldBox.getCenter(worldCenter);
+    const facade=new THREE.Group();facade.name=`${id}:${copy}:facade`;
+    // independent world-space safe layer: always faces viewer and sits beyond every rotated/protruding wall
+    facade.position.set(worldCenter.x,0,worldBox.max.z+1.55);root.add(facade);
+    loopCullGroups.push(group,facade);facadeLayers.set(`${id}:${copy}`,facade);
+    const tex=makeTexture(id),worldW=worldBox.max.x-worldBox.min.x,bw=Math.min(15.8,Math.max(11.8,worldW*.96)),bh=bw*.586;
+    const boardY=cfg.h*.64,boardZ=.18;
     const frameMat=new THREE.MeshStandardMaterial({color:id==='hero'?0x174B3A:0x06080c,roughness:id==='hero'?.48:.30,metalness:id==='hero'?.28:.84});
     const frameT=.22,frameD=.12;
     const topBar=new THREE.Mesh(new THREE.BoxGeometry(bw+.46,frameT,frameD),frameMat);
@@ -800,19 +808,20 @@ loader.parse(decodeBase64(MODEL_B64),'',gltf=>{
     bottomBar.position.set(0,boardY-bh*.5-.12,boardZ-.08);
     leftBar.position.set(-bw*.5-.12,boardY,boardZ-.08);
     rightBar.position.set(bw*.5+.12,boardY,boardZ-.08);
-    group.add(topBar,bottomBar,leftBar,rightBar);
+    facade.add(topBar,bottomBar,leftBar,rightBar);
     const haloMat=new THREE.MeshBasicMaterial({color:id==='hero'?0xf4e7c8:DATA[id].accent,transparent:true,opacity:id==='hero'?.045:.11,depthWrite:false,depthTest:true,blending:THREE.AdditiveBlending,toneMapped:false});
-    const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.25,bh+1.25),haloMat);halo.position.set(0,boardY,boardZ-.16);group.add(halo);
+    const halo=new THREE.Mesh(new THREE.PlaneGeometry(bw+1.25,bh+1.25),haloMat);halo.position.set(0,boardY,boardZ-.16);facade.add(halo);
     const mat=new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:1.55,roughness:.24,metalness:.01,toneMapped:false,side:THREE.DoubleSide});
     mat.userData.baseIntensity=1.55;mat.userData.phase=(index+copy*10)*1.11;
     const board=new THREE.Mesh(new THREE.PlaneGeometry(bw,bh),mat);
-    board.position.set(0,boardY,boardZ);board.renderOrder=6;board.userData.section=id;group.add(board);clickables.push(board);
+    board.position.set(0,boardY,boardZ);board.renderOrder=6;board.userData.section=id;facade.add(board);clickables.push(board);
     if(!portfolioBoards.has(id))portfolioBoards.set(id,[]);portfolioBoards.get(id).push(mat);
     // main billboard is intentionally the only portfolio identifier on the façade
-    addProjectingSign(group,id,dims,index,copy);
-    addMiniSigns(group,id,dims,index,copy);
+    addProjectingSign(facade,id,worldBox,index,copy);
+    addMiniSigns(facade,id,worldBox,index,copy);
     const dynamicSet=new Set(barberPoles);
-    group.traverse(n=>{if(n!==group&&!dynamicSet.has(n)){n.updateMatrix();n.matrixAutoUpdate=false}});
+    group.traverse(n=>{if(n!==group){n.updateMatrix();n.matrixAutoUpdate=false}});
+    facade.traverse(n=>{if(n!==facade&&!dynamicSet.has(n)){n.updateMatrix();n.matrixAutoUpdate=false}});
     buildings.set(group.name,group);
   }
   spawn('hero',4,0);
@@ -889,14 +898,14 @@ function animate(){
     const dx=Math.abs(currentX-CONFIG.hero.x);
     // Keep it alive during the departure so it physically slides off-screen.
     // Once comfortably outside the view, remove it forever from the loop.
-    if(dx>48)openingHero.visible=false;
+    if(dx>48){openingHero.visible=false;const hf=facadeLayers.get('hero:0');if(hf)hf.visible=false}
   }
 
   // Coarse culling: only keep the current and adjacent loop copies submitted to WebGL.
   const cullTick=Math.floor(t*4);
   if(cullTick!==lastCullTick){lastCullTick=cullTick;
     loopCullGroups.forEach(g=>{
-      if(g.name==='hero:0'){if(!openingHeroRetired||Math.abs(currentX-CONFIG.hero.x)<=48)g.visible=true;return}
+      if(g.name==='hero:0'||g.name==='hero:0:facade'){g.visible=!openingHeroRetired||Math.abs(currentX-CONFIG.hero.x)<=48;return}
       g.visible=Math.abs(g.position.x-currentX)<185;
     })
   }
