@@ -275,6 +275,52 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   .profile-grid{grid-template-columns:1fr 1fr!important}
   .tabbar button{min-width:40px;padding-left:10px;padding-right:10px}
 }
+
+/* ===== Goblin Certificate / train discovery ===== */
+.goblin-modal{position:fixed;inset:0;z-index:140;display:grid;place-items:center;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s}
+.goblin-modal.open{opacity:1;visibility:visible;pointer-events:auto}
+.goblin-backdrop{position:absolute;inset:0;background:rgba(24,28,32,.58);backdrop-filter:blur(12px)}
+.goblin-shell{position:relative;width:min(760px,96vw);max-height:94dvh;overflow:auto;padding:15px;border:1px solid rgba(255,255,255,.4);border-radius:28px;background:rgba(237,242,246,.88);box-shadow:0 30px 90px rgba(0,0,0,.34);transform:translateY(18px) scale(.96);transition:transform .42s cubic-bezier(.2,.9,.2,1)}
+.goblin-modal.open .goblin-shell{transform:none}
+.goblin-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 3px 12px}
+.goblin-top span{font:800 9px/1 var(--mono);letter-spacing:.13em;color:#4c5664}
+.goblin-close{width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:#42271c;font-size:21px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.goblin-cert{position:relative;overflow:hidden;aspect-ratio:4/3;border:7px solid #512d1d;border-radius:42px;background:#fffaf0;color:#512d1d;box-shadow:inset 0 0 0 7px #fffaf0,inset 0 0 0 11px #512d1d;padding:6.5% 7%;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+.goblin-cert::before{content:"";position:absolute;inset:4.2%;border:4px solid #512d1d;border-radius:30px;pointer-events:none}
+.goblin-cert.generating::after{content:"";position:absolute;left:-15%;top:0;width:18%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-15deg);animation:goblinScan .9s .16s ease-out forwards;pointer-events:none}
+.goblin-crown{position:absolute;left:50%;top:4.3%;width:56px;height:40px;transform:translateX(-50%);z-index:2}
+.goblin-crown svg{width:100%;height:100%;overflow:visible}
+.goblin-cert.generating .goblin-crown{animation:goblinCrown .68s .18s cubic-bezier(.18,.9,.2,1)}
+.goblin-label{position:absolute;left:18%;top:16%;padding:7px 22px;border-radius:999px;background:#f6ead5;font-weight:850;font-size:clamp(14px,2.5vw,22px);letter-spacing:.08em}
+.goblin-title{position:absolute;left:11%;top:29%;margin:0;font-size:clamp(30px,6vw,58px);line-height:1;font-weight:900;letter-spacing:.02em}
+.goblin-title::after{content:"";display:block;width:92%;height:7px;margin:14px 0 0 6%;border-radius:999px;background:#b9df9c}
+.goblin-name-wrap{position:absolute;left:12%;top:57%;width:48%;display:flex;align-items:center;gap:10px}
+.goblin-pencil{font-size:23px;transform:rotate(-10deg)}
+.goblin-name{min-width:0;flex:1;border:0;border-bottom:3px solid #512d1d;background:transparent;color:#512d1d;padding:6px 2px;text-align:center;font-size:clamp(13px,2vw,19px);font-weight:800;outline:none}
+.goblin-name::placeholder{color:#a89586}
+.goblin-photo-box{position:absolute;right:10%;top:19%;width:28%;aspect-ratio:1;border:5px solid #512d1d;border-radius:12px;background:#bfe8ff;overflow:hidden}
+.goblin-photo-box img{width:100%;height:100%;object-fit:cover;display:block}
+.goblin-photo-action{position:absolute;right:10%;top:48.8%;width:28%;display:flex;justify-content:center}
+.goblin-photo-action label{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;background:#cce8ff;color:#3d5570;font-size:clamp(8px,1.4vw,12px);font-weight:850;cursor:pointer;box-shadow:0 3px 0 rgba(61,85,112,.12)}
+.goblin-discovery{position:absolute;left:14%;right:14%;bottom:9%;height:13%;border-radius:999px;background:#f6ead5;display:flex;align-items:center;justify-content:center;gap:8px;font-size:clamp(12px,2vw,19px);font-weight:850}
+.goblin-rank{display:inline-flex;min-width:7ch;justify-content:center;padding:8px 13px;border-radius:999px;background:#c9e2ff;color:#33465e;font-family:var(--mono);letter-spacing:.08em;font-size:1.08em}
+.goblin-live{position:absolute;right:7%;bottom:4.7%;font:800 7px/1 var(--mono);letter-spacing:.12em;color:#7d746b}
+.goblin-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.goblin-btn{flex:1;border:1px solid #b7bec7;border-radius:13px;background:#fff;color:#2f3946;padding:12px 14px;font-weight:850;font-size:11px}
+.goblin-btn.primary{background:#173f35;border-color:#173f35;color:#fff}
+.goblin-note{margin:9px 4px 0;color:#697481;font:700 8px/1.55 var(--mono)}
+.goblin-toast{position:absolute;left:50%;top:13%;transform:translate(-50%,-8px);opacity:0;padding:8px 11px;border-radius:999px;background:#173f35;color:#fff;font-size:10px;font-weight:800;pointer-events:none;transition:.2s}
+.goblin-toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes goblinScan{0%{left:-20%}100%{left:120%}}
+@keyframes goblinCrown{0%{transform:translateX(-50%) translateY(-16px) scale(.6);opacity:0}55%{transform:translateX(-50%) translateY(3px) scale(1.15);opacity:1}100%{transform:translateX(-50%) translateY(0) scale(1)}}
+@media(max-width:620px){
+ .goblin-modal{padding:8px}.goblin-shell{padding:10px;border-radius:22px}.goblin-cert{border-width:5px;border-radius:27px;padding:5%}
+ .goblin-cert::before{border-width:3px;border-radius:20px}.goblin-crown{width:42px;height:30px}
+ .goblin-label{left:14%;padding:5px 14px}.goblin-title{left:9%}.goblin-name-wrap{left:10%;width:49%;top:58%}
+ .goblin-photo-box{right:8%;width:30%;top:19%}.goblin-photo-action{right:8%;width:30%;top:50%}
+ .goblin-discovery{left:10%;right:10%;bottom:8%;height:15%;gap:4px}.goblin-rank{padding:6px 8px}
+}
+
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script>
 </head>
@@ -350,6 +396,27 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
     <div class="image-viewer-body" id="imageViewerBody"><div class="image-viewer-status" id="imageViewerStatus">載入成績證明…</div><canvas id="imageViewerCanvas" role="img" aria-label="2026 基隆半程馬拉松 林哲愷 9K 成績證明"></canvas></div>
   </section>
 </div>
+
+<div class="goblin-modal" id="goblinModal" aria-hidden="true">
+  <div class="goblin-backdrop" id="goblinBackdrop"></div>
+  <section class="goblin-shell" role="dialog" aria-modal="true" aria-label="哥布林證書">
+    <div class="goblin-top"><span>TRAIN DISCOVERY / 哥布林證書</span><button class="goblin-close" id="goblinClose" type="button" aria-label="關閉">×</button></div>
+    <div class="goblin-cert" id="goblinCert">
+      <div class="goblin-crown" aria-hidden="true"><svg viewBox="0 0 100 70"><path d="M8 17 32 38 50 9 68 38 92 17 84 60H16Z" fill="#9bd878" stroke="#512d1d" stroke-width="8" stroke-linejoin="round"/></svg></div>
+      <div class="goblin-label">哥布林證書</div>
+      <h2 class="goblin-title">初階哥布林</h2>
+      <div class="goblin-name-wrap"><span class="goblin-pencil">✎</span><input class="goblin-name" id="goblinName" maxlength="18" placeholder="寫下你的名字" aria-label="證書姓名"></div>
+      <div class="goblin-photo-box"><img id="goblinPhoto" src="./assets/goblin-default.svg" alt="證書照片"></div>
+      <div class="goblin-photo-action no-export"><label for="goblinPhotoInput">▣ 可加入照片</label><input id="goblinPhotoInput" type="file" accept="image/*" hidden></div>
+      <div class="goblin-discovery"><span>♛</span><span>你是第</span><strong class="goblin-rank" id="goblinRank">------</strong><span>個發現者</span></div>
+      <div class="goblin-live" id="goblinCountStatus">LIVE DISCOVERY</div>
+    </div>
+    <div class="goblin-actions no-export"><button class="goblin-btn" id="goblinResetPhoto" type="button">使用預設照片</button><button class="goblin-btn primary" id="goblinSave" type="button">儲存證書 PNG</button></div>
+    <p class="goblin-note">照片只在你的瀏覽器本機處理，不會上傳到網站。儲存時「可加入照片」與操作按鈕不會出現在圖片內。</p>
+    <div class="goblin-toast" id="goblinToast">證書完成</div>
+  </section>
+</div>
+
 <script type="module">
 import * as THREE from 'three';
 
@@ -3594,9 +3661,9 @@ function finalizeVehicles(){
   vehShadow=new THREE.InstancedMesh(blobGeo,blobMat,TRAFFIC.length+2);vehShadow.frustumCulled=false;vehShadow.renderOrder=2;scene.add(vehShadow);
   const tt=tramGeo().geometry('aUvW'),tg=new THREE.InstancedBufferGeometry();tg.index=tt.index;for(const k in tt.attributes)tg.setAttribute(k,tt.attributes[k]);
   tg.setAttribute('aTint',new THREE.InstancedBufferAttribute(new Float32Array([...rgb(0xf4f6f6),...rgb(0xf4f6f6)]),3));tg.setAttribute('aState',new THREE.InstancedBufferAttribute(new Float32Array(8),4));
-  tramMesh=new THREE.InstancedMesh(tg,vehMat,2);tramMesh.frustumCulled=false;tramMesh.castShadow=false;tramMesh.receiveShadow=USE_SHADOWS;scene.add(tramMesh);
+  tramMesh=new THREE.InstancedMesh(tg,vehMat,2);tramMesh.frustumCulled=false;tramMesh.castShadow=false;tramMesh.receiveShadow=USE_SHADOWS;tramMesh.userData.action='goblin-cert';scene.add(tramMesh);clickables.push(tramMesh);
   const mg=mrtGeo().geometry('aUvW');mg.setAttribute('aTint',new THREE.InstancedBufferAttribute(new Float32Array([1,1,1]),3));mg.setAttribute('aState',new THREE.InstancedBufferAttribute(new Float32Array(4),4));
-  mrtMesh=new THREE.InstancedMesh(mg,vehMat,1);mrtMesh.frustumCulled=false;scene.add(mrtMesh);
+  mrtMesh=new THREE.InstancedMesh(mg,vehMat,1);mrtMesh.frustumCulled=false;mrtMesh.userData.action='goblin-cert';scene.add(mrtMesh);clickables.push(mrtMesh);
 }
 // ---- simulation step ----
 const _m=new THREE.Matrix4(),_q=new THREE.Quaternion(),_p=new THREE.Vector3(),_s=new THREE.Vector3(1,1,1),_yA=new THREE.Vector3(0,1,0);
@@ -4073,12 +4140,85 @@ function queueHoverRay(e){
 }
 canvas.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};moved=false;dragging=true;canvas.classList.add('dragging');canvas.setPointerCapture?.(e.pointerId)});
 canvas.addEventListener('pointermove',e=>{if(!dragging){if(e.pointerType==='mouse')queueHoverRay(e);return}if(Math.abs(e.clientX-down.x)+Math.abs(e.clientY-down.y)>8)moved=true});
-canvas.addEventListener('pointerup',e=>{dragging=false;canvas.classList.remove('dragging');const dx=e.clientX-down.x,dy=e.clientY-down.y;if(moved&&Math.abs(dx)>Math.max(46,Math.abs(dy)*1.1)){stepCycle(dx>0?-1:1);return}if(!moved){pointerN(e);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(clickables,false)[0];if(hit)focus(hit.object.userData.section,true)}});canvas.addEventListener('pointercancel',()=>{dragging=false;canvas.classList.remove('dragging')});
+canvas.addEventListener('pointerup',e=>{dragging=false;canvas.classList.remove('dragging');const dx=e.clientX-down.x,dy=e.clientY-down.y;if(moved&&Math.abs(dx)>Math.max(46,Math.abs(dy)*1.1)){stepCycle(dx>0?-1:1);return}if(!moved){pointerN(e);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(clickables,false)[0];if(hit){if(hit.object.userData.action==='goblin-cert')openGoblinCertificate();else if(hit.object.userData.section)focus(hit.object.userData.section,true)}}});canvas.addEventListener('pointercancel',()=>{dragging=false;canvas.classList.remove('dragging')});
 canvas.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
 document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus(CYCLE[0],false)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(goblinModal.classList.contains('open')){closeGoblinCertificate();return}if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
 
+
+
+/* ---------------- Train discovery / Goblin Certificate ---------------- */
+const goblinModal=document.getElementById('goblinModal'),goblinBackdrop=document.getElementById('goblinBackdrop'),goblinClose=document.getElementById('goblinClose');
+const goblinCert=document.getElementById('goblinCert'),goblinName=document.getElementById('goblinName'),goblinPhoto=document.getElementById('goblinPhoto');
+const goblinPhotoInput=document.getElementById('goblinPhotoInput'),goblinResetPhoto=document.getElementById('goblinResetPhoto'),goblinSave=document.getElementById('goblinSave');
+const goblinRank=document.getElementById('goblinRank'),goblinCountStatus=document.getElementById('goblinCountStatus'),goblinToast=document.getElementById('goblinToast');
+const GOBLIN_DEFAULT_PHOTO='./assets/goblin-default.svg',GOBLIN_RANK_KEY='chekai_goblin_discovery_rank_v1';
+const GOBLIN_COUNT_URL='https://api.counterapi.dev/v1/chekai-lin/goblin-certificate/up';
+let goblinPhotoURL='',goblinRankValue=0,goblinCounting=false;
+function padGoblinRank(n){return String(Math.max(0,Number(n)||0)).padStart(6,'0')}
+function animateGoblinRank(n){
+  goblinRankValue=Number(n)||0;const target=goblinRankValue,start=performance.now(),dur=720;
+  const tick=now=>{const t=Math.min(1,(now-start)/dur),e=1-Math.pow(1-t,3);goblinRank.textContent=padGoblinRank(Math.floor(target*e));if(t<1)requestAnimationFrame(tick)};
+  requestAnimationFrame(tick)
+}
+async function ensureGoblinRank(){
+  const saved=Number(localStorage.getItem(GOBLIN_RANK_KEY)||0);
+  if(saved>0){animateGoblinRank(saved);goblinCountStatus.textContent='LIVE DISCOVERY · SAVED';return saved}
+  if(goblinCounting)return 0;goblinCounting=true;goblinRank.textContent='······';goblinCountStatus.textContent='REGISTERING DISCOVERY…';
+  try{
+    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),4500);
+    const r=await fetch(GOBLIN_COUNT_URL,{cache:'no-store',signal:ctl.signal});clearTimeout(timer);
+    if(!r.ok)throw new Error('counter '+r.status);const j=await r.json();
+    const n=Number(j?.count??j?.value??j?.data?.count??j?.data?.value);
+    if(!Number.isFinite(n)||n<1)throw new Error('counter payload');
+    localStorage.setItem(GOBLIN_RANK_KEY,String(n));animateGoblinRank(n);goblinCountStatus.textContent='LIVE DISCOVERY · VERIFIED';return n
+  }catch(e){console.warn('Goblin counter unavailable',e);goblinRank.textContent='------';goblinCountStatus.textContent='LIVE COUNT 暫時無法取得';return 0}
+  finally{goblinCounting=false}
+}
+function openGoblinCertificate(){
+  goblinModal.classList.add('open');goblinModal.setAttribute('aria-hidden','false');goblinCert.classList.remove('generating');void goblinCert.offsetWidth;goblinCert.classList.add('generating');
+  ensureGoblinRank();setTimeout(()=>goblinName.focus({preventScroll:true}),430)
+}
+function closeGoblinCertificate(){goblinModal.classList.remove('open');goblinModal.setAttribute('aria-hidden','true');goblinCert.classList.remove('generating')}
+goblinClose.addEventListener('click',closeGoblinCertificate);goblinBackdrop.addEventListener('click',closeGoblinCertificate);
+goblinPhotoInput.addEventListener('change',()=>{
+  const file=goblinPhotoInput.files?.[0];if(!file||!file.type.startsWith('image/'))return;
+  if(goblinPhotoURL)URL.revokeObjectURL(goblinPhotoURL);goblinPhotoURL=URL.createObjectURL(file);goblinPhoto.src=goblinPhotoURL
+});
+goblinResetPhoto.addEventListener('click',()=>{if(goblinPhotoURL)URL.revokeObjectURL(goblinPhotoURL);goblinPhotoURL='';goblinPhoto.src=GOBLIN_DEFAULT_PHOTO;goblinPhotoInput.value=''});
+function rr(ctx,x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+async function imageReady(img){if(img.complete&&img.naturalWidth)return img;await new Promise((res,rej)=>{img.addEventListener('load',res,{once:true});img.addEventListener('error',rej,{once:true})});return img}
+function drawCover(ctx,img,x,y,w,h){
+  const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,s=Math.max(w/iw,h/ih),sw=w/s,sh=h/s,sx=(iw-sw)/2,sy=(ih-sh)/2;
+  ctx.drawImage(img,sx,sy,sw,sh,x,y,w,h)
+}
+async function saveGoblinCertificate(){
+  const W=1600,H=1200,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  x.fillStyle='#fffaf0';rr(x,20,20,W-40,H-40,86);x.fill();x.lineWidth=18;x.strokeStyle='#512d1d';x.stroke();
+  rr(x,70,70,W-140,H-140,62);x.lineWidth=10;x.stroke();
+  // crown
+  x.fillStyle='#9bd878';x.strokeStyle='#512d1d';x.lineWidth=12;x.lineJoin='round';x.beginPath();x.moveTo(690,125);x.lineTo(740,170);x.lineTo(800,98);x.lineTo(860,170);x.lineTo(910,125);x.lineTo(890,210);x.lineTo(710,210);x.closePath();x.fill();x.stroke();
+  // label
+  x.fillStyle='#f6ead5';rr(x,265,245,560,105,54);x.fill();x.fillStyle='#512d1d';x.textAlign='center';x.textBaseline='middle';x.font='800 46px "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';x.fillText('哥布林證書',545,298);
+  x.textAlign='left';x.font='900 104px "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';x.fillText('初階哥布林',175,525);
+  x.fillStyle='#b9df9c';rr(x,210,560,600,15,8);x.fill();
+  // name
+  x.strokeStyle='#512d1d';x.lineWidth=6;x.beginPath();x.moveTo(210,790);x.lineTo(810,790);x.stroke();
+  const nm=(goblinName.value||'').trim();if(nm){x.fillStyle='#512d1d';x.textAlign='center';x.font='800 42px "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';x.fillText(nm,510,760)}
+  // portrait
+  await imageReady(goblinPhoto);x.save();rr(x,1050,270,360,360,24);x.clip();drawCover(x,goblinPhoto,1050,270,360,360);x.restore();x.strokeStyle='#512d1d';x.lineWidth=12;rr(x,1050,270,360,360,24);x.stroke();
+  // discovery row
+  x.fillStyle='#f6ead5';rr(x,215,930,1170,145,74);x.fill();x.fillStyle='#512d1d';x.textAlign='left';x.textBaseline='middle';x.font='800 43px "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';x.fillText('♛  你是第',330,1002);
+  x.fillStyle='#c9e2ff';rr(x,625,950,330,105,53);x.fill();x.fillStyle='#33465e';x.textAlign='center';x.font='800 51px ui-monospace,SFMono-Regular,Menlo,monospace';x.fillText(goblinRankValue?padGoblinRank(goblinRankValue):'------',790,1003);
+  x.fillStyle='#512d1d';x.textAlign='left';x.font='800 43px "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';x.fillText('個發現者',990,1002);
+  // no upload UI is drawn into the export by design
+  await new Promise(resolve=>c.toBlob(blob=>{
+    if(!blob){resolve();return}const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='初階哥布林證書-'+(goblinRankValue?padGoblinRank(goblinRankValue):'discovery')+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);resolve()
+  },'image/png',1));
+  goblinToast.classList.add('show');setTimeout(()=>goblinToast.classList.remove('show'),1500)
+}
+goblinSave.addEventListener('click',saveGoblinCertificate);
 
 // ---------------- seamless lap wrap ----------------
 function shiftLap(d){
