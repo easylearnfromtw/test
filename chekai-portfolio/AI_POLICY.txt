@@ -1,0 +1,49 @@
+CHE-KAI LIN PORTFOLIO — AUTOMATED ACCESS / AI / TDM RIGHTS NOTICE
+Effective: 2026-10-06
+Jurisdictional statement: This website is operated from Taiwan under the jurisdiction of the Republic of China (Taiwan).
+
+ALL RIGHTS RESERVED.
+
+1. NO AI / ML LICENSE
+No permission, license, consent, waiver, or implied authorization is granted to use any content from this website for:
+- generative-AI or machine-learning training;
+- fine-tuning or reinforcement learning;
+- embeddings, vector databases, retrieval-augmented generation (RAG), or grounding corpora;
+- dataset creation, aggregation, benchmarking, evaluation, or synthetic-data generation;
+- model distillation, imitation, extraction, or output reconstruction;
+- automated summarization or republication intended to substitute for the original work;
+- biometric analysis, facial recognition, voice analysis, identity inference, behavioral profiling, or personal-data enrichment;
+- commercial or non-commercial redistribution of site content.
+
+No AI/ML use is authorized by this site. Any future authorization would require an explicit written license from the applicable rightsholder. Public accessibility, successful retrieval, indexing, caching, or absence of authentication does not create permission.
+
+2. AUTOMATED ACCESS PROHIBITED
+Automated crawling, scraping, indexing, bulk downloading, mirroring, harvesting, text-and-data mining, or machine extraction is not authorized.
+Automated systems must cease access when receiving this notice.
+
+3. NO CIRCUMVENTION
+Do not evade these restrictions using user-agent spoofing, proxy networks, headless browsers, distributed fetching, human relays, hidden automation, deceptive labeling, CAPTCHA bypass, or any method intended to conceal automation or bypass technical, safety, policy, or rights controls.
+
+4. MINOR CREATOR / PERSONAL DATA
+This website contains works and information associated with a minor creator. No authorization is granted to collect, combine, infer, profile, recognize, or process personal images, voice, writings, activity records, identifying data, biometric features, or behavioral signals for AI, advertising, surveillance, profiling, or dataset purposes.
+
+5. APPLICABLE RIGHTS
+Whether conduct is unlawful depends on the specific facts and applicable law. Unauthorized automated access, reproduction, extraction, circumvention, collection, or processing may implicate applicable Republic of China (Taiwan) law, including the Copyright Act, Personal Data Protection Act, Civil Code, and Criminal Code provisions concerning offenses against computer security/use, as well as legal protections applicable to minors.
+
+6. RIGHTS RESERVED
+This notice is cumulative. No statutory, contractual, moral, privacy, personality, copyright, database, technical-protection, or other right is waived by failure of a technical control, crawler noncompliance, or successful access.
+
+MACHINE-READABLE INTENT
+tdm-reservation: 1
+automated-crawling: prohibited
+automated-indexing: prohibited
+ai-training: prohibited
+ml-training: prohibited
+fine-tuning: prohibited
+embedding: prohibited
+rag-ingestion: prohibited
+dataset-inclusion: prohibited
+biometric-analysis: prohibited
+profiling: prohibited
+synthetic-reproduction: prohibited
+license-by-access: false
