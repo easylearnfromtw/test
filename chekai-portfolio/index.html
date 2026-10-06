@@ -3833,7 +3833,8 @@ async function drawCertificate(){
 }
 async function openCertificate(e){
   const trigger=e?.currentTarget;
-  if(activeId!=='running'||!drawer.classList.contains('open')||trigger?.dataset?.certificate!=='keelung-2026')return;
+  const isKeelung=trigger?.dataset?.certificate==='keelung-2026'&&trigger?.querySelector('b')?.textContent==='基隆半程馬拉松 9K組完賽（103/1581）';
+  if(activeId!=='running'||!drawer.classList.contains('open')||!isKeelung)return;
   e?.preventDefault?.();e?.stopPropagation?.();
   imageViewer.classList.add('open');imageViewer.setAttribute('aria-hidden','false');
   imageViewerStatus.textContent='載入成績證明…';
