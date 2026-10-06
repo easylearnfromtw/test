@@ -36,7 +36,28 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 @keyframes introNudge{0%,100%{transform:translateX(0);opacity:.62}50%{transform:translateX(7px);opacity:1}}
 @media(max-width:560px){.topbar{top:18px}.brand{font-size:24px;letter-spacing:.16em}
 .intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
-.drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.loading{position:absolute;inset:0;display:grid;place-items:center;z-index:30;background:#080d19;transition:opacity .5s}.loading.done{opacity:0;pointer-events:none}.loading div{text-align:center;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase}.loading strong{display:block;font:800 28px var(--sans);letter-spacing:.08em;margin-bottom:8px}
+.drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}
+.profile-card{margin-top:16px;display:grid;gap:14px}
+.profile-head{padding:18px 18px 16px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025))}
+.profile-eyebrow{font:8px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#8190a5;margin-bottom:8px}
+.profile-name{font:800 28px/1 var(--sans);letter-spacing:-.035em;color:#fff;margin-bottom:7px}
+.profile-name small{display:block;margin-top:7px;font:700 10px/1.2 var(--mono);letter-spacing:.10em;color:#9ca9ba;text-transform:uppercase}
+.profile-role{display:inline-flex;margin-top:11px;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);font:8px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#eef3f8}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.profile-cell{padding:12px;border:1px solid rgba(255,255,255,.09);border-radius:12px;background:rgba(255,255,255,.025)}
+.profile-cell em{display:block;margin-bottom:5px;font:7px var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:#78869a}
+.profile-cell strong{font-size:12px;line-height:1.45;color:#f3f5f8}
+.profile-projects{padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:13px;background:rgba(255,255,255,.025)}
+.profile-projects h3{margin:0 0 9px;font:8px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#7f8ee8}
+.profile-tags{display:flex;flex-wrap:wrap;gap:6px}
+.profile-tags span{padding:6px 8px;border-radius:8px;background:rgba(127,142,232,.10);border:1px solid rgba(127,142,232,.18);font:700 9px var(--sans);color:#dfe4ff}
+.profile-links{display:grid;gap:8px}
+.profile-link{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 13px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03);color:#fff;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}
+.profile-link:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);transform:translateY(-1px)}
+.profile-link .meta{min-width:0}.profile-link b{display:block;font-size:11px;margin:0 0 3px}.profile-link span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:8px var(--mono);letter-spacing:.04em;color:#8f9daf}
+.profile-link i{font-style:normal;color:#7f8ee8;font-size:16px}
+@media(max-width:560px){.profile-grid{grid-template-columns:1fr}.profile-head{padding:16px}.profile-name{font-size:25px}}
+.loading{position:absolute;inset:0;display:grid;place-items:center;z-index:30;background:#080d19;transition:opacity .5s}.loading.done{opacity:0;pointer-events:none}.loading div{text-align:center;font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase}.loading strong{display:block;font:800 28px var(--sans);letter-spacing:.08em;margin-bottom:8px}
 @media(max-width:920px){.topbar{grid-template-columns:1fr auto;height:auto;min-height:58px;padding:8px 10px}.nav{grid-column:1/-1;justify-content:flex-start}.identity{display:none}.status{display:none}.hud{display:none}.chip:nth-child(2){display:none}.drawer{top:105px;right:10px;bottom:10px;width:calc(100vw - 20px)}}
 @media(max-width:900px){.app::after{display:none!important}.topbar,.now-playing{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
 @media(max-width:560px){.topbar,.now-playing,.chip,.status{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.now-playing{top:60px;right:8px;max-width:62vw;font-size:6px}.brand{font-size:14px}.nav button{font-size:8px;padding:6px 7px}.controls #reset{display:none}.loop-readout{min-width:58px;font-size:7px}.chip{display:none}.drawer h2{font-size:36px}}
@@ -120,7 +141,7 @@ loadCitymus();
 
 const DATA={
  hero:{nav:'Home',index:'00',title:'CHE-KAI LIN',intro:'WRITER X DESIGNER X STUDENT',accent:'#8aa8ff',items:[['林哲愷 / Che-Kai Lin','個人網站以 3D 城市街道作為入口。'],['Identity','Writer X Designer X Student'],['Direction','Design · Writing · Academic · Public Life']]},
- about:{nav:'About',index:'01',title:'ABOUT',intro:'背景、個性、興趣與價值觀。',accent:'#7f8ee8',items:[['背景','個人基本介紹與成長脈絡'],['個性','創作與思考方式'],['興趣','網站、設計、文字、藝術、公共事務'],['價值觀','持續探索、跨域學習、把想法做成作品']]},
+ about:{nav:'About',index:'01',title:'CHE-KAI LIN',intro:'AI × WEB × DESIGN',accent:'#7f8ee8',items:[['School','市立三重高中｜高三'],['Focus','AI × Web × Design'],['Projects','欣緯生醫 · 閒台文 · CITYMUS'],['Interests','網站、設計、文字、公共參與']]},
  web:{nav:'Web Works',index:'02',title:'WEB WORKS',intro:'Selected digital projects.',accent:'#70c6f4',items:[['SignWell 欣緯生醫','醫療與產業內容平台'],['Tai-Wan Way 閒台文','互動式中文與台灣文化網站'],['CITYMUS','音樂與城市視覺品牌'],['健人','獨立網站概念與前端視覺實驗']]},
  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',accent:'#e36aa8',items:[['Newtalk 新頭殼 投書刊載','公開評論與文字刊載經歷'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷']]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']]},
@@ -3161,7 +3182,44 @@ function syncTabs(id){const btn=TABS.find(b=>b.dataset.id===id);TABS.forEach(b=>
   const sl=btn.offsetLeft+btn.offsetWidth/2-tabbar.clientWidth/2;if(tabbar.scrollWidth>tabbar.clientWidth)tabbar.scrollTo({left:sl,behavior:'smooth'})}
 addEventListener('resize',()=>syncTabs(activeId));document.fonts?.ready?.then(()=>syncTabs(activeId));addEventListener('load',()=>syncTabs(activeId));
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
-function openDrawer(id){const d=DATA[id];document.getElementById('dk').textContent=`${d.index} / ${d.nav}`;document.getElementById('dt').textContent=d.title;document.getElementById('di').textContent=d.intro;document.getElementById('items').innerHTML=d.items.map(x=>`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');drawer.classList.add('open')}
+function openDrawer(id){
+  const d=DATA[id],dk=document.getElementById('dk'),dt=document.getElementById('dt'),di=document.getElementById('di'),items=document.getElementById('items');
+  dk.textContent=`${d.index} / ${d.nav}`;
+  if(id==='about'){
+    dt.textContent='LIN, CHE-KAI';
+    di.textContent='STUDENT · AI × WEB × DESIGN';
+    items.innerHTML=`
+      <div class="profile-card">
+        <section class="profile-head">
+          <div class="profile-eyebrow">Profile / 2026</div>
+          <div class="profile-name">林哲愷<small>CHE-KAI LIN</small></div>
+          <div class="profile-role">AI × WEB × DESIGN</div>
+        </section>
+        <div class="profile-grid">
+          <div class="profile-cell"><em>School</em><strong>市立三重高中｜高三</strong></div>
+          <div class="profile-cell"><em>Current</em><strong>Student / Creator</strong></div>
+          <div class="profile-cell"><em>Focus</em><strong>AI · Web · Design</strong></div>
+          <div class="profile-cell"><em>Also</em><strong>Writing · Public Life</strong></div>
+        </div>
+        <section class="profile-projects">
+          <h3>Selected Projects</h3>
+          <div class="profile-tags"><span>欣緯生醫</span><span>閒台文</span><span>CITYMUS</span><span>Web Works</span></div>
+        </section>
+        <div class="profile-links">
+          <a class="profile-link" href="https://www.instagram.com/dennylin_0510/" target="_blank" rel="noopener noreferrer">
+            <span class="meta"><b>Instagram</b><span>@dennylin_0510</span></span><i>↗</i>
+          </a>
+          <a class="profile-link" href="https://easylearnfromtw.github.io/test/chekai-portfolio/" target="_blank" rel="noopener noreferrer">
+            <span class="meta"><b>Website</b><span>easylearnfromtw.github.io/test/chekai-portfolio</span></span><i>↗</i>
+          </a>
+        </div>
+      </div>`;
+  }else{
+    dt.textContent=d.title;di.textContent=d.intro;
+    items.innerHTML=d.items.map(x=>`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')
+  }
+  drawer.classList.add('open')
+}
 function updateLoopUI(id){
   const readout=document.getElementById('loopReadout'),progress=document.getElementById('progress');
   if(id==='hero'){if(readout)readout.textContent='01 → 02 ∞';if(progress)progress.style.width='0%';return}
