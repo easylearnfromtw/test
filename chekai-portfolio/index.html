@@ -49,7 +49,8 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .image-viewer-title{font:800 10px/1 var(--mono);letter-spacing:.1em;color:#e8edf4;text-transform:uppercase}
 .image-viewer-close{width:36px;height:36px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#151d2c;color:#fff;font-size:20px;cursor:pointer}
 .image-viewer-body{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#111827}
-.image-viewer-body img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:7px;box-shadow:0 12px 40px rgba(0,0,0,.35);touch-action:pinch-zoom}
+.image-viewer-body canvas{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:7px;box-shadow:0 12px 40px rgba(0,0,0,.35);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none;pointer-events:none}
+.image-viewer,.image-viewer *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .image-viewer-status{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:800 9px/1.5 var(--mono);letter-spacing:.08em;color:#aeb9c8;text-align:center;white-space:nowrap}
 .image-viewer.loaded .image-viewer-status{display:none}
 @media(max-width:600px) and (orientation:portrait){
@@ -230,7 +231,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.3-running-cert: Keelung certificate viewer + no center-road catenary -->
+<!-- taiwan-street-pro v5.4-view-only: canvas certificate viewer + copy/save deterrence -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -269,7 +270,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   <div class="image-viewer-backdrop" id="imageViewerBackdrop"></div>
   <section class="image-viewer-panel" role="dialog" aria-modal="true" aria-label="基隆半程馬拉松成績證明">
     <div class="image-viewer-head"><span class="image-viewer-title">2026 基隆半程馬拉松｜成績證明</span><button class="image-viewer-close" id="imageViewerClose" type="button" aria-label="關閉">×</button></div>
-    <div class="image-viewer-body"><div class="image-viewer-status" id="imageViewerStatus">載入成績證明…</div><img id="imageViewerImg" alt="2026 基隆半程馬拉松 林哲愷 9K 成績證明"></div>
+    <div class="image-viewer-body" id="imageViewerBody"><div class="image-viewer-status" id="imageViewerStatus">載入成績證明…</div><canvas id="imageViewerCanvas" role="img" aria-label="2026 基隆半程馬拉松 林哲愷 9K 成績證明"></canvas></div>
   </section>
 </div>
 <script type="module">
@@ -3635,37 +3636,72 @@ function syncTabs(id){const btn=TABS.find(b=>b.dataset.id===id);TABS.forEach(b=>
   const sl=btn.offsetLeft+btn.offsetWidth/2-tabbar.clientWidth/2;if(tabbar.scrollWidth>tabbar.clientWidth)tabbar.scrollTo({left:sl,behavior:'smooth'})}
 addEventListener('resize',()=>syncTabs(activeId));document.fonts?.ready?.then(()=>syncTabs(activeId));addEventListener('load',()=>syncTabs(activeId));
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
-const imageViewer=document.getElementById('imageViewer'),imageViewerImg=document.getElementById('imageViewerImg'),imageViewerStatus=document.getElementById('imageViewerStatus');
+const imageViewer=document.getElementById('imageViewer'),imageViewerCanvas=document.getElementById('imageViewerCanvas'),imageViewerStatus=document.getElementById('imageViewerStatus');
+const certificateCtx=imageViewerCanvas.getContext('2d',{alpha:false});
 const CERT_PARTS=[
   'part-01a-1.b64','part-01a-2.b64','part-01b.b64','part-02.b64','part-03.b64',
   'part-04a.b64','part-04b.b64','part-05a.b64','part-05b.b64','part-06a.b64','part-06b.b64',
   'part-07a.b64','part-07b-1.b64','part-07b-2.b64','part-08.b64','part-09.b64'
 ].map(n=>'./assets/keelung-cert/'+n);
-let certificateDataPromise=null;
-function getCertificateData(){
-  if(certificateDataPromise)return certificateDataPromise;
-  certificateDataPromise=Promise.all(CERT_PARTS.map(async u=>{
+let certificateBlobPromise=null,certificateDrawn=false;
+function getCertificateBlob(){
+  if(certificateBlobPromise)return certificateBlobPromise;
+  certificateBlobPromise=Promise.all(CERT_PARTS.map(async u=>{
     const r=await fetch(u,{cache:'force-cache'});if(!r.ok)throw new Error('certificate asset '+r.status);return (await r.text()).trim()
   })).then(parts=>{
     const b64=parts.join('');
     if(b64.length!==50364||!b64.startsWith('/9j/')||!b64.endsWith('/9k='))throw new Error('certificate asset integrity');
-    return 'data:image/jpeg;base64,'+b64
+    const raw=atob(b64),bytes=new Uint8Array(raw.length);
+    for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+    return new Blob([bytes],{type:'image/jpeg'})
   });
-  return certificateDataPromise
+  return certificateBlobPromise
+}
+async function drawCertificate(){
+  if(certificateDrawn)return;
+  const blob=await getCertificateBlob();
+  let source=null,revoke='';
+  try{
+    if('createImageBitmap' in window)source=await createImageBitmap(blob);
+    else{
+      source=await new Promise((resolve,reject)=>{
+        const im=new Image();revoke=URL.createObjectURL(blob);
+        im.onload=()=>resolve(im);im.onerror=reject;im.src=revoke
+      })
+    }
+    const w=source.width||source.naturalWidth,h=source.height||source.naturalHeight;
+    imageViewerCanvas.width=w;imageViewerCanvas.height=h;
+    certificateCtx.fillStyle='#fff';certificateCtx.fillRect(0,0,w,h);certificateCtx.drawImage(source,0,0,w,h);
+    certificateDrawn=true;imageViewer.classList.add('loaded')
+  }finally{
+    if(source?.close)source.close();
+    if(revoke)URL.revokeObjectURL(revoke)
+  }
 }
 async function openCertificate(){
-  imageViewer.classList.remove('loaded');imageViewer.classList.add('open');imageViewer.setAttribute('aria-hidden','false');
+  imageViewer.classList.add('open');imageViewer.setAttribute('aria-hidden','false');
   imageViewerStatus.textContent='載入成績證明…';
-  try{
-    const src=await getCertificateData();
-    if(imageViewerImg.src!==src)imageViewerImg.src=src;
-    if(imageViewerImg.complete&&imageViewerImg.naturalWidth)imageViewer.classList.add('loaded')
-  }catch(e){imageViewerStatus.textContent='成績證明載入失敗，請重新整理後再試';certificateDataPromise=null}
+  try{await drawCertificate()}
+  catch(e){imageViewerStatus.textContent='成績證明載入失敗，請重新整理後再試';certificateBlobPromise=null}
 }
 function closeCertificate(){imageViewer.classList.remove('open');imageViewer.setAttribute('aria-hidden','true')}
-imageViewerImg.addEventListener('load',()=>imageViewer.classList.add('loaded'));
 document.getElementById('imageViewerClose').onclick=closeCertificate;
 document.getElementById('imageViewerBackdrop').onclick=closeCertificate;
+
+// View-only deterrence for the certificate modal. This blocks ordinary save/copy/share gestures,
+// while acknowledging that browser content can never be made screenshot-proof.
+function certificateProtected(){return imageViewer.classList.contains('open')}
+for(const type of ['contextmenu','dragstart','copy','cut']){
+  imageViewer.addEventListener(type,e=>{if(certificateProtected())e.preventDefault()},{capture:true})
+}
+imageViewer.addEventListener('selectstart',e=>e.preventDefault(),{capture:true});
+document.addEventListener('keydown',e=>{
+  if(!certificateProtected())return;
+  const k=e.key.toLowerCase();
+  if((e.metaKey||e.ctrlKey)&&(k==='c'||k==='s'||k==='p'||k==='u')){
+    e.preventDefault();e.stopImmediatePropagation()
+  }
+},{capture:true});
 const teleport=document.getElementById('teleport');
 const RETURN_STATE_KEY='chekai-outbound-return-v2';
 let outboundNavigating=false,outboundTimer=0;
