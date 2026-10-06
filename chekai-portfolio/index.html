@@ -517,20 +517,25 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 <script type="module">
 import * as THREE from 'three';
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v1',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v2',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
-const SITE_CONTENT_BOOT_STAMP=SITE_CONTENT?.updated_at||'';
+function contentSignature(v){
+  const str=JSON.stringify(v||{});let h=2166136261;
+  for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}
+  return (h>>>0).toString(36)
+}
+const SITE_CONTENT_BOOT_SIG=contentSignature(SITE_CONTENT);
 let contentRefreshBusy=false,lastContentCheck=0;
 async function refreshContentCache(allowReload=true){
   if(contentRefreshBusy)return;contentRefreshBusy=true;
   try{
     const r=await fetch(RAW_BASE+'data/content.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('content '+r.status);
-    const fresh=await r.json(),stamp=fresh?.updated_at||'';
+    const fresh=await r.json(),freshSig=contentSignature(fresh);
     localStorage.setItem(CONTENT_CACHE_KEY,JSON.stringify(fresh));lastContentCheck=Date.now();
-    if(allowReload&&stamp&&stamp!==SITE_CONTENT_BOOT_STAMP&&sessionStorage.getItem('ck_content_applied_stamp')!==stamp){
-      sessionStorage.setItem('ck_content_applied_stamp',stamp);setTimeout(()=>location.reload(),90)
+    if(allowReload&&freshSig!==SITE_CONTENT_BOOT_SIG&&sessionStorage.getItem('ck_content_applied_sig')!==freshSig){
+      sessionStorage.setItem('ck_content_applied_sig',freshSig);setTimeout(()=>location.reload(),90)
     }
   }catch(e){console.warn('[content cms]',e)}
   finally{contentRefreshBusy=false}
