@@ -656,6 +656,19 @@ const LOOK_AT_Y=15.6,LOOK_AT_Z=-15.5;
 const ambient=new THREE.HemisphereLight(0xc6d8e8,0x5f5549,1.38);scene.add(ambient);
 const SUN_DIR=new THREE.Vector3(-.74,.47,.48).normalize();
 const key=new THREE.DirectionalLight(0xffd3a8,2.8);scene.add(key);scene.add(key.target);
+// Real local street-light pools: only a few nearest lamps stay active, so night cars
+// pick up warm highlights without turning the whole street into a uniformly bright scene.
+const STREET_LAMP_STEP=35,STREET_LAMP_ORIGIN=LAP_MIN+20;
+const streetLampLights=Array.from({length:MOBILE_GPU?3:4},()=>{const l=new THREE.PointLight(0xffd59a,0,21,1.65);l.position.set(0,8.45,-3.8);l.castShadow=false;scene.add(l);return l});
+let streetNight=.0;
+function updateStreetLights(x){
+  const base=Math.round((x-STREET_LAMP_ORIGIN)/STREET_LAMP_STEP);
+  const n=streetLampLights.length,start=base-Math.floor((n-1)/2);
+  for(let i=0;i<n;i++){
+    const lx=STREET_LAMP_ORIGIN+(start+i)*STREET_LAMP_STEP;
+    const l=streetLampLights[i];l.position.set(lx,8.4,-3.8);l.intensity=(MOBILE_GPU?34:44)*streetNight;
+  }
+}
 let shadowAnchorX=Infinity;
 if(USE_SHADOWS){
   key.castShadow=true;const sc=key.shadow.camera;
@@ -874,10 +887,10 @@ class GeoBuf{
 
 
 // ---------------- City surface shader (Lambert + procedural tiles / grime / rust / glass) -------------
-const cityUniforms={uNoise:G.uNoise,uTime:G.uTime,uSkyTop:{value:new THREE.Color(0x6e95bd)},uSkyHor:{value:new THREE.Color(0xdfe4e6)},uSkyGnd:{value:new THREE.Color(0x4b4a48)},uPhoto:{value:0}};
+const cityUniforms={uNoise:G.uNoise,uTime:G.uTime,uSkyTop:{value:new THREE.Color(0x6e95bd)},uSkyHor:{value:new THREE.Color(0xdfe4e6)},uSkyGnd:{value:new THREE.Color(0x4b4a48)},uPhoto:{value:0},uNight:{value:0}};
 const CITY_GLSL_COMMON=`
 varying vec2 vUvW;varying vec2 vMat;varying vec3 vWPos;varying vec3 vWNrm;
-uniform sampler2D uNoise;uniform float uTime;uniform vec3 uSkyTop;uniform vec3 uSkyHor;uniform vec3 uSkyGnd;uniform float uPhoto;
+uniform sampler2D uNoise;uniform float uTime;uniform vec3 uSkyTop;uniform vec3 uSkyHor;uniform vec3 uSkyGnd;uniform float uPhoto;uniform float uNight;
 float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
 float fbm(vec2 p){return texture2D(uNoise,p*.25).r;}
 float fbm2(vec2 p){return texture2D(uNoise,p*.125).g;}
@@ -969,7 +982,12 @@ vec3 cEmis=vec3(0.);
   bool reflSurf=(st>14.5&&st<15.5)||(st>5.5&&st<6.5)||(st>20.5&&st<22.5);
   vec3 N=vec3(0.,1.,0.),V=vec3(0.,0.,1.);float fres=0.;
   if(reflSurf){N=normalize(vWNrm);V=normalize(vWPos-cameraPosition);fres=pow(1.-abs(dot(V,N)),3.);}
-  if(st>14.5&&st<15.5){ col*=vTint;cEmis=skyRefl(V,N)*(.06+.45*fres);float hl=pow(max(dot(reflect(V,N),normalize(vec3(-.74,.47,.48))),0.),40.);cEmis+=vec3(1.,.9,.8)*hl*.6;
+  if(st>14.5&&st<15.5){ col*=vTint;
+    float lp=pow(max(0.,1.-abs(mod(vWPos.x--160+17.5,35.)-17.5)/16.),2.);
+    float side=max(0.,1.-abs(vWPos.z+3.8)/13.);
+    vec3 warm=vec3(1.0,.73,.42)*lp*side*uNight;
+    cEmis=skyRefl(V,N)*(.08+.48*fres)+warm*(.10+.18*max(N.y,0.));
+    float hl=pow(max(dot(reflect(V,N),normalize(vec3(-.74,.47,.48))),0.),40.);cEmis+=vec3(1.,.9,.8)*hl*.6;
   }else if(st>5.5&&st<6.5){ cEmis=skyRefl(V,N)*(.25+.6*fres);col*=.25;
   }else if(st>15.5&&st<16.5){ cEmis=col*(.35+1.6*vState.x);col*=.3;
   }else if(st>16.5&&st<17.5){ float on=step(.5,fract(uTime*1.4+vState.w))*vState.y;cEmis=vec3(1.,.55,.08)*(.15+2.2*on);col*=.3;
@@ -1075,7 +1093,7 @@ const CLIMATE={
   ambient:ambient.intensity,targetAmbient:ambient.intensity,key:key.intensity,targetKey:key.intensity,
   exposure:renderer.toneMappingExposure,targetExposure:renderer.toneMappingExposure,
   fog:scene.fog.density,targetFog:scene.fog.density,
-  cloud:.35,targetCloud:.35,rain:0,targetRain:0,wind:.35,targetWind:.35,
+  cloud:.35,targetCloud:.35,rain:0,targetRain:0,wind:.35,targetWind:.35,night:0,targetNight:0,
   label:'default'
 };
 function setClimateTarget(w,loc,immediate=false){
@@ -1098,9 +1116,10 @@ function setClimateTarget(w,loc,immediate=false){
   if(snow){top.lerp(new THREE.Color(0xb8c4ca),.22);hor.lerp(new THREE.Color(0xdfe5e7),.28)}
   const gnd=groundDay.clone().lerp(groundNight,1-daylight).lerp(new THREE.Color(0x30363a),rain*.35);
   CLIMATE.targetTop.copy(top);CLIMATE.targetHor.copy(hor);CLIMATE.targetGnd.copy(gnd);
-  CLIMATE.targetAmbient=Math.max(.22,(.32+daylight*1.08)*(1-cloud*.16-rain*.16));
-  CLIMATE.targetKey=Math.max(.015,daylight*3.0*(1-cloud*.72)*(1-rain*.55));
-  CLIMATE.targetExposure=Math.max(.48,.57+daylight*.52-cloud*.07-rain*.08);
+  CLIMATE.targetNight=clamp01(1-daylight);
+  CLIMATE.targetAmbient=Math.max(.30,(.34+daylight*1.06)*(1-cloud*.14-rain*.14));
+  CLIMATE.targetKey=Math.max(.02,daylight*3.0*(1-cloud*.72)*(1-rain*.55));
+  CLIMATE.targetExposure=Math.max(.56,.62+daylight*.47-cloud*.06-rain*.07);
   CLIMATE.targetFog=.00155+humidity*.00062+cloud*.00034+rain*.00105+(foggy ? .0032 : 0);
   CLIMATE.targetCloud=clamp01(Math.max(cloud,rain*.75,foggy ? .72 : 0));
   CLIMATE.targetRain=rain;CLIMATE.targetWind=clamp01((Number(cur.wind_speed_10m)||8)/38);
@@ -1119,9 +1138,10 @@ function updateClimateVisual(dt,immediate=false){
   CLIMATE.top.lerp(CLIMATE.targetTop,k);CLIMATE.hor.lerp(CLIMATE.targetHor,k);CLIMATE.gnd.lerp(CLIMATE.targetGnd,k);CLIMATE.sunColor.lerp(CLIMATE.targetSunColor,k);
   CLIMATE.ambient=mixN(CLIMATE.ambient,CLIMATE.targetAmbient,k);CLIMATE.key=mixN(CLIMATE.key,CLIMATE.targetKey,k);
   CLIMATE.exposure=mixN(CLIMATE.exposure,CLIMATE.targetExposure,k);CLIMATE.fog=mixN(CLIMATE.fog,CLIMATE.targetFog,k);
-  CLIMATE.cloud=mixN(CLIMATE.cloud,CLIMATE.targetCloud,k);CLIMATE.rain=mixN(CLIMATE.rain,CLIMATE.targetRain,k);CLIMATE.wind=mixN(CLIMATE.wind,CLIMATE.targetWind,k);
+  CLIMATE.cloud=mixN(CLIMATE.cloud,CLIMATE.targetCloud,k);CLIMATE.rain=mixN(CLIMATE.rain,CLIMATE.targetRain,k);CLIMATE.wind=mixN(CLIMATE.wind,CLIMATE.targetWind,k);CLIMATE.night=mixN(CLIMATE.night,CLIMATE.targetNight,k);
   SKY_TOP.copy(CLIMATE.top);SKY_HOR.copy(CLIMATE.hor);SKY_GROUND.copy(CLIMATE.gnd);
-  cityUniforms.uSkyTop.value.copy(CLIMATE.top);cityUniforms.uSkyHor.value.copy(CLIMATE.hor);cityUniforms.uSkyGnd.value.copy(CLIMATE.gnd);
+  cityUniforms.uSkyTop.value.copy(CLIMATE.top);cityUniforms.uSkyHor.value.copy(CLIMATE.hor);cityUniforms.uSkyGnd.value.copy(CLIMATE.gnd);cityUniforms.uNight.value=CLIMATE.night;
+  streetNight=CLIMATE.night;
   ambient.intensity=CLIMATE.ambient;ambient.color.copy(CLIMATE.hor);ambient.groundColor.copy(CLIMATE.gnd);
   key.intensity=CLIMATE.key;key.color.copy(CLIMATE.sunColor);
   renderer.toneMappingExposure=CLIMATE.exposure;scene.fog.color.copy(CLIMATE.hor);scene.fog.density=CLIMATE.fog;
@@ -4473,7 +4493,7 @@ function animate(now=performance.now()){
   currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);currentY=moveToward(currentY,targetY,7.5*dt);currentZ=moveToward(currentZ,targetZ,13*dt);
   wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.rotation.set(Math.atan2(LOOK_AT_Y-currentY,currentZ-LOOK_AT_Z),0,0);updateStaticVisibility();
   G.uTime.value=t;G.uCamX.value=currentX;skyDome.position.copy(camera.position);
-  updateClimateVisual(dt);updateSun(currentX);updateBackdrop(dt);
+  updateClimateVisual(dt);updateSun(currentX);updateStreetLights(currentX);updateBackdrop(dt);
   oceanUniforms.uTime.value=t;ocean.position.x=currentX;oceanGlint.position.x=currentX;oceanGlintMat.opacity=.055+.045*(.5+.5*Math.sin(t*.72));
   surfStrips.forEach((s,i)=>{const run=.5+.5*Math.sin(t*(1.05+i*.08)+s.phase);s.mesh.position.x=currentX;s.mesh.position.z=s.baseZ-run*(1.15+i*.20);s.mesh.material.opacity=.18+run*(.22-i*.025)});
   if(Math.floor(t*8)!==lastSigT){lastSigT=Math.floor(t*8);updateSignals(t)}else signalState(t);
