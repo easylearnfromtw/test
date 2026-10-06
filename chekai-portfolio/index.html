@@ -343,7 +343,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 .jx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}.jx-card{position:relative;border:2px solid #174b3a;background:#fff9ed;padding:18px;min-height:142px;transition:transform .22s,box-shadow .22s,background .22s}.jx-card:hover{transform:translateY(-4px) rotate(-.3deg);box-shadow:5px 5px 0 #174b3a;background:#fff4d6}.jx-card b{display:block;font-size:15px;margin-bottom:8px}.jx-card p{margin:0;color:#436a5d;font-size:11px;line-height:1.65}.jx-tag{display:inline-flex;margin-bottom:10px;padding:5px 7px;background:#f3bf53;border:1px solid #174b3a;font:900 7px/1 var(--mono);letter-spacing:.08em}
 .jx-sdg{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-top:26px;align-items:end}.jx-sdg button{appearance:none;border:0;color:#fff;min-height:210px;padding:15px 8px;cursor:pointer;font:900 10px/1.4 var(--sans);transition:transform .2s,filter .2s;box-shadow:4px 4px 0 rgba(23,75,58,.22)}.jx-sdg button:hover,.jx-sdg button.active{transform:translateY(-10px);filter:brightness(1.08)}.jx-sdg button:nth-child(1){background:#97c93d}.jx-sdg button:nth-child(2){background:#00aa9f}.jx-sdg button:nth-child(3){background:#0ba5c4}.jx-sdg button:nth-child(4){background:#127ddd}.jx-sdg button:nth-child(5){background:#2467c7}.jx-sdg button:nth-child(6){background:#27509b}.jx-sdg button:nth-child(7){background:#32446e}.jx-sdg-info{margin-top:18px;padding:14px 16px;border-left:5px solid #c94a43;background:#fff9ed;color:#315d50;font-size:12px;line-height:1.7}
 .jx-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
-.jx-shot{position:relative;appearance:none;border:2px solid #174b3a;background-color:#efe6d6;background-repeat:no-repeat;background-origin:border-box;image-rendering:auto;aspect-ratio:1;cursor:zoom-in;overflow:hidden;box-shadow:5px 5px 0 rgba(23,75,58,.14);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.jx-shot{position:relative;appearance:none;border:2px solid #174b3a;background-color:#efe6d6;background-repeat:no-repeat;background-position:center;background-origin:border-box;image-rendering:auto;aspect-ratio:1;cursor:zoom-in;overflow:hidden;box-shadow:5px 5px 0 rgba(23,75,58,.14);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
 .jx-shot::after{content:"點擊放大";position:absolute;right:8px;bottom:8px;padding:5px 7px;background:rgba(247,242,231,.92);border:1px solid #174b3a;color:#174b3a;font:900 7px/1 var(--mono);letter-spacing:.05em;opacity:0;transform:translateY(4px);transition:.2s}
 .jx-shot:hover{transform:translateY(-5px) rotate(.5deg);box-shadow:8px 8px 0 rgba(23,75,58,.2)}.jx-shot:hover::after{opacity:1;transform:none}
 .jx-shot.poster{aspect-ratio:3/4}.jx-shot.wide{aspect-ratio:1.75/1}
@@ -4423,19 +4423,50 @@ if(SITE_CONTENT?.club){
 }
 const jxSections=[...document.querySelectorAll('.jx-section')],jxProgress=document.getElementById('jxProgress'),jxChapterCount=document.getElementById('jxChapterCount'),jxHeadBar=document.getElementById('jxHeadBar');
 const jxLightbox=document.getElementById('jxLightbox'),jxLightboxFrame=document.getElementById('jxLightboxFrame'),jxLightboxClose=document.getElementById('jxLightboxClose');
-let jxIndex=0,jxSpriteUrl='',jxSpriteLoading=null;
+let jxIndex=0,jxSpriteUrl='',jxSpriteLoading=null,jxCellUrls=[];
 jxSections.forEach((s,i)=>{const b=document.createElement('button');b.className='jx-dot'+(i===0?' active':'');b.type='button';b.setAttribute('aria-label','第 '+(i+1)+' 章');b.onclick=()=>jxGo(i);jxProgress.appendChild(b)});
 const jxDots=[...jxProgress.children];
-function jxCellPos(el,cell){const c=Number(cell)||0,x=c%4,y=Math.floor(c/4);el.style.backgroundImage=jxSpriteUrl?`url("${jxSpriteUrl}")`:'';el.style.backgroundSize='400% 400%';el.style.backgroundPosition=`${x*100/3}% ${y*100/3}%`}
-function applyJxSprite(root=document){if(!jxSpriteUrl)return;root.querySelectorAll?.('[data-jx-cell]').forEach(el=>jxCellPos(el,el.dataset.jxCell))}
+function jxCellPos(el,cell){
+  const c=Number(cell)||0;
+  if(jxCellUrls[c]){
+    el.style.backgroundImage=`url("${jxCellUrls[c]}")`;
+    el.style.backgroundSize='contain';
+    el.style.backgroundPosition='center';
+    el.style.backgroundRepeat='no-repeat';
+    return
+  }
+  const x=c%4,y=Math.floor(c/4);
+  el.style.backgroundImage=jxSpriteUrl?`url("${jxSpriteUrl}")`:'';
+  el.style.backgroundSize='400% 400%';
+  el.style.backgroundPosition=`${x*100/3}% ${y*100/3}%`
+}
+function applyJxSprite(root=document){if(!jxSpriteUrl&&!jxCellUrls.length)return;root.querySelectorAll?.('[data-jx-cell]').forEach(el=>jxCellPos(el,el.dataset.jxCell))}
+async function buildJxCells(url){
+  const img=new Image();
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
+  const cols=4,rows=4,sw=img.naturalWidth/cols,sh=img.naturalHeight/rows;
+  const outSize=innerWidth<720?420:600;
+  const cv=document.createElement('canvas'),g=cv.getContext('2d',{alpha:false});
+  cv.width=cv.height=outSize;g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+  const urls=[];
+  for(let c=0;c<15;c++){
+    g.fillStyle='#efe6d6';g.fillRect(0,0,outSize,outSize);
+    const sx=(c%4)*sw,sy=Math.floor(c/4)*sh;
+    g.drawImage(img,sx,sy,sw,sh,0,0,outSize,outSize);
+    urls[c]=cv.toDataURL('image/webp',.92);
+  }
+  jxCellUrls=urls
+}
 async function ensureJxSprite(){
   if(jxSpriteUrl)return jxSpriteUrl;if(jxSpriteLoading)return jxSpriteLoading;
-  const loadLow=()=>fetch('./assets/jx-sprite.b64.txt',{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('photo archive '+r.status);return r.text()});
-  const hdParts=Array.from({length:15},(_,i)=>'./assets/jx-sprite-hd.b64.'+String(i).padStart(2,'0'));
-  jxSpriteLoading=Promise.all(hdParts.map(u=>fetch(u,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('hd photo archive '+r.status);return r.text()})))
-    .then(parts=>parts.join(''))
-    .catch(e=>{console.warn('[jx photos hd fallback]',e);return loadLow()})
-    .then(b64=>{jxSpriteUrl='data:image/webp;base64,'+b64.trim();applyJxSprite();return jxSpriteUrl})
+  jxSpriteLoading=fetch('./assets/jx-sprite.b64.txt',{cache:'force-cache'})
+    .then(r=>{if(!r.ok)throw new Error('photo archive '+r.status);return r.text()})
+    .then(async b64=>{
+      jxSpriteUrl='data:image/webp;base64,'+b64.trim();
+      try{await buildJxCells(jxSpriteUrl)}catch(e){console.warn('[jx cell extraction]',e)}
+      applyJxSprite();
+      return jxSpriteUrl
+    })
     .catch(e=>{console.warn('[jx photos]',e);return ''});
   return jxSpriteLoading
 }
