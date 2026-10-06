@@ -176,9 +176,27 @@ const dbg=gl.getExtension('WEBGL_debug_renderer_info');
 const GPU_NAME=String(dbg?gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER)||'').toLowerCase();
 const HW_CORES=Number(navigator.hardwareConcurrency)||0,HW_MEM=Number(navigator.deviceMemory)||0;
 const SOFTWARE_GPU=/swiftshader|llvmpipe|software|microsoft basic/.test(GPU_NAME);
-const ULTRA_HW_CANDIDATE=!SOFTWARE_GPU&&MAX_TEX_SIZE>=8192&&MAX_RB_SIZE>=4096&&(HW_CORES===0||HW_CORES>=6)&&(!MOBILE_GPU||HW_CORES===0||HW_CORES>=8)&&(HW_MEM===0||HW_MEM>=6);
+const QUALITY_PROBE_ELIGIBLE=!SOFTWARE_GPU&&MAX_RB_SIZE>=4096&&MAX_TEX_SIZE>=4096;
+const DETAIL_HW_HINT=!SOFTWARE_GPU&&MAX_TEX_SIZE>=8192&&MAX_RB_SIZE>=4096&&(HW_CORES===0||HW_CORES>=6)&&(!MOBILE_GPU||HW_CORES===0||HW_CORES>=8)&&(HW_MEM===0||HW_MEM>=6);
 const QUALITY_TEXTURES=[];
-const QUALITY={mode:'starter',candidate:ULTRA_HW_CANDIDATE,good:0,bad:0,ultraAt:0,lastReason:'startup'};
+const QUALITY_CACHE_KEY='chekai-quality-probe-v3';
+const DEVICE_SIG=[GPU_NAME,HW_CORES,HW_MEM,MAX_RB_SIZE,MAX_TEX_SIZE,screen.width+'x'+screen.height,Math.round(NATIVE_DPR*100)].join('|');
+function readQualityMemory(){
+  try{
+    const q=JSON.parse(localStorage.getItem(QUALITY_CACHE_KEY)||'null');
+    if(!q||q.sig!==DEVICE_SIG)return null;
+    const age=Date.now()-q.ts,ttl=q.pass?7*864e5:6*36e5;
+    return age<ttl?q:null
+  }catch{return null}
+}
+function rememberQuality(pass,meta={}){
+  try{localStorage.setItem(QUALITY_CACHE_KEY,JSON.stringify({sig:DEVICE_SIG,pass,ts:Date.now(),...meta}))}catch{}
+}
+const QUALITY_MEMORY=readQualityMemory();
+const QUALITY={
+  mode:'starter',probeEligible:QUALITY_PROBE_ELIGIBLE,good:0,bad:0,ultraAt:0,lastReason:'startup',
+  probe:{active:false,stage:0,frames:[],restoreDpr:1,started:0,result:null}
+};
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;
 renderer.info.autoReset=true;
 // ---------------- GPU pixel-budget policy ----------------
@@ -2982,7 +3000,7 @@ const vehMat=(()=>{const m=new THREE.MeshLambertMaterial({vertexColors:true});
   m.customProgramCacheKey=()=>'veh-v2';return m})();
 // ---------------- geometry kit ----------------
 const PAINT=[1,1,1];
-const VQ=(!MOBILE_GPU||QUALITY.candidate)?1:0; // detailed meshes on desktop / plausible high-load mobile hardware
+const VQ=(!MOBILE_GPU||DETAIL_HW_HINT)?1:0; // detailed meshes only from conservative hardware hints; 4K is decided later by live probe
 const DARK=C(0x141517),TRIM=C(0x1c1d20),CHR=C(0xb9bec2);
 // smooth monotone-ish Hermite through stations (non-uniform x)
 function hermite(X,Y,x){const n=X.length;if(x<=X[0])return Y[0];if(x>=X[n-1])return Y[n-1];let i=0;while(x>X[i+1])i++;
@@ -3548,6 +3566,51 @@ function setQualityMode(mode,reason='auto'){
   updateStaticVisibility(true);
   console.info('[quality]',mode,reason,'·',Math.round(innerWidth*RES.dpr)+'×'+Math.round(innerHeight*RES.dpr),'· GPU:',GPU_NAME||'unknown');
 }
+function setRawPixelBudget(px){
+  const cap=Math.min(MAX_RB_SIZE/Math.max(1,innerWidth),MAX_RB_SIZE/Math.max(1,innerHeight),MOBILE_GPU?2.5:3.0);
+  const d=Math.min(cap,Math.max(.65,dprForPixels(px)));
+  RES.dpr=d;renderer.setPixelRatio(d);renderer.setSize(innerWidth,innerHeight,false);
+}
+function probeStats(frames,budget){
+  const a=frames.slice(8).filter(v=>v>0&&v<100).sort((x,y)=>x-y);
+  if(a.length<20)return {ok:false,p90:999,drop:1,avg:999,n:a.length};
+  const p90=a[Math.floor(a.length*.90)],avg=a.reduce((x,y)=>x+y,0)/a.length;
+  const drop=a.filter(v=>v>budget*1.45).length/a.length;
+  return {ok:true,p90,drop,avg,n:a.length}
+}
+function startQualityProbe(now){
+  if(QUALITY.probe.active||QUALITY.mode!=='starter'||!QUALITY.probeEligible)return;
+  QUALITY.probe.active=true;QUALITY.probe.stage=1;QUALITY.probe.frames=[];QUALITY.probe.restoreDpr=RES.dpr;QUALITY.probe.started=now;
+  // Stage 1: a short 1440p-class load. This is intentionally non-blocking and invisible except for render sharpness.
+  setRawPixelBudget(MOBILE_GPU?2.8e6:3.7e6);
+  console.info('[quality] live probe stage 1');
+}
+function finishQualityProbe(pass,reason,stats){
+  QUALITY.probe.active=false;QUALITY.probe.result=pass?'pass':'fail';QUALITY.probe.frames=[];
+  rememberQuality(pass,{reason,refresh:RES.refresh,p90:Math.round((stats?.p90||0)*100)/100,drop:Math.round((stats?.drop||0)*1000)/1000});
+  if(pass)setQualityMode('ultra','live 4K stress test passed');
+  else{
+    computeResBand();applyResolution(Math.min(QUALITY.probe.restoreDpr,RES.ceil));
+    console.info('[quality] starter · live probe rejected 4K ·',reason,stats||'');
+  }
+}
+function qualityProbeFrame(ms,now){
+  if(!QUALITY.probe.active)return;
+  QUALITY.probe.frames.push(ms);
+  const budget=1000/Math.max(30,RES.refresh||60);
+  const need=QUALITY.probe.stage===1?(RES.refresh>=100?48:40):(RES.refresh>=100?58:48);
+  if(QUALITY.probe.frames.length<need)return;
+  const st=probeStats(QUALITY.probe.frames,budget);
+  if(QUALITY.probe.stage===1){
+    const pass=st.ok&&st.p90<=budget*1.22&&st.drop<=.12;
+    if(!pass){finishQualityProbe(false,'1440p probe',st);return}
+    QUALITY.probe.stage=2;QUALITY.probe.frames=[];setRawPixelBudget(PX_4K);
+    console.info('[quality] live probe stage 2 · 4K');
+  }else{
+    const pass=st.ok&&st.p90<=budget*1.30&&st.drop<=.18;
+    finishQualityProbe(pass,'4K probe',st);
+  }
+}
 // ---------------- frame-rate & resolution governor ----------------
 // Measures the display's refresh interval, then (desktop only) nudges the render scale inside the 2K–4K band.
 const PERF={samples:[],refresh:0,acc:0,n:0,adj:0,t0:0,fps:0,ema:0,lastDprChange:0};
@@ -3558,6 +3621,7 @@ function snapRefresh(hz){
 }
 function perfTick(ms,now){
   if(ms<=0||ms>100)return;
+  if(PERF.refresh)qualityProbeFrame(ms,now);
   if(!PERF.refresh){
     PERF.samples.push(ms);
     if(PERF.samples.length>=56){
@@ -3571,14 +3635,21 @@ function perfTick(ms,now){
   if(PERF.n<45)return;
   const avg=PERF.acc/PERF.n,budget=1000/Math.max(30,RES.refresh);PERF.fps=1000/avg;PERF.acc=0;PERF.n=0;
 
-  if(QUALITY.mode==='starter'&&QUALITY.candidate&&now-PERF.t0>2600){
-    if(avg<budget*.80&&PERF.ema<budget*.88)QUALITY.good++;else QUALITY.good=Math.max(0,QUALITY.good-1);
-    if(QUALITY.good>=3){setQualityMode('ultra','hardware + sustained frame headroom');return}
+  if(QUALITY.mode==='starter'&&!QUALITY.probe.active&&now-PERF.t0>1200){
+    if(QUALITY_MEMORY?.pass){
+      setQualityMode('ultra','remembered stable device');return
+    }else if(!QUALITY_MEMORY&&QUALITY.probeEligible){
+      startQualityProbe(now);return
+    }
   }else if(QUALITY.mode==='ultra'){
     if(avg>budget*1.17||PERF.ema>budget*1.23)QUALITY.bad++;else QUALITY.bad=Math.max(0,QUALITY.bad-1);
-    if(QUALITY.bad>=3){setQualityMode('starter','4K load exceeded frame budget');return}
+    if(QUALITY.bad>=3){
+      rememberQuality(false,{reason:'runtime fallback',refresh:RES.refresh});
+      setQualityMode('starter','4K load exceeded frame budget');return
+    }
   }
 
+  if(QUALITY.probe.active)return;
   let d=RES.dpr;
   const down=QUALITY.mode==='ultra'?.94:.92,up=QUALITY.mode==='ultra'?1.035:1.05;
   if(avg>budget*1.08)d=Math.max(RES.floor,d*down);
@@ -3588,7 +3659,9 @@ function perfTick(ms,now){
   }
 }
 addEventListener('resize',()=>{
-  applyResponsiveCamera();computeResBand();applyResolution(RES.dpr);
+  applyResponsiveCamera();
+  if(QUALITY.probe.active){QUALITY.probe.active=false;QUALITY.probe.frames=[]}
+  computeResBand();applyResolution(RES.dpr);
   updateStaticVisibility(true);renderer.shadowMap.needsUpdate=USE_SHADOWS;
 });
 // ---------------- main loop ----------------
@@ -3640,7 +3713,7 @@ const birds=buildBirds();
 finalizeItems();
 const worldStats=finalizeWorld();
 console.log('[city] built in',Math.round(performance.now()-T0),'ms ·',Math.round(worldStats.tris/1000),'k static tris per lap ·',CROWD.length,'people ·',TRAFFIC.length,'vehicles');
-console.info('[quality] starter · ultra candidate:',QUALITY.candidate,'· cores:',HW_CORES||'?', '· memory:',HW_MEM?HW_MEM+'GB':'?', '· max texture:',MAX_TEX_SIZE,'· GPU:',GPU_NAME||'unknown');
+console.info('[quality] starter · probe eligible:',QUALITY.probeEligible,'· remembered:',QUALITY_MEMORY?.pass===true?'pass':QUALITY_MEMORY?.pass===false?'fail':'none','· cores:',HW_CORES||'?', '· memory:',HW_MEM?HW_MEM+'GB':'?', '· max texture:',MAX_TEX_SIZE,'· GPU:',GPU_NAME||'unknown');
 {
   const reveal=()=>{document.getElementById('loading').classList.add('done')};
   requestAnimationFrame(()=>requestAnimationFrame(reveal));
