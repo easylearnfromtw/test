@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-06T14:35:00.000Z",
+  "updated_at": "2026-10-06T15:30:00.000Z",
   "site": {
     "intro_kicker": "PORTFOLIO CITY · 2026",
     "name": "林哲愷",
@@ -151,12 +151,44 @@
       "nav": "Experience",
       "index": "03",
       "title": "EXPERIENCE",
-      "intro": "服務、社團、媒體與企劃經歷。",
+      "intro": "媒體、社團、服務與企劃經歷。",
       "accent": "#e36aa8",
       "visible": true,
       "board_title": "個人經歷",
-      "board_intro": "服務、社團、媒體與企劃經歷。",
+      "board_intro": "媒體、社團、服務與企劃經歷。",
       "items": [
+        {
+          "title": "NEWTALK新頭殼｜本人媒體投書專欄",
+          "subtitle": "公開評論、投書與專欄文章",
+          "url": "https://newtalk.tw/citizen/author/319524",
+          "type": "",
+          "published": true,
+          "category": "媒體與寫作"
+        },
+        {
+          "title": "基隆海洋文學大賽 參與",
+          "subtitle": "文學與主題寫作參與",
+          "url": "",
+          "type": "",
+          "published": true,
+          "category": "媒體與寫作"
+        },
+        {
+          "title": "市三重高中躲貓貓社創社社長、公關",
+          "subtitle": "創社社長｜公關",
+          "url": "",
+          "type": "",
+          "published": true,
+          "category": "社團與領導"
+        },
+        {
+          "title": "市三重高中見賢思琪社｜創社副社長、美宣",
+          "subtitle": "Founding Vice President / Visual Design",
+          "url": "",
+          "type": "jx_story",
+          "category": "社團與領導",
+          "published": true
+        },
         {
           "title": "新北市服務學習社團楷模王114年",
           "subtitle": "服務學習與社團參與肯定",
@@ -182,36 +214,36 @@
           "category": "服務與公共參與"
         },
         {
-          "title": "市三重高中躲貓貓社創社社長、公關",
-          "subtitle": "創社社長｜公關",
+          "title": "新北市114年度三重暨雙和分區幼童軍練團活動 主辦",
+          "subtitle": "幼童軍練團活動｜主辦",
           "url": "",
           "type": "",
           "published": true,
-          "category": "社團與領導"
+          "category": "服務與公共參與"
         },
         {
-          "title": "市三重高中見賢思琪社｜創社副社長、美宣",
-          "subtitle": "Founding Vice President / Visual Design",
-          "url": "",
-          "type": "jx_story",
-          "category": "社團與領導",
-          "published": true
-        },
-        {
-          "title": "NEWTALK新頭殼｜本人媒體投書專欄",
-          "subtitle": "公開評論、投書與專欄文章",
-          "url": "https://newtalk.tw/citizen/author/319524",
-          "type": "",
-          "published": true,
-          "category": "媒體與寫作"
-        },
-        {
-          "title": "基隆海洋文學大賽 參與",
-          "subtitle": "文學與主題寫作參與",
+          "title": "愛維養護中心社團服務 主辦",
+          "subtitle": "養護中心社團服務｜主辦",
           "url": "",
           "type": "",
           "published": true,
-          "category": "媒體與寫作"
+          "category": "服務與公共參與"
+        },
+        {
+          "title": "綠島國小送書去旅行服務",
+          "subtitle": "送書去旅行｜綠島國小",
+          "url": "",
+          "type": "",
+          "published": true,
+          "category": "服務與公共參與"
+        },
+        {
+          "title": "嘉寶國小送書去旅行服務",
+          "subtitle": "送書去旅行｜嘉寶國小",
+          "url": "",
+          "type": "",
+          "published": true,
+          "category": "服務與公共參與"
         },
         {
           "title": "台灣聯合大學企劃 參與",
