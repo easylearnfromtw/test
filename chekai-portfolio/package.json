@@ -1,0 +1,9 @@
+{
+  "name": "chekai-portfolio-protected",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Protected Vercel deployment wrapper for the Che-Kai Lin portfolio.",
+  "dependencies": {
+    "@vercel/functions": "latest"
+  }
+}
