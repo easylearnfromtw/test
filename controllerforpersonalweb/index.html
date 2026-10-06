@@ -261,12 +261,20 @@ a{color:inherit}
 
 <script>
 const OWNER='easylearnfromtw',REPO='test',PATH='chekai-portfolio/data/training.json',CONTENT_PATH='chekai-portfolio/data/content.json',MEDIA_PATH='chekai-portfolio/assets/uploads',BRANCH='main';
+const RAW_BASE='https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/'+BRANCH+'/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v1',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const syncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 const GEMINI_MODEL='gemini-3.8-flash',GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions';
 let token=sessionStorage.getItem('ck_github_token')||'',geminiKey=sessionStorage.getItem('ck_gemini_key')||'',data={version:1,updated_at:null,posts:[]},fileSha='',contentData={version:1,site:{},section_order:[],sections:{},club:{chapters:[],events:[]}},contentSha='',mediaItems=[],connected=false,contentDirty=false,activeCmsSection='about',activeClubChapter=0;
 let aiCache=null;try{aiCache=JSON.parse(sessionStorage.getItem('ck_ai_coach_cache')||'null')}catch{}
 const $=id=>document.getElementById(id);
 $('token').value=token;$('geminiKey').value=geminiKey;
 $('date').value=new Date().toISOString().slice(0,10);
+try{const c=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(c?.sections)contentData=c}catch{}
+try{const t=JSON.parse(localStorage.getItem(TRAINING_CACHE_KEY)||'null');if(Array.isArray(t?.posts))data=t}catch{}
+function cacheAndSignal(kind,payload){
+  try{localStorage.setItem(kind==='content'?CONTENT_CACHE_KEY:TRAINING_CACHE_KEY,JSON.stringify(payload));localStorage.setItem(SYNC_SIGNAL_KEY,JSON.stringify({kind,at:Date.now(),updated_at:payload?.updated_at||null}))}catch{}
+  try{syncBus?.postMessage({kind,at:Date.now(),updated_at:payload?.updated_at||null})}catch{}
+}
 
 const META={
   overview:['控制總覽','網站內容、素材與訓練資料的集中控制台。'],
@@ -310,12 +318,15 @@ async function gh(url,opt={}){
   return r.status===204?null:r.json()
 }
 async function loadPublicData(){
+  // Paint cached state immediately; raw.githubusercontent bypasses GitHub Pages deployment lag.
+  renderAll();renderCms();renderClub();
+  const stamp=Date.now();
   const [tr,cr]=await Promise.allSettled([
-    fetch('../chekai-portfolio/data/training.json?ts='+Date.now(),{cache:'no-store'}),
-    fetch('../chekai-portfolio/data/content.json?ts='+Date.now(),{cache:'no-store'})
+    fetch(RAW_BASE+PATH+'?ts='+stamp,{cache:'no-store'}),
+    fetch(RAW_BASE+CONTENT_PATH+'?ts='+stamp,{cache:'no-store'})
   ]);
-  try{if(tr.status==='fulfilled'&&tr.value.ok){data=await tr.value.json();if(!Array.isArray(data.posts))data.posts=[]}}catch(e){console.warn(e)}
-  try{if(cr.status==='fulfilled'&&cr.value.ok){contentData=await cr.value.json()}}catch(e){console.warn(e)}
+  try{if(tr.status==='fulfilled'&&tr.value.ok){data=await tr.value.json();if(!Array.isArray(data.posts))data.posts=[];localStorage.setItem(TRAINING_CACHE_KEY,JSON.stringify(data))}}catch(e){console.warn(e)}
+  try{if(cr.status==='fulfilled'&&cr.value.ok){contentData=await cr.value.json();localStorage.setItem(CONTENT_CACHE_KEY,JSON.stringify(contentData))}}catch(e){console.warn(e)}
   renderAll();renderCms();renderClub()
 }
 async function connectGithub(silent=false){
@@ -328,6 +339,7 @@ async function connectGithub(silent=false){
     ]);
     fileSha=j.sha;data=JSON.parse(base64ToUtf8(j.content));if(!Array.isArray(data.posts))data.posts=[];
     contentSha=c.sha;contentData=JSON.parse(base64ToUtf8(c.content));
+    try{localStorage.setItem(TRAINING_CACHE_KEY,JSON.stringify(data));localStorage.setItem(CONTENT_CACHE_KEY,JSON.stringify(contentData))}catch{}
     sessionStorage.setItem('ck_github_token',token);setStatus(true,'SYNC READY');renderAll();renderCms();renderClub();loadMedia();if(!silent)toast('GitHub 已連線');return true
   }catch(e){setStatus(false,'TOKEN ERROR');if(!silent)toast(e.message);return false}
 }
@@ -339,7 +351,7 @@ async function publishData(){
   const body={message:'Update running training data',content:utf8ToBase64(JSON.stringify(data,null,2)+'\n'),sha:fileSha,branch:BRANCH};
   setStatus(false,'SYNCING…');
   const j=await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+PATH,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  fileSha=j.content.sha;setStatus(true,'SYNC READY');$('lastSync').textContent=new Date().toLocaleString('zh-TW');renderAll();return j
+  fileSha=j.content.sha;cacheAndSignal('training',data);setStatus(true,'SYNC READY');$('lastSync').textContent=new Date().toLocaleString('zh-TW');renderAll();return j
 }
 
 function markContentDirty(v=true){contentDirty=v;const el=$('contentDirty');if(el){el.textContent=v?'YES':'NO';el.classList.toggle('dirty',v)}}
@@ -348,9 +360,12 @@ async function publishContent(){
   contentData.updated_at=new Date().toISOString();setStatus(false,'SYNCING…');
   const body={message:'Update portfolio CMS content',content:utf8ToBase64(JSON.stringify(contentData,null,2)+'\n'),sha:contentSha,branch:BRANCH};
   const j=await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+CONTENT_PATH,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  contentSha=j.content.sha;markContentDirty(false);if($('contentSync'))$('contentSync').textContent=new Date().toLocaleString('zh-TW');setStatus(true,'SYNC READY');return j
+  contentSha=j.content.sha;cacheAndSignal('content',contentData);markContentDirty(false);if($('contentSync'))$('contentSync').textContent=new Date().toLocaleString('zh-TW');setStatus(true,'SYNC READY');return j
 }
-async function syncAll(){await publishContent();await publishData()}
+async function syncAll(){
+  if(!connected){const ok=await connectGithub(true);if(!ok)throw new Error('請先完成 GitHub 連線')}
+  await Promise.all([publishContent(),publishData()])
+}
 function sectionLabel(id){const s=contentData.sections?.[id];return (s?.index||'')+' '+(s?.nav||id)}
 function renderCms(){
   if(!contentData.site)contentData.site={};if(!contentData.sections)contentData.sections={};if(!Array.isArray(contentData.section_order))contentData.section_order=Object.keys(contentData.sections).filter(x=>x!=='hero');
@@ -575,6 +590,7 @@ $('mediaUpload').onclick=()=>uploadMedia().catch(e=>toast(e.message));
 $('mediaList').addEventListener('click',e=>{const n=e.target.dataset.copyMedia;if(n!==undefined){navigator.clipboard?.writeText('./assets/uploads/'+n);toast('已複製素材路徑');return}const d=e.target.dataset.delMedia;if(d!==undefined)deleteMedia(d,e.target.dataset.sha).catch(err=>toast(err.message))});
 $('exportBackup').onclick=exportBackup;$('importBackup').onchange=e=>{const f=e.target.files?.[0];if(f)importBackupFile(f);e.target.value=''};
 $('geminiKeyStatus').textContent=geminiKey?'SESSION READY':'NOT SET';
+renderAll();renderCms();renderClub();
 loadPublicData().then(()=>{if(token)connectGithub(true)});
 </script>
 </body>
