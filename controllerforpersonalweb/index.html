@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Che-Kai Personal Controller</title>
+<meta name="theme-color" content="#111111">
+<style>
+:root{--bg:#0d0f12;--panel:#15181d;--panel2:#1b1f25;--line:#2c323a;--text:#f4f1e8;--muted:#9098a3;--pink:#d85d99;--green:#5ecf9a;--red:#ef6b6b;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}button,input,textarea,select{font:inherit}button{cursor:pointer}.wrap{max-width:1440px;margin:auto;padding:18px}.top{position:sticky;top:0;z-index:10;margin:-18px -18px 18px;padding:14px 18px;background:rgba(13,15,18,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px}.brand strong{display:block;font-size:18px;letter-spacing:-.03em}.brand span{display:block;margin-top:3px;font:700 9px/1 var(--mono);letter-spacing:.13em;color:var(--muted)}.status{display:flex;align-items:center;gap:8px;font:800 9px/1 var(--mono);color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;background:#565c64}.dot.ok{background:var(--green)}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.8fr);gap:16px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}.card h2{margin:0;padding:16px 18px;border-bottom:1px solid var(--line);font-size:16px}.card-body{padding:16px}.auth{display:grid;grid-template-columns:1fr auto;gap:8px}.auth input,.field input,.field textarea,.field select{width:100%;background:#0f1216;color:var(--text);border:1px solid #333a44;border-radius:10px;padding:11px 12px;outline:none}.auth input:focus,.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--pink)}.btn{border:1px solid #3a414b;background:#20252d;color:var(--text);border-radius:10px;padding:10px 13px;font-weight:800}.btn.primary{background:var(--pink);border-color:var(--pink);color:#fff}.btn.green{background:#1d6b4f;border-color:#2c8a69}.btn.ghost{background:transparent}.btn.danger{color:#ff9a9a;border-color:#673c42}.help{margin-top:9px;font-size:11px;line-height:1.6;color:var(--muted)}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font:800 9px/1 var(--mono);letter-spacing:.08em;color:#aeb5bf}.field textarea{min-height:150px;resize:vertical;line-height:1.6}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.posts{display:grid;gap:9px}.post{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:12px}.post-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.post-date{font:800 8px/1 var(--mono);letter-spacing:.1em;color:var(--pink)}.post h3{margin:6px 0 8px;font-size:16px}.post-meta{display:flex;flex-wrap:wrap;gap:5px}.chip{padding:5px 7px;border:1px solid #3a414a;border-radius:999px;font:750 8px/1 var(--mono);color:#b9c0c8}.chip.live{border-color:#2f745a;color:#79dcb0}.chip.draft{border-color:#705c31;color:#e7c979}.post-actions{display:flex;gap:6px;margin-top:10px}.post-actions .btn{padding:7px 9px;font-size:10px}.empty{padding:34px 12px;text-align:center;color:var(--muted);font-size:12px}.toolbar{display:flex;gap:8px;align-items:center}.dirty{font:800 8px/1 var(--mono);color:#e7c979}.section-note{padding:12px 14px;background:#11151a;border:1px dashed #343b45;border-radius:12px;font-size:11px;line-height:1.6;color:#9ca5b0}.strava{margin-top:16px}.strava .row{display:flex;justify-content:space-between;gap:10px;align-items:center}.disabled{opacity:.55;pointer-events:none}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.toolbar{flex-wrap:wrap;justify-content:flex-end}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+@media(max-width:520px){.wrap{padding:10px}.top{margin:-10px -10px 12px;padding:calc(10px + env(safe-area-inset-top)) 10px 10px}.brand strong{font-size:16px}.auth{grid-template-columns:1fr}.btn{min-height:42px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><strong>CHE-KAI PERSONAL CONTROLLER</strong><span>RUNNING / CONTENT / PERSONAL PAGE</span></div>
+    <div class="toolbar">
+      <span class="dirty" id="dirtyText"></span>
+      <span class="status"><i class="dot" id="statusDot"></i><span id="statusText">NOT CONNECTED</span></span>
+      <button class="btn green" id="publishAll" type="button">同步至網站</button>
+      <a class="btn ghost" href="https://easylearnfromtw.github.io/test/chekai-portfolio/#running" target="_blank" rel="noopener">查看前台 ↗</a>
+    </div>
+  </header>
+
+  <section class="card" style="margin-bottom:16px">
+    <h2>GitHub 連線</h2>
+    <div class="card-body">
+      <div class="auth">
+        <input id="token" type="password" autocomplete="off" placeholder="Fine-grained GitHub token（只需 test repo Contents: Read and write）">
+        <button class="btn primary" id="connect" type="button">連線</button>
+      </div>
+      <div class="help">Token 只存在這個瀏覽器分頁的 sessionStorage，不會寫入 GitHub、localStorage 或網站程式碼。關閉分頁後會消失。</div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2 id="formTitle">新增訓練紀錄</h2>
+      <div class="card-body">
+        <form id="trainingForm">
+          <input id="postId" type="hidden">
+          <div class="form-grid">
+            <div class="field"><label>日期</label><input id="date" type="date" required></div>
+            <div class="field"><label>類型</label><select id="type"><option value="run">Run</option><option value="easy">Easy Run</option><option value="tempo">Tempo</option><option value="interval">Interval</option><option value="long">Long Run</option><option value="race">Race</option><option value="other">Other</option></select></div>
+            <div class="field full"><label>標題</label><input id="title" required placeholder="例如：河濱 Z2 Easy Run"></div>
+            <div class="field"><label>距離 km</label><input id="distance" type="number" min="0" step="0.01" placeholder="7.02"></div>
+            <div class="field"><label>時間</label><input id="duration" placeholder="00:36:18"></div>
+            <div class="field"><label>平均配速</label><input id="pace" placeholder="5:10/km"></div>
+            <div class="field"><label>平均心率 bpm</label><input id="avgHr" type="number" min="0" step="1"></div>
+            <div class="field"><label>最高心率 bpm</label><input id="maxHr" type="number" min="0" step="1"></div>
+            <div class="field"><label>爬升 m</label><input id="elevation" type="number" step="1"></div>
+            <div class="field"><label>地點</label><input id="location" placeholder="例如：新北河濱"></div>
+            <div class="field full"><label>標籤（逗號分隔）</label><input id="tags" placeholder="Z2, easy, evening"></div>
+            <div class="field full"><label>訓練心得 / 部落格正文</label><textarea id="note" placeholder="今天的身體感覺、課表目的、後段狀態……"></textarea></div>
+          </div>
+          <div class="actions">
+            <button class="btn" id="saveDraft" type="button">儲存草稿</button>
+            <button class="btn primary" id="savePublish" type="button">儲存並刊登</button>
+            <button class="btn ghost" id="resetForm" type="button">清空</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2>訓練文章</h2>
+        <div class="card-body"><div class="posts" id="posts"><div class="empty">尚未連線 GitHub</div></div></div>
+      </div>
+
+      <div class="card strava">
+        <h2>Strava Sync</h2>
+        <div class="card-body">
+          <div class="row"><div><strong>Strava 自動匯入</strong><div class="help">第二階段：OAuth + activity import + 去重複。</div></div><button class="btn disabled" type="button">尚未連接</button></div>
+          <div class="section-note" style="margin-top:12px">之後會讓 Strava 活動先進「待刊登」，你可以補心得、隱藏地點或心率，再正式發布到 Running Log。</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<script>
+const OWNER='easylearnfromtw',REPO='test',PATH='chekai-portfolio/data/training.json',BRANCH='main';
+let token=sessionStorage.getItem('ck_github_token')||'',data={version:1,updated_at:null,posts:[]},fileSha='',dirty=false;
+const $=id=>document.getElementById(id);
+$('token').value=token;
+$('date').value=new Date().toISOString().slice(0,10);
+
+function utf8ToBase64(str){const bytes=new TextEncoder().encode(str);let bin='';for(const b of bytes)bin+=String.fromCharCode(b);return btoa(bin)}
+function base64ToUtf8(b64){const bin=atob(b64.replace(/\n/g,''));const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));return new TextDecoder().decode(bytes)}
+function setStatus(ok,text){$('statusDot').classList.toggle('ok',!!ok);$('statusText').textContent=text}
+function markDirty(v=true){dirty=v;$('dirtyText').textContent=v?'UNPUBLISHED CHANGES':''}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function newId(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
+
+async function gh(url,opt={}){
+  const headers={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(opt.headers||{})};
+  if(token)headers.Authorization='Bearer '+token;
+  const r=await fetch(url,{...opt,headers});
+  if(!r.ok){let msg='GitHub '+r.status;try{const j=await r.json();msg=j.message||msg}catch{}throw new Error(msg)}
+  return r.status===204?null:r.json()
+}
+async function loadData(){
+  setStatus(false,'CONNECTING…');
+  const j=await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+PATH+'?ref='+BRANCH);
+  fileSha=j.sha;data=JSON.parse(base64ToUtf8(j.content));if(!Array.isArray(data.posts))data.posts=[];
+  setStatus(true,'CONNECTED');markDirty(false);renderPosts()
+}
+async function publishData(){
+  if(!token)throw new Error('請先輸入 GitHub token');
+  data.updated_at=new Date().toISOString();
+  const body={message:'Update running training log',content:utf8ToBase64(JSON.stringify(data,null,2)+'\n'),sha:fileSha,branch:BRANCH};
+  setStatus(false,'PUBLISHING…');
+  const j=await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+PATH,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  fileSha=j.content.sha;setStatus(true,'PUBLISHED');markDirty(false);renderPosts();
+  return j
+}
+function formToPost(published){
+  const id=$('postId').value||newId();
+  const old=data.posts.find(p=>p.id===id)||{};
+  return {...old,id,date:$('date').value,title:$('title').value.trim(),type:$('type').value,
+    distance_km:$('distance').value?Number($('distance').value):null,duration:$('duration').value.trim(),pace:$('pace').value.trim(),
+    avg_hr:$('avgHr').value?Number($('avgHr').value):null,max_hr:$('maxHr').value?Number($('maxHr').value):null,
+    elevation_m:$('elevation').value?Number($('elevation').value):null,location:$('location').value.trim(),
+    tags:$('tags').value.split(',').map(x=>x.trim()).filter(Boolean),note:$('note').value.trim(),
+    source:old.source||'manual',strava_activity_id:old.strava_activity_id||null,published,
+    updated_at:new Date().toISOString(),created_at:old.created_at||new Date().toISOString()}
+}
+function saveLocal(published){
+  if(!$('date').value||!$('title').value.trim()){alert('日期與標題必填');return null}
+  const p=formToPost(published),i=data.posts.findIndex(x=>x.id===p.id);
+  if(i>=0)data.posts[i]=p;else data.posts.unshift(p);
+  markDirty(true);renderPosts();resetForm();return p
+}
+function resetForm(){
+  $('trainingForm').reset();$('postId').value='';$('date').value=new Date().toISOString().slice(0,10);$('type').value='run';$('formTitle').textContent='新增訓練紀錄'
+}
+function editPost(id){
+  const p=data.posts.find(x=>x.id===id);if(!p)return;
+  $('postId').value=p.id;$('date').value=p.date||'';$('type').value=p.type||'run';$('title').value=p.title||'';$('distance').value=p.distance_km??'';$('duration').value=p.duration||'';$('pace').value=p.pace||'';$('avgHr').value=p.avg_hr??'';$('maxHr').value=p.max_hr??'';$('elevation').value=p.elevation_m??'';$('location').value=p.location||'';$('tags').value=(p.tags||[]).join(', ');$('note').value=p.note||'';$('formTitle').textContent='編輯訓練紀錄';scrollTo({top:0,behavior:'smooth'})
+}
+function removePost(id){if(!confirm('刪除這筆訓練紀錄？尚需按「同步至網站」才會真正更新前台。'))return;data.posts=data.posts.filter(p=>p.id!==id);markDirty(true);renderPosts()}
+function togglePublish(id){const p=data.posts.find(x=>x.id===id);if(!p)return;p.published=!p.published;p.updated_at=new Date().toISOString();markDirty(true);renderPosts()}
+function renderPosts(){
+  const posts=[...data.posts].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  if(!posts.length){$('posts').innerHTML='<div class="empty">尚無訓練紀錄</div>';return}
+  $('posts').innerHTML=posts.map(p=>`<article class="post">
+    <div class="post-head"><div><div class="post-date">${esc(p.date||'NO DATE')} · ${esc((p.type||'run').toUpperCase())}</div><h3>${esc(p.title||'Untitled')}</h3></div><span class="chip ${p.published?'live':'draft'}">${p.published?'PUBLISHED':'DRAFT'}</span></div>
+    <div class="post-meta">
+      ${p.distance_km!=null?'<span class="chip">'+esc(p.distance_km)+' km</span>':''}
+      ${p.pace?'<span class="chip">'+esc(p.pace)+'</span>':''}
+      ${p.duration?'<span class="chip">'+esc(p.duration)+'</span>':''}
+      ${p.avg_hr?'<span class="chip">HR '+esc(p.avg_hr)+'</span>':''}
+    </div>
+    <div class="post-actions"><button class="btn" data-edit="${esc(p.id)}">編輯</button><button class="btn" data-toggle="${esc(p.id)}">${p.published?'取消刊登':'刊登'}</button><button class="btn danger" data-delete="${esc(p.id)}">刪除</button></div>
+  </article>`).join('');
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editPost(b.dataset.edit));
+  document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>togglePublish(b.dataset.toggle));
+  document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>removePost(b.dataset.delete))
+}
+$('connect').onclick=async()=>{token=$('token').value.trim();if(!token)return alert('請輸入 GitHub token');sessionStorage.setItem('ck_github_token',token);try{await loadData()}catch(e){setStatus(false,'ERROR');alert(e.message)}};
+$('publishAll').onclick=async()=>{try{await publishData();alert('已同步到個人網站。GitHub Pages 可能需要幾十秒更新。')}catch(e){setStatus(false,'ERROR');alert(e.message)}};
+$('saveDraft').onclick=()=>saveLocal(false);
+$('savePublish').onclick=async()=>{const p=saveLocal(true);if(!p)return;try{await publishData();alert('已刊登到 Running Log。')}catch(e){setStatus(false,'ERROR');alert(e.message)}};
+$('resetForm').onclick=resetForm;
+if(token)loadData().catch(e=>{setStatus(false,'TOKEN ERROR');console.error(e)});
+</script>
+</body>
+</html>
