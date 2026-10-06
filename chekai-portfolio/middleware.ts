@@ -1,10 +1,16 @@
 import { next } from '@vercel/functions';
 
+// Intentionally narrow: block only named AI/data-harvesting clients.
+// Do NOT use generic /bot|crawler|spider/ matching because it can break
+// normal browsers, in-app WebViews, link previews, uptime checks, and accessibility tools.
 const BLOCKED_UA =
-  /(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|anthropic-ai|CCBot|Bytespider|PerplexityBot|Perplexity-User|Google-Extended|Google-CloudVertexBot|Googlebot|bingbot|DuckDuckBot|Baiduspider|YandexBot|PetalBot|Sogou|Amazonbot|Applebot|FacebookBot|meta-externalagent|cohere-ai|YouBot|Diffbot|crawler|spider|bot\b)/i;
+  /(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|anthropic-ai|CCBot|Bytespider|PerplexityBot|Perplexity-User|Google-Extended|Google-CloudVertexBot|meta-externalagent|cohere-ai|YouBot|Diffbot)/i;
 
+// Block obvious non-browser bulk-fetch clients. HeadlessChrome / Playwright /
+// Selenium are NOT blanket-blocked here to avoid false positives from previews,
+// QA tools, assistive tooling, and legitimate browser automation.
 const AUTOMATION_UA =
-  /(HeadlessChrome|PhantomJS|python-requests|python-httpx|aiohttp|curl\/|wget\/|scrapy|selenium|playwright|puppeteer)/i;
+  /(PhantomJS|python-requests|python-httpx|aiohttp|curl\/|wget\/|scrapy)/i;
 
 const DENIAL = `<!doctype html>
 <html lang="zh-Hant">
@@ -64,10 +70,13 @@ function deny() {
 export default function middleware(request: Request) {
   const ua = request.headers.get('user-agent') || '';
 
-  if (!ua || BLOCKED_UA.test(ua) || AUTOMATION_UA.test(ua)) {
+  if (BLOCKED_UA.test(ua) || AUTOMATION_UA.test(ua)) {
     return deny();
   }
 
+  // All ordinary browsers and unknown clients are allowed through. The site-level
+  // noindex/TDM reservation still communicates rights without turning this into
+  // an aggressive fingerprinting or challenge system.
   return next({
     headers: {
       'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet, noimageindex',
