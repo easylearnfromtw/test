@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-06T14:15:00.000Z",
+  "updated_at": "2026-10-06T14:25:00.000Z",
   "site": {
     "intro_kicker": "PORTFOLIO CITY · 2026",
     "name": "林哲愷",
@@ -312,7 +312,7 @@
         {
           "title": "小論文比賽（藝術類）",
           "subtitle": "藝術類｜建築雨山的對話",
-          "url": "",
+          "url": "https://docs.google.com/document/d/18tFm5MRZZDSUgrc9fz--M2umkxustMNzQBOBsYSplLE/edit?usp=drivesdk",
           "type": "essay_story",
           "published": true
         }
