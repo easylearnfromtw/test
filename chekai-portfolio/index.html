@@ -280,7 +280,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.9.2-smoothness: fixed-detail rendering + framebuffer hitch control + GC/raycast optimization -->
+<!-- taiwan-street-pro v5.9.3-throughput: fewer static draws + lazy shader work + indexed traffic gaps -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -505,7 +505,7 @@ function updateStaticVisibility(force=false){
   if(!loopCullGroups.length)return;
   if(!force&&Math.abs(currentX-lastStaticCullX)<4)return;
   lastStaticCullX=currentX;
-  const radius=Math.max(QUALITY.mode==='ultra'?265:205,G.uCull.value+(QUALITY.mode==='ultra'?95:50));
+  const radius=Math.max(QUALITY.mode==='ultra'?280:220,G.uCull.value+(QUALITY.mode==='ultra'?110:65));
   for(const m of loopCullGroups)m.visible=Math.abs(m.userData.loopX-currentX)<=radius;
 }
 function freezeStatic(o){
@@ -783,7 +783,9 @@ vec3 cEmis=vec3(0.);
 {
   float st=floor(vMat.x+.5);float gr=vMat.y;vec2 uv=vUvW;vec3 col=diffuseColor.rgb;
   vec3 N=normalize(vWNrm);bool horiz=abs(N.y)>.55;
-  float n1=fbm(uv*.9);
+  bool weatherable=gr>.001&&gr<1.5&&st!=6.&&st!=10.&&st!=13.&&st<14.5;
+  bool needN1=st<1.5||(st>4.5&&st<5.5)||(st>10.5&&st<11.5)||weatherable;
+  float n1=needN1?fbm(uv*.9):0.;
   if(st<.5){ col*=.94+.1*n1;
   }else if(st<1.5){ // plaster / painted render (Keelung pastel walls)
     col*=.86+.22*fbm(uv*1.7+3.);
@@ -821,7 +823,7 @@ vec3 cEmis=vec3(0.);
     col*=.9+.14*fbm(uv*4.);col*=1.-.12*smoothstep(.6,.85,fbm2(uv*.3));
   }
   // ---- weathering: rain streaks, Keelung black mould, splash-back at the foot of walls ----
-  if(gr>.001&&gr<1.5&&st!=6.&&st!=10.&&st!=13.&&st<14.5){
+  if(weatherable){
     if(!horiz){
       float s1=fbm(vec2(uv.x*2.4,uv.y*.13));float streak=smoothstep(.5,.8,s1)*(.55+.45*fbm(uv*.45));
       float blot=smoothstep(.48,.86,fbm(uv*.26+3.1));
@@ -835,7 +837,7 @@ vec3 cEmis=vec3(0.);
   if(uPhoto>.5){
     float micro=vnoise(uv*3.7+vWPos.xz*.013);
     col*=.955+.09*micro;
-    float rim=pow(1.-abs(dot(normalize(vWNrm),normalize(vWPos-cameraPosition))),4.);
+    float rim=pow(1.-abs(dot(N,normalize(vWPos-cameraPosition))),4.);
     col+=vec3(.018)*rim;
   }
   diffuseColor.rgb=col;
@@ -844,8 +846,10 @@ vec3 cEmis=vec3(0.);
 const VEH_FRAG=`
 vec3 cEmis=vec3(0.);
 {
-  float st=floor(vMat.x+.5);float gr=vMat.y;vec3 col=diffuseColor.rgb;vec3 N=normalize(vWNrm);vec3 V=normalize(vWPos-cameraPosition);
-  float fres=pow(1.-abs(dot(V,N)),3.);
+  float st=floor(vMat.x+.5);float gr=vMat.y;vec3 col=diffuseColor.rgb;
+  bool reflSurf=(st>14.5&&st<15.5)||(st>5.5&&st<6.5)||(st>20.5&&st<22.5);
+  vec3 N=vec3(0.,1.,0.),V=vec3(0.,0.,1.);float fres=0.;
+  if(reflSurf){N=normalize(vWNrm);V=normalize(vWPos-cameraPosition);fres=pow(1.-abs(dot(V,N)),3.);}
   if(st>14.5&&st<15.5){ col*=vTint;cEmis=skyRefl(V,N)*(.06+.45*fres);float hl=pow(max(dot(reflect(V,N),normalize(vec3(-.74,.47,.48))),0.),40.);cEmis+=vec3(1.,.9,.8)*hl*.6;
   }else if(st>5.5&&st<6.5){ cEmis=skyRefl(V,N)*(.25+.6*fres);col*=.25;
   }else if(st>15.5&&st<16.5){ cEmis=col*(.35+1.6*vState.x);col*=.3;
@@ -1273,7 +1277,7 @@ void main(){vec2 p=vec2(vW.x+vW.z,vW.y)*13.;vec2 f=abs(fract(p)-.5);float fw=fwi
   #include <fog_fragment>
 }`});
 // ---------------- World: chunked layers, one lap built once, drawn 3× ----------------
-const CHUNK=45;
+const CHUNK=60;
 const world={chunks:new Map()};
 const LAYERS={city:{uv:'aUvW',world:true},grille:{uv:'uv'},glass:{uv:'uv'},net:{uv:'uv'},decal:{uv:'uv'},sign:{uv:'uv'},print:{uv:'uv'},poster:{uv:'uv'},foliage:{uv:'aUvW',world:true}};
 function chunk(x){const ci=Math.floor((x-LAP_MIN)/CHUNK);let ch=world.chunks.get(ci);if(!ch){ch={};for(const k in LAYERS)ch[k]=new GeoBuf(!!LAYERS[k].world);world.chunks.set(ci,ch)}return ch}
@@ -3603,24 +3607,44 @@ function stopAhead(v,S){ // nearest stop ahead on the main road: red light, bus 
   for(const [flag,X0,off] of [['bus',BUS_STOP_X,4],['garbage',TRASH_STOP_X,2]]){if(!v[flag])continue;const k2=Math.round((v.x-X0)/LOOP_SPAN),bx=X0+k2*LOOP_SPAN-off*v.dir,d=(bx-v.x)*v.dir;
     if(v.dwellAt!==k2+':'+flag&&d>-.3&&d<60&&d<best){best=d;kind=flag;v._stopKey=k2+':'+flag}}
   return [best,kind]}
-const _trafficLanes=Object.create(null),_trafficLaneKeys=[];
+const _trafficLanes=Object.create(null),_trafficLaneKeys=[],_crossLanes=Object.create(null),_crossLaneKeys=[];
+function trafficBucket(store,keys,key){let a=store[key];if(!a){a=store[key]=[];keys.push(key)}return a}
+function prepareTrafficGaps(){
+  for(const k of _trafficLaneKeys)_trafficLanes[k].length=0;
+  for(const k of _crossLaneKeys)_crossLanes[k].length=0;
+  for(const v of TRAFFIC){
+    v._laneGap=Infinity;v._crossGap=Infinity;
+    if(v.state==='main')trafficBucket(_trafficLanes,_trafficLaneKeys,v.lane+'|'+v.dir).push(v);
+    else if(v.state==='in'||v.state==='out')trafficBucket(_crossLanes,_crossLaneKeys,v.state+'|'+v.ix+'|'+Math.round(v.x*10)).push(v)
+  }
+  for(const k of _trafficLaneKeys){
+    const a=_trafficLanes[k],n=a.length;if(n<2)continue;a.sort((x,y)=>x.x-y.x);
+    const dir=a[0].dir;
+    for(let i=0;i<n;i++){
+      const v=a[i],o=a[(i+(dir>0?1:n-1))%n];let d=(o.x-v.x)*dir;if(d<=0)d+=LOOP_SPAN;
+      if(d<=LOOP_SPAN/2)v._laneGap=d-(o.len+v.len)/2
+    }
+  }
+  for(const k of _crossLaneKeys){
+    const a=_crossLanes[k],n=a.length;if(n<2)continue;a.sort((x,y)=>x.z-y.z);
+    const dir=a[0].state==='in'?1:-1;
+    for(let i=0;i<n;i++){
+      const j=i+(dir>0?1:-1);if(j<0||j>=n)continue;
+      const v=a[i],o=a[j],d=(o.z-v.z)*dir;if(d>0)v._crossGap=d-(o.len+v.len)/2
+    }
+  }
+}
 function updateTraffic(dt,t){
   const S=SIGNAL.state;const camX=currentX;
-  // Reuse lane buckets instead of allocating a new object + arrays every rendered frame.
-  for(const k of _trafficLaneKeys)_trafficLanes[k].length=0;
-  for(const v of TRAFFIC)if(v.state==='main'){
-    let lane=_trafficLanes[v.lane];
-    if(!lane){lane=_trafficLanes[v.lane]=[];_trafficLaneKeys.push(v.lane)}
-    lane.push(v)
-  }
-  const lanes=_trafficLanes;
+  // Precompute nearest-ahead gaps once per lane, instead of every vehicle scanning every other vehicle.
+  prepareTrafficGaps();
   for(const v of TRAFFIC){
     if(v.state==='parked'){let rel=v.x-camX;while(rel>180){v.x-=LOOP_SPAN;rel-=LOOP_SPAN}while(rel<-180){v.x+=LOOP_SPAN;rel+=LOOP_SPAN}continue}
     if(v.dwell>0){v.dwell-=dt;v.v=0;v.brake=1;if(v.dwell<=0)v.dwellAt=v.dwellKey;continue}
     let gap=Infinity;
-    if(v.state==='main'){for(const o of lanes[v.lane]||[]){if(o===v||o.dir!==v.dir)continue;let d=(o.x-v.x)*v.dir;if(d>LOOP_SPAN/2)d-=LOOP_SPAN;if(d<-LOOP_SPAN/2)d+=LOOP_SPAN;if(d>0)gap=Math.min(gap,d-(o.len+v.len)/2)}
+    if(v.state==='main'){gap=v._laneGap;
       const [sd,kind]=stopAhead(v,S);if(sd-v.len/2<gap){gap=sd-v.len/2;if(kind!=='sig'&&kind&&gap<2.4&&v.v<.6){v.dwellKey=v._stopKey;v.dwell=kind==='bus'?8:22;continue}}}
-    else if(v.state==='in'||v.state==='out'){for(const o of TRAFFIC){if(o===v||o.state!==v.state||o.ix!==v.ix||Math.abs(o.x-v.x)>1.2)continue;const d=(o.z-v.z)*(v.state==='in'?1:-1);if(d>0)gap=Math.min(gap,d-(o.len+v.len)/2)}
+    else if(v.state==='in'||v.state==='out'){gap=v._crossGap;
       if(v.state==='in'){const line=v.two?-12.2:-15.4,d=line-v.z;if(S.cross!=='G'&&d>-.3&&d<70&&!(S.cross==='Y'&&d<v.v*v.v/8+1))gap=Math.min(gap,d-v.len/2)}}
     // speed control (simple IDM-like)
     const want=gap<1.6?0:Math.min(v.vmax,Math.sqrt(Math.max(0,2*4.2*(gap-1.6))));
