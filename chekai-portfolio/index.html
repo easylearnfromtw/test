@@ -171,32 +171,44 @@ const renderer=new THREE.WebGLRenderer({
   powerPreference:'high-performance',precision:MOBILE_GPU?'mediump':'highp',
   preserveDrawingBuffer:false,desynchronized:true
 });
-const gl=renderer.getContext(),MAX_RB_SIZE=gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)||4096;
+const gl=renderer.getContext(),MAX_RB_SIZE=gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)||4096,MAX_TEX_SIZE=gl.getParameter(gl.MAX_TEXTURE_SIZE)||4096;
+const dbg=gl.getExtension('WEBGL_debug_renderer_info');
+const GPU_NAME=String(dbg?gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER)||'').toLowerCase();
+const HW_CORES=Number(navigator.hardwareConcurrency)||0,HW_MEM=Number(navigator.deviceMemory)||0;
+const SOFTWARE_GPU=/swiftshader|llvmpipe|software|microsoft basic/.test(GPU_NAME);
+const ULTRA_HW_CANDIDATE=!SOFTWARE_GPU&&MAX_TEX_SIZE>=8192&&MAX_RB_SIZE>=4096&&(HW_CORES===0||HW_CORES>=6)&&(!MOBILE_GPU||HW_CORES===0||HW_CORES>=8)&&(HW_MEM===0||HW_MEM>=6);
+const QUALITY_TEXTURES=[];
+const QUALITY={mode:'starter',candidate:ULTRA_HW_CANDIDATE,good:0,bad:0,ultraAt:0,lastReason:'startup'};
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;
 renderer.info.autoReset=true;
 // ---------------- GPU pixel-budget policy ----------------
 // Keep visual density high, but never force Retina/4K panels to shade 5–8 MP every frame.
 // Once refresh rate is measured, the band tightens automatically for 120/144 Hz displays.
 const RES={floor:1,ceil:1,dpr:1,locked:false,refresh:0,adjusts:0};
+const PX_4K=3840*2160;
 function dprForPixels(px){return Math.sqrt(px/Math.max(1,innerWidth*innerHeight))}
 function computeResBand(){
   const nativeDpr=Math.max(1,devicePixelRatio||1);
   const fb=Math.min(MAX_RB_SIZE/Math.max(1,innerWidth),MAX_RB_SIZE/Math.max(1,innerHeight));
   const hz=RES.refresh||60,hi=hz>=100,mid=hz>=75;
-  let floorPx,ceilPx,startPx;
-  if(MOBILE_GPU){
+  let floorPx,ceilPx,startPx,minScale,maxScale;
+  if(QUALITY.mode==='ultra'){
+    floorPx=hi?3.4e6:4.2e6;ceilPx=PX_4K;startPx=PX_4K;
+    minScale=MOBILE_GPU?.78:.82;maxScale=Math.min(fb,MOBILE_GPU?2.5:3.0);
+  }else if(MOBILE_GPU){
     floorPx=hi?1.15e6:mid?1.40e6:1.65e6;
     ceilPx =hi?1.65e6:mid?1.95e6:2.25e6;
     startPx=hi?1.45e6:1.90e6;
+    minScale=.72;maxScale=Math.min(nativeDpr,fb,2);
   }else{
     floorPx=hi?1.80e6:mid?2.20e6:2.60e6;
     ceilPx =hi?2.80e6:mid?3.30e6:3.80e6;
     startPx=hi?2.40e6:3.20e6;
+    minScale=.68;maxScale=Math.min(nativeDpr,fb,2);
   }
-  const minScale=MOBILE_GPU?.72:.68,maxScale=Math.min(nativeDpr,fb,2);
   RES.floor=Math.min(maxScale,Math.max(minScale,dprForPixels(floorPx)));
   RES.ceil=Math.min(maxScale,Math.max(RES.floor,dprForPixels(ceilPx)));
-  const wanted=RES.refresh?RES.dpr:dprForPixels(startPx);
+  const wanted=QUALITY.mode==='ultra'?dprForPixels(startPx):(RES.refresh?RES.dpr:dprForPixels(startPx));
   RES.dpr=Math.min(RES.ceil,Math.max(RES.floor,Math.min(maxScale,wanted)));
 }
 function applyResolution(d=RES.dpr){
@@ -219,7 +231,7 @@ function updateStaticVisibility(force=false){
   if(!loopCullGroups.length)return;
   if(!force&&Math.abs(currentX-lastStaticCullX)<4)return;
   lastStaticCullX=currentX;
-  const radius=Math.max(205,G.uCull.value+50);
+  const radius=Math.max(QUALITY.mode==='ultra'?265:205,G.uCull.value+(QUALITY.mode==='ultra'?95:50));
   for(const m of loopCullGroups)m.visible=Math.abs(m.userData.loopX-currentX)<=radius;
 }
 function freezeStatic(o){o.updateMatrix();o.matrixAutoUpdate=false;staticSceneObjects.push(o);return o}
@@ -249,7 +261,7 @@ function updateSun(x,force=false){
   if(USE_SHADOWS)renderer.shadowMap.needsUpdate=true;
 }
 updateSun(currentX,true);
-// Tileable baked noise shared by the city, sky and foliage shaders// Tileable baked noise shared by the city, sky and foliage shaders (one texture fetch per lookup).
+// Tileable baked noise shared by the city, sky and foliage shaders (one texture fetch per lookup).
 function seeded(seed){let s=(seed>>>0)||1;return()=>((s=Math.imul(1664525,s)+1013904223>>>0)/4294967296)}
 const noiseTex=(()=>{const N=256,data=new Uint8Array(N*N*4);
   const lat=(P,seed)=>{const r=seeded(seed),a=new Float32Array(P*P);for(let i=0;i<P*P;i++)a[i]=r();return a};
@@ -452,10 +464,10 @@ class GeoBuf{
 
 
 // ---------------- City surface shader (Lambert + procedural tiles / grime / rust / glass) -------------
-const cityUniforms={uNoise:G.uNoise,uTime:G.uTime,uSkyTop:{value:new THREE.Color(0x6e95bd)},uSkyHor:{value:new THREE.Color(0xdfe4e6)},uSkyGnd:{value:new THREE.Color(0x4b4a48)}};
+const cityUniforms={uNoise:G.uNoise,uTime:G.uTime,uSkyTop:{value:new THREE.Color(0x6e95bd)},uSkyHor:{value:new THREE.Color(0xdfe4e6)},uSkyGnd:{value:new THREE.Color(0x4b4a48)},uPhoto:{value:0}};
 const CITY_GLSL_COMMON=`
 varying vec2 vUvW;varying vec2 vMat;varying vec3 vWPos;varying vec3 vWNrm;
-uniform sampler2D uNoise;uniform float uTime;uniform vec3 uSkyTop;uniform vec3 uSkyHor;uniform vec3 uSkyGnd;
+uniform sampler2D uNoise;uniform float uTime;uniform vec3 uSkyTop;uniform vec3 uSkyHor;uniform vec3 uSkyGnd;uniform float uPhoto;
 float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
 float fbm(vec2 p){return texture2D(uNoise,p*.25).r;}
 float fbm2(vec2 p){return texture2D(uNoise,p*.125).g;}
@@ -528,6 +540,12 @@ vec3 cEmis=vec3(0.);
       col=mix(col,vec3(.17,.2,.15)*(.8+.4*n1),clamp(streak*blot*gr*.9,0.,.75));
       col=mix(col,col*vec3(.8,.86,.74),blot*gr*.55);
     }else{ float blot=smoothstep(.38,.8,fbm(uv*.5+1.7));col*=1.-gr*blot*.42; }
+  }
+  if(uPhoto>.5){
+    float micro=vnoise(uv*3.7+vWPos.xz*.013);
+    col*=.955+.09*micro;
+    float rim=pow(1.-abs(dot(normalize(vWNrm),normalize(vWPos-cameraPosition))),4.);
+    col+=vec3(.018)*rim;
   }
   diffuseColor.rgb=col;
 }`;
@@ -714,7 +732,7 @@ function makeAtlas(W,H){const c=document.createElement('canvas');c.width=W;c.hei
   add(w,h,draw){if(this.x+w+2>this.W){this.x=2;this.y+=this.row+3;this.row=0}if(this.y+h+2>this.H){console.warn('atlas full',this.W,this.H);return [0,0,.01,.01]}
     const x=this.x,y=this.y;this.g.save();this.g.translate(x,y);this.g.beginPath();this.g.rect(0,0,w,h);this.g.clip();draw(this.g,w,h);this.g.restore();this.x+=w+3;this.row=Math.max(this.row,h);
     return [(x+.5)/this.W,1-(y+h-.5)/this.H,(x+w-.5)/this.W,1-(y+.5)/this.H]}}}
-function atlasTexture(a,mips=true){const t=new THREE.CanvasTexture(a.c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());if(!mips){t.generateMipmaps=false;t.minFilter=THREE.LinearFilter}return t}
+function atlasTexture(a,mips=true){const t=new THREE.CanvasTexture(a.c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(QUALITY.mode==='ultra'?12:4,renderer.capabilities.getMaxAnisotropy());if(!mips){t.generateMipmaps=false;t.minFilter=THREE.LinearFilter}QUALITY_TEXTURES.push(t);return t}
 const FONT_SANS='"PingFang TC","Noto Sans CJK TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",sans-serif';
 const FONT_SERIF='"Noto Serif CJK TC","Songti TC","PMingLiU","MingLiU",serif';
 
@@ -2964,7 +2982,7 @@ const vehMat=(()=>{const m=new THREE.MeshLambertMaterial({vertexColors:true});
   m.customProgramCacheKey=()=>'veh-v2';return m})();
 // ---------------- geometry kit ----------------
 const PAINT=[1,1,1];
-const VQ=MOBILE_GPU?0:1;                       // vehicle detail level
+const VQ=(!MOBILE_GPU||QUALITY.candidate)?1:0; // detailed meshes on desktop / plausible high-load mobile hardware
 const DARK=C(0x141517),TRIM=C(0x1c1d20),CHR=C(0xb9bec2);
 // smooth monotone-ish Hermite through stations (non-uniform x)
 function hermite(X,Y,x){const n=X.length;if(x<=X[0])return Y[0];if(x>=X[n-1])return Y[n-1];let i=0;while(x>X[i+1])i++;
@@ -3505,6 +3523,31 @@ function wrapLoop(){
   while(currentX>WRAP_RIGHT&&targetX>WRAP_RIGHT)shiftLap(-LOOP_SPAN);
   while(currentX<WRAP_LEFT&&targetX<WRAP_LEFT)shiftLap(LOOP_SPAN);
 }
+// ---------------- adaptive visual quality ----------------
+function refreshTextureQuality(){
+  const aniso=Math.min(QUALITY.mode==='ultra'?12:4,renderer.capabilities.getMaxAnisotropy());
+  for(const t of QUALITY_TEXTURES){if(t.anisotropy!==aniso){t.anisotropy=aniso;t.needsUpdate=true}}
+}
+function resetShadowTarget(size){
+  if(!USE_SHADOWS)return;
+  if(key.shadow.map){key.shadow.map.dispose();key.shadow.map=null}
+  key.shadow.mapSize.set(size,size);shadowAnchorX=Infinity;renderer.shadowMap.needsUpdate=true;updateSun(currentX,true);
+}
+function setQualityMode(mode,reason='auto'){
+  if(mode===QUALITY.mode)return;
+  QUALITY.mode=mode;QUALITY.lastReason=reason;QUALITY.good=QUALITY.bad=0;
+  if(mode==='ultra'){
+    QUALITY.ultraAt=performance.now();cityUniforms.uPhoto.value=1;
+    computeResBand();applyResolution(dprForPixels(PX_4K));
+    refreshTextureQuality();resetShadowTarget(MAX_TEX_SIZE>=16384?3072:2048);
+  }else{
+    cityUniforms.uPhoto.value=0;
+    computeResBand();applyResolution(Math.min(RES.dpr,RES.ceil));
+    refreshTextureQuality();resetShadowTarget(1024);
+  }
+  updateStaticVisibility(true);
+  console.info('[quality]',mode,reason,'·',Math.round(innerWidth*RES.dpr)+'×'+Math.round(innerHeight*RES.dpr),'· GPU:',GPU_NAME||'unknown');
+}
 // ---------------- frame-rate & resolution governor ----------------
 // Measures the display's refresh interval, then (desktop only) nudges the render scale inside the 2K–4K band.
 const PERF={samples:[],refresh:0,acc:0,n:0,adj:0,t0:0,fps:0,ema:0,lastDprChange:0};
@@ -3527,9 +3570,19 @@ function perfTick(ms,now){
   PERF.ema=PERF.ema?PERF.ema*.90+ms*.10:ms;PERF.acc+=ms;PERF.n++;
   if(PERF.n<45)return;
   const avg=PERF.acc/PERF.n,budget=1000/Math.max(30,RES.refresh);PERF.fps=1000/avg;PERF.acc=0;PERF.n=0;
+
+  if(QUALITY.mode==='starter'&&QUALITY.candidate&&now-PERF.t0>2600){
+    if(avg<budget*.80&&PERF.ema<budget*.88)QUALITY.good++;else QUALITY.good=Math.max(0,QUALITY.good-1);
+    if(QUALITY.good>=3){setQualityMode('ultra','hardware + sustained frame headroom');return}
+  }else if(QUALITY.mode==='ultra'){
+    if(avg>budget*1.17||PERF.ema>budget*1.23)QUALITY.bad++;else QUALITY.bad=Math.max(0,QUALITY.bad-1);
+    if(QUALITY.bad>=3){setQualityMode('starter','4K load exceeded frame budget');return}
+  }
+
   let d=RES.dpr;
-  if(avg>budget*1.08)d=Math.max(RES.floor,d*.92);
-  else if(avg<budget*.87)d=Math.min(RES.ceil,d*1.05);
+  const down=QUALITY.mode==='ultra'?.94:.92,up=QUALITY.mode==='ultra'?1.035:1.05;
+  if(avg>budget*1.08)d=Math.max(RES.floor,d*down);
+  else if(avg<budget*.87)d=Math.min(RES.ceil,d*up);
   if(Math.abs(d-RES.dpr)>.015&&now-PERF.lastDprChange>450){
     PERF.lastDprChange=now;PERF.adj++;applyResolution(d);
   }
@@ -3587,6 +3640,7 @@ const birds=buildBirds();
 finalizeItems();
 const worldStats=finalizeWorld();
 console.log('[city] built in',Math.round(performance.now()-T0),'ms ·',Math.round(worldStats.tris/1000),'k static tris per lap ·',CROWD.length,'people ·',TRAFFIC.length,'vehicles');
+console.info('[quality] starter · ultra candidate:',QUALITY.candidate,'· cores:',HW_CORES||'?', '· memory:',HW_MEM?HW_MEM+'GB':'?', '· max texture:',MAX_TEX_SIZE,'· GPU:',GPU_NAME||'unknown');
 {
   const reveal=()=>{document.getElementById('loading').classList.add('done')};
   requestAnimationFrame(()=>requestAnimationFrame(reveal));
