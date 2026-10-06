@@ -485,11 +485,27 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 <script type="module">
 import * as THREE from 'three';
 
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v1',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
-try{
-  const cr=await fetch('./data/content.json?ts='+Date.now(),{cache:'no-store'});
-  if(cr.ok)SITE_CONTENT=await cr.json();
-}catch(e){console.warn('[content cms]',e)}
+try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
+const SITE_CONTENT_BOOT_STAMP=SITE_CONTENT?.updated_at||'';
+let contentRefreshBusy=false,lastContentCheck=0;
+async function refreshContentCache(allowReload=true){
+  if(contentRefreshBusy)return;contentRefreshBusy=true;
+  try{
+    const r=await fetch(RAW_BASE+'data/content.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('content '+r.status);
+    const fresh=await r.json(),stamp=fresh?.updated_at||'';
+    localStorage.setItem(CONTENT_CACHE_KEY,JSON.stringify(fresh));lastContentCheck=Date.now();
+    if(allowReload&&stamp&&stamp!==SITE_CONTENT_BOOT_STAMP&&sessionStorage.getItem('ck_content_applied_stamp')!==stamp){
+      sessionStorage.setItem('ck_content_applied_stamp',stamp);setTimeout(()=>location.reload(),90)
+    }
+  }catch(e){console.warn('[content cms]',e)}
+  finally{contentRefreshBusy=false}
+}
+// Do not block Three.js boot on CMS I/O. Cached content is applied synchronously;
+// the network copy refreshes in the background.
+refreshContentCache(!!SITE_CONTENT);
 
 // CITYMUS background music. Browsers may block audible autoplay; we try immediately,
 // then transparently resume on the first user gesture (required by iOS/Safari policy).
@@ -3991,6 +4007,16 @@ addEventListener('resize',()=>syncTabs(activeId));document.fonts?.ready?.then(()
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
 const runningBlog=document.getElementById('runningBlog'),runBlogList=document.getElementById('runBlogList'),runBlogStats=document.getElementById('runBlogStats'),runBlogArticle=document.getElementById('runBlogArticle'),runBlogBack=document.getElementById('runBlogBack'),runBlogUpdated=document.getElementById('runBlogUpdated');
 let trainingPosts=[],trainingLoaded=false;
+function hydrateTrainingCache(){
+  try{const c=JSON.parse(localStorage.getItem(TRAINING_CACHE_KEY)||'null');if(Array.isArray(c?.posts)){trainingPosts=c.posts;trainingLoaded=true;return true}}catch{}return false
+}
+function handlePortfolioSync(msg){
+  const kind=msg?.kind;if(kind==='content'){setTimeout(()=>location.reload(),70);return}
+  if(kind==='training'){const ok=hydrateTrainingCache();if(ok&&runningBlog.classList.contains('open'))renderRunningBlog()}
+}
+portfolioSyncBus?.addEventListener('message',e=>handlePortfolioSync(e.data));
+addEventListener('storage',e=>{if(e.key!==SYNC_SIGNAL_KEY||!e.newValue)return;try{handlePortfolioSync(JSON.parse(e.newValue))}catch{}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastContentCheck>30000)refreshContentCache(true)});
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function num(v,d=1){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—'}
 function formatRunDate(v){if(!v)return'—';const d=new Date(v+'T12:00:00');return Number.isNaN(d.getTime())?esc(v):d.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'})}
@@ -4022,11 +4048,14 @@ function renderRunningBlog(){
   runBlogList.querySelectorAll('[data-run-id]').forEach(b=>b.addEventListener('click',()=>openRunArticle(b.dataset.runId)))
 }
 async function loadTrainingPosts(){
+  const hadCache=hydrateTrainingCache();if(hadCache)renderRunningBlog();
   try{
-    const r=await fetch('./data/training.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('training data '+r.status);
-    const data=await r.json();trainingPosts=Array.isArray(data.posts)?data.posts:[];trainingLoaded=true;renderRunningBlog()
+    const r=await fetch(RAW_BASE+'data/training.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('training data '+r.status);
+    const data=await r.json();trainingPosts=Array.isArray(data.posts)?data.posts:[];trainingLoaded=true;
+    try{localStorage.setItem(TRAINING_CACHE_KEY,JSON.stringify(data))}catch{}
+    if(runningBlog.classList.contains('open'))renderRunningBlog()
   }catch(e){
-    runBlogUpdated.textContent='LOAD ERROR';runBlogList.innerHTML='<div class="runblog-empty"><strong>訓練紀錄載入失敗</strong><span>稍後重新開啟即可重試。</span></div>'
+    if(!hadCache){runBlogUpdated.textContent='LOAD ERROR';runBlogList.innerHTML='<div class="runblog-empty"><strong>訓練紀錄載入失敗</strong><span>稍後重新開啟即可重試。</span></div>'}
   }
 }
 function openRunningBlog(){
