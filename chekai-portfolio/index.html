@@ -209,7 +209,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.1-mobile-close: closer forced portrait camera + centered mobile modals -->
+<!-- taiwan-street-pro v5.2-return-lock: exact outbound frame restore + close portrait camera -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -3609,12 +3609,14 @@ function syncTabs(id){const btn=TABS.find(b=>b.dataset.id===id);TABS.forEach(b=>
 addEventListener('resize',()=>syncTabs(activeId));document.fonts?.ready?.then(()=>syncTabs(activeId));addEventListener('load',()=>syncTabs(activeId));
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
 const teleport=document.getElementById('teleport');
-const RETURN_STATE_KEY='chekai-outbound-return-v1';
+const RETURN_STATE_KEY='chekai-outbound-return-v2';
 let outboundNavigating=false,outboundTimer=0;
 function saveOutboundState(){
   try{sessionStorage.setItem(RETURN_STATE_KEY,JSON.stringify({
-    ts:Date.now(),pending:true,activeId,currentX,targetX,currentY,targetY,currentZ,targetZ,
-    drawer:drawer.classList.contains('open')
+    ts:Date.now(),pending:true,activeId,
+    x:currentX,y:currentY,z:currentZ,
+    drawer:drawer.classList.contains('open'),
+    drawerScroll:drawer.scrollTop||0
   }))}catch{}
 }
 function readOutboundState(){
@@ -3629,6 +3631,8 @@ function resetTeleport(){
 function teleportTo(url,e,a){
   if(outboundNavigating)return;
   outboundNavigating=true;saveOutboundState();
+  // Freeze the exact visual frame before leaving. Safari bfcache must not resume an unfinished camera glide.
+  targetX=currentX;targetY=currentY;targetZ=currentZ;
   const label=(a?.querySelector('b')?.textContent||a?.querySelector('.meta b')?.textContent||a?.textContent||'前往網站').trim().replace(/\s+/g,' ');
   const dest=document.getElementById('teleportDest');if(dest)dest.textContent=label.slice(0,34);
   teleport?.classList.remove('active');void teleport?.offsetWidth;
@@ -3641,6 +3645,27 @@ document.addEventListener('click',e=>{
   const u=new URL(a.href,location.href);if(!/^https?:$/.test(u.protocol))return;
   e.preventDefault();teleportTo(u.href,e,a);
 },true);
+function restoreOutboundSnapshot(saved){
+  if(!saved||!DATA[saved.activeId])return false;
+  const id=saved.activeId;
+  introDismissed=true;intro?.classList.add('hidden');
+  activeId=id;if(id!=='hero')setPortfolioBoardQuality(id);
+  const sx=Number(saved.x),sy=Number(saved.y),sz=Number(saved.z);
+  const baseX=CONFIG[id]?.x??IX;
+  currentX=targetX=Number.isFinite(sx)?sx:baseX;
+  currentY=targetY=Number.isFinite(sy)?sy:cameraYFor(id);
+  currentZ=targetZ=Number.isFinite(sz)?sz:cameraZFor(id);
+  document.getElementById('focusLabel').textContent=id==='hero'?'HOME':`${DATA[id].index} ${DATA[id].nav.toUpperCase()}`;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+  updateLoopUI(id);syncTabs(id);history.replaceState(null,'','#'+id);
+  if(saved.drawer){
+    openDrawer(id);
+    requestAnimationFrame(()=>{drawer.scrollTop=Math.max(0,Number(saved.drawerScroll)||0)})
+  }else drawer.classList.remove('open');
+  lastStaticCullX=1e9;updateStaticVisibility(true);
+  lastFrameMs=performance.now();
+  return true
+}
 function openDrawer(id){
   const d=DATA[id],dk=document.getElementById('dk'),dt=document.getElementById('dt'),di=document.getElementById('di'),items=document.getElementById('items');
   dk.textContent=`${d.index} / ${d.nav}`;
@@ -3935,28 +3960,24 @@ document.addEventListener('visibilitychange',()=>{
 });
 addEventListener('pagehide',()=>suspendFrames());
 addEventListener('pageshow',e=>{
-  resetTeleport();resumeFrames();
-  applyResponsiveCamera();applyResolution(RES.dpr);updateStaticVisibility(true);syncTabs(activeId);
+  resetTeleport();
+  applyResponsiveCamera();applyResolution(RES.dpr);
+  const saved=e.persisted?readOutboundState():null;
+  if(saved)restoreOutboundSnapshot(saved);
+  updateStaticVisibility(true);syncTabs(activeId);
   if(USE_SHADOWS){shadowAnchorX=Infinity;renderer.shadowMap.needsUpdate=true;updateSun(currentX,true)}
-  if(e.persisted)clearOutboundState();
+  clearOutboundState();resumeFrames();
 });
 {
   const saved=readOutboundState(),initial=location.hash.slice(1);
-  if(saved&&DATA[saved.activeId]){
-    introDismissed=true;intro?.classList.add('hidden');
-    const id=saved.activeId,lap=Math.round(((Number(saved.targetX)||CONFIG[id].x)-CONFIG[id].x)/LOOP_SPAN);
-    focus(id,false,lap);
-    if(Number.isFinite(Number(saved.currentX)))currentX=Number(saved.currentX);
-    if(Number.isFinite(Number(saved.targetX)))targetX=Number(saved.targetX);
-    if(Number.isFinite(Number(saved.currentY)))currentY=Number(saved.currentY);
-    if(Number.isFinite(Number(saved.targetY)))targetY=Number(saved.targetY);
-    if(Number.isFinite(Number(saved.currentZ)))currentZ=Number(saved.currentZ);
-    if(Number.isFinite(Number(saved.targetZ)))targetZ=Number(saved.targetZ);
-    if(saved.drawer)requestAnimationFrame(()=>openDrawer(id));
-    clearOutboundState();lastFrameMs=performance.now();
+  if(saved&&restoreOutboundSnapshot(saved)){
+    clearOutboundState();
   }else if(initial&&initial!=='hero'&&DATA[initial]){
-    introDismissed=true;intro?.classList.add('hidden');focus(initial,false);currentX=targetX
-  }else{focus('hero',false);currentX=targetX;currentY=targetY;currentZ=targetZ}
+    introDismissed=true;intro?.classList.add('hidden');focus(initial,false);
+    currentX=targetX;currentY=targetY;currentZ=targetZ;
+  }else{
+    focus('hero',false);currentX=targetX;currentY=targetY;currentZ=targetZ;
+  }
 }
 
 </script>
