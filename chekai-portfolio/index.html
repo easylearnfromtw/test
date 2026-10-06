@@ -3638,7 +3638,7 @@ function perfTick(ms,now){
   if(QUALITY.mode==='starter'&&!QUALITY.probe.active&&now-PERF.t0>1200){
     if(QUALITY_MEMORY?.pass){
       setQualityMode('ultra','remembered stable device');return
-    }else if(!QUALITY_MEMORY&&QUALITY.probeEligible){
+    }else if(!QUALITY_MEMORY&&QUALITY.probeEligible&&QUALITY.probe.result===null){
       startQualityProbe(now);return
     }
   }else if(QUALITY.mode==='ultra'){
