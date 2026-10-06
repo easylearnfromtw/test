@@ -311,6 +311,9 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 .goblin-note{margin:9px 4px 0;color:#697481;font:700 8px/1.55 var(--mono)}
 .goblin-toast{position:absolute;left:50%;top:13%;transform:translate(-50%,-8px);opacity:0;padding:8px 11px;border-radius:999px;background:#173f35;color:#fff;font-size:10px;font-weight:800;pointer-events:none;transition:.2s}
 .goblin-toast.show{opacity:1;transform:translate(-50%,0)}
+.train-discovery-hint{position:fixed;z-index:72;left:50%;bottom:calc(94px + env(safe-area-inset-bottom));transform:translate(-50%,14px);opacity:0;pointer-events:none;padding:9px 13px;border-radius:999px;background:rgba(255,250,240,.95);border:2px solid #512d1d;color:#512d1d;box-shadow:0 10px 28px rgba(0,0,0,.18);font:850 10px/1 var(--sans);transition:.28s ease;white-space:nowrap}
+.train-discovery-hint.show{opacity:1;transform:translate(-50%,0)}
+@media(min-width:721px){.train-discovery-hint{bottom:26px}}
 @keyframes goblinScan{0%{left:-20%}100%{left:120%}}
 @keyframes goblinCrown{0%{transform:translateX(-50%) translateY(-16px) scale(.6);opacity:0}55%{transform:translateX(-50%) translateY(3px) scale(1.15);opacity:1}100%{transform:translateX(-50%) translateY(0) scale(1)}}
 @media(max-width:620px){
@@ -397,6 +400,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   </section>
 </div>
 
+<div class="train-discovery-hint" id="trainDiscoveryHint">🚆 點擊列車取得「哥布林證書」</div>
 <div class="goblin-modal" id="goblinModal" aria-hidden="true">
   <div class="goblin-backdrop" id="goblinBackdrop"></div>
   <section class="goblin-shell" role="dialog" aria-modal="true" aria-label="哥布林證書">
@@ -3652,7 +3656,7 @@ function setupTraffic(){
     {const v=addVeh(type,{state:'parked',x,z,yaw,haz,tint:rgb(tint),vmax:0,v:0});v.v=0}
   for(const dir of [1,-1])TRAMS.push({x:dir>0?-60:120,dir,v:6,vmax:7,dwell:0,z:dir>0?RD.tN:RD.tF});
 }
-let vehMeshes={},vehShadow=null,tramMesh=null,mrtMesh=null;
+let vehMeshes={},vehShadow=null,tramMesh=null,mrtMesh=null,tramHitMesh=null,mrtHitMesh=null;
 function finalizeVehicles(){
   for(const name in VTYPES){const t=VTYPES[name];if(!t.list.length)continue;const n=t.list.length,m=new THREE.InstancedMesh(t.geo,vehMat,n);
     const tint=new Float32Array(n*3),state=new Float32Array(n*4);t.list.forEach((v,i)=>{tint.set(v.tint,i*3);state.set([0,v.haz,v.siren,v.ph],i*4)});
@@ -3661,9 +3665,12 @@ function finalizeVehicles(){
   vehShadow=new THREE.InstancedMesh(blobGeo,blobMat,TRAFFIC.length+2);vehShadow.frustumCulled=false;vehShadow.renderOrder=2;scene.add(vehShadow);
   const tt=tramGeo().geometry('aUvW'),tg=new THREE.InstancedBufferGeometry();tg.index=tt.index;for(const k in tt.attributes)tg.setAttribute(k,tt.attributes[k]);
   tg.setAttribute('aTint',new THREE.InstancedBufferAttribute(new Float32Array([...rgb(0xf4f6f6),...rgb(0xf4f6f6)]),3));tg.setAttribute('aState',new THREE.InstancedBufferAttribute(new Float32Array(8),4));
-  tramMesh=new THREE.InstancedMesh(tg,vehMat,2);tramMesh.frustumCulled=false;tramMesh.castShadow=false;tramMesh.receiveShadow=USE_SHADOWS;tramMesh.userData.action='goblin-cert';scene.add(tramMesh);clickables.push(tramMesh);
+  tramMesh=new THREE.InstancedMesh(tg,vehMat,2);tramMesh.frustumCulled=false;tramMesh.castShadow=false;tramMesh.receiveShadow=USE_SHADOWS;scene.add(tramMesh);
+  const hitMat=new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,colorWrite:false});
+  tramHitMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(38,5.2,5.8),hitMat,2);tramHitMesh.frustumCulled=false;tramHitMesh.userData.action='goblin-cert';scene.add(tramHitMesh);clickables.push(tramHitMesh);
   const mg=mrtGeo().geometry('aUvW');mg.setAttribute('aTint',new THREE.InstancedBufferAttribute(new Float32Array([1,1,1]),3));mg.setAttribute('aState',new THREE.InstancedBufferAttribute(new Float32Array(4),4));
-  mrtMesh=new THREE.InstancedMesh(mg,vehMat,1);mrtMesh.frustumCulled=false;mrtMesh.userData.action='goblin-cert';scene.add(mrtMesh);clickables.push(mrtMesh);
+  mrtMesh=new THREE.InstancedMesh(mg,vehMat,1);mrtMesh.frustumCulled=false;scene.add(mrtMesh);
+  mrtHitMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(26,6,6),hitMat,1);mrtHitMesh.frustumCulled=false;mrtHitMesh.userData.action='goblin-cert';scene.add(mrtHitMesh);clickables.push(mrtHitMesh);
 }
 // ---- simulation step ----
 const _m=new THREE.Matrix4(),_q=new THREE.Quaternion(),_p=new THREE.Vector3(),_s=new THREE.Vector3(1,1,1),_yA=new THREE.Vector3(0,1,0);
@@ -3767,10 +3774,10 @@ function updateTraffic(dt,t){
       _p.y=.03;_s.set(v.len*1.15,1,v.wid*1.5);_m.compose(_p,_q,_s);vehShadow.setMatrixAt(si++,_m);_s.set(1,1,1);
       if(v.rider){const cs=Math.cos(v.yaw||0),sn=Math.sin(v.yaw||0),lx=v.seat[0];setPersonRoot(v.rider,v.x+lx*cs,v.seat[1],v.z-lx*sn,(v.yaw||0)+Math.PI/2)}});
     m.instanceMatrix.needsUpdate=true;if(stateDirty)st.needsUpdate=true}
-  TRAMS.forEach((tr,i)=>{_p.set(tr.x,.02,tr.z);_q.setFromAxisAngle(_yA,tr.dir>0?0:Math.PI);_m.compose(_p,_q,_s);tramMesh.setMatrixAt(i,_m);_p.y=.03;_s.set(36,1,3.6);_m.compose(_p,_q,_s);vehShadow.setMatrixAt(si++,_m);_s.set(1,1,1)});
-  tramMesh.instanceMatrix.needsUpdate=true;vehShadow.count=si;vehShadow.instanceMatrix.needsUpdate=true;
+  TRAMS.forEach((tr,i)=>{_p.set(tr.x,.02,tr.z);_q.setFromAxisAngle(_yA,tr.dir>0?0:Math.PI);_m.compose(_p,_q,_s);tramMesh.setMatrixAt(i,_m);tramHitMesh?.setMatrixAt(i,_m);_p.y=.03;_s.set(36,1,3.6);_m.compose(_p,_q,_s);vehShadow.setMatrixAt(si++,_m);_s.set(1,1,1)});
+  tramMesh.instanceMatrix.needsUpdate=true;if(tramHitMesh)tramHitMesh.instanceMatrix.needsUpdate=true;vehShadow.count=si;vehShadow.instanceMatrix.needsUpdate=true;
 }
-let mrtX=-200;function updateMRT(dt){mrtX+=11*dt;let rel=mrtX-currentX;if(rel>320)mrtX-=640;if(rel<-320)mrtX+=640;_p.set(mrtX,25.75,-57);_q.identity();_m.compose(_p,_q,_s);mrtMesh.setMatrixAt(0,_m);mrtMesh.instanceMatrix.needsUpdate=true}
+let mrtX=-200;function updateMRT(dt){mrtX+=11*dt;let rel=mrtX-currentX;if(rel>320)mrtX-=640;if(rel<-320)mrtX+=640;_p.set(mrtX,25.75,-57);_q.identity();_m.compose(_p,_q,_s);mrtMesh.setMatrixAt(0,_m);mrtHitMesh?.setMatrixAt(0,_m);mrtMesh.instanceMatrix.needsUpdate=true;if(mrtHitMesh)mrtHitMesh.instanceMatrix.needsUpdate=true}
 
 // =====================================================================
 // BIRDS — sparrows on lamps, wires, trees and balconies that take off and
@@ -4150,6 +4157,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){if(goblinModal.classList.con
 
 /* ---------------- Train discovery / Goblin Certificate ---------------- */
 const goblinModal=document.getElementById('goblinModal'),goblinBackdrop=document.getElementById('goblinBackdrop'),goblinClose=document.getElementById('goblinClose');
+const trainDiscoveryHint=document.getElementById('trainDiscoveryHint');
 const goblinCert=document.getElementById('goblinCert'),goblinName=document.getElementById('goblinName'),goblinPhoto=document.getElementById('goblinPhoto');
 const goblinPhotoInput=document.getElementById('goblinPhotoInput'),goblinResetPhoto=document.getElementById('goblinResetPhoto'),goblinSave=document.getElementById('goblinSave');
 const goblinRank=document.getElementById('goblinRank'),goblinCountStatus=document.getElementById('goblinCountStatus'),goblinToast=document.getElementById('goblinToast');
@@ -4176,7 +4184,15 @@ async function ensureGoblinRank(){
   }catch(e){console.warn('Goblin counter unavailable',e);goblinRank.textContent='------';goblinCountStatus.textContent='LIVE COUNT 暫時無法取得';return 0}
   finally{goblinCounting=false}
 }
+function showTrainDiscoveryHint(){
+  if(sessionStorage.getItem('ck_train_hint_seen'))return;
+  trainDiscoveryHint?.classList.add('show');
+  setTimeout(()=>trainDiscoveryHint?.classList.remove('show'),4200);
+  sessionStorage.setItem('ck_train_hint_seen','1')
+}
+setTimeout(showTrainDiscoveryHint,1800);
 function openGoblinCertificate(){
+  trainDiscoveryHint?.classList.remove('show');
   goblinModal.classList.add('open');goblinModal.setAttribute('aria-hidden','false');goblinCert.classList.remove('generating');void goblinCert.offsetWidth;goblinCert.classList.add('generating');
   ensureGoblinRank();setTimeout(()=>goblinName.focus({preventScroll:true}),430)
 }
