@@ -15,46 +15,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .now-playing .np-dot{width:5px;height:5px;flex:0 0 auto;border-radius:50%;background:#68e39d;box-shadow:0 0 10px #68e39d;animation:npPulse 1.2s ease-in-out infinite}.now-playing.blocked .np-dot{background:#e8a25b;box-shadow:0 0 10px #e8a25b}.now-playing.muted .np-dot{background:#69788a;box-shadow:none;animation:none}.now-playing span:last-child{overflow:hidden;text-overflow:ellipsis}
 @keyframes npPulse{50%{opacity:.35;transform:scale(.72)}}
 .hud{display:none}.chip{display:none}.chip b{display:block;color:#fff;font-size:9px;margin-bottom:2px}.status{position:absolute;right:16px;bottom:16px;min-width:190px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(5,10,22,.66);backdrop-filter:blur(12px);font:8px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9eabbc}.status strong{color:#fff;float:right}.bar{height:3px;margin-top:9px;background:rgba(255,255,255,.10);border-radius:4px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#fff;transition:width .3s}
-.loop-flash{
-  --hop-accent:#f3bf53;position:fixed;z-index:19;left:50%;bottom:84px;width:min(350px,calc(100vw - 34px));
-  padding:13px 48px 12px 16px;background:#f7f2e7;color:#174b3a;border:2px solid #174b3a;
-  box-shadow:6px 6px 0 rgba(23,75,58,.88);pointer-events:none;opacity:0;
-  transform:translate(-50%,28px) rotate(-2deg) scale(.9);transform-origin:50% 100%;
-}
-.loop-flash::before{content:"";position:absolute;left:17px;right:17px;top:-7px;height:12px;background:rgba(242,209,120,.78);transform:rotate(.7deg);clip-path:polygon(0 14%,100% 0,96% 100%,3% 86%)}
-.loop-flash::after{content:"叮咚";position:absolute;right:-10px;top:-15px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--hop-accent);color:#173f34;border:2px solid #173f34;font:950 11px/1 var(--sans);transform:rotate(9deg);box-shadow:3px 3px 0 #173f34}
-.loop-kicker{display:block;margin-bottom:5px;font:900 8px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#8b5c27}
-.loop-flash strong{display:block;font:950 20px/.95 var(--sans);letter-spacing:-.035em}
-.loop-flash small{display:block;margin-top:7px;font:800 9px/1.2 var(--mono);letter-spacing:.06em;color:#527064}
-.loop-arrow{position:absolute;right:17px;bottom:12px;font:950 26px/1 var(--sans);color:#c94a43}
-.loop-flash.show.forward{animation:streetCardF .72s cubic-bezier(.18,.9,.24,1) both}
-.loop-flash.show.backward{animation:streetCardB .72s cubic-bezier(.18,.9,.24,1) both}
-body.street-hop #webgl{animation:streetWorldHop .58s cubic-bezier(.2,.8,.2,1) both;will-change:transform}
-@keyframes streetCardF{
-  0%{opacity:0;transform:translate(calc(-50% + 68px),32px) rotate(5deg) scale(.82)}
-  18%{opacity:1}
-  48%{transform:translate(calc(-50% - 5px),-3px) rotate(-3deg) scale(1.045)}
-  67%{transform:translate(-50%,0) rotate(-1deg) scale(.99)}
-  82%{opacity:1;transform:translate(-50%,0) rotate(-1.5deg) scale(1)}
-  100%{opacity:0;transform:translate(calc(-50% - 22px),-8px) rotate(-4deg) scale(.98)}
-}
-@keyframes streetCardB{
-  0%{opacity:0;transform:translate(calc(-50% - 68px),32px) rotate(-5deg) scale(.82)}
-  18%{opacity:1}
-  48%{transform:translate(calc(-50% + 5px),-3px) rotate(3deg) scale(1.045)}
-  67%{transform:translate(-50%,0) rotate(1deg) scale(.99)}
-  82%{opacity:1;transform:translate(-50%,0) rotate(1.5deg) scale(1)}
-  100%{opacity:0;transform:translate(calc(-50% + 22px),-8px) rotate(4deg) scale(.98)}
-}
-@keyframes streetWorldHop{
-  0%{transform:translate3d(0,0,0) scale(1)}
-  32%{transform:translate3d(0,3px,0) scale(1.004)}
-  52%{transform:translate3d(0,-2px,0) scale(1.006)}
-  72%{transform:translate3d(0,1px,0) scale(1.003)}
-  100%{transform:translate3d(0,0,0) scale(1)}
-}
-@media(max-width:560px){.loop-flash{bottom:68px;width:min(315px,calc(100vw - 24px));padding:12px 44px 11px 14px}.loop-flash strong{font-size:18px}}
-@media(prefers-reduced-motion:reduce){.loop-flash.show.forward,.loop-flash.show.backward,body.street-hop #webgl{animation-duration:.18s!important}}
+.loop-flash{display:none}
 .intro{position:fixed;inset:0;z-index:18;display:grid;place-items:center;padding:76px 18px 28px;pointer-events:none;transition:opacity .42s ease,visibility .42s ease}
 .intro::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(12,31,35,.10),rgba(5,14,20,.28));backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 .intro.hidden{opacity:0;visibility:hidden}
@@ -76,25 +37,46 @@ body.street-hop #webgl{animation:streetWorldHop .58s cubic-bezier(.2,.8,.2,1) bo
 @media(max-width:560px){.topbar{top:18px}.brand{font-size:24px;letter-spacing:.16em}
 .intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
 .drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.item-link{position:relative;display:block;color:inherit;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}.item-link::after{content:'↗';position:absolute;right:12px;top:10px;color:#70c6f4;font-size:15px}.item-link:hover{background:rgba(112,198,244,.08);border-color:rgba(112,198,244,.28);transform:translateY(-1px)}.item-link b,.item-link span{padding-right:22px}
-/* outbound portal: GPU-composited only; no blur/postprocessing so the 3D scene stays smooth */
-.teleport{position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden;opacity:0;--tx:50vw;--ty:50vh;background:transparent}
-.teleport::before{content:"";position:absolute;left:var(--tx);top:var(--ty);width:26px;height:26px;border:2px solid rgba(182,226,255,.95);border-radius:50%;transform:translate(-50%,-50%) scale(.15);opacity:0;box-shadow:0 0 0 1px rgba(112,198,244,.45),0 0 28px rgba(112,198,244,.55)}
-.teleport::after{content:"";position:absolute;inset:-12%;opacity:0;background:radial-gradient(circle at var(--tx) var(--ty),rgba(235,248,255,.96) 0 2%,rgba(112,198,244,.38) 9%,rgba(19,39,72,.82) 36%,rgba(5,9,20,.98) 72%)}
-.teleport-core{position:absolute;left:var(--tx);top:var(--ty);width:9px;height:9px;border-radius:50%;background:#fff;transform:translate(-50%,-50%) scale(.2);opacity:0;box-shadow:0 0 22px 8px rgba(112,198,244,.8)}
-.teleport-label{position:absolute;left:50%;bottom:9vh;transform:translateX(-50%) translateY(8px);font:800 9px/1 var(--mono);letter-spacing:.24em;color:rgba(235,248,255,.9);opacity:0;white-space:nowrap}
-.teleport.active{animation:tpLayer .46s both}
-.teleport.active::before{animation:tpRing .46s cubic-bezier(.16,.84,.2,1) both}
-.teleport.active::after{animation:tpWash .46s ease-in both}
-.teleport.active .teleport-core{animation:tpCore .46s ease-out both}
-.teleport.active .teleport-label{animation:tpLabel .46s ease-out both}
-body.teleporting #webgl{animation:tpWorld .46s cubic-bezier(.2,.75,.25,1) both;will-change:transform}
-@keyframes tpLayer{0%{opacity:0}8%,100%{opacity:1}}
-@keyframes tpRing{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}12%{opacity:1}100%{opacity:.08;transform:translate(-50%,-50%) scale(95)}}
-@keyframes tpWash{0%,18%{opacity:0;transform:scale(.86)}72%{opacity:.72}100%{opacity:1;transform:scale(1.08)}}
-@keyframes tpCore{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}22%{opacity:1}100%{opacity:.15;transform:translate(-50%,-50%) scale(18)}}
-@keyframes tpLabel{0%,28%{opacity:0;transform:translateX(-50%) translateY(8px)}55%,100%{opacity:1;transform:translateX(-50%) translateY(0)}}
-@keyframes tpWorld{0%{transform:scale(1)}100%{transform:scale(1.035)}}
-@media(prefers-reduced-motion:reduce){.teleport.active,.teleport.active::before,.teleport.active::after,.teleport.active .teleport-core,.teleport.active .teleport-label,body.teleporting #webgl{animation-duration:.12s!important}}
+/* outbound link transition: Taiwan street-bus pass, GPU-composited */
+.teleport{position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden;opacity:0;background:transparent}
+.teleport-shade{position:absolute;inset:0;background:rgba(9,18,22,.0);opacity:0}
+.teleport-bus{
+  position:absolute;left:0;top:7vh;width:118vw;height:86vh;
+  background:#e8e1cf;border-top:10px solid #1d6a5a;border-bottom:14px solid #1d6a5a;
+  transform:translate3d(112vw,0,0) rotate(-.35deg);box-shadow:0 20px 70px rgba(0,0,0,.42);
+  overflow:hidden;will-change:transform
+}
+.teleport-bus::before{content:"";position:absolute;left:0;right:0;top:13vh;height:34vh;background:
+  linear-gradient(90deg,transparent 0 4%,#26383d 4% 16%,transparent 16% 19%,#26383d 19% 31%,transparent 31% 34%,#26383d 34% 46%,transparent 46% 49%,#26383d 49% 61%,transparent 61% 64%,#26383d 64% 76%,transparent 76% 79%,#26383d 79% 91%,transparent 91% 100%);
+  border-top:6px solid #174b3a;border-bottom:6px solid #174b3a;opacity:.92
+}
+.teleport-bus::after{content:"CHE-KAI CITY BUS";position:absolute;left:4vw;bottom:8vh;font:950 clamp(30px,6vw,82px)/1 var(--sans);letter-spacing:-.045em;color:rgba(23,75,58,.14);white-space:nowrap}
+.teleport-route{position:absolute;left:7vw;top:8vh;z-index:2;width:min(430px,44vw);padding:16px 18px 15px;background:#f3bf53;color:#173f34;border:4px solid #173f34;box-shadow:7px 7px 0 #173f34;transform:rotate(-2deg)}
+.teleport-route span{display:block;margin-bottom:7px;font:900 9px/1 var(--mono);letter-spacing:.18em}
+.teleport-route strong{display:block;font:950 clamp(22px,3.2vw,42px)/.98 var(--sans);letter-spacing:-.04em}
+.teleport-route small{display:block;margin-top:9px;font:800 9px/1.3 var(--mono);letter-spacing:.06em}
+.teleport-bell{position:absolute;right:8vw;top:9vh;z-index:3;width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:#c94a43;color:#fff;border:4px solid #f7f2e7;box-shadow:0 0 0 4px #173f34,5px 5px 0 #173f34;font:950 15px/1 var(--sans);transform:rotate(8deg)}
+.teleport-sticker{position:absolute;right:18vw;bottom:12vh;z-index:3;padding:10px 13px;background:#fff;color:#174b3a;border:2px solid #174b3a;font:900 10px/1 var(--mono);letter-spacing:.12em;transform:rotate(3deg);box-shadow:4px 4px 0 rgba(23,75,58,.8)}
+.teleport.active{opacity:1}
+.teleport.active .teleport-shade{animation:busShade .62s both}
+.teleport.active .teleport-bus{animation:busPass .62s cubic-bezier(.22,.78,.18,1) both}
+.teleport.active .teleport-route{animation:routeBounce .62s cubic-bezier(.2,.86,.25,1) both}
+.teleport.active .teleport-bell{animation:bellPop .62s cubic-bezier(.18,.9,.22,1) both}
+body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) both;will-change:transform}
+@keyframes busPass{0%{transform:translate3d(112vw,0,0) rotate(-.35deg)}58%{transform:translate3d(-3vw,0,0) rotate(.18deg)}100%{transform:translate3d(-8vw,0,0) rotate(0deg)}}
+@keyframes busShade{0%,26%{opacity:0;background:rgba(9,18,22,0)}72%,100%{opacity:1;background:rgba(9,18,22,.96)}}
+@keyframes routeBounce{0%{transform:rotate(-2deg) scale(.82)}38%{transform:rotate(1deg) scale(1.08)}62%{transform:rotate(-1deg) scale(.98)}100%{transform:rotate(-1.5deg) scale(1)}}
+@keyframes bellPop{0%,18%{transform:rotate(8deg) scale(.45)}42%{transform:rotate(-7deg) scale(1.16)}67%{transform:rotate(5deg) scale(.96)}100%{transform:rotate(8deg) scale(1)}}
+@keyframes streetExitNudge{0%{transform:translate3d(0,0,0) scale(1)}35%{transform:translate3d(-5px,1px,0) scale(1.004)}62%{transform:translate3d(3px,-1px,0) scale(1.008)}100%{transform:translate3d(0,0,0) scale(1.01)}}
+@media(max-width:560px){
+  .teleport-bus{top:10vh;height:80vh;width:132vw}
+  .teleport-route{left:8vw;top:8vh;width:66vw;padding:13px 14px}
+  .teleport-bell{right:10vw;top:10vh;width:58px;height:58px;font-size:13px}
+  .teleport-sticker{right:12vw;bottom:10vh}
+}
+@media(prefers-reduced-motion:reduce){
+  .teleport.active .teleport-shade,.teleport.active .teleport-bus,.teleport.active .teleport-route,.teleport.active .teleport-bell,body.teleporting #webgl{animation-duration:.16s!important}
+}
 .profile-card{margin-top:16px;display:grid;gap:14px}
 .profile-head{padding:18px 18px 16px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025))}
 .profile-eyebrow{font:8px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#8190a5;margin-bottom:8px}
@@ -129,10 +111,6 @@ body.teleporting #webgl{animation:tpWorld .46s cubic-bezier(.2,.75,.25,1) both;w
 .tab-cap{position:absolute;z-index:0;top:5px;bottom:5px;left:5px;width:60px;border-radius:999px;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.66));box-shadow:inset 0 1px 0 #fff,inset 0 -2px 4px rgba(120,140,170,.25),0 4px 14px rgba(0,0,0,.2);transition:left .42s cubic-bezier(.2,.9,.25,1.15),width .42s cubic-bezier(.2,.9,.25,1.15)}
 .tabbar.dragging .tab-cap{transform:scale(1.06);box-shadow:inset 0 1px 0 #fff,0 8px 22px rgba(0,0,0,.28)}
-body.section-changing .tab-cap{animation:tabJelly .56s cubic-bezier(.18,.86,.22,1) both}
-body.section-changing .tabbar button.active{animation:tabLabelPop .52s cubic-bezier(.18,.86,.22,1) both}
-@keyframes tabJelly{0%{transform:scale(.88) rotate(-2deg)}32%{transform:scale(1.12) rotate(1.5deg)}58%{transform:scale(.97) rotate(-.6deg)}78%{transform:scale(1.025)}100%{transform:scale(1)}}
-@keyframes tabLabelPop{0%{transform:translateY(0)}34%{transform:translateY(-4px)}62%{transform:translateY(1px)}100%{transform:translateY(0)}}
 .now-playing,.status{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.06))!important;border:1px solid rgba(255,255,255,.3)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 28px rgba(4,10,20,.28)!important;-webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%)!important;color:#fff!important}
 .status{text-shadow:0 1px 5px rgba(0,0,0,.35)}
 .status{display:none!important}
@@ -143,7 +121,7 @@ body.section-changing .tabbar button.active{animation:tabLabelPop .52s cubic-bez
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v4.7-transition: playful spring lane-change + Taiwan stop-card -->
+<!-- taiwan-street-pro v4.8-outbound: Taiwan bus external-link transition -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -168,8 +146,15 @@ body.section-changing .tabbar button.active{animation:tabLabelPop .52s cubic-bez
     <div class="status">Focus <strong id="focusLabel">HOME</strong><div class="bar"><i id="progress"></i></div></div>
   </div>
 </div>
-<div class="loop-flash" id="loopFlash" aria-hidden="true"><span class="loop-kicker">NEXT STOP / 下一站</span><strong id="loopFlashText">02 WEB WORKS</strong><small id="loopFlashSub">作品街區 · PORTFOLIO CITY</small><b class="loop-arrow" id="loopFlashArrow">→</b></div>
-<div class="teleport" id="teleport" aria-hidden="true"><i class="teleport-core"></i><b class="teleport-label">TRANSFER / 傳送中</b></div>
+<div class="loop-flash" id="loopFlash"></div>
+<div class="teleport" id="teleport" aria-hidden="true">
+  <i class="teleport-shade"></i>
+  <section class="teleport-bus">
+    <div class="teleport-route"><span>NEXT STOP / 下一站</span><strong id="teleportDest">前往網站</strong><small>下車請記得帶好隨身物品</small></div>
+    <b class="teleport-bell">叮咚</b>
+    <em class="teleport-sticker">網站直達 ↗</em>
+  </section>
+</div>
 <aside class="drawer" id="drawer"><button class="close" id="close">×</button><div class="dk" id="dk">00 / Home</div><h2 id="dt">CHE-KAI LIN</h2><p id="di"></p><div class="items" id="items"></div></aside>
 <script type="module">
 import * as THREE from 'three';
@@ -3496,53 +3481,7 @@ function buildBirds(){
 
 // nav/drawer
 const CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
-const STREET_NAMES={about:'人物檔案',web:'作品街區',experience:'經歷街區',academic:'學習街區',writing:'文字街區',running:'跑步街區',roles:'角色街區',public:'公共參與',art:'藝術倉庫'};
-const loopFlash=document.getElementById('loopFlash'),loopFlashText=document.getElementById('loopFlashText'),loopFlashSub=document.getElementById('loopFlashSub'),loopFlashArrow=document.getElementById('loopFlashArrow');
-const SECTION_HOP={start:0,dir:1,duration:620,timer:0};
-const CAM_SWITCH={active:false,start:0,duration:760,x0:0,x1:0,y0:0,y1:0,z0:0,z1:0,dir:1};
-let sectionClassTimer=0;
 let activeId='hero',cycleCursor=0,introDismissed=false;
-function easeOutBack(t){
-  const c1=1.35,c3=c1+1;
-  return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)
-}
-function beginCameraSwitch(nx,ny,nz,dir){
-  CAM_SWITCH.active=true;CAM_SWITCH.start=performance.now();CAM_SWITCH.x0=currentX;CAM_SWITCH.x1=nx;
-  CAM_SWITCH.y0=currentY;CAM_SWITCH.y1=ny;CAM_SWITCH.z0=currentZ;CAM_SWITCH.z1=nz;CAM_SWITCH.dir=dir<0?-1:1;
-  const dist=Math.abs(nx-currentX);CAM_SWITCH.duration=Math.max(560,Math.min(940,560+dist*3.1));
-  clearTimeout(sectionClassTimer);document.body.classList.remove('section-changing');void document.body.offsetWidth;
-  document.body.classList.add('section-changing');
-  sectionClassTimer=setTimeout(()=>document.body.classList.remove('section-changing'),680);
-}
-function updateCameraSwitch(now){
-  if(!CAM_SWITCH.active)return false;
-  const t=Math.max(0,Math.min(1,(now-CAM_SWITCH.start)/CAM_SWITCH.duration));
-  const e=easeOutBack(t);
-  currentX=CAM_SWITCH.x0+(CAM_SWITCH.x1-CAM_SWITCH.x0)*e;
-  const sm=t*t*(3-2*t);
-  currentY=CAM_SWITCH.y0+(CAM_SWITCH.y1-CAM_SWITCH.y0)*sm;
-  currentZ=CAM_SWITCH.z0+(CAM_SWITCH.z1-CAM_SWITCH.z0)*sm;
-  if(t>=1){CAM_SWITCH.active=false;currentX=CAM_SWITCH.x1;currentY=CAM_SWITCH.y1;currentZ=CAM_SWITCH.z1}
-  return true
-}
-function playSectionHop(id,dir=1){
-  if(!DATA[id]||id==='hero'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  clearTimeout(SECTION_HOP.timer);SECTION_HOP.start=performance.now();SECTION_HOP.dir=dir<0?-1:1;
-  loopFlash.style.setProperty('--hop-accent',DATA[id].accent||'#f3bf53');
-  loopFlashText.textContent=`${DATA[id].index}  ${DATA[id].nav.toUpperCase()}`;
-  loopFlashSub.textContent=`${STREET_NAMES[id]||'下一街區'} · PORTFOLIO CITY`;
-  loopFlashArrow.textContent=SECTION_HOP.dir>0?'→':'←';
-  loopFlash.classList.remove('show','forward','backward');document.body.classList.remove('street-hop');void loopFlash.offsetWidth;
-  loopFlash.classList.add('show',SECTION_HOP.dir>0?'forward':'backward');document.body.classList.add('street-hop');
-  SECTION_HOP.timer=setTimeout(()=>{loopFlash.classList.remove('show','forward','backward');document.body.classList.remove('street-hop')},740);
-}
-function sectionHopMotion(now){
-  if(!SECTION_HOP.start)return {y:0,roll:0};
-  const p=(now-SECTION_HOP.start)/SECTION_HOP.duration;
-  if(p<=0||p>=1)return {y:0,roll:0};
-  const decay=1-p,wob=Math.sin(p*Math.PI*3)*decay;
-  return {y:Math.sin(Math.PI*p)*.15+wob*.045,roll:SECTION_HOP.dir*wob*.006};
-}
 const intro=document.getElementById('intro'),introEnter=document.getElementById('introEnter');
 function dismissIntro(dir=1,advance=true){
   if(introDismissed)return false;
@@ -3583,25 +3522,23 @@ function readOutboundState(){
 function clearOutboundState(){try{sessionStorage.removeItem(RETURN_STATE_KEY)}catch{}}
 function resetTeleport(){
   clearTimeout(outboundTimer);outboundNavigating=false;
-  CAM_SWITCH.active=false;SECTION_HOP.start=0;
-  document.body.classList.remove('teleporting','street-hop','section-changing');
+  document.body.classList.remove('teleporting');
   teleport?.classList.remove('active');
-  if(teleport){teleport.style.removeProperty('--tx');teleport.style.removeProperty('--ty')}
 }
-function teleportTo(url,e){
+function teleportTo(url,e,a){
   if(outboundNavigating)return;
   outboundNavigating=true;saveOutboundState();
-  const x=e?.clientX??innerWidth/2,y=e?.clientY??innerHeight/2;
-  teleport?.style.setProperty('--tx',x+'px');teleport?.style.setProperty('--ty',y+'px');
+  const label=(a?.querySelector('b')?.textContent||a?.querySelector('.meta b')?.textContent||a?.textContent||'前往網站').trim().replace(/\s+/g,' ');
+  const dest=document.getElementById('teleportDest');if(dest)dest.textContent=label.slice(0,34);
   teleport?.classList.remove('active');void teleport?.offsetWidth;
   document.body.classList.add('teleporting');teleport?.classList.add('active');
-  outboundTimer=setTimeout(()=>{location.href=url},matchMedia('(prefers-reduced-motion: reduce)').matches?110:420);
+  outboundTimer=setTimeout(()=>{location.href=url},matchMedia('(prefers-reduced-motion: reduce)').matches?140:570);
 }
 document.addEventListener('click',e=>{
   const a=e.target.closest?.('a.item-link[href]');if(!a)return;
   if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
   const u=new URL(a.href,location.href);if(!/^https?:$/.test(u.protocol))return;
-  e.preventDefault();teleportTo(u.href,e);
+  e.preventDefault();teleportTo(u.href,e,a);
 },true);
 function openDrawer(id){
   const d=DATA[id],dk=document.getElementById('dk'),dt=document.getElementById('dt'),di=document.getElementById('di'),items=document.getElementById('items');
@@ -3647,20 +3584,13 @@ function updateLoopUI(id){
   const idx=CYCLE.indexOf(id);if(idx>=0){cycleCursor=idx;if(readout)readout.textContent=`${String(idx+1).padStart(2,'0')} / 09  ∞`;if(progress)progress.style.width=((idx+1)/CYCLE.length*100)+'%'}
 }
 function nearestLapFor(id){ return Math.round((currentX-CONFIG[id].x)/LOOP_SPAN); }
-function focus(id,open=false,lap=null,animateHop=true){
+function focus(id,open=false,lap=null){
   const cfg=CONFIG[id]; if(!cfg) return;
-  const prevId=activeId,prevTarget=targetX;
   activeId=id;if(id!=='hero')setPortfolioBoardQuality(id);
   const useLap=lap===null?nearestLapFor(id):lap;
-  const nx=cfg.x+useLap*LOOP_SPAN;
-  const ny=id==='hero'?6.0:5.8;
-  const nz=innerWidth<560?(id==='hero'?43:41):(id==='hero'?38:36);
-  const dir=nx>=prevTarget?1:-1;
-  targetX=nx;targetY=ny;targetZ=nz;
-  if(animateHop&&introDismissed&&id!==prevId){
-    if(id!=='hero')playSectionHop(id,dir);
-    beginCameraSwitch(nx,ny,nz,dir);
-  }
+  targetX=cfg.x+useLap*LOOP_SPAN;
+  targetY=id==='hero'?6.0:5.8;
+  targetZ=innerWidth<560?(id==='hero'?43:41):(id==='hero'?38:36);
   document.getElementById('focusLabel').textContent=id==='hero'?'HOME':`${DATA[id].index} ${DATA[id].nav.toUpperCase()}`;
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
   updateLoopUI(id); syncTabs(id); history.replaceState(null,'','#'+id); if(open)openDrawer(id)
@@ -3828,18 +3758,8 @@ function moveToward(v,target,maxStep){const d=target-v;if(Math.abs(d)<=maxStep)r
 function animate(now=performance.now()){
   if(window.__pause)return;
   const ms=now-lastFrameMs,dt=Math.min(.05,Math.max(0,ms*.001));lastFrameMs=now;elapsedTime+=dt;const t=elapsedTime;perfTick(ms,now);
-  if(!updateCameraSwitch(now)){
-    currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);currentY=moveToward(currentY,targetY,7.5*dt);currentZ=moveToward(currentZ,targetZ,13*dt);
-  }
-  wrapLoop();const hop=sectionHopMotion(now);
-  const travelT=CAM_SWITCH.active?Math.max(0,Math.min(1,(now-CAM_SWITCH.start)/CAM_SWITCH.duration)):1;
-  const travelWave=CAM_SWITCH.active?Math.sin(travelT*Math.PI):0;
-  const sway=CAM_SWITCH.active?CAM_SWITCH.dir*travelWave*.42:0;
-  const push=CAM_SWITCH.active?travelWave*1.25:0;
-  const yaw=CAM_SWITCH.active?-CAM_SWITCH.dir*travelWave*.018:0;
-  const roll=hop.roll+(CAM_SWITCH.active?CAM_SWITCH.dir*Math.sin(travelT*Math.PI*2)*.010*(1-travelT):0);
-  camera.position.set(currentX+sway,currentY+hop.y,currentZ+push);
-  camera.rotation.set(Math.atan2(LOOK_AT_Y-(currentY+hop.y),(currentZ+push)-LOOK_AT_Z),yaw,roll);updateStaticVisibility();
+  currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);currentY=moveToward(currentY,targetY,7.5*dt);currentZ=moveToward(currentZ,targetZ,13*dt);
+  wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.rotation.set(Math.atan2(LOOK_AT_Y-currentY,currentZ-LOOK_AT_Z),0,0);updateStaticVisibility();
   G.uTime.value=t;G.uCamX.value=currentX;skyDome.position.copy(camera.position);
   updateClimateVisual(dt);updateSun(currentX);updateBackdrop(dt);
   oceanUniforms.uTime.value=t;ocean.position.x=currentX;oceanGlint.position.x=currentX;oceanGlintMat.opacity=.055+.045*(.5+.5*Math.sin(t*.72));
@@ -3920,7 +3840,7 @@ addEventListener('pageshow',e=>{
   if(saved&&DATA[saved.activeId]){
     introDismissed=true;intro?.classList.add('hidden');
     const id=saved.activeId,lap=Math.round(((Number(saved.targetX)||CONFIG[id].x)-CONFIG[id].x)/LOOP_SPAN);
-    focus(id,false,lap,false);
+    focus(id,false,lap);
     if(Number.isFinite(Number(saved.currentX)))currentX=Number(saved.currentX);
     if(Number.isFinite(Number(saved.targetX)))targetX=Number(saved.targetX);
     if(Number.isFinite(Number(saved.currentY)))currentY=Number(saved.currentY);
@@ -3930,8 +3850,8 @@ addEventListener('pageshow',e=>{
     if(saved.drawer)requestAnimationFrame(()=>openDrawer(id));
     clearOutboundState();lastFrameMs=performance.now();
   }else if(initial&&initial!=='hero'&&DATA[initial]){
-    introDismissed=true;intro?.classList.add('hidden');focus(initial,false,null,false);currentX=targetX
-  }else{focus('hero',false,null,false);currentX=targetX}
+    introDismissed=true;intro?.classList.add('hidden');focus(initial,false);currentX=targetX
+  }else{focus('hero',false);currentX=targetX}
 }
 
 </script>
