@@ -277,6 +277,38 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   .tabbar button{min-width:40px;padding-left:10px;padding-right:10px}
 }
 
+/* ===== Mobile detail drawer centering guard =====
+   Keep Profile / Experience / Academic / Roles dialogs pinned to the
+   *visible* dynamic viewport center on iOS. This deliberately comes after
+   earlier drawer breakpoints so right-side drawer rules cannot leak in. */
+@media (max-width:600px) and (orientation:portrait){
+  .drawer{
+    position:fixed!important;
+    inset:auto!important;
+    left:50vw!important;
+    top:50dvh!important;
+    right:auto!important;
+    bottom:auto!important;
+    margin:0!important;
+    width:min(92vw,430px)!important;
+    max-width:calc(100vw - 20px)!important;
+    max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 78px)!important;
+    transform:translate3d(-50%,-50%,0) scale(.96)!important;
+    transform-origin:50% 50%!important;
+  }
+  .drawer.open{
+    transform:translate3d(-50%,-50%,0) scale(1)!important;
+  }
+}
+@media (max-width:390px) and (orientation:portrait){
+  .drawer{
+    left:50vw!important;
+    top:50dvh!important;
+    width:94vw!important;
+    max-width:calc(100vw - 12px)!important;
+  }
+}
+
 /* ===== Goblin Certificate / train discovery ===== */
 .goblin-modal{position:fixed;inset:0;z-index:140;display:grid;place-items:center;padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s}
 .goblin-modal.open{opacity:1;visibility:visible;pointer-events:auto}
