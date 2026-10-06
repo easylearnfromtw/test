@@ -37,6 +37,27 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 @media(max-width:560px){.topbar{top:18px}.brand{font-size:24px;letter-spacing:.16em}
 .intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
 .drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.item-link{position:relative;display:block;color:inherit;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}.item-link::after{content:'↗';position:absolute;right:12px;top:10px;color:#70c6f4;font-size:15px}.item-link:hover{background:rgba(112,198,244,.08);border-color:rgba(112,198,244,.28);transform:translateY(-1px)}.item-link b,.item-link span{padding-right:22px}
+.item-image{position:relative;display:block;width:100%;appearance:none;text-align:left;color:inherit;font:inherit;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.item-image::after{content:'▧';position:absolute;right:12px;top:10px;color:#d85d99;font-size:16px}
+.item-image:hover{background:rgba(216,93,153,.08);border-color:rgba(216,93,153,.28);transform:translateY(-1px)}
+.item-image b,.item-image span{padding-right:24px}
+.image-viewer{position:fixed;inset:0;z-index:145;display:grid;place-items:center;padding:calc(14px + env(safe-area-inset-top)) 14px calc(14px + env(safe-area-inset-bottom));opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s ease,visibility 0s linear .2s}
+.image-viewer.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .2s ease,visibility 0s}
+.image-viewer-backdrop{position:absolute;inset:0;background:rgba(5,9,20,.82)}
+.image-viewer-panel{position:relative;z-index:1;width:min(92vw,760px);height:min(90dvh,1050px);max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 28px);display:flex;flex-direction:column;background:#0b111d;border:1px solid rgba(255,255,255,.14);border-radius:20px;box-shadow:0 28px 100px rgba(0,0,0,.65);overflow:hidden}
+.image-viewer-head{height:52px;flex:0 0 52px;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 17px;border-bottom:1px solid rgba(255,255,255,.09)}
+.image-viewer-title{font:800 10px/1 var(--mono);letter-spacing:.1em;color:#e8edf4;text-transform:uppercase}
+.image-viewer-close{width:36px;height:36px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#151d2c;color:#fff;font-size:20px;cursor:pointer}
+.image-viewer-body{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#111827}
+.image-viewer-body img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:7px;box-shadow:0 12px 40px rgba(0,0,0,.35);touch-action:pinch-zoom}
+.image-viewer-status{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:800 9px/1.5 var(--mono);letter-spacing:.08em;color:#aeb9c8;text-align:center;white-space:nowrap}
+.image-viewer.loaded .image-viewer-status{display:none}
+@media(max-width:600px) and (orientation:portrait){
+  .image-viewer{padding:calc(10px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom))}
+  .image-viewer-panel{width:94vw;height:min(84dvh,820px);max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);border-radius:17px}
+  .image-viewer-head{height:46px;flex-basis:46px;padding-left:13px}
+  .image-viewer-title{font-size:8px}.image-viewer-body{padding:9px}
+}
 /* outbound link transition: Taiwan street-bus pass, GPU-composited */
 .teleport{position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden;opacity:0;background:transparent}
 .teleport-shade{position:absolute;inset:0;background:rgba(9,18,22,.0);opacity:0}
@@ -209,7 +230,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.2-return-lock: exact outbound frame restore + close portrait camera -->
+<!-- taiwan-street-pro v5.3-running-cert: Keelung certificate viewer + no center-road catenary -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -244,6 +265,13 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   </section>
 </div>
 <aside class="drawer" id="drawer"><button class="close" id="close">×</button><div class="dk" id="dk">00 / Home</div><h2 id="dt">CHE-KAI LIN</h2><p id="di"></p><div class="items" id="items"></div></aside>
+<div class="image-viewer" id="imageViewer" aria-hidden="true">
+  <div class="image-viewer-backdrop" id="imageViewerBackdrop"></div>
+  <section class="image-viewer-panel" role="dialog" aria-modal="true" aria-label="基隆半程馬拉松成績證明">
+    <div class="image-viewer-head"><span class="image-viewer-title">2026 基隆半程馬拉松｜成績證明</span><button class="image-viewer-close" id="imageViewerClose" type="button" aria-label="關閉">×</button></div>
+    <div class="image-viewer-body"><div class="image-viewer-status" id="imageViewerStatus">載入成績證明…</div><img id="imageViewerImg" alt="2026 基隆半程馬拉松 林哲愷 9K 成績證明"></div>
+  </section>
+</div>
 <script type="module">
 import * as THREE from 'three';
 
@@ -289,7 +317,7 @@ const DATA={
  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',accent:'#e36aa8',items:[['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷']]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']]},
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['文章創作','觀點與長短文寫作'],['時事觀察','公共議題與社會觀察'],['散文／隨筆','個人文字與記錄'],['競賽作品','文學與主題創作']]},
- running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','組別名次 103 / 1581'],['訓練紀錄','跑步與體能進程'],['比賽成績','競賽紀錄持續累積']]},
+ running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程'],['比賽成績','競賽紀錄持續累積']]},
  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',accent:'#58bdd2',items:[['欣緯科技有限公司董事','Director'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美宣','Founding Vice President'],['市三重高中前扶輪少年團團員','Member']]},
  public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']]},
  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',accent:'#9b78de',items:[['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration'],['攝影紀錄','Photography'],['靈感收藏','Visual references'],['未來計劃','Future works']]}
@@ -2234,10 +2262,9 @@ function buildLampsPolesWires(){
     for(let k=0;k<4;k++){const y=6.3-k*.18,z=-6.3-k*.06;cat([x,y,z],[nx,y,z],.45+r()*.35)}
     for(let k=0;k<5;k++){const tx=x+(r()-.3)*14,ty=4.9+r()*2.2;cat([x,6.2+r()*.5,-6.4],[tx,ty,FZ+.02],.2+r()*.3,6)}}
   for(const s of FRONTAGE){if(s.kind!=='alley'||s.narrow)continue;for(let k=0;k<5;k++){const y=4.5+r()*6,z=FZ-1-r()*10;cat([s.x0,y,z],[s.x1,y+r()-.5,z+(r()-.5)*2],.25,4)}}
-  // light-rail catenary: poles on the median, contact + messenger wire over each track
+  // light-rail median poles remain; center-road overhead catenary wires are intentionally omitted.
   for(let x=LAP_MIN+6;x<LAP_MIN+LOOP_SPAN;x+=30){if(inIX(x,2)||(x>LRT_STOP[0]-2&&x<LRT_STOP[1]+2)||Math.abs(x-PED_BRIDGE_X)<3)continue;const K=chunk(x),c=K.city,m=C(0x7d8488);
     c.cyl(x,.12+3.6,7,.12,7.2,m,T.METAL,.3,8);c.box(x,6.55,7,.1,.1,7.2,m,T.METAL,.3);for(const tz of [RD.tF,RD.tN]){c.box(x,6.1,tz,.06,.9,.06,m,T.METAL,.3);c.box(x,5.75,tz,.18,.08,.08,C(0x5a5e60),T.METAL,.3)}}
-  for(const tz of [RD.tF,RD.tN]){WIRE_PTS.push(LAP_MIN,5.7,tz,LAP_MIN+LOOP_SPAN,5.7,tz);for(let x=LAP_MIN+6;x<LAP_MIN+LOOP_SPAN;x+=30)cat([x,6.35,tz],[x+30,6.35,tz],.35,6)}
   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(WIRE_PTS,3));geo.computeBoundingSphere();
   const mat=new THREE.LineBasicMaterial({color:0x17181a,transparent:true,opacity:.85});
   for(const copy of [-1,0,1]){const l=new THREE.LineSegments(geo,mat);l.position.x=copy*LOOP_SPAN;l.frustumCulled=false;freezeStatic(l);scene.add(l)}
@@ -3608,6 +3635,37 @@ function syncTabs(id){const btn=TABS.find(b=>b.dataset.id===id);TABS.forEach(b=>
   const sl=btn.offsetLeft+btn.offsetWidth/2-tabbar.clientWidth/2;if(tabbar.scrollWidth>tabbar.clientWidth)tabbar.scrollTo({left:sl,behavior:'smooth'})}
 addEventListener('resize',()=>syncTabs(activeId));document.fonts?.ready?.then(()=>syncTabs(activeId));addEventListener('load',()=>syncTabs(activeId));
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
+const imageViewer=document.getElementById('imageViewer'),imageViewerImg=document.getElementById('imageViewerImg'),imageViewerStatus=document.getElementById('imageViewerStatus');
+const CERT_PARTS=[
+  'part-01a-1.b64','part-01a-2.b64','part-01b.b64','part-02.b64','part-03.b64',
+  'part-04a.b64','part-04b.b64','part-05a.b64','part-05b.b64','part-06a.b64','part-06b.b64',
+  'part-07a.b64','part-07b-1.b64','part-07b-2.b64','part-08.b64','part-09.b64'
+].map(n=>'./assets/keelung-cert/'+n);
+let certificateDataPromise=null;
+function getCertificateData(){
+  if(certificateDataPromise)return certificateDataPromise;
+  certificateDataPromise=Promise.all(CERT_PARTS.map(async u=>{
+    const r=await fetch(u,{cache:'force-cache'});if(!r.ok)throw new Error('certificate asset '+r.status);return (await r.text()).trim()
+  })).then(parts=>{
+    const b64=parts.join('');
+    if(b64.length!==50364||!b64.startsWith('/9j/')||!b64.endsWith('/9k='))throw new Error('certificate asset integrity');
+    return 'data:image/jpeg;base64,'+b64
+  });
+  return certificateDataPromise
+}
+async function openCertificate(){
+  imageViewer.classList.remove('loaded');imageViewer.classList.add('open');imageViewer.setAttribute('aria-hidden','false');
+  imageViewerStatus.textContent='載入成績證明…';
+  try{
+    const src=await getCertificateData();
+    if(imageViewerImg.src!==src)imageViewerImg.src=src;
+    if(imageViewerImg.complete&&imageViewerImg.naturalWidth)imageViewer.classList.add('loaded')
+  }catch(e){imageViewerStatus.textContent='成績證明載入失敗，請重新整理後再試';certificateDataPromise=null}
+}
+function closeCertificate(){imageViewer.classList.remove('open');imageViewer.setAttribute('aria-hidden','true')}
+imageViewerImg.addEventListener('load',()=>imageViewer.classList.add('loaded'));
+document.getElementById('imageViewerClose').onclick=closeCertificate;
+document.getElementById('imageViewerBackdrop').onclick=closeCertificate;
 const teleport=document.getElementById('teleport');
 const RETURN_STATE_KEY='chekai-outbound-return-v2';
 let outboundNavigating=false,outboundTimer=0;
@@ -3700,7 +3758,7 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map(x=>x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')
+    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');items.querySelectorAll('[data-certificate]').forEach(b=>b.addEventListener('click',openCertificate))
   }
   drawer.classList.add('open')
 }
@@ -3741,7 +3799,7 @@ canvas.addEventListener('pointerup',e=>{dragging=false;canvas.classList.remove('
 canvas.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
 document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus(CYCLE[0],false)});
-addEventListener('keydown',e=>{if(e.key==='Escape')drawer.classList.remove('open');if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(imageViewer.classList.contains('open')){closeCertificate();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
 
 
 // ---------------- seamless lap wrap ----------------
