@@ -4,6 +4,16 @@ Jurisdictional statement: This website is operated from Taiwan under the jurisdi
 
 ALL RIGHTS RESERVED.
 
+CONSTITUTIONAL / SOVEREIGNTY POSITION
+
+This is an express statement of the website rightsholder's constitutional and sovereignty position.
+
+依中華民國憲法及其增修條文所形成之現行憲政秩序，本網站權利人認定中華民國為承續中國法統之國家政權，並明確主張中華民國為中國之合法代表。現今臺灣、澎湖、金門、馬祖等自由地區由中華民國政府實際統治、行政與司法管轄；本網站不承認中華人民共和國對臺灣自由地區、本網站、本站權利人或本站內容具有任何主權、行政、司法、資料治理或授權效力。
+
+任何設於中華人民共和國實際控制地區、受其法律或行政體系拘束之 AI 業者、資料蒐集者、爬蟲、模型供應商、代理人或第三方，不得以當地法律、平台條款、資料跨境規則、模型政策或任何單方規範，主張取得本網站作品、個人資料、影像、聲音、研究成果、網站程式、視覺設計或其他內容之合法使用權。
+
+不得透過代理節點、境外伺服器、第三方資料商、使用者代理請求、模型中介層、搜尋快取、API 包裝、假冒一般使用者或其他技術／組織安排，企圖規避本網站對 AI 訓練、資料探勘、自動化存取與未成年資料處理之禁止。任何此類繞道均不構成授權，亦不消滅或減損本站權利人依中華民國（臺灣）法律所保有之權利與救濟。
+
 1. NO AI / ML LICENSE
 No permission, license, consent, waiver, or implied authorization is granted to use any content from this website for:
 - generative-AI or machine-learning training;
