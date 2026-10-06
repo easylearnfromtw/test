@@ -280,7 +280,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.9.1-stability: direct certificate gesture + school ground fix + zero-quality-loss GPU submission optimization -->
+<!-- taiwan-street-pro v5.9.2-smoothness: fixed-detail rendering + framebuffer hitch control + GC/raycast optimization -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -425,7 +425,7 @@ const dbg=gl.getExtension('WEBGL_debug_renderer_info');
 const GPU_NAME=String(dbg?gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER)||'').toLowerCase();
 const HW_CORES=Number(navigator.hardwareConcurrency)||0,HW_MEM=Number(navigator.deviceMemory)||0;
 const SOFTWARE_GPU=/swiftshader|llvmpipe|software|microsoft basic/.test(GPU_NAME);
-const QUALITY_PROBE_ELIGIBLE=!SOFTWARE_GPU&&MAX_RB_SIZE>=4096&&MAX_TEX_SIZE>=4096;
+const QUALITY_PROBE_ELIGIBLE=!MOBILE_GPU&&!SOFTWARE_GPU&&MAX_RB_SIZE>=4096&&MAX_TEX_SIZE>=4096;
 const DETAIL_HW_HINT=!SOFTWARE_GPU&&MAX_TEX_SIZE>=8192&&MAX_RB_SIZE>=4096&&(HW_CORES===0||HW_CORES>=6)&&(!MOBILE_GPU||HW_CORES===0||HW_CORES>=8)&&(HW_MEM===0||HW_MEM>=6);
 const QUALITY_TEXTURES=[];
 const QUALITY_CACHE_KEY='chekai-quality-probe-v3';
@@ -478,9 +478,16 @@ function computeResBand(){
   const wanted=QUALITY.mode==='ultra'?dprForPixels(startPx):(RES.refresh?RES.dpr:dprForPixels(startPx));
   RES.dpr=Math.min(RES.ceil,Math.max(RES.floor,Math.min(maxScale,wanted)));
 }
-function applyResolution(d=RES.dpr){
-  RES.dpr=Math.min(RES.ceil,Math.max(RES.floor,d));
-  renderer.setPixelRatio(RES.dpr);renderer.setSize(innerWidth,innerHeight,false);
+let appliedWidth=0,appliedHeight=0,appliedDpr=0;
+function applyResolution(d=RES.dpr,force=false){
+  const next=Math.min(RES.ceil,Math.max(RES.floor,d)),w=Math.max(1,innerWidth),h=Math.max(1,innerHeight);
+  // Reallocating WebGL render targets is one of the largest sources of visible hitches.
+  // Keep the exact same visual-detail policy, but ignore tiny DPR nudges that users cannot see.
+  if(!force&&w===appliedWidth&&h===appliedHeight&&appliedDpr&&Math.abs(next-appliedDpr)<.045){
+    RES.dpr=appliedDpr;return false
+  }
+  RES.dpr=next;appliedWidth=w;appliedHeight=h;appliedDpr=next;
+  renderer.setPixelRatio(next);renderer.setSize(w,h,false);return true
 }
 computeResBand();applyResolution();
 // Real-time shadows stay on desktop, but use a cheaper filtered map and update only when the camera advances.
@@ -3228,7 +3235,8 @@ function finalizeParked(){const n=scooterSpots.length,g=parkedScooterGeo(),tint=
   g.setAttribute('aTint',new THREE.InstancedBufferAttribute(tint,3));g.setAttribute('aState',new THREE.InstancedBufferAttribute(new Float32Array(n*4),4));
   parkedMesh=new THREE.InstancedMesh(g,vehMat,n);parkedMesh.frustumCulled=false;parkedMesh.receiveShadow=USE_SHADOWS;scene.add(parkedMesh);
   parkedMesh.userData.sh=new THREE.InstancedMesh(blobGeo,blobMat,n);parkedMesh.userData.sh.frustumCulled=false;parkedMesh.userData.sh.renderOrder=2;scene.add(parkedMesh.userData.sh)}
-function updateParked(){if(Math.abs(currentX-parkedLastX)<2)return;parkedLastX=currentX;const m=new THREE.Matrix4(),q=new THREE.Quaternion(),e=new THREE.Euler(),p=new THREE.Vector3(),s=new THREE.Vector3(1,1,1),sh=parkedMesh.userData.sh;
+const _parkM=new THREE.Matrix4(),_parkQ=new THREE.Quaternion(),_parkE=new THREE.Euler(),_parkP=new THREE.Vector3(),_parkS=new THREE.Vector3(1,1,1);
+function updateParked(){if(Math.abs(currentX-parkedLastX)<2)return;parkedLastX=currentX;const m=_parkM,q=_parkQ,e=_parkE,p=_parkP,s=_parkS,sh=parkedMesh.userData.sh;
   scooterSpots.forEach(([x,z,ry],i)=>{let wx=x;let rel=wx-currentX;while(rel>180){wx-=LOOP_SPAN;rel-=LOOP_SPAN}while(rel<-180){wx+=LOOP_SPAN;rel+=LOOP_SPAN}
     const y=(z<-6.1&&z>-11.45)||z<FZ||z>20?SW:0;e.set(0,ry,(i%7-3)*.012);q.setFromEuler(e);p.set(wx,y,z);m.compose(p,q,s);parkedMesh.setMatrixAt(i,m);p.y+=.03;s.set(1.9,1,.8);m.compose(p,q,s);sh.setMatrixAt(i,m);s.set(1,1,1)});
   parkedMesh.instanceMatrix.needsUpdate=true;sh.instanceMatrix.needsUpdate=true}
@@ -3595,10 +3603,17 @@ function stopAhead(v,S){ // nearest stop ahead on the main road: red light, bus 
   for(const [flag,X0,off] of [['bus',BUS_STOP_X,4],['garbage',TRASH_STOP_X,2]]){if(!v[flag])continue;const k2=Math.round((v.x-X0)/LOOP_SPAN),bx=X0+k2*LOOP_SPAN-off*v.dir,d=(bx-v.x)*v.dir;
     if(v.dwellAt!==k2+':'+flag&&d>-.3&&d<60&&d<best){best=d;kind=flag;v._stopKey=k2+':'+flag}}
   return [best,kind]}
+const _trafficLanes=Object.create(null),_trafficLaneKeys=[];
 function updateTraffic(dt,t){
   const S=SIGNAL.state;const camX=currentX;
-  // group main-road vehicles by lane for car-following
-  const lanes={};for(const v of TRAFFIC)if(v.state==='main'){(lanes[v.lane]||(lanes[v.lane]=[])).push(v)}
+  // Reuse lane buckets instead of allocating a new object + arrays every rendered frame.
+  for(const k of _trafficLaneKeys)_trafficLanes[k].length=0;
+  for(const v of TRAFFIC)if(v.state==='main'){
+    let lane=_trafficLanes[v.lane];
+    if(!lane){lane=_trafficLanes[v.lane]=[];_trafficLaneKeys.push(v.lane)}
+    lane.push(v)
+  }
+  const lanes=_trafficLanes;
   for(const v of TRAFFIC){
     if(v.state==='parked'){let rel=v.x-camX;while(rel>180){v.x-=LOOP_SPAN;rel-=LOOP_SPAN}while(rel<-180){v.x+=LOOP_SPAN;rel+=LOOP_SPAN}continue}
     if(v.dwell>0){v.dwell-=dt;v.v=0;v.brake=1;if(v.dwell<=0)v.dwellAt=v.dwellKey;continue}
@@ -4010,10 +4025,15 @@ function stepCycle(dir=1){
   focus(CYCLE[nextIdx],false,nextLap);
 }
 // interaction — one gesture = one cyclic section
-const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let down=null,moved=false,dragging=false,wheelLock=false;
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();let down=null,moved=false,dragging=false,wheelLock=false,hoverRayRAF=0,hoverPoint=null;
 function pointerN(e){const r=canvas.getBoundingClientRect();mouse.x=((e.clientX-r.left)/r.width)*2-1;mouse.y=-((e.clientY-r.top)/r.height)*2+1}
+function queueHoverRay(e){
+  hoverPoint={clientX:e.clientX,clientY:e.clientY};
+  if(hoverRayRAF)return;
+  hoverRayRAF=requestAnimationFrame(()=>{hoverRayRAF=0;if(dragging||!hoverPoint)return;pointerN(hoverPoint);ray.setFromCamera(mouse,camera);document.body.style.cursor=ray.intersectObjects(clickables,false).length?'pointer':''})
+}
 canvas.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};moved=false;dragging=true;canvas.classList.add('dragging');canvas.setPointerCapture?.(e.pointerId)});
-canvas.addEventListener('pointermove',e=>{if(!dragging){if(e.pointerType==='mouse'){pointerN(e);ray.setFromCamera(mouse,camera);document.body.style.cursor=ray.intersectObjects(clickables,false).length?'pointer':''}return}if(Math.abs(e.clientX-down.x)+Math.abs(e.clientY-down.y)>8)moved=true});
+canvas.addEventListener('pointermove',e=>{if(!dragging){if(e.pointerType==='mouse')queueHoverRay(e);return}if(Math.abs(e.clientX-down.x)+Math.abs(e.clientY-down.y)>8)moved=true});
 canvas.addEventListener('pointerup',e=>{dragging=false;canvas.classList.remove('dragging');const dx=e.clientX-down.x,dy=e.clientY-down.y;if(moved&&Math.abs(dx)>Math.max(46,Math.abs(dy)*1.1)){stepCycle(dx>0?-1:1);return}if(!moved){pointerN(e);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(clickables,false)[0];if(hit)focus(hit.object.userData.section,true)}});canvas.addEventListener('pointercancel',()=>{dragging=false;canvas.classList.remove('dragging')});
 canvas.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
@@ -4123,7 +4143,7 @@ function perfTick(ms,now){
     return
   }
   PERF.ema=PERF.ema?PERF.ema*.90+ms*.10:ms;PERF.acc+=ms;PERF.n++;
-  if(PERF.n<45)return;
+  if(PERF.n<90)return;
   const avg=PERF.acc/PERF.n,budget=1000/Math.max(30,RES.refresh);PERF.fps=1000/avg;PERF.acc=0;PERF.n=0;
 
   if(QUALITY.mode==='starter'&&!QUALITY.probe.active&&now-PERF.t0>1200){
@@ -4142,22 +4162,28 @@ function perfTick(ms,now){
 
   if(QUALITY.probe.active)return;
   let d=RES.dpr;
-  const down=QUALITY.mode==='ultra'?.94:.92,up=QUALITY.mode==='ultra'?1.035:1.05;
-  if(avg>budget*1.08)d=Math.max(RES.floor,d*down);
-  else if(avg<budget*.87)d=Math.min(RES.ceil,d*up);
-  if(Math.abs(d-RES.dpr)>.015&&now-PERF.lastDprChange>450){
+  const down=QUALITY.mode==='ultra'?.96:.95,up=QUALITY.mode==='ultra'?1.02:1.025;
+  if(avg>budget*1.14)d=Math.max(RES.floor,d*down);
+  else if(avg<budget*.82)d=Math.min(RES.ceil,d*up);
+  if(Math.abs(d-RES.dpr)>.045&&now-PERF.lastDprChange>1800){
     PERF.lastDprChange=now;PERF.adj++;applyResolution(d);
   }
 }
-let lastViewportPortrait=phonePortrait();
+let lastViewportPortrait=phonePortrait(),resizeRAF=0,lastViewportW=innerWidth,lastViewportH=innerHeight;
 addEventListener('resize',()=>{
-  const wasPortrait=lastViewportPortrait;lastViewportPortrait=phonePortrait();
-  applyResponsiveCamera();
-  targetY=cameraYFor(activeId);targetZ=cameraZFor(activeId);
-  if(wasPortrait!==lastViewportPortrait){currentY=targetY;currentZ=targetZ}
-  if(QUALITY.probe.active){QUALITY.probe.active=false;QUALITY.probe.frames=[]}
-  computeResBand();applyResolution(RES.dpr);
-  updateStaticVisibility(true);renderer.shadowMap.needsUpdate=USE_SHADOWS;
+  if(resizeRAF)return;
+  resizeRAF=requestAnimationFrame(()=>{
+    resizeRAF=0;
+    const w=innerWidth,h=innerHeight;if(w===lastViewportW&&h===lastViewportH)return;
+    lastViewportW=w;lastViewportH=h;
+    const wasPortrait=lastViewportPortrait;lastViewportPortrait=phonePortrait();
+    applyResponsiveCamera();
+    targetY=cameraYFor(activeId);targetZ=cameraZFor(activeId);
+    if(wasPortrait!==lastViewportPortrait){currentY=targetY;currentZ=targetZ}
+    if(QUALITY.probe.active){QUALITY.probe.active=false;QUALITY.probe.frames=[]}
+    computeResBand();applyResolution(RES.dpr,true);
+    updateStaticVisibility(true);renderer.shadowMap.needsUpdate=USE_SHADOWS;
+  })
 });
 // ---------------- main loop ----------------
 const CAMERA_SPEED=38;let lastFrameMs=performance.now(),elapsedTime=0,lastSigT=-1;
