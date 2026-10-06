@@ -1,0 +1,505 @@
+{
+  "version": 1,
+  "updated_at": "2026-10-06T11:05:00.000Z",
+  "site": {
+    "intro_kicker": "PORTFOLIO CITY · 2026",
+    "name": "林哲愷",
+    "en_name": "CHE-KAI LIN",
+    "role": "AI × WEB × DESIGN",
+    "intro_copy": "我是學生、文字創作者，也是喜歡把想法做成網站與視覺作品的人。這座城市把我的作品、經歷、角色與紀錄拆成不同街區。"
+  },
+  "section_order": [
+    "about",
+    "web",
+    "experience",
+    "academic",
+    "writing",
+    "running",
+    "roles",
+    "public",
+    "art"
+  ],
+  "sections": {
+    "hero": {
+      "nav": "Home",
+      "index": "00",
+      "title": "CHE-KAI LIN",
+      "intro": "WRITER X DESIGNER X STUDENT",
+      "accent": "#8aa8ff",
+      "visible": true,
+      "board_title": "林哲愷",
+      "board_intro": "學生、文字創作者，也是把想法做成網站與視覺作品的人。",
+      "items": [
+        {
+          "title": "林哲愷 / Che-Kai Lin",
+          "subtitle": "個人網站以 3D 城市街道作為入口。",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "Identity",
+          "subtitle": "Writer X Designer X Student",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "Direction",
+          "subtitle": "Design · Writing · Academic · Public Life",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "about": {
+      "nav": "About",
+      "index": "01",
+      "title": "CHE-KAI LIN",
+      "intro": "AI × WEB × DESIGN",
+      "accent": "#7f8ee8",
+      "visible": true,
+      "board_title": "關於林哲愷",
+      "board_intro": "學生、文字創作者，也是把想法做成網站與視覺作品的人。",
+      "items": [
+        {
+          "title": "School",
+          "subtitle": "市立三重高中｜高三",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "Focus",
+          "subtitle": "AI × Web × Design",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "Projects",
+          "subtitle": "欣緯生醫 · 閒台文 · CITYMUS",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "Interests",
+          "subtitle": "網站、設計、文字、公共參與",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "web": {
+      "nav": "Web Works",
+      "index": "02",
+      "title": "WEB WORKS",
+      "intro": "Selected digital projects.",
+      "accent": "#70c6f4",
+      "visible": true,
+      "board_title": "網站作品",
+      "board_intro": "精選數位作品與互動網站。",
+      "items": [
+        {
+          "title": "SignWell 欣緯生醫",
+          "subtitle": "醫療與產業內容平台",
+          "url": "https://980510linz.github.io/signwell/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "O森島民集結啦！台灣 70 型測驗",
+          "subtitle": "台灣文化 × 互動型人格測驗",
+          "url": "https://980510linz.github.io/taiwangogogo/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "CITYMUS",
+          "subtitle": "音樂與城市視覺品牌",
+          "url": "https://easylearnfromtw.github.io/musictown/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "勞山道士",
+          "subtitle": "互動式網頁作品",
+          "url": "https://easylearnfromtw.github.io/musictown/magic/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "閒台文 Taiwanway",
+          "subtitle": "互動式中文與台灣文化網站",
+          "url": "https://easylearnfromtw.github.io/Taiwanway/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "Foodie Page｜腹地圖",
+          "subtitle": "飲食探索與地圖式網頁作品",
+          "url": "",
+          "type": "coming_soon",
+          "published": true
+        }
+      ]
+    },
+    "experience": {
+      "nav": "Experience",
+      "index": "03",
+      "title": "EXPERIENCE",
+      "intro": "刊載、文學與企劃參與。",
+      "accent": "#e36aa8",
+      "visible": true,
+      "board_title": "個人經歷",
+      "board_intro": "刊載、文學與企劃參與。",
+      "items": [
+        {
+          "title": "NEWTALK新頭殼｜本人媒體投書專欄",
+          "subtitle": "公開評論、投書與專欄文章",
+          "url": "https://newtalk.tw/citizen/author/319524",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "基隆海洋文學大賽 參與",
+          "subtitle": "文學與主題寫作參與",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "台灣聯合大學企劃 參與",
+          "subtitle": "企劃與專案參與經歷",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "CDBA中華辯會工作坊 參與",
+          "subtitle": "辯論與工作坊參與",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "academic": {
+      "nav": "Academic",
+      "index": "04",
+      "title": "ACADEMIC",
+      "intro": "跨領域培育與先修課程。",
+      "accent": "#84bdf4",
+      "visible": true,
+      "board_title": "學習經歷",
+      "board_intro": "跨領域培育與先修課程。",
+      "items": [
+        {
+          "title": "再興中學畢業",
+          "subtitle": "學習經歷",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "台英學士培育計劃",
+          "subtitle": "學術培育計劃",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "國立中央大學人工智慧學系先修課程",
+          "subtitle": "人工智慧相關先修",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "國立清華大學經濟系先修課程",
+          "subtitle": "經濟學相關先修",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "私立中原大學先修課程",
+          "subtitle": "大學先修課程",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "writing": {
+      "nav": "Writing",
+      "index": "05",
+      "title": "WRITING",
+      "intro": "文字創作、觀察與公開表達。",
+      "accent": "#f1ad74",
+      "visible": true,
+      "board_title": "文字創作",
+      "board_intro": "文字創作、觀察與公開表達。",
+      "items": [
+        {
+          "title": "議題投書",
+          "subtitle": "",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "時事觀察",
+          "subtitle": "公共議題與社會觀察",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "競賽作品",
+          "subtitle": "文學與主題創作",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "running": {
+      "nav": "Running",
+      "index": "06",
+      "title": "RUNNING",
+      "intro": "跑步、競賽與身體經驗。",
+      "accent": "#d85d99",
+      "visible": true,
+      "board_title": "跑步紀錄",
+      "board_intro": "跑步、競賽與身體經驗。",
+      "items": [
+        {
+          "title": "烘爐地定向越野 9K組完賽",
+          "subtitle": "9K 組完賽",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "基隆半程馬拉松 9K組完賽（103/1581）",
+          "subtitle": "總名次 103 / 1581｜個人時間 00:52:29",
+          "url": "",
+          "type": "certificate",
+          "id": "keelung-2026",
+          "published": true
+        },
+        {
+          "title": "訓練紀錄",
+          "subtitle": "跑步與體能進程",
+          "url": "",
+          "type": "training_blog",
+          "published": true
+        },
+        {
+          "title": "比賽成績",
+          "subtitle": "競賽紀錄持續累積",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "roles": {
+      "nav": "Roles",
+      "index": "07",
+      "title": "ROLES",
+      "intro": "創辦、公司與社團角色。",
+      "accent": "#58bdd2",
+      "visible": true,
+      "board_title": "身份角色",
+      "board_intro": "創辦、公司與社團角色。",
+      "items": [
+        {
+          "title": "欣緯科技有限公司董事",
+          "subtitle": "Director",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "欣緯生醫創辦人",
+          "subtitle": "Founder",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "閒台文創辦人",
+          "subtitle": "Founder",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "CITYMUS 創辦人",
+          "subtitle": "Founder",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "市三重見賢思琪社｜創社副社長、美宣",
+          "subtitle": "Founding Vice President",
+          "url": "",
+          "type": "jx_story",
+          "published": true
+        },
+        {
+          "title": "市三重高中前扶輪少年團團員",
+          "subtitle": "Member",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "public": {
+      "nav": "Public",
+      "index": "08",
+      "title": "PUBLIC",
+      "intro": "公共參與與交流經歷。",
+      "accent": "#e1b45e",
+      "visible": true,
+      "board_title": "公共參與",
+      "board_intro": "公共參與與交流經歷。",
+      "items": [
+        {
+          "title": "台灣民眾黨青年團第二屆團員",
+          "subtitle": "青年政治與公共事務參與",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "日本自民黨來台接待",
+          "subtitle": "國際來訪接待與交流",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "核三公投街頭宣講、車掃",
+          "subtitle": "公共議題宣講與現場溝通",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    },
+    "art": {
+      "nav": "Art Archive",
+      "index": "09",
+      "title": "ART ARCHIVE",
+      "intro": "藝術與視覺作品的收藏區。",
+      "accent": "#9b78de",
+      "visible": true,
+      "board_title": "藝術檔案",
+      "board_intro": "藝術與視覺作品收藏。",
+      "items": [
+        {
+          "title": "設計作品",
+          "subtitle": "Graphic / visual design",
+          "url": "",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "手繪創作",
+          "subtitle": "Sketch / illustration",
+          "url": "",
+          "type": "",
+          "published": true
+        }
+      ]
+    }
+  },
+  "club": {
+    "enabled": true,
+    "chapters": [
+      {
+        "title": "從零開始的\n社團。",
+        "lead": "市三重高中見賢思琪社由見賢思琪教育基金會與扶輪社共同贊助。初創時沒有成熟規章與方向，我們靠一次次試錯、反思與重做，把社團做成自己的樣子。"
+      },
+      {
+        "title": "副社長 × 美宣",
+        "lead": "不是只有一個頭銜，而是把企劃、主持、社務與視覺全部接在一起。"
+      },
+      {
+        "title": "服務不是\n只有做事。",
+        "lead": "社課以 7 組 SDGs 主題展開。點一下每個柱子，看我們怎麼把抽象目標變成活動。"
+      },
+      {
+        "title": "我把社團\n做成一個品牌。",
+        "lead": "宣傳海報、社徽、名牌、社課簡報與社群貼文，不只是把資訊排進版面，而是慢慢建立共同的視覺語言。下面直接放入原始幹部經歷 PDF 中的作品。"
+      },
+      {
+        "title": "真正的活動\n都會出錯。",
+        "lead": "點擊左側事件，右側會切換到 PDF 裡對應的現場照片；不是只展示成果，也把當下的問題與修正留下來。"
+      },
+      {
+        "title": "從「做得漂亮」\n到「做得清楚」。",
+        "lead": ""
+      },
+      {
+        "title": "最後留下的\n不是頭銜。",
+        "lead": ""
+      }
+    ],
+    "events": [
+      {
+        "title": "鏟子超人在重中",
+        "place": "花蓮光復鄉",
+        "detail": "光復鄉災後復原：受教育部囑託，統籌三重高中服務團隊。工作包含指揮、資訊統整、物資分配與安全確認，也讓我更熟悉領導與協調。",
+        "cells": [
+          3,
+          4
+        ]
+      },
+      {
+        "title": "淨愛作小山",
+        "place": "象山淨山",
+        "detail": "象山淨山由我主辦。現場發現山上垃圾很少，因此調整主要撿拾區域；也因天候風險，之後規定大型活動必須更早準備雨備。",
+        "cells": [
+          5,
+          6
+        ]
+      },
+      {
+        "title": "童我一起走",
+        "place": "集美國小",
+        "detail": "新北市大型童軍活動，參與約 400–600 人。我從執行者轉成教學與帶領者，練習把想法清楚交給社員，並在品質與人際之間找到平衡。",
+        "cells": [
+          7,
+          8
+        ]
+      },
+      {
+        "title": "親愛的，維什麼你不理我？",
+        "place": "愛維養護中心",
+        "detail": "愛維養護中心服務：負責主要活動籌劃、主持教學與服務。這次經驗讓我意識到資訊同步、行前教育與避免「服務污染」的重要性。",
+        "cells": [
+          9,
+          10
+        ]
+      },
+      {
+        "title": "內部迎新",
+        "place": "主辦",
+        "detail": "內部迎新由我主辦，重新設計遊戲與活動機制；颱風天造成大幅延誤與人員變動，最後學到預留時間、空間與備案的重要。",
+        "cells": [
+          11,
+          12
+        ]
+      }
+    ]
+  }
+}
