@@ -280,7 +280,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.9-stability: direct certificate gesture + school ground fix + zero-quality-loss GPU submission optimization -->
+<!-- taiwan-street-pro v5.9.1-stability: direct certificate gesture + school ground fix + zero-quality-loss GPU submission optimization -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -949,6 +949,7 @@ const CLIMATE={
   label:'default'
 };
 function setClimateTarget(w,loc,immediate=false){
+  CLIMATE._settled=false;
   if(!w?.current)return;
   const cur=w.current,solar=solarFromWeather(w),code=Number(cur.weather_code)||0;
   const cloud=clamp01((Number(cur.cloud_cover)||0)/100);
@@ -983,6 +984,7 @@ function setClimateTarget(w,loc,immediate=false){
   console.info('[climate]',CLIMATE.label)
 }
 function updateClimateVisual(dt,immediate=false){
+  if(!immediate&&CLIMATE._settled)return;
   const k=immediate?1:1-Math.exp(-dt*1.45);
   CLIMATE.top.lerp(CLIMATE.targetTop,k);CLIMATE.hor.lerp(CLIMATE.targetHor,k);CLIMATE.gnd.lerp(CLIMATE.targetGnd,k);CLIMATE.sunColor.lerp(CLIMATE.targetSunColor,k);
   CLIMATE.ambient=mixN(CLIMATE.ambient,CLIMATE.targetAmbient,k);CLIMATE.key=mixN(CLIMATE.key,CLIMATE.targetKey,k);
@@ -995,6 +997,11 @@ function updateClimateVisual(dt,immediate=false){
   renderer.toneMappingExposure=CLIMATE.exposure;scene.fog.color.copy(CLIMATE.hor);scene.fog.density=CLIMATE.fog;
   skyMat.uniforms.uCloud.value=CLIMATE.cloud;skyMat.uniforms.uRain.value=CLIMATE.rain;skyMat.uniforms.uWind.value=CLIMATE.wind;
   renderer.setClearColor(CLIMATE.hor);
+  if(!immediate){
+    const cd=(a,b)=>Math.abs(a.r-b.r)+Math.abs(a.g-b.g)+Math.abs(a.b-b.b);
+    const scalarErr=Math.abs(CLIMATE.ambient-CLIMATE.targetAmbient)+Math.abs(CLIMATE.key-CLIMATE.targetKey)+Math.abs(CLIMATE.exposure-CLIMATE.targetExposure)+Math.abs(CLIMATE.fog-CLIMATE.targetFog)+Math.abs(CLIMATE.cloud-CLIMATE.targetCloud)+Math.abs(CLIMATE.rain-CLIMATE.targetRain)+Math.abs(CLIMATE.wind-CLIMATE.targetWind);
+    if(cd(CLIMATE.top,CLIMATE.targetTop)+cd(CLIMATE.hor,CLIMATE.targetHor)+cd(CLIMATE.gnd,CLIMATE.targetGnd)+cd(CLIMATE.sunColor,CLIMATE.targetSunColor)<.00002&&scalarErr<.00002)CLIMATE._settled=true;
+  }
 }
 const cachedClimate=readClimateCache();
 if(cachedClimate&&Date.now()-cachedClimate.ts<6*60*60*1000)setClimateTarget(cachedClimate.weather,cachedClimate.loc,true);
