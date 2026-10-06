@@ -209,7 +209,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.0-mobile-modal: centered unclipped portrait popups + Taiwan bus outbound -->
+<!-- taiwan-street-pro v5.1-mobile-close: closer forced portrait camera + centered mobile modals -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -400,15 +400,17 @@ const sharedMaterialCache=new Map();
 function sharedMat(key,factory){if(!sharedMaterialCache.has(key))sharedMaterialCache.set(key,factory());return sharedMaterialCache.get(key)}
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,3000);camera.position.set(IX,6.0,38);
 function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth*1.22}
-function cameraYFor(id='hero'){return phonePortrait()?(id==='hero'?6.7:6.35):(id==='hero'?6.0:5.8)}
+function cameraYFor(id='hero'){return phonePortrait()?(id==='hero'?6.45:6.15):(id==='hero'?6.0:5.8)}
 function cameraZFor(id='hero'){
-  if(phonePortrait())return id==='hero'?50:47.5;
+  // Portrait phones use a deliberately closer street framing, matching the intended billboard/building scale.
+  if(phonePortrait())return id==='hero'?45.0:42.8;
   if(innerWidth<560)return id==='hero'?43:41;
   return id==='hero'?38:36
 }
 function applyResponsiveCamera(){
   camera.aspect=innerWidth/innerHeight;
-  camera.fov=phonePortrait()?78:innerWidth<560?64:innerWidth<920?60:55;
+  // 66° avoids the former ultra-wide mobile look (78°) and forces a closer 9:16 composition.
+  camera.fov=phonePortrait()?66:innerWidth<560?64:innerWidth<920?60:55;
   camera.updateProjectionMatrix();if(typeof updateCull==='function')updateCull()
 }
 applyResponsiveCamera();
