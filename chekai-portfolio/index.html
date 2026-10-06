@@ -36,7 +36,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 @keyframes introNudge{0%,100%{transform:translateX(0);opacity:.62}50%{transform:translateX(7px);opacity:1}}
 @media(max-width:560px){.topbar{top:18px}.brand{font-size:24px;letter-spacing:.16em}
 .intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
-.drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}
+.drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.item-link{position:relative;display:block;color:inherit;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}.item-link::after{content:'↗';position:absolute;right:12px;top:10px;color:#70c6f4;font-size:15px}.item-link:hover{background:rgba(112,198,244,.08);border-color:rgba(112,198,244,.28);transform:translateY(-1px)}.item-link b,.item-link span{padding-right:22px}
 .profile-card{margin-top:16px;display:grid;gap:14px}
 .profile-head{padding:18px 18px 16px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.025))}
 .profile-eyebrow{font:8px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#8190a5;margin-bottom:8px}
@@ -142,7 +142,14 @@ loadCitymus();
 const DATA={
  hero:{nav:'Home',index:'00',title:'CHE-KAI LIN',intro:'WRITER X DESIGNER X STUDENT',accent:'#8aa8ff',items:[['林哲愷 / Che-Kai Lin','個人網站以 3D 城市街道作為入口。'],['Identity','Writer X Designer X Student'],['Direction','Design · Writing · Academic · Public Life']]},
  about:{nav:'About',index:'01',title:'CHE-KAI LIN',intro:'AI × WEB × DESIGN',accent:'#7f8ee8',items:[['School','市立三重高中｜高三'],['Focus','AI × Web × Design'],['Projects','欣緯生醫 · 閒台文 · CITYMUS'],['Interests','網站、設計、文字、公共參與']]},
- web:{nav:'Web Works',index:'02',title:'WEB WORKS',intro:'Selected digital projects.',accent:'#70c6f4',items:[['SignWell 欣緯生醫','醫療與產業內容平台'],['Tai-Wan Way 閒台文','互動式中文與台灣文化網站'],['CITYMUS','音樂與城市視覺品牌'],['健人','獨立網站概念與前端視覺實驗']]},
+ web:{nav:'Web Works',index:'02',title:'WEB WORKS',intro:'Selected digital projects.',accent:'#70c6f4',items:[
+  ['SignWell 欣緯生醫','醫療與產業內容平台','https://980510linz.github.io/signwell/'],
+  ['O森島民集結啦！台灣 70 型測驗','台灣文化 × 互動型人格測驗','https://980510linz.github.io/taiwangogogo/'],
+  ['CITYMUS','音樂與城市視覺品牌','https://easylearnfromtw.github.io/musictown/'],
+  ['勞山道士','互動式網頁作品','https://easylearnfromtw.github.io/musictown/magic/'],
+  ['閒台文 Taiwanway','互動式中文與台灣文化網站','https://easylearnfromtw.github.io/Taiwanway/'],
+  ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品','https://easylearnfromtw.github.io/test/foodiepage/']
+]},
  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',accent:'#e36aa8',items:[['Newtalk 新頭殼 投書刊載','公開評論與文字刊載經歷'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷']]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']]},
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['文章創作','觀點與長短文寫作'],['時事觀察','公共議題與社會觀察'],['散文／隨筆','個人文字與記錄'],['競賽作品','文學與主題創作']]},
@@ -3473,7 +3480,7 @@ function openDrawer(id){
         </div>
         <section class="profile-projects">
           <h3>Selected Projects</h3>
-          <div class="profile-tags"><span>欣緯生醫</span><span>閒台文</span><span>CITYMUS</span><span>Web Works</span></div>
+          <div class="profile-tags"><span>欣緯生醫</span><span>閒台文</span><span>CITYMUS</span><span>台灣 70 型測驗</span><span>Foodie Page</span><span>Web Works</span></div>
         </section>
         <div class="profile-links">
           <a class="profile-link" href="https://www.instagram.com/dennylin_0510/" target="_blank" rel="noopener noreferrer">
@@ -3486,7 +3493,7 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map(x=>`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')
+    items.innerHTML=d.items.map(x=>x[2]?`<a class="item item-link" href="${x[2]}" target="_blank" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('')
   }
   drawer.classList.add('open')
 }
