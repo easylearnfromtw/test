@@ -305,11 +305,9 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 .goblin-photo-action label{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 12px;border-radius:999px;background:#cce8ff;color:#3d5570;font-size:clamp(8px,1.4vw,12px);font-weight:850;cursor:pointer;box-shadow:0 3px 0 rgba(61,85,112,.12);white-space:nowrap}
 .goblin-discovery{grid-column:1 / -1;grid-row:5;width:88%;justify-self:center;min-height:64px;border-radius:999px;background:#f6ead5;display:flex;align-items:center;justify-content:center;gap:8px;font-size:clamp(12px,2vw,19px);font-weight:850;white-space:nowrap}
 .goblin-rank{display:inline-flex;min-width:5ch;justify-content:center;align-items:center;padding:8px 13px;border-radius:999px;background:#c9e2ff;color:#33465e;font-family:var(--mono);letter-spacing:.08em;font-size:1.08em;line-height:1}
-.goblin-live{position:absolute;right:8%;bottom:4.2%;font:800 7px/1 var(--mono);letter-spacing:.12em;color:#7d746b}
 .goblin-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .goblin-btn{flex:1;border:1px solid #b7bec7;border-radius:13px;background:#fff;color:#2f3946;padding:12px 14px;font-weight:850;font-size:11px}
 .goblin-btn.primary{background:#173f35;border-color:#173f35;color:#fff}
-.goblin-note{margin:9px 4px 0;color:#697481;font:700 8px/1.55 var(--mono)}
 .goblin-toast{position:absolute;left:50%;top:13%;transform:translate(-50%,-8px);opacity:0;padding:8px 11px;border-radius:999px;background:#173f35;color:#fff;font-size:10px;font-weight:800;pointer-events:none;transition:.2s}
 .goblin-toast.show{opacity:1;transform:translate(-50%,0)}
 @keyframes goblinScan{0%{left:-20%}100%{left:120%}}
@@ -463,10 +461,10 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
       <div class="goblin-photo-box"><img id="goblinPhoto" src="./assets/goblin-default.svg" alt="證書照片"></div>
       <div class="goblin-photo-action no-export"><label for="goblinPhotoInput">▣ 可加入照片</label><input id="goblinPhotoInput" type="file" accept="image/*" hidden></div>
       <div class="goblin-discovery"><span>♛</span><span>你是第</span><strong class="goblin-rank" id="goblinRank">------</strong><span>個發現者</span></div>
-      <div class="goblin-live" id="goblinCountStatus">專屬發現編號</div>
+      
     </div>
     <div class="goblin-actions no-export"><button class="goblin-btn" id="goblinResetPhoto" type="button">使用預設照片</button><button class="goblin-btn primary" id="goblinSave" type="button">儲存證書 PNG</button></div>
-    <p class="goblin-note">照片只在你的瀏覽器本機處理，不會上傳到網站。儲存時「可加入照片」與操作按鈕不會出現在圖片內。</p>
+    
     <div class="goblin-toast" id="goblinToast">證書完成</div>
   </section>
 </div>
@@ -4241,7 +4239,7 @@ addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.ke
 const goblinModal=document.getElementById('goblinModal'),goblinBackdrop=document.getElementById('goblinBackdrop'),goblinClose=document.getElementById('goblinClose');
 const goblinCert=document.getElementById('goblinCert'),goblinName=document.getElementById('goblinName'),goblinPhoto=document.getElementById('goblinPhoto');
 const goblinPhotoInput=document.getElementById('goblinPhotoInput'),goblinResetPhoto=document.getElementById('goblinResetPhoto'),goblinSave=document.getElementById('goblinSave');
-const goblinRank=document.getElementById('goblinRank'),goblinCountStatus=document.getElementById('goblinCountStatus'),goblinToast=document.getElementById('goblinToast');
+const goblinRank=document.getElementById('goblinRank'),goblinToast=document.getElementById('goblinToast');
 const GOBLIN_DEFAULT_PHOTO='./assets/goblin-default.svg',GOBLIN_RANK_KEY='chekai_goblin_discovery_rank_v2',GOBLIN_CLAIM_KEY='chekai_goblin_discovery_claimed_v2';
 let goblinPhotoURL='',goblinRankValue=Number(localStorage.getItem(GOBLIN_RANK_KEY)||0),goblinClaimed=localStorage.getItem(GOBLIN_CLAIM_KEY)==='1';
 function padGoblinRank(n){return String(Math.max(0,Number(n)||0)).padStart(3,'0')}
@@ -4257,7 +4255,6 @@ function ensureGoblinRank(){
     localStorage.setItem(GOBLIN_RANK_KEY,String(n))
   }
   goblinRankValue=n;animateGoblinRank(n);
-  goblinCountStatus.textContent='專屬發現編號';
   return n
 }
 function openGoblinCertificate(){
