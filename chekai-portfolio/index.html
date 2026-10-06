@@ -1721,15 +1721,62 @@ function addTree(x,z,h,r,kind='camphor',y0=SW,perch=true){
   c.bx(x-.55,y0-.01,z-.55,x+.55,y0+.05,z+.55,C(0x6a645a),T.CONCRETE,.8,F.NY);
   if(kind==='palm'){c.tube([x,y0,z],[x+(r()-.5)*.3,y0+h,z+(r()-.5)*.3],.2,.16,C(tk.bark),T.CONCRETE,.4,8,false);
     for(let k=0;k<9;k++){const a=k/9*Math.PI*2,L2=2.4;f.ell(x+Math.cos(a)*L2*.5,y0+h-.2-.25,z+Math.sin(a)*L2*.5,L2*.55,.12,.32,Cj(pick(r,tk.leaf),r,.1),0,1,6,3,[0,-a,-.5])}return}
-  const trunkH=h*.42,lean=[(r()-.5)*.5,(r()-.5)*.3];
-  c.tube([x,y0,z],[x+lean[0],y0+trunkH,z+lean[1]],.17+h*.012,.12+h*.008,C(tk.bark),T.CONCRETE,.5,7,false);
-  for(let k=0;k<3;k++){const a=r()*Math.PI*2;c.tube([x+lean[0],y0+trunkH*.9,z+lean[1]],[x+lean[0]+Math.cos(a)*h*.18,y0+trunkH+h*.2,z+lean[1]+Math.sin(a)*h*.14],.08,.04,C(tk.bark),T.CONCRETE,.5,5,false)}
-  const cr=h*.32*tk.crown,cy=y0+trunkH+cr*.75,n=8+Math.floor(r()*4),cx=x+lean[0],cz=z+lean[1];
-  for(let k=0;k<n;k++){const a=r()*Math.PI*2,d=r()*cr*.6,yy=cy+(r()-.35)*cr*.6,s=cr*(.4+r()*.32);
-    f.ell(cx+Math.cos(a)*d,yy,cz+Math.sin(a)*d*.8,s*1.1,s*.82,s*.95,Cj(pick(r,tk.leaf),r,.1),0,1,9,6)}
-  if(tk.bloom)for(let k=0;k<6;k++){const a=r()*Math.PI*2,d=cr*(.3+r()*.45),s=cr*(.18+r()*.12);f.ell(cx+Math.cos(a)*d,cy+cr*(.35+r()*.3),cz+Math.sin(a)*d*.8,s*1.2,s*.7,s,Cj(pick(r,tk.bloom),r,.08),0,1,7,4)}
-  for(let k=0;k<7;k++){const a=k/7*Math.PI*2+r(),d=cr*(.75+r()*.25),px=cx+Math.cos(a)*d,pz=cz+Math.sin(a)*d*.8,py=cy+(r()-.4)*cr*.7,w=cr*(.75+r()*.35),ca=Math.cos(a+1.57),sa=Math.sin(a+1.57),tint=Cj(pick(r,tk.leaf),r,.12).map(v=>v*1.05);
-    K.grille.quad([[px-ca*w,py-w*.8,pz-sa*w],[px+ca*w,py-w*.8,pz+sa*w],[px+ca*w,py+w*.8,pz+sa*w],[px-ca*w,py+w*.8,pz-sa*w]],[Math.cos(a),0,Math.sin(a)],tint,0,0,GR.leafcard)}
+  const trunkH=h*.42,lean=[(r()-.5)*.5,(r()-.5)*.3],cx=x+lean[0],cz=z+lean[1];
+  c.tube([x,y0,z],[cx,y0+trunkH,cz],.17+h*.012,.12+h*.008,C(tk.bark),T.CONCRETE,.5,7,false);
+
+  // Open, branch-led crown: foliage is made from textured leaf cards only.
+  // This avoids the old "solid ball + leaves pasted on top" silhouette.
+  const cr=h*.32*tk.crown,baseY=y0+trunkH*.88,cy=y0+trunkH+cr*.72;
+  const tips=[];
+  const branchCount=7+Math.floor(r()*3);
+  for(let k=0;k<branchCount;k++){
+    const a=(k/branchCount)*Math.PI*2+(r()-.5)*.55;
+    const reach=cr*(.62+r()*.42),rise=cr*(.26+r()*.52);
+    const sx=cx+(r()-.5)*cr*.08,sy=baseY+r()*cr*.12,sz=cz+(r()-.5)*cr*.08;
+    const ex=cx+Math.cos(a)*reach,ey=baseY+rise,ez=cz+Math.sin(a)*reach*.76;
+    c.tube([sx,sy,sz],[ex,ey,ez],.065+h*.0028,.025+h*.0015,C(tk.bark),T.CONCRETE,.5,5,false);
+    tips.push([ex,ey,ez,a]);
+    if(r()<.62){
+      const a2=a+(r()-.5)*.8,reach2=reach*(.56+r()*.2);
+      const mx=sx+(ex-sx)*.55,my=sy+(ey-sy)*.55,mz=sz+(ez-sz)*.55;
+      const ex2=mx+Math.cos(a2)*reach2*.55,ey2=my+cr*(.18+r()*.2),ez2=mz+Math.sin(a2)*reach2*.42;
+      c.tube([mx,my,mz],[ex2,ey2,ez2],.035+h*.0016,.016+h*.0008,C(tk.bark),T.CONCRETE,.5,4,false);
+      tips.push([ex2,ey2,ez2,a2]);
+    }
+  }
+
+  const leafCard=(px,py,pz,a,w,col,tilt=0)=>{
+    const ca=Math.cos(a+Math.PI/2),sa=Math.sin(a+Math.PI/2),hh=w*(.58+tilt);
+    K.grille.quad(
+      [[px-ca*w,py-hh,pz-sa*w],[px+ca*w,py-hh,pz+sa*w],[px+ca*w,py+hh,pz+sa*w],[px-ca*w,py+hh,pz-sa*w]],
+      [Math.cos(a),0,Math.sin(a)],col,0,0,GR.leafcard
+    );
+  };
+
+  // Put smaller, overlapping leaf clusters directly on branch tips.
+  // Two crossed cards per main cluster preserve leafy volume from different camera angles.
+  for(const [tx,ty,tz,a0] of tips){
+    const jitter=cr*.13;
+    const px=tx+(r()-.5)*jitter,py=ty+(r()-.45)*jitter*.8,pz=tz+(r()-.5)*jitter;
+    const w=cr*(.30+r()*.18);
+    const tint=Cj(pick(r,tk.leaf),r,.12).map(v=>v*1.04);
+    leafCard(px,py,pz,a0+(r()-.5)*.35,w,tint);
+    leafCard(px+(r()-.5)*w*.16,py+(r()-.5)*w*.12,pz+(r()-.5)*w*.16,a0+Math.PI/2+(r()-.5)*.28,w*(.82+r()*.12),tint,-.05);
+  }
+
+  // A few interior cards soften gaps without creating a solid spherical core.
+  const innerCount=3+Math.floor(r()*3);
+  for(let k=0;k<innerCount;k++){
+    const a=r()*Math.PI*2,d=cr*(.18+r()*.42),px=cx+Math.cos(a)*d,pz=cz+Math.sin(a)*d*.72,py=cy+(r()-.45)*cr*.46;
+    const w=cr*(.25+r()*.14),tint=Cj(pick(r,tk.leaf),r,.13).map(v=>v*1.03);
+    leafCard(px,py,pz,a,w,tint,-.08);
+  }
+
+  // Taiwan golden-rain-tree colour is also carried by leaf-shaped cards, never solid blobs.
+  if(tk.bloom)for(let k=0;k<5;k++){
+    const a=r()*Math.PI*2,d=cr*(.45+r()*.42),px=cx+Math.cos(a)*d,pz=cz+Math.sin(a)*d*.72,py=cy+cr*(.22+r()*.42);
+    leafCard(px,py,pz,a,cr*(.18+r()*.10),Cj(pick(r,tk.bloom),r,.08),-.12);
+  }
   if(perch)for(let k=0;k<2;k++)PERCH.push([x+(r()-.5)*cr,cy+cr*.62,z+(r()-.5)*cr*.6]);
 }
 // ---------- signals ----------
