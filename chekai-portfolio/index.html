@@ -5072,7 +5072,7 @@ if(SITE_CONTENT?.club){
 }
 const jxSections=[...document.querySelectorAll('.jx-section')],jxProgress=document.getElementById('jxProgress'),jxChapterCount=document.getElementById('jxChapterCount'),jxHeadBar=document.getElementById('jxHeadBar');
 const jxLightbox=document.getElementById('jxLightbox'),jxLightboxFrame=document.getElementById('jxLightboxFrame'),jxLightboxClose=document.getElementById('jxLightboxClose');
-const JX_IMAGE_DIMS=[[547,768],[580,768],[548,769],[725,769],[769,402],[768,456],[769,761],[768,461],[768,547],[768,449],[577,768],[510,768],[769,580],[746,699],[512,768]];
+const JX_IMAGE_DIMS=[[547,768],[580,768],[548,769],[725,769],[769,402],[768,456],[769,761],[768,461],[768,547],[768,449],[577,768],[360,250],[769,580],[746,699],[512,768]];
 const JX_IMAGES=JX_IMAGE_DIMS.map(([w,h],i)=>{
   const n=String(i).padStart(2,'0'),name='jx-cell-'+n+'.webp';
   return{w,h,thumb:'./assets/jx/thumb/'+name,full:'./assets/jx/full/'+name};
