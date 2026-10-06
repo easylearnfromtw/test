@@ -768,7 +768,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v10',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v11',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -827,12 +827,12 @@ const DATA={
  hero:{nav:'Home',index:'00',title:'CHE-KAI LIN',intro:'WRITER X DESIGNER X STUDENT',accent:'#8aa8ff',items:[['林哲愷 / Che-Kai Lin','個人網站以 3D 城市街道作為入口。'],['Identity','Writer X Designer X Student'],['Direction','Design · Writing · Academic · Public Life']]},
  about:{nav:'About',index:'01',title:'CHE-KAI LIN',intro:'AI × WEB × DESIGN',accent:'#7f8ee8',items:[['School','市立三重高中｜高三'],['Focus','AI × Web × Design'],['Projects','欣緯生醫 · 閒台文 · CITYMUS'],['Interests','網站、設計、文字、公共參與']]},
  web:{nav:'Web Works',index:'02',title:'WEB WORKS',intro:'Selected digital projects.',accent:'#70c6f4',items:[
-  ['SignWell 欣緯生醫','醫療與產業內容平台','https://980510linz.github.io/signwell/'],
   ['O森島民集結啦！台灣 70 型測驗','台灣文化 × 互動型人格測驗','https://980510linz.github.io/taiwangogogo/'],
   ['CITYMUS','音樂與城市視覺品牌','https://easylearnfromtw.github.io/musictown/'],
   ['勞山道士','互動式網頁作品','https://easylearnfromtw.github.io/musictown/magic/'],
   ['閒台文 Taiwanway','互動式中文與台灣文化網站','https://easylearnfromtw.github.io/Taiwanway/'],
-  ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品',null,{type:'coming_soon'}]
+  ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品',null,{type:'coming_soon'}],
+  ['SignWell 欣緯生醫','醫療與產業內容平台',null,{type:'coming_soon'}]
 ]},
  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'媒體、社團、服務與企劃經歷。',accent:'#e36aa8',items:[
 ['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524',{category:'媒體與寫作'}],
@@ -2351,7 +2351,7 @@ function buildingExtras(K,b,r){
 const BOARD_LABELS={about:'關於我',web:'網站作品',experience:'個人經歷',academic:'學習經歷',writing:'文字創作',running:'跑步紀錄',roles:'身份角色',public:'公共參與',art:'藝術檔案'};
 const BOARD_COPY={
   about:{title:'關於林哲愷',intro:'學生、文字創作者，也是把想法做成網站與視覺作品的人。',items:[['林哲愷','個人網站以 3D 城市街道作為入口。'],['個人身份','學生 × 文字創作者 × 設計實作者'],['發展方向','設計、寫作、學習與公共參與']]},
-  web:{title:'網站作品',intro:'精選數位作品與互動網站。',items:[['欣緯生醫','醫療與產業內容平台'],['台灣 70 型測驗','台灣文化 × 互動型人格測驗'],['城市音樂','音樂與城市視覺品牌'],['勞山道士','互動式網頁作品'],['閒台文','互動式中文與台灣文化網站'],['腹地圖','飲食探索與地圖式網頁作品']]},
+  web:{title:'網站作品',intro:'精選數位作品與互動網站。',items:[['台灣 70 型測驗','台灣文化 × 互動型人格測驗'],['城市音樂','音樂與城市視覺品牌'],['勞山道士','互動式網頁作品'],['閒台文','互動式中文與台灣文化網站'],['腹地圖','飲食探索與地圖式網頁作品'],['欣緯生醫','醫療與產業內容平台']]},
   experience:{title:'個人經歷',intro:'刊載、文學與企劃參與。',items:[['新頭殼媒體投書專欄','公開評論、投書與專欄文章'],['基隆海洋文學大賽','文學與主題寫作參與'],['台灣聯合大學企劃','企劃與專案參與經歷'],['中華辯論協會工作坊','辯論與工作坊參與']]},
   academic:{title:'學習經歷',intro:'跨領域培育與先修課程。',items:[['再興中學畢業','學習經歷'],['台英學士培育計畫','學術培育計畫'],['中央大學人工智慧先修','人工智慧相關先修'],['清華大學經濟系先修','經濟學相關先修'],['中原大學先修課程','大學先修課程']]},
   writing:{title:'文字創作',intro:'文字創作、觀察與公開表達。',items:[['議題投書','公共議題文字'],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作']]},
