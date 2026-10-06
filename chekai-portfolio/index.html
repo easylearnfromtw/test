@@ -717,8 +717,8 @@ function updateStreetLights(x){
   for(let i=0;i<n;i++){
     const lx=STREET_LAMP_ORIGIN+(start+i)*STREET_LAMP_STEP;
     const l=streetLampLights[i],p=streetLampPools[i];
-    l.position.set(lx,8.4,-3.8);l.intensity=(MOBILE_GPU?165:220)*streetNight;
-    p.position.set(lx,.045,-2.6);p.material.opacity=.26*streetNight;
+    l.position.set(lx,8.4,-3.8);l.intensity=(MOBILE_GPU?190:250)*streetNight;
+    p.position.set(lx,.045,-2.6);p.material.opacity=.31*streetNight;
   }
 }
 let shadowAnchorX=Infinity;
@@ -1038,8 +1038,8 @@ vec3 cEmis=vec3(0.);
     float lp=pow(max(0.,1.-abs(mod(vWPos.x+177.5,35.)-17.5)/16.),2.);
     float side=max(0.,1.-abs(vWPos.z+3.8)/13.);
     vec3 warm=vec3(1.0,.73,.42)*lp*side*uNight;
-    col*=1.+.10*uNight;
-    cEmis=skyRefl(V,N)*(.08+.48*fres)+warm*(.12+.22*max(N.y,0.));
+    col*=1.+.14*uNight;
+    cEmis=skyRefl(V,N)*(.10+.52*fres)+warm*(.14+.25*max(N.y,0.));
     float hl=pow(max(dot(reflect(V,N),normalize(vec3(-.74,.47,.48))),0.),40.);cEmis+=vec3(1.,.9,.8)*hl*.6;
   }else if(st>5.5&&st<6.5){ cEmis=skyRefl(V,N)*(.25+.6*fres);col*=.25;
   }else if(st>15.5&&st<16.5){ cEmis=col*(.35+1.6*vState.x);col*=.3;
@@ -1160,9 +1160,9 @@ function setClimateTarget(w,loc,immediate=false){
   const foggy=code===45||code===48,storm=code>=95,snow=(code>=71&&code<=77)||(code>=85&&code<=86);
   const rain=clamp01(Math.max(rainCode ? .38 : 0,precip/3.2,storm ? .72 : 0));
   const daylight=solar.daylight,warm=solar.warm;
-  const clearTop=new THREE.Color(0x4f86c1),overTop=new THREE.Color(0x6f7e89),nightTop=new THREE.Color(0x071321);
-  const clearHor=new THREE.Color(0xd9e2e6),overHor=new THREE.Color(0xaab2b7),nightHor=new THREE.Color(0x172536);
-  const groundDay=new THREE.Color(0x4b4a48),groundNight=new THREE.Color(0x10151c);
+  const clearTop=new THREE.Color(0x4f86c1),overTop=new THREE.Color(0x6f7e89),nightTop=new THREE.Color(0x0b1b2c);
+  const clearHor=new THREE.Color(0xd9e2e6),overHor=new THREE.Color(0xaab2b7),nightHor=new THREE.Color(0x22384f);
+  const groundDay=new THREE.Color(0x4b4a48),groundNight=new THREE.Color(0x18222d);
   const dawn=new THREE.Color(0xe4a37d),stormCol=new THREE.Color(0x59636b);
   const top=clearTop.clone().lerp(overTop,cloud*.72).lerp(stormCol,rain*.45).lerp(nightTop,1-daylight);
   const hor=clearHor.clone().lerp(overHor,cloud*.68).lerp(stormCol,rain*.48).lerp(dawn,warm*.62).lerp(nightHor,(1-daylight)*.92);
@@ -1170,9 +1170,9 @@ function setClimateTarget(w,loc,immediate=false){
   const gnd=groundDay.clone().lerp(groundNight,1-daylight).lerp(new THREE.Color(0x30363a),rain*.35);
   CLIMATE.targetTop.copy(top);CLIMATE.targetHor.copy(hor);CLIMATE.targetGnd.copy(gnd);
   CLIMATE.targetNight=clamp01(1-daylight);
-  CLIMATE.targetAmbient=Math.max(.30,(.34+daylight*1.06)*(1-cloud*.14-rain*.14));
-  CLIMATE.targetKey=Math.max(.02,daylight*3.0*(1-cloud*.72)*(1-rain*.55));
-  CLIMATE.targetExposure=Math.max(.56,.62+daylight*.47-cloud*.06-rain*.07);
+  CLIMATE.targetAmbient=Math.max(.38,(.40+daylight*1.00)*(1-cloud*.12-rain*.12));
+  CLIMATE.targetKey=Math.max(.025,daylight*3.0*(1-cloud*.72)*(1-rain*.55));
+  CLIMATE.targetExposure=Math.max(.66,.70+daylight*.40-cloud*.05-rain*.06);
   CLIMATE.targetFog=.00155+humidity*.00062+cloud*.00034+rain*.00105+(foggy ? .0032 : 0);
   CLIMATE.targetCloud=clamp01(Math.max(cloud,rain*.75,foggy ? .72 : 0));
   CLIMATE.targetRain=rain;CLIMATE.targetWind=clamp01((Number(cur.wind_speed_10m)||8)/38);
