@@ -485,6 +485,12 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 <script type="module">
 import * as THREE from 'three';
 
+let SITE_CONTENT=null;
+try{
+  const cr=await fetch('./data/content.json?ts='+Date.now(),{cache:'no-store'});
+  if(cr.ok)SITE_CONTENT=await cr.json();
+}catch(e){console.warn('[content cms]',e)}
+
 // CITYMUS background music. Browsers may block audible autoplay; we try immediately,
 // then transparently resume on the first user gesture (required by iOS/Safari policy).
 const cityAudio=new Audio();cityAudio.preload='auto';cityAudio.volume=.32;cityAudio.loop=true;
@@ -532,6 +538,18 @@ const DATA={
  public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']]},
  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',accent:'#9b78de',items:[['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration']]}
 };
+if(SITE_CONTENT?.sections){
+  for(const [id,c] of Object.entries(SITE_CONTENT.sections)){
+    if(!DATA[id])continue;
+    for(const k of ['nav','index','title','intro','accent','visible'])if(c[k]!==undefined)DATA[id][k]=c[k];
+    if(Array.isArray(c.items))DATA[id].items=c.items.filter(x=>x?.published!==false).map(x=>[x.title||'',x.subtitle||'',x.url||null,x.type?{type:x.type,id:x.id||undefined}:undefined]);
+  }
+}
+if(SITE_CONTENT?.site){
+  const sc=SITE_CONTENT.site;
+  const nm=document.getElementById('introName'),en=document.querySelector('.intro-en'),copy=document.getElementById('introCopy'),kick=document.querySelector('.intro-kicker span');
+  if(nm&&sc.name)nm.textContent=sc.name;if(en&&sc.en_name)en.textContent=sc.en_name;if(copy&&sc.intro_copy)copy.textContent=sc.intro_copy;if(kick&&sc.intro_kicker)kick.textContent=sc.intro_kicker;
+}
 
 // ---------------------------------------------------------------------------------------------
 // Lap geometry: one 360-unit lap of street, drawn as three copies so the loop is seamless.
@@ -1999,6 +2017,14 @@ const BOARD_COPY={
   public:{title:'公共參與',intro:'公共參與與交流經歷。',items:[['台灣民眾黨青年團第二屆團員','青年公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']]},
   art:{title:'藝術檔案',intro:'藝術與視覺作品收藏。',items:[['設計作品','平面與視覺設計'],['手繪創作','手繪與插畫']]}
 };
+if(SITE_CONTENT?.sections){
+  for(const [id,c] of Object.entries(SITE_CONTENT.sections)){
+    if(!BOARD_COPY[id])continue;
+    if(c.board_title)BOARD_COPY[id].title=c.board_title;
+    if(c.board_intro)BOARD_COPY[id].intro=c.board_intro;
+    if(Array.isArray(c.items))BOARD_COPY[id].items=c.items.filter(x=>x?.published!==false).map(x=>[x.title||'',x.subtitle||'']);
+  }
+}
 const BOARD_THEME={
   about:{bg:'#f3ecdc',fg:'#1b1f24',ac:'#d2382e',kind:'print'},
   web:{bg:'#05070c',fg:'#eaf6ff',ac:'#3fd0ff',kind:'led'},
@@ -3922,7 +3948,8 @@ function buildBirds(){
   const m=new THREE.Mesh(ig,birdMat);m.frustumCulled=false;scene.add(m);return m}
 
 // nav/drawer
-const CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
+const DEFAULT_CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
+const CYCLE=(Array.isArray(SITE_CONTENT?.section_order)?SITE_CONTENT.section_order:DEFAULT_CYCLE).filter(id=>DEFAULT_CYCLE.includes(id)&&DATA[id]?.visible!==false);
 let activeId='hero',cycleCursor=0,introDismissed=false;
 const intro=document.getElementById('intro'),introEnter=document.getElementById('introEnter');
 const adHint=document.getElementById('adHint'),adHintClose=document.getElementById('adHintClose');
@@ -4215,7 +4242,7 @@ function openDrawer(id){
 function updateLoopUI(id){
   const readout=document.getElementById('loopReadout'),progress=document.getElementById('progress');
   if(id==='hero'){if(readout)readout.textContent='01 → 02 ∞';if(progress)progress.style.width='0%';return}
-  const idx=CYCLE.indexOf(id);if(idx>=0){cycleCursor=idx;if(readout)readout.textContent=`${String(idx+1).padStart(2,'0')} / 09  ∞`;if(progress)progress.style.width=((idx+1)/CYCLE.length*100)+'%'}
+  const idx=CYCLE.indexOf(id);if(idx>=0){cycleCursor=idx;if(readout)readout.textContent=`${String(idx+1).padStart(2,'0')} / ${String(CYCLE.length).padStart(2,'0')}  ∞`;if(progress)progress.style.width=((idx+1)/CYCLE.length*100)+'%'}
 }
 function nearestLapFor(id){ return Math.round((currentX-CONFIG[id].x)/LOOP_SPAN); }
 function focus(id,open=false,lap=null){
@@ -4347,6 +4374,11 @@ goblinSave.addEventListener('click',saveGoblinCertificate);
 
 /* ---------------- 見賢思琪 interactive story ---------------- */
 const jxStory=document.getElementById('jxStory'),jxStage=document.getElementById('jxStage'),jxClose=document.getElementById('jxClose'),jxPrev=document.getElementById('jxPrev'),jxNext=document.getElementById('jxNext');
+if(SITE_CONTENT?.club){
+  const cc=SITE_CONTENT.club;
+  if(Array.isArray(cc.chapters))document.querySelectorAll('.jx-section').forEach((sec,i)=>{const ch=cc.chapters[i];if(!ch)return;const t=sec.querySelector('.jx-title'),l=sec.querySelector('.jx-lead');if(t&&ch.title)t.innerHTML=String(ch.title).split('\n').map(x=>x.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))).join('<br>');if(l&&ch.lead!==undefined)l.textContent=ch.lead});
+  if(Array.isArray(cc.events))document.querySelectorAll('#jxTimeline .jx-event').forEach((b,i)=>{const ev=cc.events[i];if(!ev)return;const title=b.querySelector('b'),place=b.querySelector('span span');if(title)title.textContent=ev.title||'';if(place)place.textContent=ev.place||'';b.dataset.detail=ev.detail||'';if(Array.isArray(ev.cells))b.dataset.cells=ev.cells.join(',')});
+}
 const jxSections=[...document.querySelectorAll('.jx-section')],jxProgress=document.getElementById('jxProgress'),jxChapterCount=document.getElementById('jxChapterCount'),jxHeadBar=document.getElementById('jxHeadBar');
 const jxLightbox=document.getElementById('jxLightbox'),jxLightboxFrame=document.getElementById('jxLightboxFrame'),jxLightboxClose=document.getElementById('jxLightboxClose');
 let jxIndex=0,jxSpriteUrl='',jxSpriteLoading=null;
