@@ -163,35 +163,65 @@ const CONFIG={hero:{x:IX}};
 const canvas=document.getElementById('webgl');
 const IS_IOS=/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/i.test(navigator.userAgent));
 const MOBILE_GPU=innerWidth<760||IS_IOS||/Android/i.test(navigator.userAgent);
-const renderer=new THREE.WebGLRenderer({canvas,antialias:!MOBILE_GPU,alpha:false,stencil:false,depth:true,powerPreference:'high-performance',precision:MOBILE_GPU?'mediump':'highp'});
+const NATIVE_DPR=Math.max(1,devicePixelRatio||1),CSS_PIXELS=Math.max(1,innerWidth*innerHeight);
+// MSAA is redundant on HiDPI panels and very expensive at 120 Hz. Keep it only on ordinary 1× displays.
+const WANT_MSAA=!MOBILE_GPU&&NATIVE_DPR<1.25&&CSS_PIXELS<2600000;
+const renderer=new THREE.WebGLRenderer({
+  canvas,antialias:WANT_MSAA,alpha:false,stencil:false,depth:true,
+  powerPreference:'high-performance',precision:MOBILE_GPU?'mediump':'highp',
+  preserveDrawingBuffer:false,desynchronized:true
+});
 const gl=renderer.getContext(),MAX_RB_SIZE=gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)||4096;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.06;
 renderer.info.autoReset=true;
-// ---------------- resolution policy: 2K floor, 4K ceiling ----------------
-// Phones render at their native panel resolution (an iPhone Pro panel is ~3 MP, i.e. 2K-class);
-// desktops render between 2560×1440 and 3840×2160 worth of pixels and adapt within that band.
-const PX_2K=2560*1440,PX_4K=3840*2160;
-const RES={floor:1,ceil:1,dpr:1,locked:false,refresh:60,adjusts:0};
+// ---------------- GPU pixel-budget policy ----------------
+// Keep visual density high, but never force Retina/4K panels to shade 5–8 MP every frame.
+// Once refresh rate is measured, the band tightens automatically for 120/144 Hz displays.
+const RES={floor:1,ceil:1,dpr:1,locked:false,refresh:0,adjusts:0};
 function dprForPixels(px){return Math.sqrt(px/Math.max(1,innerWidth*innerHeight))}
 function computeResBand(){
   const nativeDpr=Math.max(1,devicePixelRatio||1);
   const fb=Math.min(MAX_RB_SIZE/Math.max(1,innerWidth),MAX_RB_SIZE/Math.max(1,innerHeight));
-  if(MOBILE_GPU){RES.ceil=RES.dpr=Math.min(nativeDpr,3,fb);RES.floor=Math.min(RES.ceil,2.4);return}   // phones: native panel res, may step down to 2.4× to hold 120 Hz
-  const cap=Math.min(fb,Math.max(nativeDpr,2));               // never more than 2× supersampling
-  RES.floor=Math.min(cap,Math.max(1,dprForPixels(PX_2K)));
-  RES.ceil=Math.min(cap,Math.max(RES.floor,dprForPixels(PX_4K)));
-  RES.dpr=Math.min(RES.ceil,Math.max(RES.floor,nativeDpr));
+  const hz=RES.refresh||60,hi=hz>=100,mid=hz>=75;
+  let floorPx,ceilPx,startPx;
+  if(MOBILE_GPU){
+    floorPx=hi?1.15e6:mid?1.40e6:1.65e6;
+    ceilPx =hi?1.65e6:mid?1.95e6:2.25e6;
+    startPx=hi?1.45e6:1.90e6;
+  }else{
+    floorPx=hi?1.80e6:mid?2.20e6:2.60e6;
+    ceilPx =hi?2.80e6:mid?3.30e6:3.80e6;
+    startPx=hi?2.40e6:3.20e6;
+  }
+  const minScale=MOBILE_GPU?.72:.68,maxScale=Math.min(nativeDpr,fb,2);
+  RES.floor=Math.min(maxScale,Math.max(minScale,dprForPixels(floorPx)));
+  RES.ceil=Math.min(maxScale,Math.max(RES.floor,dprForPixels(ceilPx)));
+  const wanted=RES.refresh?RES.dpr:dprForPixels(startPx);
+  RES.dpr=Math.min(RES.ceil,Math.max(RES.floor,Math.min(maxScale,wanted)));
 }
-computeResBand();renderer.setPixelRatio(RES.dpr);renderer.setSize(innerWidth,innerHeight);
-// Real-time shadow maps on desktop GPUs only; phones use baked contact shadows (keeps 120 Hz headroom).
+function applyResolution(d=RES.dpr){
+  RES.dpr=Math.min(RES.ceil,Math.max(RES.floor,d));
+  renderer.setPixelRatio(RES.dpr);renderer.setSize(innerWidth,innerHeight,false);
+}
+computeResBand();applyResolution();
+// Real-time shadows stay on desktop, but use a cheaper filtered map and update only when the camera advances.
 const USE_SHADOWS=!MOBILE_GPU;
-renderer.shadowMap.enabled=USE_SHADOWS;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled=USE_SHADOWS;renderer.shadowMap.type=THREE.PCFShadowMap;
+renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=USE_SHADOWS;
 const scene=new THREE.Scene();
 // Global animation uniforms shared by every custom shader
 const G={uTime:{value:0},uCamX:{value:IX},uCull:{value:110},uNoise:{value:null}};
 scene.fog=new THREE.FogExp2(0xbfcbd3,.0019);
 scene.matrixWorldAutoUpdate=true;
 const staticSceneObjects=[],loopCullGroups=[];
+let lastStaticCullX=1e9;
+function updateStaticVisibility(force=false){
+  if(!loopCullGroups.length)return;
+  if(!force&&Math.abs(currentX-lastStaticCullX)<4)return;
+  lastStaticCullX=currentX;
+  const radius=Math.max(205,G.uCull.value+50);
+  for(const m of loopCullGroups)m.visible=Math.abs(m.userData.loopX-currentX)<=radius;
+}
 function freezeStatic(o){o.updateMatrix();o.matrixAutoUpdate=false;staticSceneObjects.push(o);return o}
 const sharedMaterialCache=new Map();
 function sharedMat(key,factory){if(!sharedMaterialCache.has(key))sharedMaterialCache.set(key,factory());return sharedMaterialCache.get(key)}
@@ -204,14 +234,22 @@ const LOOK_AT_Y=15.6,LOOK_AT_Z=-15.5;
 const ambient=new THREE.HemisphereLight(0xc6d8e8,0x5f5549,1.38);scene.add(ambient);
 const SUN_DIR=new THREE.Vector3(-.74,.47,.48).normalize();
 const key=new THREE.DirectionalLight(0xffd3a8,2.8);scene.add(key);scene.add(key.target);
+let shadowAnchorX=Infinity;
 if(USE_SHADOWS){
   key.castShadow=true;const sc=key.shadow.camera;
-  key.shadow.mapSize.set(2048,2048);sc.left=-70;sc.right=70;sc.top=48;sc.bottom=-36;sc.near=1;sc.far=300;
-  key.shadow.bias=-.0006;key.shadow.normalBias=.05;sc.updateProjectionMatrix();
+  key.shadow.mapSize.set(1024,1024);sc.left=-68;sc.right=68;sc.top=46;sc.bottom=-34;sc.near=1;sc.far=240;
+  key.shadow.bias=-.0007;key.shadow.normalBias=.06;sc.updateProjectionMatrix();
 }
-function updateSun(x){key.target.position.set(Math.round(x/4)*4,8,-12);key.position.copy(key.target.position).addScaledVector(SUN_DIR,130);key.target.updateMatrixWorld()}
-updateSun(currentX);
-// Tileable baked noise shared by the city, sky and foliage shaders (one texture fetch per lookup).
+function updateSun(x,force=false){
+  if(!USE_SHADOWS&&shadowAnchorX!==Infinity)return;
+  if(!force&&USE_SHADOWS&&Math.abs(x-shadowAnchorX)<5.5)return;
+  shadowAnchorX=x;
+  key.target.position.set(Math.round(x/6)*6,8,-12);
+  key.position.copy(key.target.position).addScaledVector(SUN_DIR,130);key.target.updateMatrixWorld();
+  if(USE_SHADOWS)renderer.shadowMap.needsUpdate=true;
+}
+updateSun(currentX,true);
+// Tileable baked noise shared by the city, sky and foliage shaders// Tileable baked noise shared by the city, sky and foliage shaders (one texture fetch per lookup).
 function seeded(seed){let s=(seed>>>0)||1;return()=>((s=Math.imul(1664525,s)+1013904223>>>0)/4294967296)}
 const noiseTex=(()=>{const N=256,data=new Uint8Array(N*N*4);
   const lat=(P,seed)=>{const r=seeded(seed),a=new Float32Array(P*P);for(let i=0;i<P*P;i++)a[i]=r();return a};
@@ -246,8 +284,7 @@ const skyMat=new THREE.ShaderMaterial({
       float dens=base*.72+det*.22+fine*.08;
       float cov=.52-.1*smoothstep(.0,.35,d.y);
       float c=smoothstep(cov,cov+.16,dens);
-      float toward=texture2D(uNoise,(p+uSun.xz*.09)*.11).r*.72+texture2D(uNoise,(p+uSun.xz*.09)*.47+.3).g*.22;
-      float lit=clamp(.6+(dens-toward)*5.,0.,1.);
+      float lit=clamp(.62+(det-base)*1.7+(fine-.5)*.32,0.,1.);
       vec3 cc=mix(vec3(.62,.66,.74),vec3(1.,.97,.93),lit);cc+=vec3(1.,.8,.6)*pow(sd,4.)*.25*lit;
       float fade=smoothstep(.012,.16,d.y);
       sky=mix(sky,cc,c*fade*.95);
@@ -527,7 +564,7 @@ function makeAtlas(W,H){const c=document.createElement('canvas');c.width=W;c.hei
   add(w,h,draw){if(this.x+w+2>this.W){this.x=2;this.y+=this.row+3;this.row=0}if(this.y+h+2>this.H){console.warn('atlas full',this.W,this.H);return [0,0,.01,.01]}
     const x=this.x,y=this.y;this.g.save();this.g.translate(x,y);this.g.beginPath();this.g.rect(0,0,w,h);this.g.clip();draw(this.g,w,h);this.g.restore();this.x+=w+3;this.row=Math.max(this.row,h);
     return [(x+.5)/this.W,1-(y+h-.5)/this.H,(x+w-.5)/this.W,1-(y+.5)/this.H]}}}
-function atlasTexture(a,mips=true){const t=new THREE.CanvasTexture(a.c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());if(!mips){t.generateMipmaps=false;t.minFilter=THREE.LinearFilter}return t}
+function atlasTexture(a,mips=true){const t=new THREE.CanvasTexture(a.c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());if(!mips){t.generateMipmaps=false;t.minFilter=THREE.LinearFilter}return t}
 const FONT_SANS='"PingFang TC","Noto Sans CJK TC","Noto Sans TC","Microsoft JhengHei","Heiti TC",sans-serif';
 const FONT_SERIF='"Noto Serif CJK TC","Songti TC","PMingLiU","MingLiU",serif';
 
@@ -1705,10 +1742,10 @@ function buildSchool(s){
 const foliageMat=(()=>{const m=new THREE.MeshLambertMaterial({vertexColors:true});
   m.onBeforeCompile=sh=>{sh.uniforms.uTime=G.uTime;sh.uniforms.uNoise=G.uNoise;
     sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nuniform float uTime;uniform sampler2D uNoise;attribute vec2 aUvW;attribute vec2 aMat;varying vec3 vFW;varying float vSway;')
-      .replace('#include <begin_vertex>','#include <begin_vertex>\nfloat sw=aMat.y;vec3 wpb=(modelMatrix*vec4(position,1.)).xyz;float lump=texture2D(uNoise,wpb.xz*.13+wpb.y*.09).r*.65+texture2D(uNoise,wpb.zy*.31+wpb.x*.05).g*.35;transformed+=objectNormal*(lump-.45)*.7*sw;transformed.x+=sin(uTime*1.3+wpb.x*.4+wpb.z*.3)*.06*sw;transformed.z+=cos(uTime*1.1+wpb.x*.3)*.05*sw;transformed.y+=sin(uTime*2.1+wpb.x*.9)*.02*sw;vSway=sw;')
+      .replace('#include <begin_vertex>','#include <begin_vertex>\nfloat sw=aMat.y;vec3 wpb=(modelMatrix*vec4(position,1.)).xyz;float lump=texture2D(uNoise,wpb.xz*.17+wpb.y*.05).r;transformed+=objectNormal*(lump-.45)*.7*sw;transformed.x+=sin(uTime*1.3+wpb.x*.4+wpb.z*.3)*.06*sw;transformed.z+=cos(uTime*1.1+wpb.x*.3)*.05*sw;transformed.y+=sin(uTime*2.1+wpb.x*.9)*.02*sw;vSway=sw;')
       .replace('#include <project_vertex>','#include <project_vertex>\nvFW=(modelMatrix*vec4(transformed,1.)).xyz;');
     sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform sampler2D uNoise;varying vec3 vFW;varying float vSway;')
-      .replace('#include <color_fragment>','#include <color_fragment>\nfloat lf=texture2D(uNoise,vFW.xy*.45+vFW.z*.31).r*.6+texture2D(uNoise,vFW.zy*1.7).a*.4;diffuseColor.rgb*=.55+.75*smoothstep(.25,.75,lf);diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(1.25,1.2,.75),smoothstep(.62,.8,lf)*.6*vSway);')};
+      .replace('#include <color_fragment>','#include <color_fragment>\nfloat lf=texture2D(uNoise,vFW.xy*.55+vFW.z*.27).r;diffuseColor.rgb*=.55+.75*smoothstep(.25,.75,lf);diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(1.25,1.2,.75),smoothstep(.62,.8,lf)*.6*vSway);')};
   m.customProgramCacheKey=()=>'foliage-v3';return m})();
 const TREE_KINDS={
   ficus:{leaf:[0x2f5a2c,0x3b6a32,0x284d27],bark:0x5a5046,crown:1.25},
@@ -3079,11 +3116,11 @@ function finalizeVehicles(){
   for(const name in VTYPES){const t=VTYPES[name];if(!t.list.length)continue;const n=t.list.length,m=new THREE.InstancedMesh(t.geo,vehMat,n);
     const tint=new Float32Array(n*3),state=new Float32Array(n*4);t.list.forEach((v,i)=>{tint.set(v.tint,i*3);state.set([0,v.haz,v.siren,v.ph],i*4)});
     t.geo.setAttribute('aTint',new THREE.InstancedBufferAttribute(tint,3));const sa=new THREE.InstancedBufferAttribute(state,4);sa.setUsage(THREE.DynamicDrawUsage);t.geo.setAttribute('aState',sa);
-    m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);m.frustumCulled=false;m.castShadow=USE_SHADOWS;m.receiveShadow=USE_SHADOWS;scene.add(m);vehMeshes[name]=m}
+    m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);m.frustumCulled=false;m.castShadow=false;m.receiveShadow=USE_SHADOWS;scene.add(m);vehMeshes[name]=m}
   vehShadow=new THREE.InstancedMesh(blobGeo,blobMat,TRAFFIC.length+2);vehShadow.frustumCulled=false;vehShadow.renderOrder=2;scene.add(vehShadow);
   const tt=tramGeo().geometry('aUvW'),tg=new THREE.InstancedBufferGeometry();tg.index=tt.index;for(const k in tt.attributes)tg.setAttribute(k,tt.attributes[k]);
   tg.setAttribute('aTint',new THREE.InstancedBufferAttribute(new Float32Array([...rgb(0xf4f6f6),...rgb(0xf4f6f6)]),3));tg.setAttribute('aState',new THREE.InstancedBufferAttribute(new Float32Array(8),4));
-  tramMesh=new THREE.InstancedMesh(tg,vehMat,2);tramMesh.frustumCulled=false;tramMesh.castShadow=USE_SHADOWS;scene.add(tramMesh);
+  tramMesh=new THREE.InstancedMesh(tg,vehMat,2);tramMesh.frustumCulled=false;tramMesh.castShadow=false;tramMesh.receiveShadow=USE_SHADOWS;scene.add(tramMesh);
   const mg=mrtGeo().geometry('aUvW');mg.setAttribute('aTint',new THREE.InstancedBufferAttribute(new Float32Array([1,1,1]),3));mg.setAttribute('aState',new THREE.InstancedBufferAttribute(new Float32Array(4),4));
   mrtMesh=new THREE.InstancedMesh(mg,vehMat,1);mrtMesh.frustumCulled=false;scene.add(mrtMesh);
 }
@@ -3320,22 +3357,45 @@ function wrapLoop(){
 }
 // ---------------- frame-rate & resolution governor ----------------
 // Measures the display's refresh interval, then (desktop only) nudges the render scale inside the 2K–4K band.
-const PERF={samples:[],refresh:0,acc:0,n:0,adj:0,t0:0,fps:0};
+const PERF={samples:[],refresh:0,acc:0,n:0,adj:0,t0:0,fps:0,ema:0,lastDprChange:0};
+function snapRefresh(hz){
+  const common=[60,75,90,100,120,144,165,240];let best=hz,bd=1e9;
+  for(const v of common){const d=Math.abs(v-hz);if(d<bd){bd=d;best=v}}
+  return bd/Math.max(1,hz)<.09?best:Math.round(hz);
+}
 function perfTick(ms,now){
-  if(!PERF.refresh){PERF.samples.push(ms);if(PERF.samples.length>=90){const s=PERF.samples.slice(20).sort((a,b)=>a-b);PERF.refresh=s[Math.floor(s.length/2)];RES.refresh=Math.round(1000/PERF.refresh);PERF.t0=now}return}
-  PERF.acc+=ms;PERF.n++;if(PERF.n<120)return;const avg=PERF.acc/PERF.n;PERF.fps=1000/avg;PERF.acc=0;PERF.n=0;
-  if(RES.locked||PERF.adj>=4||now-PERF.t0>25000){RES.locked=true;return}
-  let d=RES.dpr;if(avg>PERF.refresh*1.18&&RES.dpr>RES.floor)d=Math.max(RES.floor,RES.dpr*(MOBILE_GPU?.9:.88));else if(!MOBILE_GPU&&avg<PERF.refresh*1.04&&RES.dpr<RES.ceil)d=Math.min(RES.ceil,RES.dpr*1.12);
-  if(Math.abs(d-RES.dpr)>.02){RES.dpr=d;renderer.setPixelRatio(d);renderer.setSize(innerWidth,innerHeight);PERF.adj++}}
-addEventListener('resize',()=>{applyResponsiveCamera();computeResBand();renderer.setPixelRatio(RES.dpr);renderer.setSize(innerWidth,innerHeight)});
-// ---------------- main loop ----------------
+  if(ms<=0||ms>100)return;
+  if(!PERF.refresh){
+    PERF.samples.push(ms);
+    if(PERF.samples.length>=56){
+      const a=PERF.samples.slice(10).sort((x,y)=>x-y),med=a[Math.floor(a.length/2)];
+      RES.refresh=snapRefresh(1000/med);PERF.refresh=1000/RES.refresh;PERF.t0=now;
+      computeResBand();applyResolution(Math.min(RES.dpr,RES.ceil));
+    }
+    return
+  }
+  PERF.ema=PERF.ema?PERF.ema*.90+ms*.10:ms;PERF.acc+=ms;PERF.n++;
+  if(PERF.n<45)return;
+  const avg=PERF.acc/PERF.n,budget=1000/Math.max(30,RES.refresh);PERF.fps=1000/avg;PERF.acc=0;PERF.n=0;
+  let d=RES.dpr;
+  if(avg>budget*1.08)d=Math.max(RES.floor,d*.92);
+  else if(avg<budget*.87)d=Math.min(RES.ceil,d*1.05);
+  if(Math.abs(d-RES.dpr)>.015&&now-PERF.lastDprChange>450){
+    PERF.lastDprChange=now;PERF.adj++;applyResolution(d);
+  }
+}
+addEventListener('resize',()=>{
+  applyResponsiveCamera();computeResBand();applyResolution(RES.dpr);
+  updateStaticVisibility(true);renderer.shadowMap.needsUpdate=USE_SHADOWS;
+});
+// ---------------- main loop ----------------// ---------------- main loop ----------------
 const CAMERA_SPEED=38;let lastFrameMs=performance.now(),elapsedTime=0,lastSigT=-1;
 function moveToward(v,target,maxStep){const d=target-v;if(Math.abs(d)<=maxStep)return target;return v+Math.sign(d)*maxStep}
 function animate(now=performance.now()){
   if(window.__pause)return;
   const ms=now-lastFrameMs,dt=Math.min(.05,Math.max(0,ms*.001));lastFrameMs=now;elapsedTime+=dt;const t=elapsedTime;perfTick(ms,now);
   currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);currentY=moveToward(currentY,targetY,7.5*dt);currentZ=moveToward(currentZ,targetZ,13*dt);
-  wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.rotation.set(Math.atan2(LOOK_AT_Y-currentY,currentZ-LOOK_AT_Z),0,0);
+  wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.rotation.set(Math.atan2(LOOK_AT_Y-currentY,currentZ-LOOK_AT_Z),0,0);updateStaticVisibility();
   G.uTime.value=t;G.uCamX.value=currentX;skyDome.position.copy(camera.position);
   updateSun(currentX);updateBackdrop(dt);
   oceanUniforms.uTime.value=t;ocean.position.x=currentX;oceanGlint.position.x=currentX;oceanGlintMat.opacity=.055+.045*(.5+.5*Math.sin(t*.72));
@@ -3351,16 +3411,21 @@ function finalizeWorld(){
   const mats={city:cityMat,grille:grilleMat,glass:glassTMat,decal:decalMat,sign:signMat,print:printMat,poster:posterMat,foliage:foliageMat,puddle:puddleMat,cram:cramMat,net:netMat};
   const order={city:0,foliage:0,grille:1,print:2,sign:3,poster:3,cram:3,decal:5,puddle:5,glass:6,net:7};
   let tris=0,meshes=0;
-  world.chunks.forEach((ch)=>{
+  world.chunks.forEach((ch,ci)=>{
     for(const k in LAYERS){if(!ch[k])continue;const geo=ch[k].geometry(LAYERS[k].uv);if(!geo)continue;tris+=geo.index.count/3;
-      for(const copy of [-1,0,1]){const m=new THREE.Mesh(geo,mats[k]);m.position.x=copy*LOOP_SPAN;m.renderOrder=order[k];
-        if(USE_SHADOWS&&(k==='city'||k==='grille'||k==='foliage')){m.castShadow=true;m.receiveShadow=true}
-        if(USE_SHADOWS&&k==='print')m.receiveShadow=true;
-        m.matrixAutoUpdate=false;m.updateMatrix();scene.add(m);meshes++}
-      ch[k]=null}});
-  world.chunks.clear();return {tris,meshes}
+      for(const copy of [-1,0,1]){
+        const m=new THREE.Mesh(geo,mats[k]);m.position.x=copy*LOOP_SPAN;m.renderOrder=order[k];
+        m.userData.loopX=LAP_MIN+(ci+.5)*CHUNK+copy*LOOP_SPAN;loopCullGroups.push(m);
+        if(USE_SHADOWS&&k==='city'){m.castShadow=true;m.receiveShadow=true}
+        else if(USE_SHADOWS&&(k==='grille'||k==='foliage'||k==='print'))m.receiveShadow=true;
+        m.matrixAutoUpdate=false;m.updateMatrix();scene.add(m);meshes++
+      }
+      ch[k]=null
+    }
+  });
+  world.chunks.clear();updateStaticVisibility(true);return {tris,meshes}
 }
-const T0=performance.now();
+const T0=performance.now();const T0=performance.now();
 buildRoad();
 const builtFrontage=buildCity();
 buildCrossStreet();
@@ -3377,7 +3442,11 @@ console.log('[city] built in',Math.round(performance.now()-T0),'ms ·',Math.roun
   if(renderer.compileAsync)renderer.compileAsync(scene,camera).then(reveal).catch(()=>{renderer.compile(scene,camera);reveal()});
   else{renderer.compile(scene,camera);reveal()}
 }
-requestAnimationFrame(animate);
+let rafHandle=requestAnimationFrame(animate);
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){window.__pause=true}
+  else if(window.__pause){window.__pause=false;lastFrameMs=performance.now();requestAnimationFrame(animate)}
+});
 {const initial=location.hash.slice(1);
 if(initial&&initial!=='hero'&&DATA[initial]){introDismissed=true;intro?.classList.add('hidden');focus(initial,false);currentX=targetX}
 else{focus('hero',false);currentX=targetX}}
