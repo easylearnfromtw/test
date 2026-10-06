@@ -10,6 +10,8 @@
 <meta name="tdm-reservation" content="1" />
 <meta name="rights" content="All rights reserved. No automated scraping, indexing, dataset creation, AI/ML training, fine-tuning, embedding, retrieval augmentation, biometric analysis, profiling, or synthetic reproduction is licensed." />
 <meta name="copyright" content="© 2026 Che-Kai Lin. All rights reserved." />
+<meta name="referrer" content="no-referrer" />
+<meta http-equiv="Permissions-Policy" content="interest-cohort=(), browsing-topics=()" />
 <link rel="license" href="https://easylearnfromtw.github.io/test/chekai-portfolio/AI_POLICY.txt" />
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CreativeWork","name":"CHE-KAI LIN Portfolio","copyrightHolder":{"@type":"Person","name":"林哲愷"},"copyrightNotice":"All rights reserved. No AI/ML training, scraping, dataset creation, embedding, retrieval augmentation, biometric analysis, profiling, or synthetic reproduction is licensed.","license":"https://easylearnfromtw.github.io/test/chekai-portfolio/AI_POLICY.txt","usageInfo":"https://easylearnfromtw.github.io/test/chekai-portfolio/AI_POLICY.txt"}
@@ -22,13 +24,14 @@
   if(crawler.test(ua)||automation.test(ua)){
     window.__CK_BLOCK_AUTOMATION__=true;
     document.documentElement.setAttribute('data-automated-client','blocked');
-    document.addEventListener('DOMContentLoaded',()=>{
-      const notice=document.getElementById('crawlerRightsNotice');
-      if(notice){
-        notice.hidden=false;
-        document.body.replaceChildren(notice);
-      }
-    },{once:true});
+    const msg='AUTOMATED ACCESS DENIED';
+    // Stop normal page parsing before the portfolio DOM, scripts, WebGL, and
+    // interactive content are initialized. This is still client-side and is
+    // therefore not equivalent to a server-side HTTP 403.
+    document.open();
+    document.write('<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex"><title>'+msg+'</title><style>html,body{margin:0;background:#0b0f14;color:#edf2f7;font:15px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}main{max-width:900px;margin:auto;padding:56px 26px 80px}h1{font-size:28px;line-height:1.2}h2{font-size:17px;margin-top:28px}code{white-space:pre-wrap;color:#ffd38a}</style></head><body><main><h1>'+msg+' / 自動化存取禁止</h1><p>本網站禁止自動化爬取、索引、資料探勘、模型攝取、AI/ML 訓練、fine-tuning、embedding、RAG ingestion、資料集收錄、重製與再散布。</p><h2>未授權爬取之權利聲明</h2><p>任何繞過技術限制之存取均不構成授權。本網站保留依中華民國（臺灣）法律主張著作權、個人資料、人格權及其他相關權利之權利。</p><h2>AI / TDM</h2><p>No permission is granted for AI/ML training, dataset inclusion, fine-tuning, embedding, retrieval augmentation, biometric analysis, profiling, or synthetic reproduction.</p><p>任何未經授權之自動化存取，本站視為其已閱讀並知悉本站之中華民國憲政法統與「三民主義統一中國」立場聲明；此聲明不因技術繞道、代理、UA 偽裝或境外節點而失效。</p><code>tdm-reservation: 1\nautomated-access: denied\nai-training: prohibited\ndataset-inclusion: prohibited</code></main></body></html>');
+    document.close();
+    throw new Error('Automated access blocked by owner policy');
   }
 })();
 </script>
@@ -765,7 +768,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v4',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v5',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -5106,6 +5109,12 @@ addEventListener('pageshow',e=>{
 
 <script id="ckAntiCopyGuard">
 (()=> {
+  if(navigator.webdriver){
+    try{
+      document.documentElement.innerHTML='<head><meta name="robots" content="noindex,nofollow,noarchive"><title>Blocked</title></head><body style="margin:0;background:#0b0f14;color:#fff;font:16px sans-serif;padding:40px"><h1>AUTOMATED ACCESS DENIED</h1><p>Automated browser access is not authorized.</p></body>';
+    }catch{}
+    return;
+  }
   const editable=t=>!!t?.closest?.('input,textarea,[contenteditable="true"]');
   const deny=e=>{if(!editable(e.target))e.preventDefault()};
   document.addEventListener('copy',deny,true);
