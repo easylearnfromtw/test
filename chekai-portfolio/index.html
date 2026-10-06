@@ -130,7 +130,9 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 
   .intro{padding:calc(66px + env(safe-area-inset-top)) 12px calc(82px + env(safe-area-inset-bottom));align-items:center}
   .intro-card{
-    width:min(94vw,430px);max-height:calc(100dvh - 150px);overflow:auto;
+    width:min(92vw,430px);
+    max-height:min(78dvh,calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 54px));
+    overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
     padding:22px 18px 18px;box-shadow:0 18px 46px rgba(7,20,27,.26),5px 5px 0 rgba(23,75,58,.14)
   }
   .intro-name{font-size:clamp(48px,16vw,68px)!important;margin:25px 0 4px}
@@ -141,21 +143,24 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   .intro-enter{font-size:10px;padding:10px 11px}
   .intro-seal{width:44px!important;height:44px!important;right:15px!important;top:15px!important;font-size:10px!important}
 
-  /* Bottom-sheet details preserve the upper city instead of covering the entire portrait screen. */
+  /* Every billboard/detail popup is a true centered modal on portrait phones. */
   .drawer{
-    left:8px!important;right:8px!important;top:auto!important;
-    bottom:calc(68px + env(safe-area-inset-bottom))!important;
-    width:auto!important;height:min(66dvh,590px);padding:18px 16px 20px;
-    border-radius:22px 22px 17px 17px;
-    transform:translateY(calc(100% + 96px))!important;
-    transition:transform .38s cubic-bezier(.16,.84,.24,1);
-    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    left:50%!important;right:auto!important;top:50%!important;bottom:auto!important;
+    width:min(92vw,430px)!important;height:auto!important;
+    max-height:min(76dvh,calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 54px));
+    padding:18px 16px 20px;border-radius:20px;
+    transform:translate(-50%,-47%) scale(.96)!important;
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:transform .34s cubic-bezier(.16,.84,.24,1),opacity .22s ease,visibility 0s linear .34s;
+    overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    box-shadow:0 22px 70px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.08);
   }
-  .drawer.open{transform:translateY(0)!important}
-  .drawer::before{
-    content:"";position:sticky;display:block;top:0;margin:-8px auto 10px;width:38px;height:4px;
-    border-radius:4px;background:rgba(255,255,255,.24);z-index:2
+  .drawer.open{
+    transform:translate(-50%,-50%) scale(1)!important;
+    opacity:1;visibility:visible;pointer-events:auto;
+    transition:transform .34s cubic-bezier(.16,.84,.24,1),opacity .22s ease,visibility 0s;
   }
+  .drawer::before{display:none!important}
   .close{position:sticky;top:0;z-index:4;float:right;width:36px;height:36px;background:#101827}
   .dk{font-size:8px;margin-top:1px}.drawer h2{font-size:clamp(30px,9vw,38px)!important;margin-bottom:9px}
   .drawer p{font-size:11px;line-height:1.55;margin:0 0 8px}
@@ -190,7 +195,12 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 }
 @media (max-width:390px) and (orientation:portrait){
   .intro-copy{font-size:12px}.intro-meta{align-items:center}
-  .drawer{left:6px!important;right:6px!important;padding-left:13px;padding-right:13px;height:min(64dvh,560px)}
+  .intro-card{width:94vw}
+  .drawer{
+    left:50%!important;right:auto!important;width:94vw!important;
+    max-height:min(74dvh,calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 44px));
+    padding-left:13px;padding-right:13px
+  }
   .profile-grid{grid-template-columns:1fr 1fr!important}
   .tabbar button{min-width:40px;padding-left:10px;padding-right:10px}
 }
@@ -199,7 +209,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v4.9-portrait: phone portrait composition + Taiwan bus outbound -->
+<!-- taiwan-street-pro v5.0-mobile-modal: centered unclipped portrait popups + Taiwan bus outbound -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
