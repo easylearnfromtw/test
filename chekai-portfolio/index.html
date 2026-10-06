@@ -36,6 +36,23 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 @keyframes introNudge{0%,100%{transform:translateX(0);opacity:.62}50%{transform:translateX(7px);opacity:1}}
 @media(max-width:560px){.topbar{top:18px}.brand{font-size:24px;letter-spacing:.16em}
 .intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
+.ad-hint{position:fixed;z-index:55;left:50%;bottom:78px;width:min(470px,calc(100vw - 28px));transform:translate(-50%,18px) rotate(-.35deg) scale(.98);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,transform .34s cubic-bezier(.16,.84,.24,1),visibility 0s linear .34s}
+.ad-hint.show{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0) rotate(-.35deg) scale(1);transition:opacity .24s ease,transform .34s cubic-bezier(.16,.84,.24,1),visibility 0s}
+.ad-hint-card{position:relative;background:#f3eee2;color:#174b3a;border:2px solid #174b3a;padding:15px 48px 14px 17px;box-shadow:5px 5px 0 rgba(23,75,58,.24),0 16px 42px rgba(7,20,27,.24)}
+.ad-hint-card::before{content:'';position:absolute;left:0;right:0;top:7px;border-top:1px dashed rgba(23,75,58,.24)}
+.ad-hint-kicker{display:flex;align-items:center;gap:8px;margin-bottom:8px;font:900 8px/1 var(--mono);letter-spacing:.15em;color:#9e3d39;text-transform:uppercase}
+.ad-hint-kicker i{width:7px;height:7px;border-radius:50%;background:#c94a43;display:block}
+.ad-hint-text{font:900 15px/1.45 "Noto Sans TC",var(--sans),sans-serif;letter-spacing:.01em}
+.ad-hint-text b{background:#f3bf53;padding:1px 5px;border:1px solid rgba(23,75,58,.18);box-shadow:2px 2px 0 rgba(23,75,58,.14)}
+.ad-hint-close{position:absolute;right:10px;top:10px;width:29px;height:29px;border:1.5px solid #174b3a;border-radius:0;background:#f3bf53;color:#174b3a;font:950 17px/1 var(--sans);cursor:pointer;box-shadow:2px 2px 0 #174b3a}
+.ad-hint-seal{position:absolute;right:48px;bottom:-9px;padding:3px 6px;background:#c94a43;color:#f7f2e7;font:900 7px/1 "Noto Sans TC",sans-serif;letter-spacing:.08em;transform:rotate(3deg);border:1px solid #f7f2e7}
+@media(max-width:600px) and (orientation:portrait){
+  .ad-hint{bottom:calc(72px + env(safe-area-inset-bottom));width:min(92vw,430px)}
+  .ad-hint-card{padding:13px 44px 13px 14px}
+  .ad-hint-text{font-size:13px;line-height:1.5}
+  .ad-hint-kicker{font-size:7px}
+  .ad-hint-close{width:28px;height:28px;right:9px;top:9px}
+}
 .drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.item-link{position:relative;display:block;color:inherit;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}.item-link::after{content:'↗';position:absolute;right:12px;top:10px;color:#70c6f4;font-size:15px}.item-link:hover{background:rgba(112,198,244,.08);border-color:rgba(112,198,244,.28);transform:translateY(-1px)}.item-link b,.item-link span{padding-right:22px}
 .item-image{position:relative;display:block;width:100%;appearance:none;text-align:left;color:inherit;font:inherit;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
 .item-image::after{content:'▧';position:absolute;right:12px;top:10px;color:#d85d99;font-size:16px}
@@ -263,7 +280,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.6-running-blog: training log blog + controller data feed -->
+<!-- taiwan-street-pro v5.7-ad-hint: welcome-style closable ad navigation notice -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -279,6 +296,14 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
         <div class="intro-swipe"><span class="intro-arrows">← →</span><span>左右滑動<br>探索城市</span></div>
         <button class="intro-enter" id="introEnter" type="button">開始探索 →</button>
       </div>
+    </section>
+  </div>
+  <div class="ad-hint" id="adHint" aria-live="polite" aria-hidden="true">
+    <section class="ad-hint-card">
+      <button class="ad-hint-close" id="adHintClose" type="button" aria-label="關閉提示">×</button>
+      <div class="ad-hint-kicker"><i></i><span>CITY NOTICE / 使用提示</span></div>
+      <div class="ad-hint-text">點擊<b>「廣告」</b>開啟相關分頁！</div>
+      <div class="ad-hint-seal">探索提示</div>
     </section>
   </div>
   <div class="chrome">
@@ -3664,13 +3689,17 @@ function buildBirds(){
 const CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
 let activeId='hero',cycleCursor=0,introDismissed=false;
 const intro=document.getElementById('intro'),introEnter=document.getElementById('introEnter');
+const adHint=document.getElementById('adHint'),adHintClose=document.getElementById('adHintClose');
+function showAdHint(){adHint?.classList.add('show');adHint?.setAttribute('aria-hidden','false')}
+function closeAdHint(){adHint?.classList.remove('show');adHint?.setAttribute('aria-hidden','true')}
+adHintClose?.addEventListener('click',e=>{e.stopPropagation();closeAdHint()});
 function dismissIntro(dir=1,advance=true){
   if(introDismissed)return false;
   introDismissed=true;intro?.classList.add('hidden');
   if(advance)focus(dir>=0?CYCLE[0]:CYCLE[CYCLE.length-1],false,dir>=0?0:-1);
   return true
 }
-introEnter?.addEventListener('click',e=>{e.stopPropagation();dismissIntro(1,true)});
+introEnter?.addEventListener('click',e=>{e.stopPropagation();if(dismissIntro(1,true))requestAnimationFrame(()=>setTimeout(showAdHint,180))});
 const nav=document.getElementById('nav');if(nav)['hero',...CYCLE].forEach((id,i)=>{const b=document.createElement('button');b.textContent=id==='hero'?'Home':DATA[id].index+' '+DATA[id].nav;b.dataset.id=id;if(!i)b.classList.add('active');b.onclick=()=>focus(id,true);nav.appendChild(b)});
 // Liquid Glass tab bar: tap a tab, or drag the capsule and let go — it snaps and the camera flies there
 const tabbar=document.getElementById('tabbar'),tabCap=document.getElementById('tabCap'),TABS=[],tabDrag={on:false,moved:false,x0:0,l0:0,id:0};
