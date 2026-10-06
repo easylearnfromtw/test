@@ -95,7 +95,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .runblog-home{padding:26px 26px 34px}
 .runblog-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px;margin-bottom:26px}
 .runblog-title{padding:26px;border:1px solid #c8c0b1;background:#f7f3e9}.runblog-kicker{font:850 9px/1 var(--mono);letter-spacing:.18em;color:#b0466f;text-transform:uppercase}.runblog-title h2{margin:12px 0 8px;font:950 clamp(42px,6.5vw,82px)/.88 var(--sans);letter-spacing:-.065em}.runblog-title p{max-width:650px;margin:0;font:500 14px/1.7 var(--sans);color:#5a544a}
-.runblog-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.runblog-stat{min-height:105px;padding:15px;border:1px solid #c8c0b1;background:#e9e1d2}.runblog-stat em{display:block;font:850 8px/1 var(--mono);letter-spacing:.13em;color:#776f62;font-style:normal}.runblog-stat strong{display:block;margin-top:10px;font:950 28px/1 var(--sans);letter-spacing:-.05em}.runblog-stat span{display:block;margin-top:5px;font:700 9px/1.4 var(--mono);color:#776f62}
+.runblog-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.runblog-stat{min-height:118px;padding:17px;border:1px solid #c8c0b1;background:#e9e1d2}.runblog-stat.pb{background:#173f35;color:#f7f3e9;border-color:#173f35}.runblog-stat.history{background:#f0c667;border-color:#c6a14d}.runblog-stat em{display:block;font:850 8px/1 var(--mono);letter-spacing:.13em;color:#776f62;font-style:normal}.runblog-stat.pb em,.runblog-stat.pb span{color:#c9d8d1}.runblog-stat.history em,.runblog-stat.history span{color:#69562d}.runblog-stat strong{display:block;margin-top:11px;font:950 31px/1 var(--sans);letter-spacing:-.05em}.runblog-stat span{display:block;margin-top:7px;font:700 9px/1.4 var(--mono);color:#776f62}
 .runblog-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:0 0 12px}.runblog-section-head h3{margin:0;font:950 24px/1 var(--sans);letter-spacing:-.045em}.runblog-section-head span{font:750 8px/1 var(--mono);letter-spacing:.12em;color:#7d7466}
 .runblog-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.run-card{appearance:none;text-align:left;color:inherit;border:1px solid #c8c0b1;background:#faf7ef;padding:0;cursor:pointer;overflow:hidden;transition:transform .18s,box-shadow .18s}.run-card:hover{transform:translateY(-2px);box-shadow:5px 6px 0 #c7bdab}.run-card-top{padding:15px 16px 13px;border-bottom:1px solid #d3ccbe}.run-card-date{font:850 8px/1 var(--mono);letter-spacing:.12em;color:#b0466f}.run-card h4{margin:8px 0 0;font:900 20px/1.05 var(--sans);letter-spacing:-.035em}.run-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}.run-card-metric{padding:12px;border-right:1px solid #ddd5c7}.run-card-metric:last-child{border-right:0}.run-card-metric em{display:block;font:800 7px/1 var(--mono);letter-spacing:.11em;color:#8c8375;font-style:normal}.run-card-metric strong{display:block;margin-top:5px;font:900 16px/1 var(--sans)}.run-card-note{padding:13px 16px 15px;font:500 11px/1.55 var(--sans);color:#5f584d}
 .runblog-empty{padding:48px 24px;border:1px dashed #bbb09f;text-align:center;background:#f8f4eb}.runblog-empty strong{display:block;font:900 22px/1.1 var(--sans)}.runblog-empty span{display:block;margin-top:8px;font:650 10px/1.6 var(--mono);color:#7d7466}
@@ -4034,26 +4034,56 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 function num(v,d=1){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—'}
 function formatRunDate(v){if(!v)return'—';const d=new Date(v+'T12:00:00');return Number.isNaN(d.getTime())?esc(v):d.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'})}
 function runMetric(label,value){return `<div class="run-card-metric"><em>${label}</em><strong>${esc(value||'—')}</strong></div>`}
+function runDurationSeconds(v){
+  if(!v)return 0;
+  const a=String(v).trim().split(':').map(Number);
+  if(!a.length||a.some(Number.isNaN))return 0;
+  if(a.length===3)return a[0]*3600+a[1]*60+a[2];
+  if(a.length===2)return a[0]*60+a[1];
+  return a[0]||0
+}
+function runPaceSeconds(p){
+  const m=String(p?.pace||'').match(/(\d+)\s*:\s*(\d{1,2})/);
+  if(m)return Number(m[1])*60+Number(m[2]);
+  const d=Number(p?.distance_km)||0,t=runDurationSeconds(p?.duration);
+  return d>0&&t>0?t/d:0
+}
+function runPaceLabel(sec){
+  if(!sec||!Number.isFinite(sec))return '—';
+  let m=Math.floor(sec/60),ss=Math.round(sec%60);
+  if(ss===60){m+=1;ss=0}
+  return m+':'+String(ss).padStart(2,'0')+'/km'
+}
 function renderRunningBlog(){
   const posts=trainingPosts.filter(p=>p.published!==false).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
   const totalKm=posts.reduce((a,p)=>a+(Number(p.distance_km)||0),0);
-  const totalElev=posts.reduce((a,p)=>a+(Number(p.elevation_m)||0),0);
-  const latest=posts[0]?.date?formatRunDate(posts[0].date):'—';
+  const paced=posts.map(p=>({p,sec:runPaceSeconds(p)})).filter(x=>x.sec>0).sort((a,b)=>a.sec-b.sec);
+  const pb=paced[0]||null;
+  const latestFive=posts.slice(0,5);
+
   runBlogStats.innerHTML=`
-    <div class="runblog-stat"><em>RUNS</em><strong>${posts.length}</strong><span>published entries</span></div>
-    <div class="runblog-stat"><em>DISTANCE</em><strong>${num(totalKm,1)} km</strong><span>total logged</span></div>
-    <div class="runblog-stat"><em>ELEVATION</em><strong>${Math.round(totalElev)} m</strong><span>total gain</span></div>
-    <div class="runblog-stat"><em>LATEST</em><strong style="font-size:18px">${latest}</strong><span>last update</span></div>`;
-  runBlogUpdated.textContent=posts.length?`${posts.length} POSTS`:'NO POSTS YET';
+    <div class="runblog-stat pb">
+      <em>PB</em>
+      <strong>${pb?runPaceLabel(pb.sec):'—'}</strong>
+      <span>${pb?'最佳平均配速 · '+formatRunDate(pb.p.date):'尚無可計算紀錄'}</span>
+    </div>
+    <div class="runblog-stat history">
+      <em>TOTAL DISTANCE</em>
+      <strong>${num(totalKm,1)} km</strong>
+      <span>歷史累積 · ${posts.length} 次跑步</span>
+    </div>`;
+
+  runBlogUpdated.textContent=posts.length?`LATEST ${Math.min(5,posts.length)} / ${posts.length} RUNS`:'NO RUNS YET';
   if(!posts.length){
-    runBlogList.innerHTML='<div class="runblog-empty"><strong>第一篇還沒刊登</strong><span>從 Controllerforpersonalweb 新增訓練後，會自動出現在這裡。</span></div>';return
+    runBlogList.innerHTML='<div class="runblog-empty"><strong>還沒有跑步紀錄</strong><span>從 Controllerforpersonalweb 新增訓練後，會自動出現在這裡。</span></div>';return
   }
-  runBlogList.innerHTML=posts.map(p=>`
+
+  runBlogList.innerHTML=latestFive.map(p=>`
     <button class="run-card" type="button" data-run-id="${esc(p.id)}">
       <div class="run-card-top"><span class="run-card-date">${formatRunDate(p.date)} · ${esc((p.type||'RUN').toUpperCase())}</span><h4>${esc(p.title||'Training Run')}</h4></div>
       <div class="run-card-grid">
         ${runMetric('DISTANCE',(Number(p.distance_km)||0)?num(p.distance_km,2)+' km':'—')}
-        ${runMetric('PACE',p.pace||'—')}
+        ${runMetric('PACE',p.pace||runPaceLabel(runPaceSeconds(p)))}
         ${runMetric('TIME',p.duration||'—')}
       </div>
       <div class="run-card-note">${esc((p.note||'').slice(0,110)||'查看完整訓練紀錄 →')}</div>
