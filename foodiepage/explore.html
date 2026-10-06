@@ -1,1 +1,186 @@
-<!doctype html><html lang='zh-Hant'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'><title>探索地圖｜Foodie Page</title><link rel='stylesheet' href='https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.css'><link rel='stylesheet' href='foodie-r3.css'></head><body class='explore-page'><div class='explore-shell'><section class='map-pane'><div class='real-map' id='realMap'></div><div class='map-fallback' id='mapFallback'><span>正在載入開源向量地圖…</span></div><div class='map-top'><a class='map-brand glass' href='index.html'><span class='brand-mark'>腹</span><span class='stack'><b>腹地圖</b><small>FOODIE PAGE</small></span></a><label class='map-search glass'><span>⌕</span><input id='searchInput' placeholder='店家、料理、區域，或 300 元內不排隊'></label><button class='round glass' id='locateBtn'>◎</button></div><div class='filters'><button class='chip active'>現在營業</button><button class='chip'>不排隊</button><button class='chip'>300 元內</button><button class='chip'>必比登</button><button class='chip'>一個人吃</button><button class='chip'>宵夜</button></div><div class='map-note glass'><a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>© OpenStreetMap contributors</a> · <a href='https://protomaps.com' target='_blank' rel='noopener'>Protomaps</a></div><button class='random-btn' id='randomBtn'>🎲 幫我決定</button><aside class='place-drawer show' id='drawer'><div class='drawer-row'><div class='food-thumb noodle' id='drawerThumb'></div><div class='drawer-copy'><div class='eyebrow'>三重 · 450m</div><h3 id='drawerTitle'>巷口牛肉麵研究所</h3><p id='drawerMeta'>牛肉麵 · $ · 排 10 分</p><div class='tags'><span class='pill good'>再訪 93%</span><span class='pill warn'>Bib Gourmand</span></div></div></div><div class='drawer-actions'><a class='btn red' href='place.html'>看店家</a><a class='btn ghost' href='forum.html'>看討論</a></div></aside></section><aside class='explore-side'><div class='side-head'><div><div class='eyebrow'>YOUR FOOD TERRITORY</div><h1>今天，吃哪裡？</h1></div><div class='profile-dot'>FP</div></div><div class='side-tabs'><a class='active' href='explore.html'>附近</a><a href='forum.html'>討論</a><a href='place.html'>榜單</a><a href='profile.html'>收藏</a></div><div class='side-scroll'><section class='explore-hero'><small>腹地圖 · Prototype</small><h2>不是找店，是找到現在最適合的那一間。</h2><p>把地點、菜色、排隊狀況與真實討論疊在同一張地圖上。</p></section><div class='section-title'><h3>你附近正在紅</h3><span>三重 → 台北</span></div><div class='result-list'><article class='result-card' data-id='1'><div class='food-thumb noodle'></div><div class='result-main'><h4>巷口牛肉麵研究所</h4><p>三重 · 牛肉麵 · 450m · $</p><div class='tags'><span class='pill good'>口味 4.8</span><span class='pill warn'>排 10 分</span><span class='pill'>再訪 93%</span></div><div class='mini-comment'>在地人：牛筋比牛肉更值得點，平日六點前幾乎不用排。</div></div></article><article class='result-card' data-id='2'><div class='food-thumb cafe'></div><div class='result-main'><h4>河岸咖啡室</h4><p>三重 · 咖啡 · 800m · $$</p><div class='tags'><span class='pill good'>安靜 4.7</span><span class='pill'>插座多</span><span class='pill'>再訪 88%</span></div></div></article><article class='result-card' data-id='3'><div class='food-thumb hotpot'></div><div class='result-main'><h4>小鍋計畫</h4><p>中山 · 個人鍋 · 2.1km · $$</p><div class='tags'><span class='pill good'>CP 4.7</span><span class='pill red'>排 35 分</span><span class='pill'>份量 4.6</span></div></div></article></div></div></aside></div><div class='toast' id='toast'></div><script src='https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.js'></script><script src='https://unpkg.com/pmtiles@4.4.1/dist/pmtiles.js'></script><script src='https://unpkg.com/@protomaps/basemaps@5/dist/basemaps.js' crossorigin='anonymous'></script><script src='foodie-r3.js'></script></body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e8">
+<title>探索地圖｜Foodie Page 腹地圖</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.css">
+<link rel="stylesheet" href="foodie-r3.css">
+<link rel="stylesheet" href="foodie-explore-r4.css">
+</head>
+<body class="explore-page explore-r4">
+<div class="explore-shell">
+  <section class="map-pane" aria-label="Foodie Page 開源向量地圖">
+    <div class="real-map" id="realMap"></div>
+    <div class="map-fallback" id="mapFallback"><span>正在載入開源向量地圖…</span></div>
+
+    <div class="map-top">
+      <a class="map-brand glass" href="index.html" aria-label="回到腹地圖首頁">
+        <span class="brand-mark">腹</span>
+        <span class="stack"><b>腹地圖</b><small>FOODIE PAGE</small></span>
+      </a>
+      <label class="map-search glass">
+        <span>⌕</span>
+        <input id="searchInput" placeholder="店家、料理、區域，或「300 元內不排隊」" autocomplete="off">
+      </label>
+      <div class="area-badge glass"><i></i>三重・光明生活圈</div>
+    </div>
+
+    <div class="filters">
+      <button class="chip active">現在營業</button>
+      <button class="chip">不排隊</button>
+      <button class="chip">300 元內</button>
+      <button class="chip">必比登</button>
+      <button class="chip">一個人吃</button>
+      <button class="chip">宵夜</button>
+      <button class="chip">咖啡</button>
+    </div>
+    <div class="result-count">128 家</div>
+
+    <div class="map-controls" aria-label="地圖控制">
+      <button class="map-control" id="zoomIn" aria-label="放大">＋</button>
+      <button class="map-control" id="zoomOut" aria-label="縮小">−</button>
+      <button class="map-control small" id="resetView" aria-label="回到預設視角"><span id="zoomValue">14×</span></button>
+      <button class="map-control" id="locateBtn" aria-label="定位">◎</button>
+    </div>
+
+    <div class="map-note glass">
+      <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>
+      ·
+      <a href="https://protomaps.com" target="_blank" rel="noopener">Protomaps</a>
+    </div>
+
+    <button class="random-btn" id="randomBtn">🎲 幫我決定</button>
+
+    <aside class="place-drawer show" id="drawer">
+      <div class="drawer-row">
+        <div class="food-thumb noodle" id="drawerThumb"></div>
+        <div class="drawer-copy">
+          <div class="eyebrow">附近推薦</div>
+          <h3 id="drawerTitle">巷口牛肉麵研究所</h3>
+          <p id="drawerMeta">牛肉麵 · $ · 排 10 分</p>
+          <div class="tags">
+            <span class="pill good">再訪 93%</span>
+            <span class="pill warn">Bib Gourmand</span>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-actions">
+        <a class="btn red" href="place.html">看店家</a>
+        <a class="btn ghost" href="forum.html">看討論</a>
+      </div>
+    </aside>
+  </section>
+
+  <aside class="explore-side">
+    <button class="sheet-grabber" id="sheetToggle" aria-label="調整清單高度"></button>
+
+    <div class="side-head">
+      <div>
+        <div class="eyebrow">NEARBY NOW</div>
+        <h1>附近 128 家</h1>
+        <div class="side-sub"><i></i>平均候位 12 分 · 186 家今晚仍營業</div>
+      </div>
+      <a class="profile-dot" href="profile.html">FP</a>
+    </div>
+
+    <div class="side-tabs">
+      <a class="active" href="explore.html">附近</a>
+      <a href="forum.html">討論</a>
+      <a href="place.html">榜單</a>
+      <a href="profile.html">收藏</a>
+    </div>
+
+    <div class="side-scroll">
+      <section class="mobile-selected">
+        <div class="food-thumb noodle" id="mobileSelectedThumb"></div>
+        <div class="mobile-selected-main">
+          <b id="mobileSelectedTitle">巷口牛肉麵研究所</b>
+          <span id="mobileSelectedMeta">三重 · 牛肉麵 · 再訪 93%</span>
+        </div>
+        <a href="place.html">查看 →</a>
+      </section>
+
+      <section class="decision-strip">
+        <div>
+          <small>現在最適合</small>
+          <b id="decisionPlace">巷口牛肉麵研究所</b>
+        </div>
+        <button id="decisionShuffle">換一間 ↻</button>
+      </section>
+
+      <div class="section-title">
+        <h3>你附近正在紅</h3>
+        <span>即時更新</span>
+      </div>
+
+      <div class="result-list">
+        <article class="result-card selected" data-id="1">
+          <div class="food-thumb noodle"></div>
+          <div class="result-main">
+            <h4>巷口牛肉麵研究所</h4>
+            <p>三重 · 牛肉麵 · 450m · $</p>
+            <div class="tags">
+              <span class="pill good">口味 4.8</span>
+              <span class="pill warn">排 10 分</span>
+            </div>
+            <div class="result-status"><i></i>營業中 · 平日六點前較不需排</div>
+          </div>
+          <span class="result-score">4.8</span>
+        </article>
+
+        <article class="result-card" data-id="2">
+          <div class="food-thumb cafe"></div>
+          <div class="result-main">
+            <h4>河岸咖啡室</h4>
+            <p>三重 · 咖啡 · 800m · $$</p>
+            <div class="tags">
+              <span class="pill good">安靜 4.7</span>
+              <span class="pill">插座多</span>
+            </div>
+            <div class="result-status"><i></i>營業中 · 靠窗位目前有空位</div>
+          </div>
+          <span class="result-score">4.6</span>
+        </article>
+
+        <article class="result-card" data-id="3">
+          <div class="food-thumb hotpot"></div>
+          <div class="result-main">
+            <h4>小鍋計畫</h4>
+            <p>中山 · 個人鍋 · 2.1km · $$</p>
+            <div class="tags">
+              <span class="pill good">CP 4.7</span>
+              <span class="pill red">排 35 分</span>
+            </div>
+            <div class="result-status"><i></i>吧台位較快 · 牛肋條還有</div>
+          </div>
+          <span class="result-score">4.7</span>
+        </article>
+
+        <article class="result-card" data-id="4">
+          <div class="food-thumb noodle"></div>
+          <div class="result-main">
+            <h4>南城鵝肉攤</h4>
+            <p>大安 · 台菜 · 3.0km · $$</p>
+            <div class="tags">
+              <span class="pill good">在地常客</span>
+              <span class="pill">再訪 89%</span>
+            </div>
+            <div class="result-status"><i></i>營業中 · 目前約等 15 分</div>
+          </div>
+          <span class="result-score">4.5</span>
+        </article>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/pmtiles@4.4.1/dist/pmtiles.js"></script>
+<script src="https://unpkg.com/@protomaps/basemaps@5/dist/basemaps.js" crossorigin="anonymous"></script>
+<script src="foodie-explore-r4.js"></script>
+</body>
+</html>
