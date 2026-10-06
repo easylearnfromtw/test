@@ -768,7 +768,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v7',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v8',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -4580,6 +4580,10 @@ function restoreOutboundSnapshot(saved){
 }
 function openDrawer(id){
   closeCertificate();closeRunningBlog();
+  document.getElementById('jxStory')?.classList.remove('open');
+  document.getElementById('jxStory')?.setAttribute('aria-hidden','true');
+  document.getElementById('essayStory')?.classList.remove('open');
+  document.getElementById('essayStory')?.setAttribute('aria-hidden','true');
   const d=DATA[id],dk=document.getElementById('dk'),dt=document.getElementById('dt'),di=document.getElementById('di'),items=document.getElementById('items');
   dk.textContent=`${d.index} / ${d.nav}`;
   if(id==='about'){
@@ -4620,8 +4624,33 @@ function openDrawer(id){
       b.addEventListener('click',openCertificate,{passive:false})
     });
     items.querySelectorAll('[data-training-blog]').forEach(b=>b.addEventListener('click',openRunningBlog));
-    items.querySelectorAll('[data-jx-story]').forEach(b=>b.addEventListener('click',openJxStory));
-    items.querySelectorAll('[data-essay-story]').forEach(b=>b.addEventListener('click',openEssayStory));
+    // Require a fresh gesture that starts on the JX row itself.
+    // This prevents the pointer/touch used to open the Experience drawer from
+    // becoming a delayed/ghost click on the newly rendered JX button.
+    items.querySelectorAll('[data-jx-story]').forEach(b=>{
+      let armed=false;
+      b.addEventListener('pointerdown',e=>{if(e.isTrusted)armed=true},{passive:true});
+      b.addEventListener('pointercancel',()=>{armed=false},{passive:true});
+      b.addEventListener('blur',()=>{armed=false});
+      b.addEventListener('click',e=>{
+        const keyboardActivation=e.isTrusted&&e.detail===0;
+        if(!armed&&!keyboardActivation){e.preventDefault();e.stopPropagation();return}
+        armed=false;
+        openJxStory();
+      });
+    });
+    items.querySelectorAll('[data-essay-story]').forEach(b=>{
+      let armed=false;
+      b.addEventListener('pointerdown',e=>{if(e.isTrusted)armed=true},{passive:true});
+      b.addEventListener('pointercancel',()=>{armed=false},{passive:true});
+      b.addEventListener('blur',()=>{armed=false});
+      b.addEventListener('click',e=>{
+        const keyboardActivation=e.isTrusted&&e.detail===0;
+        if(!armed&&!keyboardActivation){e.preventDefault();e.stopPropagation();return}
+        armed=false;
+        openEssayStory();
+      });
+    });
     items.querySelectorAll('[data-coming-soon]').forEach(b=>b.addEventListener('click',()=>alert('還在籌備中')))
   }
   drawer.classList.add('open')
