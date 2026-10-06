@@ -768,7 +768,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v6',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v7',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -834,7 +834,21 @@ const DATA={
   ['閒台文 Taiwanway','互動式中文與台灣文化網站','https://easylearnfromtw.github.io/Taiwanway/'],
   ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品',null,{type:'coming_soon'}]
 ]},
- experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'服務、社團、媒體與企劃經歷。',accent:'#e36aa8',items:[['新北市服務學習社團楷模王114年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],['新北市服務學習社團楷模王115年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌',null,{category:'服務與公共參與'}],['市三重高中躲貓貓社創社社長、公關','創社社長｜公關',null,{category:'社團與領導'}],['市三重高中見賢思琪社｜創社副社長、美宣','Founding Vice President / Visual Design',null,{type:'jx_story',category:'社團與領導'}],['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524',{category:'媒體與寫作'}],['基隆海洋文學大賽 參與','文學與主題寫作參與',null,{category:'媒體與寫作'}],['台灣聯合大學企劃 參與','企劃與專案參與經歷',null,{category:'企劃與培訓'}],['CDBA中華辯會 辯論參與','辯論與工作坊參與',null,{category:'企劃與培訓'}]]},
+ experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'媒體、社團、服務與企劃經歷。',accent:'#e36aa8',items:[
+['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524',{category:'媒體與寫作'}],
+['基隆海洋文學大賽 參與','文學與主題寫作參與',null,{category:'媒體與寫作'}],
+['市三重高中躲貓貓社創社社長、公關','創社社長｜公關',null,{category:'社團與領導'}],
+['市三重高中見賢思琪社｜創社副社長、美宣','Founding Vice President / Visual Design',null,{type:'jx_story',category:'社團與領導'}],
+['新北市服務學習社團楷模王114年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],
+['新北市服務學習社團楷模王115年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],
+['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌',null,{category:'服務與公共參與'}],
+['新北市114年度三重暨雙和分區幼童軍練團活動 主辦','幼童軍練團活動｜主辦',null,{category:'服務與公共參與'}],
+['愛維養護中心社團服務 主辦','養護中心社團服務｜主辦',null,{category:'服務與公共參與'}],
+['綠島國小送書去旅行服務','送書去旅行｜綠島國小',null,{category:'服務與公共參與'}],
+['嘉寶國小送書去旅行服務','送書去旅行｜嘉寶國小',null,{category:'服務與公共參與'}],
+['台灣聯合大學企劃 參與','企劃與專案參與經歷',null,{category:'企劃與培訓'}],
+['CDBA中華辯會 辯論參與','辯論與工作坊參與',null,{category:'企劃與培訓'}]
+]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['中原大學理工類群先修課程','理工類群大學先修']]},
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書','公共議題評論與媒體投書','https://newtalk.tw/citizen/author/319524'],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作'],['小論文比賽（藝術類）','藝術類｜建築雨山的對話',null,{type:'essay_story'}]]},
  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
@@ -856,7 +870,7 @@ if(SITE_CONTENT?.site){
 }
 
 if(DATA.experience?.items){
-  const experienceCategoryOrder=['服務與公共參與','社團與領導','媒體與寫作','企劃與培訓'];
+  const experienceCategoryOrder=['媒體與寫作','社團與領導','服務與公共參與','企劃與培訓'];
   const originalExperienceItems=DATA.experience.items.slice();
   const categorized=[];
   for(const category of experienceCategoryOrder){
