@@ -4984,12 +4984,9 @@ const PHOTO_STORIES={
     lead:'辯論與工作坊參與紀錄。',
     mark:'CDBA',
     accent:'#45a99a',
-    images:[
-      {src:'./assets/photo-stories/cdba-01.jpeg',label:'活動照',meta:'活動照'},
-      {src:'./assets/photo-stories/cdba-02.jpeg',label:'活動照',meta:'活動照'},
-      {src:'./assets/photo-stories/cdba-03.jpeg',label:'活動照',meta:'活動照'},
-      {src:'./assets/photo-stories/cdba-04.jpeg',label:'活動照',meta:'活動照'}
-    ]
+    images:(Array.isArray(window.CDBA_IMAGES)?window.CDBA_IMAGES:[]).map(im=>({
+      src:im.src,label:'活動照',meta:'活動照',w:im.w,h:im.h
+    }))
   },
   nuclear3:{
     brand:'核三公投 / STREET CAMPAIGN ARCHIVE',
