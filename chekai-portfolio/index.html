@@ -19,8 +19,8 @@
 <script>
 (()=> {
   const ua=navigator.userAgent||"";
-  const crawler=/(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|anthropic-ai|CCBot|Bytespider|PerplexityBot|Perplexity-User|Google-CloudVertexBot|Googlebot|bingbot|DuckDuckBot|Baiduspider|YandexBot|PetalBot|Sogou|Amazonbot|Applebot|FacebookBot|meta-externalagent|cohere-ai|YouBot|Diffbot|crawler|spider|bot\b)/i;
-  const automation=/(HeadlessChrome|PhantomJS|python-requests|python-httpx|aiohttp|curl\/|wget\/|scrapy|selenium|playwright|puppeteer)/i;
+  const crawler=/(GPTBot|OAI-SearchBot|ChatGPT-User|ClaudeBot|Claude-Web|anthropic-ai|CCBot|Bytespider|PerplexityBot|Perplexity-User|Google-Extended|Google-CloudVertexBot|meta-externalagent|cohere-ai|YouBot|Diffbot)/i;
+  const automation=/(PhantomJS|python-requests|python-httpx|aiohttp|curl\/|wget\/|scrapy)/i;
   if(crawler.test(ua)||automation.test(ua)){
     window.__CK_BLOCK_AUTOMATION__=true;
     document.documentElement.setAttribute('data-automated-client','blocked');
@@ -768,7 +768,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v5',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v6',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -5109,12 +5109,6 @@ addEventListener('pageshow',e=>{
 
 <script id="ckAntiCopyGuard">
 (()=> {
-  if(navigator.webdriver){
-    try{
-      document.documentElement.innerHTML='<head><meta name="robots" content="noindex,nofollow,noarchive"><title>Blocked</title></head><body style="margin:0;background:#0b0f14;color:#fff;font:16px sans-serif;padding:40px"><h1>AUTOMATED ACCESS DENIED</h1><p>Automated browser access is not authorized.</p></body>';
-    }catch{}
-    return;
-  }
   const editable=t=>!!t?.closest?.('input,textarea,[contenteditable="true"]');
   const deny=e=>{if(!editable(e.target))e.preventDefault()};
   document.addEventListener('copy',deny,true);
