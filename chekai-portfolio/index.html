@@ -546,7 +546,7 @@ const DATA={
   ['閒台文 Taiwanway','互動式中文與台灣文化網站','https://easylearnfromtw.github.io/Taiwanway/'],
   ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品',null,{type:'coming_soon'}]
 ]},
- experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',accent:'#e36aa8',items:[['新北市服務學習社團楷模王114年','服務學習與社團參與肯定'],['新北市服務學習社團楷模王115年','服務學習與社團參與肯定'],['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌'],['市三重高中躲貓貓社創社社長、公關','創社社長｜公關'],['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷'],['CDBA中華辯會工作坊 參與','辯論與工作坊參與']]},
+ experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、服務、社團與企劃參與。',accent:'#e36aa8',items:[['新北市服務學習社團楷模王114年','服務學習與社團參與肯定'],['新北市服務學習社團楷模王115年','服務學習與社團參與肯定'],['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌'],['市三重高中躲貓貓社創社社長、公關','創社社長｜公關'],['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷'],['CDBA中華辯會工作坊 參與','辯論與工作坊參與']]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']]},
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書',''],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作']]},
  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
@@ -4448,13 +4448,16 @@ async function buildJxCells(url){
   const outSize=innerWidth<720?420:600;
   const cv=document.createElement('canvas'),g=cv.getContext('2d',{alpha:false});
   cv.width=cv.height=outSize;g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
-  const urls=[];
+  const urls=[],losslessCells=new Set([0,1,2,13,14]);
   for(let c=0;c<15;c++){
     g.fillStyle='#efe6d6';g.fillRect(0,0,outSize,outSize);
     const sx=(c%4)*sw,sy=Math.floor(c/4)*sh;
     g.drawImage(img,sx,sy,sw,sh,0,0,outSize,outSize);
-    urls[c]=cv.toDataURL('image/webp',.92);
+    const type=losslessCells.has(c)?'image/png':'image/webp';
+    const blob=await new Promise(resolve=>cv.toBlob(resolve,type,type==='image/webp'?.98:undefined));
+    urls[c]=blob?URL.createObjectURL(blob):cv.toDataURL(type,type==='image/webp'?.98:undefined);
   }
+  for(const old of jxCellUrls)if(old?.startsWith?.('blob:'))URL.revokeObjectURL(old);
   jxCellUrls=urls
 }
 async function ensureJxSprite(){
