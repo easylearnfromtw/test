@@ -260,20 +260,23 @@ a{color:inherit}
 <div class="toast" id="toast"></div>
 
 <script>
-const OWNER='easylearnfromtw',REPO='test',PATH='chekai-portfolio/data/training.json',BRANCH='main';
+const OWNER='easylearnfromtw',REPO='test',PATH='chekai-portfolio/data/training.json',CONTENT_PATH='chekai-portfolio/data/content.json',MEDIA_PATH='chekai-portfolio/assets/uploads',BRANCH='main';
 const GEMINI_MODEL='gemini-3.8-flash',GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions';
-let token=sessionStorage.getItem('ck_github_token')||'',geminiKey=sessionStorage.getItem('ck_gemini_key')||'',data={version:1,updated_at:null,posts:[]},fileSha='',connected=false;
+let token=sessionStorage.getItem('ck_github_token')||'',geminiKey=sessionStorage.getItem('ck_gemini_key')||'',data={version:1,updated_at:null,posts:[]},fileSha='',contentData={version:1,site:{},section_order:[],sections:{},club:{chapters:[],events:[]}},contentSha='',mediaItems=[],connected=false,contentDirty=false,activeCmsSection='about',activeClubChapter=0;
 let aiCache=null;try{aiCache=JSON.parse(sessionStorage.getItem('ck_ai_coach_cache')||'null')}catch{}
 const $=id=>document.getElementById(id);
 $('token').value=token;$('geminiKey').value=geminiKey;
 $('date').value=new Date().toISOString().slice(0,10);
 
 const META={
-  overview:['訓練總覽','你的跑步資料、趨勢與近期狀態。'],
+  overview:['控制總覽','網站內容、素材與訓練資料的集中控制台。'],
+  cms:['網站內容','編輯首頁、分頁、廣告看板、公開狀態與排序。'],
+  club:['社團簡報','管理見賢思琪互動經歷的章節與活動敘事。'],
+  media:['素材庫','上傳與管理網站圖片素材。'],
   analysis:['運動分析','從里程、配速、心率與主觀強度看訓練變化。'],
   records:['訓練紀錄','完整訓練歷史與公開狀態。'],
   add:['新增訓練','紀錄一次訓練，儲存後自動同步分析與網站。'],
-  settings:['同步設定','GitHub 寫入權限與外部資料來源。']
+  settings:['同步設定','GitHub 寫入權限、AI 與備份工具。']
 };
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+id));
@@ -307,19 +310,25 @@ async function gh(url,opt={}){
   return r.status===204?null:r.json()
 }
 async function loadPublicData(){
-  try{
-    const r=await fetch('../chekai-portfolio/data/training.json?ts='+Date.now(),{cache:'no-store'});
-    if(!r.ok)throw new Error('data '+r.status);
-    data=await r.json();if(!Array.isArray(data.posts))data.posts=[];renderAll()
-  }catch(e){console.warn(e);renderAll()}
+  const [tr,cr]=await Promise.allSettled([
+    fetch('../chekai-portfolio/data/training.json?ts='+Date.now(),{cache:'no-store'}),
+    fetch('../chekai-portfolio/data/content.json?ts='+Date.now(),{cache:'no-store'})
+  ]);
+  try{if(tr.status==='fulfilled'&&tr.value.ok){data=await tr.value.json();if(!Array.isArray(data.posts))data.posts=[]}}catch(e){console.warn(e)}
+  try{if(cr.status==='fulfilled'&&cr.value.ok){contentData=await cr.value.json()}}catch(e){console.warn(e)}
+  renderAll();renderCms();renderClub()
 }
 async function connectGithub(silent=false){
   token=$('token').value.trim()||token;
   if(!token){if(!silent)toast('請先輸入 GitHub token');return false}
   try{
-    const j=await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+PATH+'?ref='+BRANCH);
+    const [j,c]=await Promise.all([
+      gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+PATH+'?ref='+BRANCH),
+      gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+CONTENT_PATH+'?ref='+BRANCH)
+    ]);
     fileSha=j.sha;data=JSON.parse(base64ToUtf8(j.content));if(!Array.isArray(data.posts))data.posts=[];
-    sessionStorage.setItem('ck_github_token',token);setStatus(true,'SYNC READY');renderAll();if(!silent)toast('GitHub 已連線');return true
+    contentSha=c.sha;contentData=JSON.parse(base64ToUtf8(c.content));
+    sessionStorage.setItem('ck_github_token',token);setStatus(true,'SYNC READY');renderAll();renderCms();renderClub();loadMedia();if(!silent)toast('GitHub 已連線');return true
   }catch(e){setStatus(false,'TOKEN ERROR');if(!silent)toast(e.message);return false}
 }
 async function publishData(){
@@ -333,6 +342,59 @@ async function publishData(){
   fileSha=j.content.sha;setStatus(true,'SYNC READY');$('lastSync').textContent=new Date().toLocaleString('zh-TW');renderAll();return j
 }
 
+function markContentDirty(v=true){contentDirty=v;const el=$('contentDirty');if(el){el.textContent=v?'YES':'NO';el.classList.toggle('dirty',v)}}
+async function publishContent(){
+  if(!connected){const ok=await connectGithub(true);if(!ok){showView('settings');throw new Error('請先完成 GitHub 連線')}}
+  contentData.updated_at=new Date().toISOString();setStatus(false,'SYNCING…');
+  const body={message:'Update portfolio CMS content',content:utf8ToBase64(JSON.stringify(contentData,null,2)+'\n'),sha:contentSha,branch:BRANCH};
+  const j=await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+CONTENT_PATH,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  contentSha=j.content.sha;markContentDirty(false);if($('contentSync'))$('contentSync').textContent=new Date().toLocaleString('zh-TW');setStatus(true,'SYNC READY');return j
+}
+async function syncAll(){await publishContent();await publishData()}
+function sectionLabel(id){const s=contentData.sections?.[id];return (s?.index||'')+' '+(s?.nav||id)}
+function renderCms(){
+  if(!contentData.site)contentData.site={};if(!contentData.sections)contentData.sections={};if(!Array.isArray(contentData.section_order))contentData.section_order=Object.keys(contentData.sections).filter(x=>x!=='hero');
+  $('cmsName').value=contentData.site.name||'';$('cmsEnName').value=contentData.site.en_name||'';$('cmsKicker').value=contentData.site.intro_kicker||'';$('cmsRole').value=contentData.site.role||'';$('cmsIntro').value=contentData.site.intro_copy||'';
+  const ids=Object.keys(contentData.sections).filter(x=>x!=='hero');$('cmsSection').innerHTML=ids.map(id=>'<option value="'+esc(id)+'">'+esc(sectionLabel(id))+'</option>').join('');
+  if(!contentData.sections[activeCmsSection])activeCmsSection=ids[0]||'about';$('cmsSection').value=activeCmsSection;renderSectionEditor();renderSectionOrder();
+}
+function renderSectionEditor(){
+  const s=contentData.sections?.[activeCmsSection];if(!s)return;
+  $('cmsNav').value=s.nav||'';$('cmsIndex').value=s.index||'';$('cmsTitle').value=s.title||'';$('cmsAccent').value=s.accent||'#173f35';$('cmsSectionIntro').value=s.intro||'';$('cmsBoardTitle').value=s.board_title||'';$('cmsBoardIntro').value=s.board_intro||'';$('cmsVisible').checked=s.visible!==false;
+  const items=Array.isArray(s.items)?s.items:(s.items=[]);
+  $('cmsItems').innerHTML=items.map((it,i)=>'<div class="cms-item" data-cms-item="'+i+'"><div class="cms-item-head"><b>ITEM '+String(i+1).padStart(2,'0')+'</b><div class="order-actions"><button class="btn small" type="button" data-item-up="'+i+'">↑</button><button class="btn small" type="button" data-item-down="'+i+'">↓</button><button class="btn small danger" type="button" data-item-delete="'+i+'">刪除</button></div></div><div class="cms-row"><input data-k="title" value="'+esc(it.title||'')+'" placeholder="標題"><input data-k="subtitle" value="'+esc(it.subtitle||'')+'" placeholder="副標"><input data-k="url" value="'+esc(it.url||'')+'" placeholder="URL"><select data-k="type"><option value="">一般</option><option value="coming_soon" '+(it.type==='coming_soon'?'selected':'')+'>籌備中</option><option value="jx_story" '+(it.type==='jx_story'?'selected':'')+'>社團簡報</option><option value="training_blog" '+(it.type==='training_blog'?'selected':'')+'>訓練紀錄</option><option value="certificate" '+(it.type==='certificate'?'selected':'')+'>證書</option></select><label class="switch"><input data-k="published" type="checkbox" '+(it.published!==false?'checked':'')+'><i></i></label></div></div>').join('')||'<div class="empty">此分頁尚無項目</div>';
+}
+function saveCurrentSectionFields(){
+  const s=contentData.sections?.[activeCmsSection];if(!s)return;
+  Object.assign(s,{nav:$('cmsNav').value.trim(),index:$('cmsIndex').value.trim(),title:$('cmsTitle').value.trim(),accent:$('cmsAccent').value,intro:$('cmsSectionIntro').value.trim(),board_title:$('cmsBoardTitle').value.trim(),board_intro:$('cmsBoardIntro').value.trim(),visible:$('cmsVisible').checked});
+  document.querySelectorAll('[data-cms-item]').forEach(row=>{const i=+row.dataset.cmsItem,it=s.items[i];if(!it)return;row.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;it[k]=el.type==='checkbox'?el.checked:el.value})});
+  contentData.site={...contentData.site,name:$('cmsName').value.trim(),en_name:$('cmsEnName').value.trim(),intro_kicker:$('cmsKicker').value.trim(),role:$('cmsRole').value.trim(),intro_copy:$('cmsIntro').value.trim()};markContentDirty()
+}
+function renderSectionOrder(){
+  const a=contentData.section_order||[];$('sectionOrder').innerHTML=a.map((id,i)=>'<div class="order-row"><div><strong>'+esc(sectionLabel(id))+'</strong><span class="status-pill '+(contentData.sections?.[id]?.visible===false?'off':'')+'">'+(contentData.sections?.[id]?.visible===false?'HIDDEN':'PUBLIC')+'</span></div><div class="order-actions"><button class="btn small" type="button" data-sec-up="'+i+'">↑</button><button class="btn small" type="button" data-sec-down="'+i+'">↓</button></div></div>').join('')
+}
+function renderClub(){
+  const c=contentData.club||(contentData.club={chapters:[],events:[]});if(!Array.isArray(c.chapters))c.chapters=[];if(!Array.isArray(c.events))c.events=[];
+  $('clubTabs').innerHTML=Array.from({length:Math.max(7,c.chapters.length)},(_,i)=>'<button type="button" class="'+(i===activeClubChapter?'active':'')+'" data-club-tab="'+i+'">'+String(i+1).padStart(2,'0')+'</button>').join('');
+  const ch=c.chapters[activeClubChapter]||(c.chapters[activeClubChapter]={title:'',lead:''});$('clubTitle').value=ch.title||'';$('clubLead').value=ch.lead||'';
+  $('clubEvents').innerHTML=c.events.map((e,i)=>'<div class="club-event" data-club-event="'+i+'"><div class="club-event-grid"><div class="field"><label>活動名稱</label><input data-ek="title" value="'+esc(e.title||'')+'"></div><div class="field"><label>地點／角色</label><input data-ek="place" value="'+esc(e.place||'')+'"></div><div class="field"><label>圖片格編號</label><input data-ek="cells" value="'+esc((e.cells||[]).join(','))+'"></div></div><div class="field" style="margin-top:8px"><label>活動敘事</label><textarea data-ek="detail">'+esc(e.detail||'')+'</textarea></div></div>').join('')
+}
+function saveClubFields(){
+  const c=contentData.club;const ch=c.chapters[activeClubChapter]||(c.chapters[activeClubChapter]={});ch.title=$('clubTitle').value;ch.lead=$('clubLead').value;
+  document.querySelectorAll('[data-club-event]').forEach(row=>{const e=c.events[+row.dataset.clubEvent];if(!e)return;row.querySelectorAll('[data-ek]').forEach(el=>{if(el.dataset.ek==='cells')e.cells=el.value.split(',').map(x=>Number(x.trim())).filter(Number.isFinite);else e[el.dataset.ek]=el.value})});markContentDirty()
+}
+async function fileToBase64(file){const buf=new Uint8Array(await file.arrayBuffer());let bin='';const step=0x8000;for(let i=0;i<buf.length;i+=step)bin+=String.fromCharCode(...buf.subarray(i,i+step));return btoa(bin)}
+function safeFileName(n){return String(n||'asset').normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase()||('asset-'+Date.now())}
+async function loadMedia(){if(!connected)return;try{mediaItems=await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+MEDIA_PATH+'?ref='+BRANCH);if(!Array.isArray(mediaItems))mediaItems=[]}catch(e){if(String(e.message).includes('404'))mediaItems=[];else console.warn(e)}renderMedia()}
+function renderMedia(){$('mediaCount').textContent=mediaItems.length+' FILES';$('mediaList').innerHTML=mediaItems.length?mediaItems.map(x=>'<div class="media-row"><img class="media-thumb" src="'+esc(x.download_url||'')+'" alt=""><div class="media-meta"><strong>'+esc(x.name)+'</strong><span>./assets/uploads/'+esc(x.name)+'</span></div><div class="media-actions"><button class="btn small" type="button" data-copy-media="'+esc(x.name)+'">複製路徑</button><button class="btn small danger" type="button" data-del-media="'+esc(x.name)+'" data-sha="'+esc(x.sha||'')+'">刪除</button></div></div>').join(''):'<div class="empty">尚無上傳素材</div>'}
+async function uploadMedia(){
+  const f=$('mediaFile').files?.[0];if(!f){toast('請先選圖片');return}if(f.size>4*1024*1024){toast('單檔請小於 4 MB');return}if(!connected&&!(await connectGithub(true)))return;
+  const ext=(f.name.split('.').pop()||'jpg').toLowerCase(),base=safeFileName(f.name.replace(/\.[^.]+$/,'')),name=Date.now()+'-'+base+'.'+ext,path=MEDIA_PATH+'/'+name,content=await fileToBase64(f);
+  await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Upload portfolio media '+name,content,branch:BRANCH})});$('mediaFile').value='';toast('素材已上傳');await loadMedia()
+}
+async function deleteMedia(name,sha){if(!confirm('刪除 '+name+'？'))return;await gh('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+MEDIA_PATH+'/'+encodeURIComponent(name),{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Delete portfolio media '+name,sha,branch:BRANCH})});toast('素材已刪除');await loadMedia()}
+function exportBackup(){const blob=new Blob([JSON.stringify({exported_at:new Date().toISOString(),content:contentData,training:data},null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='chekai-portfolio-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+async function importBackupFile(file){try{const j=JSON.parse(await file.text());if(!j.content||!j.training)throw new Error('不是完整備份檔');contentData=j.content;data=j.training;renderAll();renderCms();renderClub();markContentDirty();toast('備份已載入，尚未同步')}catch(e){toast(e.message)}}
 function weeklyBuckets(){
   const out=[];const now=new Date();now.setHours(12,0,0,0);
   const dow=(now.getDay()+6)%7;const thisMon=new Date(now);thisMon.setDate(now.getDate()-dow);
@@ -468,7 +530,7 @@ function renderRecords(){
   document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>togglePublic(b.dataset.toggle));
   document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>removePost(b.dataset.delete))
 }
-function renderAll(){renderOverview();renderAnalysis();renderRecords();renderAiCoach(aiCache);$('lastSync').textContent=data.updated_at?new Date(data.updated_at).toLocaleString('zh-TW'):'—';$('geminiKeyStatus').textContent=geminiKey?'SESSION READY':'NOT SET'}
+function renderAll(){renderOverview();renderAnalysis();renderRecords();renderAiCoach(aiCache);$('lastSync').textContent=data.updated_at?new Date(data.updated_at).toLocaleString('zh-TW'):'—';$('geminiKeyStatus').textContent=geminiKey?'SESSION READY':'NOT SET';if($('contentSync'))$('contentSync').textContent=contentData.updated_at?new Date(contentData.updated_at).toLocaleString('zh-TW'):'—';if($('contentDirty'))$('contentDirty').textContent=contentDirty?'YES':'NO'}
 
 function formPost(){
   const id=$('postId').value||newId(),old=data.posts.find(p=>p.id===id)||{};
@@ -497,8 +559,21 @@ async function removePost(id){if(!confirm('刪除這筆訓練紀錄？'))return;
 $('connect').onclick=()=>connectGithub(false);
 $('saveGeminiKey').onclick=()=>{geminiKey=$('geminiKey').value.trim();if(geminiKey){sessionStorage.setItem('ck_gemini_key',geminiKey);$('geminiKeyStatus').textContent='SESSION READY';toast('Gemini Key 已保存於本分頁')}else{sessionStorage.removeItem('ck_gemini_key');$('geminiKeyStatus').textContent='NOT SET';toast('Gemini Key 已清除')}};
 $('runAiCoach').onclick=runAiCoach;
-$('manualSync').onclick=async()=>{try{await publishData();toast('網站資料已同步')}catch(e){toast(e.message)}};
+$('manualSync').onclick=async()=>{try{saveCurrentSectionFields();saveClubFields();await syncAll();toast('網站內容與訓練資料已同步')}catch(e){toast(e.message)}};
 $('saveSession').onclick=saveSession;$('resetForm').onclick=resetForm;
+$('cmsSection').onchange=()=>{saveCurrentSectionFields();activeCmsSection=$('cmsSection').value;renderSectionEditor()};
+$('cmsSave').onclick=async()=>{try{saveCurrentSectionFields();await publishContent();toast('網站內容已同步')}catch(e){toast(e.message)}};
+$('cmsAddItem').onclick=()=>{saveCurrentSectionFields();const sec=contentData.sections[activeCmsSection];sec.items.push({title:'新項目',subtitle:'',url:'',type:'',published:true});markContentDirty();renderSectionEditor()};
+$('cmsItems').addEventListener('input',saveCurrentSectionFields);
+$('cmsItems').addEventListener('click',e=>{const sec=contentData.sections[activeCmsSection];let i;if((i=e.target.dataset.itemDelete)!==undefined){sec.items.splice(+i,1);markContentDirty();renderSectionEditor()}else if((i=e.target.dataset.itemUp)!==undefined&&+i>0){[sec.items[+i-1],sec.items[+i]]=[sec.items[+i],sec.items[+i-1]];markContentDirty();renderSectionEditor()}else if((i=e.target.dataset.itemDown)!==undefined&&+i<sec.items.length-1){[sec.items[+i+1],sec.items[+i]]=[sec.items[+i],sec.items[+i+1]];markContentDirty();renderSectionEditor()}});
+['cmsName','cmsEnName','cmsKicker','cmsRole','cmsIntro','cmsNav','cmsIndex','cmsTitle','cmsAccent','cmsSectionIntro','cmsBoardTitle','cmsBoardIntro','cmsVisible'].forEach(id=>$(id).addEventListener('input',saveCurrentSectionFields));
+$('sectionOrder').addEventListener('click',e=>{let i;if((i=e.target.dataset.secUp)!==undefined&&+i>0){const a=contentData.section_order;[a[+i-1],a[+i]]=[a[+i],a[+i-1]];markContentDirty();renderSectionOrder()}else if((i=e.target.dataset.secDown)!==undefined&&+i<contentData.section_order.length-1){const a=contentData.section_order;[a[+i+1],a[+i]]=[a[+i],a[+i+1]];markContentDirty();renderSectionOrder()}});
+$('clubTabs').addEventListener('click',e=>{const i=e.target.dataset.clubTab;if(i===undefined)return;saveClubFields();activeClubChapter=+i;renderClub()});
+$('clubTitle').addEventListener('input',saveClubFields);$('clubLead').addEventListener('input',saveClubFields);$('clubEvents').addEventListener('input',saveClubFields);
+$('clubSave').onclick=async()=>{try{saveClubFields();await publishContent();toast('社團簡報已同步')}catch(e){toast(e.message)}};
+$('mediaUpload').onclick=()=>uploadMedia().catch(e=>toast(e.message));
+$('mediaList').addEventListener('click',e=>{const n=e.target.dataset.copyMedia;if(n!==undefined){navigator.clipboard?.writeText('./assets/uploads/'+n);toast('已複製素材路徑');return}const d=e.target.dataset.delMedia;if(d!==undefined)deleteMedia(d,e.target.dataset.sha).catch(err=>toast(err.message))});
+$('exportBackup').onclick=exportBackup;$('importBackup').onchange=e=>{const f=e.target.files?.[0];if(f)importBackupFile(f);e.target.value=''};
 $('geminiKeyStatus').textContent=geminiKey?'SESSION READY':'NOT SET';
 loadPublicData().then(()=>{if(token)connectGithub(true)});
 </script>
