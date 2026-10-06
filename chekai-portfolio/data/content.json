@@ -151,67 +151,75 @@
       "nav": "Experience",
       "index": "03",
       "title": "EXPERIENCE",
-      "intro": "刊載、服務、社團與企劃參與。",
+      "intro": "服務、社團、媒體與企劃經歷。",
       "accent": "#e36aa8",
       "visible": true,
       "board_title": "個人經歷",
-      "board_intro": "刊載、服務、社團與企劃參與。",
+      "board_intro": "服務、社團、媒體與企劃經歷。",
       "items": [
         {
           "title": "新北市服務學習社團楷模王114年",
           "subtitle": "服務學習與社團參與肯定",
           "url": "",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "服務與公共參與"
         },
         {
           "title": "新北市服務學習社團楷模王115年",
           "subtitle": "服務學習與社團參與肯定",
           "url": "",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "服務與公共參與"
         },
         {
           "title": "新北市教育局三重高中統籌光復救災活動",
           "subtitle": "光復災後復原｜三重高中團隊統籌",
           "url": "",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "服務與公共參與"
         },
         {
           "title": "市三重高中躲貓貓社創社社長、公關",
           "subtitle": "創社社長｜公關",
           "url": "",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "社團與領導"
         },
         {
           "title": "NEWTALK新頭殼｜本人媒體投書專欄",
           "subtitle": "公開評論、投書與專欄文章",
           "url": "https://newtalk.tw/citizen/author/319524",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "媒體與寫作"
         },
         {
           "title": "基隆海洋文學大賽 參與",
           "subtitle": "文學與主題寫作參與",
           "url": "",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "媒體與寫作"
         },
         {
           "title": "台灣聯合大學企劃 參與",
           "subtitle": "企劃與專案參與經歷",
           "url": "",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "企劃與培訓"
         },
         {
           "title": "CDBA中華辯會工作坊 參與",
           "subtitle": "辯論與工作坊參與",
           "url": "",
           "type": "",
-          "published": true
+          "published": true,
+          "category": "企劃與培訓"
         }
       ]
     },
