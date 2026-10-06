@@ -43,6 +43,7 @@ a{color:inherit}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line);background:#f8f3ea;border-radius:11px}.toggle-row b{font-size:11px}.toggle-row span{display:block;margin-top:3px;color:var(--muted);font-size:9px}.switch{position:relative;width:44px;height:25px;flex:none}.switch input{display:none}.switch i{position:absolute;inset:0;border-radius:99px;background:#b9b0a3;transition:.2s}.switch i::after{content:'';position:absolute;width:19px;height:19px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s}.switch input:checked+i{background:var(--green)}.switch input:checked+i::after{transform:translateX(19px)}
 .log-list{display:grid;gap:8px}.log-card{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:12px}.log-head{display:flex;justify-content:space-between;gap:12px}.log-date{font:800 8px/1 var(--mono);color:var(--green);letter-spacing:.08em}.log-card h3{margin:6px 0 8px;font-size:14px}.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{padding:5px 7px;border:1px solid #b7ad9e;border-radius:999px;font:750 7px/1 var(--mono);color:var(--black)}.chip.live{color:var(--green);border-color:#89a698;background:var(--green-soft)}.chip.private{color:var(--red);border-color:#b98b89;background:var(--red-soft)}.log-actions{display:flex;gap:6px;margin-top:10px}
 .settings-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:12px}.auth{display:grid;grid-template-columns:1fr auto;gap:8px}.auth input{width:100%;border:1px solid #bfb4a5;background:#fffdf8;color:var(--black);border-radius:10px;padding:11px 12px;outline:none}.auth input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(41,54,95,.10)}.help{margin-top:9px;color:var(--muted);font-size:10px;line-height:1.65}.sync-status{display:grid;gap:9px}.sync-line{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:11px 0;border-bottom:1px solid var(--line);font-size:10px}.sync-line:last-child{border-bottom:0}.sync-line b{font:800 8px/1 var(--mono);color:var(--indigo)}.sync-line span{font-size:10px;text-align:right}.strava-box{padding:14px;border:1px dashed #aaa091;background:#f8f3ea;border-radius:12px}.strava-box h3{margin:0;font-size:13px}.strava-box p{margin:7px 0 12px;color:var(--muted);font-size:10px;line-height:1.6}
+.ai-coach{margin-top:12px}.ai-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;padding:18px;background:linear-gradient(135deg,var(--indigo),#344775);color:#fff}.ai-hero h2{margin:0;font-size:20px}.ai-hero p{margin:7px 0 0;max-width:720px;color:#e2e6f0;font-size:10px;line-height:1.65}.ai-status{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 8px;border:1px solid rgba(255,255,255,.25);border-radius:999px;font:800 8px/1 var(--mono)}.ai-status i{width:7px;height:7px;border-radius:50%;background:#d4a86a}.ai-status.ready i{background:#91d3ad}.ai-output{padding:16px}.ai-summary{font-size:14px;line-height:1.75;margin:0}.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.ai-block{border:1px solid var(--line);background:#f8f3ea;border-radius:12px;padding:13px}.ai-block h3{margin:0 0 8px;font:850 9px/1 var(--mono);letter-spacing:.08em;color:var(--indigo)}.ai-block ul{margin:0;padding-left:18px}.ai-block li{margin:6px 0;color:#4f4a43;font-size:10px;line-height:1.55}.ai-findings{display:grid;gap:8px;margin-top:14px}.ai-finding{border-left:3px solid var(--indigo);background:#f6f0e6;padding:11px 12px;border-radius:0 10px 10px 0}.ai-finding b{display:block;font-size:11px}.ai-finding small{display:block;margin-top:5px;color:var(--muted);font-size:9px;line-height:1.55}.ai-finding em{display:block;margin-top:6px;font:800 7px/1 var(--mono);font-style:normal;color:var(--green)}.ai-next{margin-top:14px;border:1px solid #8ba093;background:var(--green-soft);border-radius:12px;padding:14px}.ai-next b{font-size:12px}.ai-next p{margin:6px 0 0;font-size:10px;line-height:1.6;color:#31473e}.ai-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.ai-meta span{padding:5px 7px;border:1px solid #b7ad9e;border-radius:999px;font:800 7px/1 var(--mono);color:var(--muted)}.gemini-settings{margin-top:12px}.gemini-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.gemini-row input{width:100%;border:1px solid #bfb4a5;background:#fffdf8;color:var(--black);border-radius:10px;padding:11px 12px;outline:none}.gemini-row input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(41,54,95,.10)}
 .mobile-nav{display:none}
 .toast{position:fixed;z-index:100;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:10px 13px;border:1px solid #1c1c1c;background:var(--black);color:var(--ivory-soft);border-radius:10px;box-shadow:0 16px 50px rgba(0,0,0,.2);font-size:10px;font-weight:750;transition:.22s}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:1050px){.app{grid-template-columns:190px minmax(0,1fr)}.metric-grid{grid-template-columns:repeat(2,1fr)}.dash-grid,.section-grid,.settings-grid{grid-template-columns:1fr}.insight-grid{grid-template-columns:1fr 1fr}}
@@ -53,7 +54,7 @@ a{color:inherit}
   .dash-grid{display:block}.dash-grid>.card+ .card{margin-top:10px}.chart{height:200px;gap:5px}.bar b{display:none}
   .insight-grid{grid-template-columns:1fr;gap:8px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
   .section-grid,.settings-grid{display:block}.section-grid>aside,.settings-grid>aside{margin-top:10px}
-  .auth{grid-template-columns:1fr}.form-actions .btn{flex:1;min-height:44px}
+  .auth,.gemini-row{grid-template-columns:1fr}.form-actions .btn{flex:1;min-height:44px}.ai-hero{grid-template-columns:1fr}.ai-grid{grid-template-columns:1fr}
   .mobile-nav{position:fixed;z-index:50;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:5px;border:1px solid #b9af9f;background:rgba(250,247,239,.96);backdrop-filter:blur(18px);border-radius:16px;box-shadow:0 15px 50px rgba(34,26,20,.15)}
   .mobile-nav button{border:0;background:transparent;color:var(--muted);border-radius:11px;padding:8px 3px 7px;font:780 8px/1 var(--mono)}.mobile-nav button b{display:block;margin-bottom:4px;font-size:15px}.mobile-nav button.active{background:var(--indigo);color:#fff}.mobile-nav button.add{background:var(--green);color:#fff}
 }
@@ -113,6 +114,17 @@ a{color:inherit}
         <section class="card"><div class="card-head"><h2>配速 × 心率</h2><span>EFFICIENCY VIEW</span></div><div class="card-body"><div id="paceHrPlot" style="height:260px"></div></div></section>
         <section class="card"><div class="card-head"><h2>分析摘要</h2><span>AUTO INSIGHTS</span></div><div class="card-body"><div class="recent" id="analysisNotes"></div></div></section>
       </div>
+      <section class="card ai-coach">
+        <div class="ai-hero">
+          <div>
+            <h2>Gemini AI Coach</h2>
+            <p>Training Lab 先計算客觀指標，再交給 Gemini 做縱向比較與訓練決策。AI 只能引用目前資料，不允許自行創造配速、心率或訓練量。</p>
+            <div class="ai-status" id="aiStatus"><i></i><span>尚未分析</span></div>
+          </div>
+          <button class="btn" id="runAiCoach" type="button" style="background:#fbf8f1;color:#29365f;border-color:#fbf8f1">生成 AI 分析</button>
+        </div>
+        <div class="ai-output" id="aiOutput"><div class="empty">設定 Gemini API Key 後，即可分析最近 90 天的訓練資料。</div></div>
+      </section>
     </section>
 
     <section class="view" id="view-records">
@@ -181,6 +193,18 @@ a{color:inherit}
           </div></div>
         </aside>
       </div>
+      <section class="card gemini-settings">
+        <div class="card-head"><h2>Gemini AI Coach</h2><span>AI ANALYSIS</span></div>
+        <div class="card-body">
+          <div class="gemini-row"><input id="geminiKey" type="password" autocomplete="off" placeholder="Gemini API / Auth key"><button class="btn primary" id="saveGeminiKey" type="button">儲存本次工作階段</button></div>
+          <div class="help">Key 不會寫入 GitHub，只保存在目前瀏覽器分頁的 sessionStorage。模型使用 Gemini 3.8 Flash；這是目前私人後台的直接連線版本，若之後公開給其他人使用，應改由 serverless endpoint 代管金鑰。</div>
+          <div class="sync-status" style="margin-top:14px">
+            <div class="sync-line"><b>MODEL</b><span>gemini-3.8-flash</span></div>
+            <div class="sync-line"><b>API</b><span>Interactions API / Structured JSON</span></div>
+            <div class="sync-line"><b>KEY STATUS</b><span id="geminiKeyStatus">NOT SET</span></div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
 </div>
@@ -196,9 +220,11 @@ a{color:inherit}
 
 <script>
 const OWNER='easylearnfromtw',REPO='test',PATH='chekai-portfolio/data/training.json',BRANCH='main';
-let token=sessionStorage.getItem('ck_github_token')||'',data={version:1,updated_at:null,posts:[]},fileSha='',connected=false;
+const GEMINI_MODEL='gemini-3.8-flash',GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/interactions';
+let token=sessionStorage.getItem('ck_github_token')||'',geminiKey=sessionStorage.getItem('ck_gemini_key')||'',data={version:1,updated_at:null,posts:[]},fileSha='',connected=false;
+let aiCache=null;try{aiCache=JSON.parse(sessionStorage.getItem('ck_ai_coach_cache')||'null')}catch{}
 const $=id=>document.getElementById(id);
-$('token').value=token;
+$('token').value=token;$('geminiKey').value=geminiKey;
 $('date').value=new Date().toISOString().slice(0,10);
 
 const META={
@@ -313,6 +339,87 @@ function renderAnalysis(){
     '<div class="run-row"><h3>最長單次</h3><div class="run-meta"><span>'+(long?long.toFixed(2)+' km':'尚無資料')+'</span></div></div>'
   ].join('')
 }
+function aiEvidence(){
+  const now=Date.now(),posts=visiblePosts(),windowPosts=n=>posts.filter(p=>postTime(p)>=now-n*864e5);
+  const p7=windowPosts(7),p30=windowPosts(30),p90=windowPosts(90),prev30=posts.filter(p=>postTime(p)<now-30*864e5&&postTime(p)>=now-60*864e5);
+  const sumKm=a=>a.reduce((s,p)=>s+(Number(p.distance_km)||0),0),hrs=a=>a.map(p=>Number(p.avg_hr)).filter(Boolean);
+  const load=a=>a.reduce((s,p)=>s+(durationSec(p.duration)/60)*(Number(p.rpe)||0),0);
+  const h30=hrs(p30),km30=sumKm(p30),prevKm=sumKm(prev30);
+  return {
+    generated_at:new Date().toISOString(),
+    deterministic_metrics:{
+      sessions_7d:p7.length,sessions_30d:p30.length,sessions_90d:p90.length,
+      distance_7d_km:+sumKm(p7).toFixed(2),distance_30d_km:+km30.toFixed(2),distance_90d_km:+sumKm(p90).toFixed(2),
+      avg_pace_30d:paceText(weightedPace(p30)),
+      avg_hr_30d:h30.length?Math.round(h30.reduce((a,b)=>a+b,0)/h30.length):null,
+      longest_run_30d_km:+Math.max(0,...p30.map(x=>Number(x.distance_km)||0)).toFixed(2),
+      srpe_load_30d:Math.round(load(p30)),
+      volume_change_vs_previous_30d_pct:prevKm?+((km30-prevKm)/prevKm*100).toFixed(1):null
+    },
+    recent_activities:p90.slice(0,16).map(p=>({
+      date:p.date||null,title:p.title||null,type:p.type||null,distance_km:p.distance_km??null,duration:p.duration||null,pace:p.pace||null,
+      avg_hr:p.avg_hr??null,max_hr:p.max_hr??null,elevation_m:p.elevation_m??null,rpe:p.rpe??null,location:p.location||null,tags:p.tags||[],note:p.note||null
+    }))
+  }
+}
+const AI_SCHEMA={
+  type:'object',
+  properties:{
+    overall_status:{type:'string',enum:['improving','stable','watch','insufficient_data']},
+    summary:{type:'string'},
+    key_findings:{type:'array',items:{type:'object',properties:{title:{type:'string'},evidence:{type:'string'},interpretation:{type:'string'},confidence:{type:'string',enum:['low','medium','high']}},required:['title','evidence','interpretation','confidence']}},
+    progress_signals:{type:'array',items:{type:'string'}},
+    warning_signals:{type:'array',items:{type:'string'}},
+    next_session:{type:'object',properties:{focus:{type:'string'},description:{type:'string'},intensity_guard:{type:'string'}},required:['focus','description','intensity_guard']},
+    next_7_days:{type:'array',items:{type:'string'}},
+    confidence:{type:'string',enum:['low','medium','high']},
+    data_quality:{type:'string'}
+  },
+  required:['overall_status','summary','key_findings','progress_signals','warning_signals','next_session','next_7_days','confidence','data_quality']
+};
+function aiTextFromResponse(j){
+  if(typeof j?.output_text==='string')return j.output_text;
+  if(Array.isArray(j?.outputs))return j.outputs.filter(x=>x?.type==='text').map(x=>x.text||'').join('');
+  if(Array.isArray(j?.steps))return j.steps.flatMap(x=>x?.content||[]).filter(x=>x?.type==='text').map(x=>x.text||'').join('');
+  return ''
+}
+function renderAiCoach(a){
+  if(!a){$('aiOutput').innerHTML='<div class="empty">設定 Gemini API Key 後，即可分析最近 90 天的訓練資料。</div>';return}
+  const statusMap={improving:'進步中',stable:'穩定',watch:'需要注意',insufficient_data:'資料不足'};
+  $('aiStatus').classList.add('ready');$('aiStatus').querySelector('span').textContent=statusMap[a.overall_status]||'分析完成';
+  const findings=(a.key_findings||[]).map(x=>'<div class="ai-finding"><b>'+esc(x.title)+'</b><small><strong>Evidence：</strong>'+esc(x.evidence)+'</small><small>'+esc(x.interpretation)+'</small><em>CONFIDENCE '+esc(String(x.confidence||'').toUpperCase())+'</em></div>').join('');
+  const prog=(a.progress_signals||[]).map(x=>'<li>'+esc(x)+'</li>').join('')||'<li>尚無明確進步訊號</li>';
+  const warn=(a.warning_signals||[]).map(x=>'<li>'+esc(x)+'</li>').join('')||'<li>目前沒有需要特別標記的訊號</li>';
+  const week=(a.next_7_days||[]).map(x=>'<li>'+esc(x)+'</li>').join('');
+  $('aiOutput').innerHTML='<p class="ai-summary">'+esc(a.summary||'')+'</p>'+findings+
+    '<div class="ai-grid"><div class="ai-block"><h3>PROGRESS SIGNALS</h3><ul>'+prog+'</ul></div><div class="ai-block"><h3>WATCH SIGNALS</h3><ul>'+warn+'</ul></div></div>'+
+    '<div class="ai-next"><b>下一次訓練｜'+esc(a.next_session?.focus||'')+'</b><p>'+esc(a.next_session?.description||'')+'</p><p><strong>Intensity guard：</strong>'+esc(a.next_session?.intensity_guard||'')+'</p></div>'+
+    '<div class="ai-block" style="margin-top:10px"><h3>NEXT 7 DAYS</h3><ul>'+week+'</ul></div>'+
+    '<div class="ai-meta"><span>CONFIDENCE '+esc(String(a.confidence||'').toUpperCase())+'</span><span>'+esc(a.data_quality||'')+'</span><span>'+esc(GEMINI_MODEL)+'</span></div>'
+}
+async function runAiCoach(){
+  geminiKey=$('geminiKey').value.trim()||geminiKey;
+  if(!geminiKey){showView('settings');toast('請先設定 Gemini API Key');return}
+  if(!data.posts.length){toast('目前沒有訓練資料可分析');return}
+  const b=$('runAiCoach'),old=b.textContent;b.disabled=true;b.textContent='分析中…';$('aiStatus').classList.remove('ready');$('aiStatus').querySelector('span').textContent='Gemini 分析中';
+  const evidence=aiEvidence();
+  const prompt=[
+    '你是私人耐力運動資料分析師。請使用繁體中文。',
+    '任務：根據提供的 Training Lab 資料，分析近期跑步進展、風險訊號與下一步訓練決策。',
+    '硬性規則：1. 只能引用輸入中存在的數據，不得創造配速、心率、里程、傷病或生理資料。2. 無法從現有欄位計算 cardiac drift、decoupling、HR recovery 等時，明確說資料不足，不要猜。3. 不做疾病診斷。4. evidence 必須寫出支持判斷的具體輸入數據。5. 建議保守且可執行，不因單次活動下過度結論。',
+    'Training Lab data:',
+    JSON.stringify(evidence)
+  ].join('\n');
+  try{
+    const r=await fetch(GEMINI_URL,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':geminiKey},body:JSON.stringify({
+      model:GEMINI_MODEL,store:false,input:prompt,response_format:{type:'text',mime_type:'application/json',schema:AI_SCHEMA}
+    })});
+    if(!r.ok){let msg='Gemini '+r.status;try{const e=await r.json();msg=e?.error?.message||msg}catch{}throw new Error(msg)}
+    const j=await r.json(),txt=aiTextFromResponse(j);if(!txt)throw new Error('Gemini 沒有回傳可讀取的分析');
+    aiCache=JSON.parse(txt);sessionStorage.setItem('ck_ai_coach_cache',JSON.stringify(aiCache));renderAiCoach(aiCache);toast('Gemini 分析完成')
+  }catch(e){$('aiStatus').querySelector('span').textContent='分析失敗';toast(e.message||'Gemini 分析失敗')}
+  finally{b.disabled=false;b.textContent=old}
+}
 function renderRecords(){
   const posts=visiblePosts();$('recordCount').textContent=posts.length+' SESSIONS';
   $('records').innerHTML=posts.length?posts.map(p=>'<article class="log-card"><div class="log-head"><div><div class="log-date">'+esc(p.date||'')+' · '+esc((p.type||'run').toUpperCase())+'</div><h3>'+esc(p.title||'Untitled')+'</h3></div><span class="chip '+(p.published!==false?'live':'private')+'">'+(p.published!==false?'PUBLIC':'PRIVATE')+'</span></div><div class="chips">'+(p.distance_km!=null?'<span class="chip">'+esc(p.distance_km)+' km</span>':'')+(p.pace?'<span class="chip">'+esc(p.pace)+'</span>':'')+(p.duration?'<span class="chip">'+esc(p.duration)+'</span>':'')+(p.avg_hr?'<span class="chip">HR '+esc(p.avg_hr)+'</span>':'')+(p.rpe?'<span class="chip">RPE '+esc(p.rpe)+'</span>':'')+'</div><div class="log-actions"><button class="btn small" data-edit="'+esc(p.id)+'">編輯</button><button class="btn small" data-toggle="'+esc(p.id)+'">'+(p.published!==false?'設為私人':'公開')+'</button><button class="btn small danger" data-delete="'+esc(p.id)+'">刪除</button></div></article>').join(''):'<div class="empty">尚無訓練紀錄</div>';
@@ -320,7 +427,7 @@ function renderRecords(){
   document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>togglePublic(b.dataset.toggle));
   document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>removePost(b.dataset.delete))
 }
-function renderAll(){renderOverview();renderAnalysis();renderRecords();$('lastSync').textContent=data.updated_at?new Date(data.updated_at).toLocaleString('zh-TW'):'—'}
+function renderAll(){renderOverview();renderAnalysis();renderRecords();renderAiCoach(aiCache);$('lastSync').textContent=data.updated_at?new Date(data.updated_at).toLocaleString('zh-TW'):'—';$('geminiKeyStatus').textContent=geminiKey?'SESSION READY':'NOT SET'}
 
 function formPost(){
   const id=$('postId').value||newId(),old=data.posts.find(p=>p.id===id)||{};
@@ -347,8 +454,11 @@ async function togglePublic(id){const p=data.posts.find(x=>x.id===id);if(!p)retu
 async function removePost(id){if(!confirm('刪除這筆訓練紀錄？'))return;data.posts=data.posts.filter(p=>p.id!==id);try{await publishData();toast('已刪除')}catch(e){toast(e.message)}}
 
 $('connect').onclick=()=>connectGithub(false);
+$('saveGeminiKey').onclick=()=>{geminiKey=$('geminiKey').value.trim();if(geminiKey){sessionStorage.setItem('ck_gemini_key',geminiKey);$('geminiKeyStatus').textContent='SESSION READY';toast('Gemini Key 已保存於本分頁')}else{sessionStorage.removeItem('ck_gemini_key');$('geminiKeyStatus').textContent='NOT SET';toast('Gemini Key 已清除')}};
+$('runAiCoach').onclick=runAiCoach;
 $('manualSync').onclick=async()=>{try{await publishData();toast('網站資料已同步')}catch(e){toast(e.message)}};
 $('saveSession').onclick=saveSession;$('resetForm').onclick=resetForm;
+$('geminiKeyStatus').textContent=geminiKey?'SESSION READY':'NOT SET';
 loadPublicData().then(()=>{if(token)connectGithub(true)});
 </script>
 </body>
