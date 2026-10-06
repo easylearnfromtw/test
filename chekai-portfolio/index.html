@@ -659,14 +659,19 @@ const key=new THREE.DirectionalLight(0xffd3a8,2.8);scene.add(key);scene.add(key.
 // Real local street-light pools: only a few nearest lamps stay active, so night cars
 // pick up warm highlights without turning the whole street into a uniformly bright scene.
 const STREET_LAMP_STEP=35,STREET_LAMP_ORIGIN=LAP_MIN+20;
-const streetLampLights=Array.from({length:MOBILE_GPU?3:4},()=>{const l=new THREE.PointLight(0xffd59a,0,21,1.65);l.position.set(0,8.45,-3.8);l.castShadow=false;scene.add(l);return l});
+const streetLampLights=Array.from({length:MOBILE_GPU?2:3},()=>{const l=new THREE.PointLight(0xffd59a,0,24,2);l.position.set(0,8.45,-3.8);l.castShadow=false;scene.add(l);return l});
+const streetLampPoolTex=(()=>{const cv=document.createElement('canvas');cv.width=cv.height=128;const g=cv.getContext('2d'),gr=g.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,'rgba(255,222,166,.62)');gr.addColorStop(.34,'rgba(255,205,125,.27)');gr.addColorStop(1,'rgba(255,190,95,0)');g.fillStyle=gr;g.fillRect(0,0,128,128);const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;t.needsUpdate=true;return t})();
+const streetLampPoolGeo=new THREE.PlaneGeometry(18,10);streetLampPoolGeo.rotateX(-Math.PI/2);
+const streetLampPools=streetLampLights.map(()=>{const m=new THREE.Mesh(streetLampPoolGeo,new THREE.MeshBasicMaterial({map:streetLampPoolTex,transparent:true,opacity:0,depthWrite:false,toneMapped:false,blending:THREE.AdditiveBlending}));m.position.y=.045;m.renderOrder=3;scene.add(m);return m});
 let streetNight=.0;
 function updateStreetLights(x){
   const base=Math.round((x-STREET_LAMP_ORIGIN)/STREET_LAMP_STEP);
   const n=streetLampLights.length,start=base-Math.floor((n-1)/2);
   for(let i=0;i<n;i++){
     const lx=STREET_LAMP_ORIGIN+(start+i)*STREET_LAMP_STEP;
-    const l=streetLampLights[i];l.position.set(lx,8.4,-3.8);l.intensity=(MOBILE_GPU?34:44)*streetNight;
+    const l=streetLampLights[i],p=streetLampPools[i];
+    l.position.set(lx,8.4,-3.8);l.intensity=(MOBILE_GPU?165:220)*streetNight;
+    p.position.set(lx,.045,-2.6);p.material.opacity=.26*streetNight;
   }
 }
 let shadowAnchorX=Infinity;
@@ -986,7 +991,8 @@ vec3 cEmis=vec3(0.);
     float lp=pow(max(0.,1.-abs(mod(vWPos.x+177.5,35.)-17.5)/16.),2.);
     float side=max(0.,1.-abs(vWPos.z+3.8)/13.);
     vec3 warm=vec3(1.0,.73,.42)*lp*side*uNight;
-    cEmis=skyRefl(V,N)*(.08+.48*fres)+warm*(.10+.18*max(N.y,0.));
+    col*=1.+.10*uNight;
+    cEmis=skyRefl(V,N)*(.08+.48*fres)+warm*(.12+.22*max(N.y,0.));
     float hl=pow(max(dot(reflect(V,N),normalize(vec3(-.74,.47,.48))),0.),40.);cEmis+=vec3(1.,.9,.8)*hl*.6;
   }else if(st>5.5&&st<6.5){ cEmis=skyRefl(V,N)*(.25+.6*fres);col*=.25;
   }else if(st>15.5&&st<16.5){ cEmis=col*(.35+1.6*vState.x);col*=.3;
@@ -995,7 +1001,7 @@ vec3 cEmis=vec3(0.);
   }else if(st>18.5&&st<19.5){ vec4 tx=texture2D(uVehAtlas,vUvW);col*=tx.rgb;cEmis=tx.rgb*gr;
   }else if(st>19.5&&st<20.5){ col*=.9;
   }else if(st>20.5&&st<21.5){ cEmis=skyRefl(V,N)*.55;col*=.35;
-  }else if(st>21.5&&st<22.5){ cEmis=col*(.25+.4*fres)+skyRefl(V,N)*.3*fres;col*=.4;
+  }else if(st>21.5&&st<22.5){ cEmis=col*(.3+.4*fres+1.25*uNight)+skyRefl(V,N)*.3*fres;col*=mix(.4,.28,uNight);
   }else if(st>9.5&&st<10.5){ cEmis=col*.9;col*=.2;
   }else{ col*=.94+.08*fbm(vUvW*.9); }
   diffuseColor.rgb=col;
