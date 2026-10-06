@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Che-Kai Training Lab</title>
+<title>Che-Kai Portfolio Control</title>
 <meta name="theme-color" content="#f4efe3">
 <style>
 :root{
@@ -44,9 +44,10 @@ a{color:inherit}
 .log-list{display:grid;gap:8px}.log-card{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:12px}.log-head{display:flex;justify-content:space-between;gap:12px}.log-date{font:800 8px/1 var(--mono);color:var(--green);letter-spacing:.08em}.log-card h3{margin:6px 0 8px;font-size:14px}.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{padding:5px 7px;border:1px solid #b7ad9e;border-radius:999px;font:750 7px/1 var(--mono);color:var(--black)}.chip.live{color:var(--green);border-color:#89a698;background:var(--green-soft)}.chip.private{color:var(--red);border-color:#b98b89;background:var(--red-soft)}.log-actions{display:flex;gap:6px;margin-top:10px}
 .settings-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:12px}.auth{display:grid;grid-template-columns:1fr auto;gap:8px}.auth input{width:100%;border:1px solid #bfb4a5;background:#fffdf8;color:var(--black);border-radius:10px;padding:11px 12px;outline:none}.auth input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(41,54,95,.10)}.help{margin-top:9px;color:var(--muted);font-size:10px;line-height:1.65}.sync-status{display:grid;gap:9px}.sync-line{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:11px 0;border-bottom:1px solid var(--line);font-size:10px}.sync-line:last-child{border-bottom:0}.sync-line b{font:800 8px/1 var(--mono);color:var(--indigo)}.sync-line span{font-size:10px;text-align:right}.strava-box{padding:14px;border:1px dashed #aaa091;background:#f8f3ea;border-radius:12px}.strava-box h3{margin:0;font-size:13px}.strava-box p{margin:7px 0 12px;color:var(--muted);font-size:10px;line-height:1.6}
 .ai-coach{margin-top:12px}.ai-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;padding:18px;background:linear-gradient(135deg,var(--indigo),#344775);color:#fff}.ai-hero h2{margin:0;font-size:20px}.ai-hero p{margin:7px 0 0;max-width:720px;color:#e2e6f0;font-size:10px;line-height:1.65}.ai-status{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 8px;border:1px solid rgba(255,255,255,.25);border-radius:999px;font:800 8px/1 var(--mono)}.ai-status i{width:7px;height:7px;border-radius:50%;background:#d4a86a}.ai-status.ready i{background:#91d3ad}.ai-output{padding:16px}.ai-summary{font-size:14px;line-height:1.75;margin:0}.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.ai-block{border:1px solid var(--line);background:#f8f3ea;border-radius:12px;padding:13px}.ai-block h3{margin:0 0 8px;font:850 9px/1 var(--mono);letter-spacing:.08em;color:var(--indigo)}.ai-block ul{margin:0;padding-left:18px}.ai-block li{margin:6px 0;color:#4f4a43;font-size:10px;line-height:1.55}.ai-findings{display:grid;gap:8px;margin-top:14px}.ai-finding{border-left:3px solid var(--indigo);background:#f6f0e6;padding:11px 12px;border-radius:0 10px 10px 0}.ai-finding b{display:block;font-size:11px}.ai-finding small{display:block;margin-top:5px;color:var(--muted);font-size:9px;line-height:1.55}.ai-finding em{display:block;margin-top:6px;font:800 7px/1 var(--mono);font-style:normal;color:var(--green)}.ai-next{margin-top:14px;border:1px solid #8ba093;background:var(--green-soft);border-radius:12px;padding:14px}.ai-next b{font-size:12px}.ai-next p{margin:6px 0 0;font-size:10px;line-height:1.6;color:#31473e}.ai-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.ai-meta span{padding:5px 7px;border:1px solid #b7ad9e;border-radius:999px;font:800 7px/1 var(--mono);color:var(--muted)}.gemini-settings{margin-top:12px}.gemini-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.gemini-row input{width:100%;border:1px solid #bfb4a5;background:#fffdf8;color:var(--black);border-radius:10px;padding:11px 12px;outline:none}.gemini-row input:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(41,54,95,.10)}
+.cms-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);gap:12px}.cms-stack{display:grid;gap:12px}.cms-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.cms-toolbar select{min-width:180px}.cms-item-list,.order-list,.media-list,.club-list{display:grid;gap:8px}.cms-item{border:1px solid var(--line);border-radius:12px;background:#f8f3ea;padding:11px}.cms-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.cms-item-head b{font-size:10px}.cms-row{display:grid;grid-template-columns:1.1fr 1.3fr 1.2fr .75fr auto;gap:7px;align-items:center}.cms-row input,.cms-row select,.cms-toolbar select{width:100%;border:1px solid #bfb4a5;background:#fffdf8;color:var(--black);border-radius:9px;padding:9px 10px;outline:none}.cms-row input:focus,.cms-row select:focus,.cms-toolbar select:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(41,54,95,.09)}.order-row,.media-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#f8f3ea}.order-row strong,.media-row strong{font-size:11px}.order-actions,.media-actions{display:flex;gap:5px}.status-pill{display:inline-flex;align-items:center;margin-left:7px;padding:5px 7px;border-radius:999px;font:800 7px/1 var(--mono);background:var(--green-soft);color:var(--green)}.status-pill.off{background:var(--red-soft);color:var(--red)}.club-chapter-tabs{display:flex;gap:6px;overflow:auto;padding-bottom:4px}.club-chapter-tabs button{flex:none;border:1px solid var(--line);background:#f8f3ea;border-radius:9px;padding:8px 10px;font:800 8px/1 var(--mono)}.club-chapter-tabs button.active{background:var(--indigo);color:#fff;border-color:var(--indigo)}.club-event{border:1px solid var(--line);background:#f8f3ea;border-radius:12px;padding:12px}.club-event-grid{display:grid;grid-template-columns:1fr 1fr .7fr;gap:8px}.club-event textarea{min-height:85px}.upload-zone{border:1px dashed #9d9384;background:#f8f3ea;border-radius:12px;padding:18px;text-align:center}.upload-zone input{max-width:100%}.media-thumb{width:54px;height:54px;border-radius:8px;border:1px solid var(--line);object-fit:cover;background:#e8e0d4}.media-meta{min-width:0;flex:1}.media-meta span{display:block;margin-top:4px;color:var(--muted);font:700 8px/1.4 var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.backup-actions{display:flex;flex-wrap:wrap;gap:8px}.dirty{color:var(--red)!important}
 .mobile-nav{display:none}
 .toast{position:fixed;z-index:100;left:50%;bottom:25px;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:10px 13px;border:1px solid #1c1c1c;background:var(--black);color:var(--ivory-soft);border-radius:10px;box-shadow:0 16px 50px rgba(0,0,0,.2);font-size:10px;font-weight:750;transition:.22s}.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:1050px){.app{grid-template-columns:190px minmax(0,1fr)}.metric-grid{grid-template-columns:repeat(2,1fr)}.dash-grid,.section-grid,.settings-grid{grid-template-columns:1fr}.insight-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:1050px){.app{grid-template-columns:190px minmax(0,1fr)}.metric-grid{grid-template-columns:repeat(2,1fr)}.dash-grid,.section-grid,.settings-grid,.cms-grid{grid-template-columns:1fr}.insight-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){
   .app{display:block}.sidebar{display:none}.main{padding:calc(16px + env(safe-area-inset-top)) 12px calc(88px + env(safe-area-inset-bottom))}
   .top{align-items:flex-start;margin-bottom:14px}.top h1{font-size:34px}.top p{font-size:10px}.top-actions .btn:not(.primary){display:none}
@@ -54,18 +55,21 @@ a{color:inherit}
   .dash-grid{display:block}.dash-grid>.card+ .card{margin-top:10px}.chart{height:200px;gap:5px}.bar b{display:none}
   .insight-grid{grid-template-columns:1fr;gap:8px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}
   .section-grid,.settings-grid{display:block}.section-grid>aside,.settings-grid>aside{margin-top:10px}
-  .auth,.gemini-row{grid-template-columns:1fr}.form-actions .btn{flex:1;min-height:44px}.ai-hero{grid-template-columns:1fr}.ai-grid{grid-template-columns:1fr}
-  .mobile-nav{position:fixed;z-index:50;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:5px;border:1px solid #b9af9f;background:rgba(250,247,239,.96);backdrop-filter:blur(18px);border-radius:16px;box-shadow:0 15px 50px rgba(34,26,20,.15)}
-  .mobile-nav button{border:0;background:transparent;color:var(--muted);border-radius:11px;padding:8px 3px 7px;font:780 8px/1 var(--mono)}.mobile-nav button b{display:block;margin-bottom:4px;font-size:15px}.mobile-nav button.active{background:var(--indigo);color:#fff}.mobile-nav button.add{background:var(--green);color:#fff}
+  .auth,.gemini-row,.cms-row,.club-event-grid{grid-template-columns:1fr}.form-actions .btn{flex:1;min-height:44px}.ai-hero{grid-template-columns:1fr}.ai-grid{grid-template-columns:1fr}
+  .mobile-nav{position:fixed;z-index:50;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));display:flex;overflow-x:auto;gap:4px;padding:5px;border:1px solid #b9af9f;background:rgba(250,247,239,.96);backdrop-filter:blur(18px);border-radius:16px;box-shadow:0 15px 50px rgba(34,26,20,.15)}
+  .mobile-nav button{border:0;background:transparent;color:var(--muted);border-radius:11px;padding:8px 10px 7px;font:780 8px/1 var(--mono);min-width:58px;flex:1}.mobile-nav button b{display:block;margin-bottom:4px;font-size:15px}.mobile-nav button.active{background:var(--indigo);color:#fff}.mobile-nav button.add{background:var(--green);color:#fff}
 }
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="logo"><small>CHE-KAI / 2026</small><strong>Training Lab</strong><span>RUNNING ANALYTICS<br>+ WEBSITE SYNC</span></div>
+    <div class="logo"><small>CHE-KAI / 2026</small><strong>Portfolio Control</strong><span>CONTENT · MEDIA · RUNNING<br>+ WEBSITE SYNC</span></div>
     <nav class="nav">
-      <button class="active" data-view="overview"><i>◫</i>訓練總覽</button>
+      <button class="active" data-view="overview"><i>◫</i>控制總覽</button>
+      <button data-view="cms"><i>✎</i>網站內容</button>
+      <button data-view="club"><i>▤</i>社團簡報</button>
+      <button data-view="media"><i>▧</i>素材庫</button>
       <button data-view="analysis"><i>⌁</i>運動分析</button>
       <button data-view="records"><i>≡</i>訓練紀錄</button>
       <button class="primary" data-view="add"><i>＋</i>新增訓練</button>
@@ -73,14 +77,14 @@ a{color:inherit}
     </nav>
     <div class="side-bottom">
       <div class="connection"><i class="dot" id="statusDot"></i><span id="statusText">READ ONLY</span></div>
-      <a class="front-link" href="https://easylearnfromtw.github.io/test/chekai-portfolio/#running" target="_blank" rel="noopener">OPEN RUNNING LOG ↗</a>
+      <a class="front-link" href="https://easylearnfromtw.github.io/test/chekai-portfolio/" target="_blank" rel="noopener">OPEN PORTFOLIO ↗</a>
     </div>
   </aside>
 
   <main class="main">
     <header class="top">
-      <div><h1 id="pageTitle">訓練總覽</h1><p id="pageSub">你的跑步資料、趨勢與近期狀態。</p></div>
-      <div class="top-actions"><button class="btn" id="manualSync" type="button">同步網站</button><button class="btn primary" type="button" data-view-jump="add">＋ 新增訓練</button></div>
+      <div><h1 id="pageTitle">控制總覽</h1><p id="pageSub">網站內容、素材與訓練資料的集中控制台。</p></div>
+       <div class="top-actions"><button class="btn" id="manualSync" type="button">同步全部</button><button class="btn primary" type="button" data-view-jump="add">＋ 新增訓練</button></div>
     </header>
 
     <section class="view active" id="view-overview">
@@ -102,6 +106,46 @@ a{color:inherit}
       </div>
       <div class="insight-grid" id="insights"></div>
     </section>
+    <section class="view" id="view-cms">
+      <div class="cms-grid">
+        <div class="cms-stack">
+          <section class="card"><div class="card-head"><h2>首頁與身份</h2><span>SITE IDENTITY</span></div><div class="card-body">
+            <div class="form-grid">
+              <div class="field"><label>中文姓名</label><input id="cmsName"></div><div class="field"><label>英文姓名</label><input id="cmsEnName"></div>
+              <div class="field"><label>首頁眉標</label><input id="cmsKicker"></div><div class="field"><label>定位文字</label><input id="cmsRole"></div>
+              <div class="field full"><label>歡迎文字</label><textarea id="cmsIntro"></textarea></div>
+            </div>
+          </div></section>
+          <section class="card"><div class="card-head"><h2>分頁內容</h2><span>SECTION EDITOR</span></div><div class="card-body">
+            <div class="cms-toolbar"><select id="cmsSection"></select><button class="btn" id="cmsAddItem" type="button">＋ 新增項目</button><button class="btn primary" id="cmsSave" type="button">儲存內容</button></div>
+            <div class="form-grid" style="margin-top:12px">
+              <div class="field"><label>導覽名稱</label><input id="cmsNav"></div><div class="field"><label>編號</label><input id="cmsIndex"></div>
+              <div class="field"><label>大標題</label><input id="cmsTitle"></div><div class="field"><label>強調色</label><input id="cmsAccent" type="color"></div>
+              <div class="field full"><label>分頁介紹</label><input id="cmsSectionIntro"></div><div class="field"><label>廣告看板標題</label><input id="cmsBoardTitle"></div><div class="field"><label>廣告看板介紹</label><input id="cmsBoardIntro"></div>
+              <div class="field full"><div class="toggle-row"><div><b>公開此分頁</b><span>關閉後不會出現在主要導覽循環。</span></div><label class="switch"><input id="cmsVisible" type="checkbox"><i></i></label></div></div>
+            </div>
+            <div class="cms-item-list" id="cmsItems" style="margin-top:12px"></div>
+          </div></section>
+        </div>
+        <aside class="cms-stack"><section class="card"><div class="card-head"><h2>分頁順序</h2><span>ORDER</span></div><div class="card-body"><div class="order-list" id="sectionOrder"></div></div></section><section class="card"><div class="card-head"><h2>內容狀態</h2><span>CMS STATUS</span></div><div class="card-body"><div class="sync-status"><div class="sync-line"><b>CONTENT FILE</b><span>content.json</span></div><div class="sync-line"><b>CONTENT SYNC</b><span id="contentSync">—</span></div><div class="sync-line"><b>UNSAVED</b><span id="contentDirty">NO</span></div></div></div></section></aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-club">
+      <div class="cms-grid">
+        <section class="card"><div class="card-head"><h2>見賢思琪互動簡報</h2><span>7 CHAPTERS</span></div><div class="card-body"><div class="club-chapter-tabs" id="clubTabs"></div><div class="form-grid" style="margin-top:12px"><div class="field full"><label>章節標題（換行可直接 Enter）</label><textarea id="clubTitle" style="min-height:82px"></textarea></div><div class="field full"><label>章節介紹</label><textarea id="clubLead" style="min-height:110px"></textarea></div></div><div class="form-actions"><button class="btn primary" id="clubSave" type="button">儲存社團簡報</button><a class="btn" href="https://easylearnfromtw.github.io/test/chekai-portfolio/#roles" target="_blank" rel="noopener">前台預覽 ↗</a></div></div></section>
+        <aside><section class="card"><div class="card-head"><h2>活動資料</h2><span>FIELD STORIES</span></div><div class="card-body"><div class="club-list" id="clubEvents"></div></div></section></aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-media">
+      <div class="cms-grid">
+        <section class="card"><div class="card-head"><h2>素材上傳</h2><span>GITHUB ASSETS</span></div><div class="card-body"><div class="upload-zone"><input id="mediaFile" type="file" accept="image/*"><div class="help">圖片會上傳到 <code>chekai-portfolio/assets/uploads/</code>。單檔建議小於 4 MB。</div><button class="btn primary" id="mediaUpload" type="button" style="margin-top:10px">上傳素材</button></div></div></section>
+        <aside><section class="card"><div class="card-head"><h2>現有素材</h2><span id="mediaCount">0 FILES</span></div><div class="card-body"><div class="media-list" id="mediaList"></div></div></section></aside>
+      </div>
+    </section>
+
+
 
     <section class="view" id="view-analysis">
       <div class="metric-grid">
@@ -182,7 +226,7 @@ a{color:inherit}
             <div class="help">Token 只保存在目前瀏覽器分頁的 sessionStorage。建議只授權 easylearnfromtw/test，Contents: Read and write。</div>
             <div class="sync-status" style="margin-top:14px">
               <div class="sync-line"><b>REPOSITORY</b><span>easylearnfromtw/test</span></div>
-              <div class="sync-line"><b>DATA FILE</b><span>chekai-portfolio/data/training.json</span></div>
+              <div class="sync-line"><b>TRAINING DATA</b><span>chekai-portfolio/data/training.json</span></div><div class="sync-line"><b>CONTENT DATA</b><span>chekai-portfolio/data/content.json</span></div>
               <div class="sync-line"><b>LAST SYNC</b><span id="lastSync">—</span></div>
             </div>
           </div>
@@ -192,7 +236,8 @@ a{color:inherit}
             <div class="strava-box"><h3>Strava 自動匯入</h3><p>之後接 OAuth 後，跑完同步 Strava 就會進 Training Lab 分析；你可以再決定哪些要公開到網站。</p><button class="btn" disabled style="opacity:.55">尚未連接</button></div>
           </div></div>
         </aside>
-      </div>
+      </div>      <section class="card" style="margin-top:12px"><div class="card-head"><h2>備份與移轉</h2><span>BACKUP</span></div><div class="card-body"><div class="backup-actions"><button class="btn" id="exportBackup" type="button">匯出完整備份 JSON</button><label class="btn">匯入備份<input id="importBackup" type="file" accept="application/json" hidden></label></div><div class="help">備份包含網站內容與訓練資料，不包含 GitHub / Gemini 金鑰。</div></div></section>
+
       <section class="card gemini-settings">
         <div class="card-head"><h2>Gemini AI Coach</h2><span>AI ANALYSIS</span></div>
         <div class="card-body">
@@ -210,11 +255,7 @@ a{color:inherit}
 </div>
 
 <nav class="mobile-nav">
-  <button class="active" data-view="overview"><b>◫</b>總覽</button>
-  <button data-view="analysis"><b>⌁</b>分析</button>
-  <button class="add" data-view="add"><b>＋</b>新增</button>
-  <button data-view="records"><b>≡</b>紀錄</button>
-  <button data-view="settings"><b>⚙</b>設定</button>
+  <button class="active" data-view="overview"><b>◫</b>總覽</button><button data-view="cms"><b>✎</b>網站</button><button data-view="club"><b>▤</b>社團</button><button data-view="records"><b>≡</b>訓練</button><button data-view="analysis"><b>⌁</b>分析</button><button data-view="settings"><b>⚙</b>設定</button>
 </nav>
 <div class="toast" id="toast"></div>
 
