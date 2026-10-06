@@ -59,6 +59,38 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
   .image-viewer-head{height:46px;flex-basis:46px;padding-left:13px}
   .image-viewer-title{font-size:8px}.image-viewer-body{padding:9px}
 }
+
+.item-blog{position:relative;display:block;width:100%;appearance:none;text-align:left;color:inherit;font:inherit;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
+.item-blog::after{content:'↗';position:absolute;right:12px;top:10px;color:#d85d99;font-size:15px}
+.item-blog:hover{background:rgba(216,93,153,.08);border-color:rgba(216,93,153,.28);transform:translateY(-1px)}
+.item-blog b,.item-blog span{padding-right:24px}
+.running-blog{position:fixed;inset:0;z-index:142;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,visibility 0s linear .24s}
+.running-blog.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .24s ease,visibility 0s}
+.running-blog-backdrop{position:absolute;inset:0;background:rgba(5,9,18,.78)}
+.running-blog-shell{position:absolute;left:50%;top:50%;transform:translate(-50%,-48%) scale(.985);width:min(95vw,1180px);height:min(92dvh,880px);display:flex;flex-direction:column;background:#f3efe4;color:#171717;border:1px solid rgba(255,255,255,.15);border-radius:22px;overflow:hidden;box-shadow:0 30px 110px rgba(0,0,0,.55);transition:transform .28s cubic-bezier(.16,.84,.24,1)}
+.running-blog.open .running-blog-shell{transform:translate(-50%,-50%) scale(1)}
+.runblog-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid #cbc4b4;background:#eee8da}
+.runblog-brand{display:flex;align-items:baseline;gap:10px}.runblog-brand strong{font:950 20px/1 var(--sans);letter-spacing:-.04em}.runblog-brand span{font:800 8px/1 var(--mono);letter-spacing:.17em;color:#796f60}
+.runblog-actions{display:flex;gap:8px}.runblog-back,.runblog-close{height:36px;border:1px solid #bdb4a2;background:#f8f4ea;color:#171717;border-radius:999px;padding:0 13px;font:850 9px/1 var(--mono);letter-spacing:.05em;cursor:pointer}.runblog-close{width:36px;padding:0;font-size:18px}
+.runblog-back[hidden]{display:none}
+.runblog-body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.runblog-home{padding:26px 26px 34px}
+.runblog-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px;margin-bottom:26px}
+.runblog-title{padding:26px;border:1px solid #c8c0b1;background:#f7f3e9}.runblog-kicker{font:850 9px/1 var(--mono);letter-spacing:.18em;color:#b0466f;text-transform:uppercase}.runblog-title h2{margin:12px 0 8px;font:950 clamp(42px,6.5vw,82px)/.88 var(--sans);letter-spacing:-.065em}.runblog-title p{max-width:650px;margin:0;font:500 14px/1.7 var(--sans);color:#5a544a}
+.runblog-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.runblog-stat{min-height:105px;padding:15px;border:1px solid #c8c0b1;background:#e9e1d2}.runblog-stat em{display:block;font:850 8px/1 var(--mono);letter-spacing:.13em;color:#776f62;font-style:normal}.runblog-stat strong{display:block;margin-top:10px;font:950 28px/1 var(--sans);letter-spacing:-.05em}.runblog-stat span{display:block;margin-top:5px;font:700 9px/1.4 var(--mono);color:#776f62}
+.runblog-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:0 0 12px}.runblog-section-head h3{margin:0;font:950 24px/1 var(--sans);letter-spacing:-.045em}.runblog-section-head span{font:750 8px/1 var(--mono);letter-spacing:.12em;color:#7d7466}
+.runblog-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.run-card{appearance:none;text-align:left;color:inherit;border:1px solid #c8c0b1;background:#faf7ef;padding:0;cursor:pointer;overflow:hidden;transition:transform .18s,box-shadow .18s}.run-card:hover{transform:translateY(-2px);box-shadow:5px 6px 0 #c7bdab}.run-card-top{padding:15px 16px 13px;border-bottom:1px solid #d3ccbe}.run-card-date{font:850 8px/1 var(--mono);letter-spacing:.12em;color:#b0466f}.run-card h4{margin:8px 0 0;font:900 20px/1.05 var(--sans);letter-spacing:-.035em}.run-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}.run-card-metric{padding:12px;border-right:1px solid #ddd5c7}.run-card-metric:last-child{border-right:0}.run-card-metric em{display:block;font:800 7px/1 var(--mono);letter-spacing:.11em;color:#8c8375;font-style:normal}.run-card-metric strong{display:block;margin-top:5px;font:900 16px/1 var(--sans)}.run-card-note{padding:13px 16px 15px;font:500 11px/1.55 var(--sans);color:#5f584d}
+.runblog-empty{padding:48px 24px;border:1px dashed #bbb09f;text-align:center;background:#f8f4eb}.runblog-empty strong{display:block;font:900 22px/1.1 var(--sans)}.runblog-empty span{display:block;margin-top:8px;font:650 10px/1.6 var(--mono);color:#7d7466}
+.runblog-loading{padding:60px 20px;text-align:center;font:800 9px/1 var(--mono);letter-spacing:.13em;color:#776f62}
+.runblog-article{display:none;padding:28px 28px 42px;max-width:900px;margin:0 auto}.running-blog.detail .runblog-home{display:none}.running-blog.detail .runblog-article{display:block}
+.runarticle-date{font:850 9px/1 var(--mono);letter-spacing:.14em;color:#b0466f}.runarticle-title{margin:12px 0 18px;font:950 clamp(42px,7vw,82px)/.9 var(--sans);letter-spacing:-.065em}.runarticle-meta{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #c8c0b1;margin-bottom:24px}.runarticle-meta div{padding:14px;border-right:1px solid #d4ccbd}.runarticle-meta div:last-child{border-right:0}.runarticle-meta em{display:block;font:800 7px/1 var(--mono);letter-spacing:.11em;color:#8a8174;font-style:normal}.runarticle-meta strong{display:block;margin-top:6px;font:900 18px/1 var(--sans)}.runarticle-copy{font:500 15px/1.9 var(--sans);white-space:pre-wrap}.runarticle-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px}.runarticle-tags span{padding:6px 8px;border:1px solid #c8c0b1;font:800 8px/1 var(--mono);letter-spacing:.08em;background:#e9e1d2}
+@media(max-width:700px){
+  .running-blog-shell{left:0;top:0;transform:none!important;width:100vw;height:100dvh;border-radius:0;border:0}
+  .runblog-head{padding:calc(10px + env(safe-area-inset-top)) 11px 10px}.runblog-brand strong{font-size:17px}.runblog-brand span{display:none}
+  .runblog-home{padding:16px 12px calc(28px + env(safe-area-inset-bottom))}.runblog-hero{grid-template-columns:1fr;gap:9px;margin-bottom:20px}.runblog-title{padding:18px}.runblog-title h2{font-size:52px}.runblog-title p{font-size:12px}.runblog-stats{grid-template-columns:repeat(2,1fr)}.runblog-stat{min-height:86px;padding:12px}.runblog-stat strong{font-size:24px}
+  .runblog-list{grid-template-columns:1fr}.run-card h4{font-size:19px}
+  .runblog-article{padding:22px 14px calc(38px + env(safe-area-inset-bottom))}.runarticle-title{font-size:48px}.runarticle-meta{grid-template-columns:1fr 1fr}.runarticle-meta div:nth-child(2){border-right:0}.runarticle-meta div:nth-child(-n+2){border-bottom:1px solid #d4ccbd}.runarticle-copy{font-size:14px;line-height:1.8}
+}
 /* outbound link transition: Taiwan street-bus pass, GPU-composited */
 .teleport{position:fixed;inset:0;z-index:120;pointer-events:none;overflow:hidden;opacity:0;background:transparent}
 .teleport-shade{position:absolute;inset:0;background:rgba(9,18,22,.0);opacity:0}
@@ -231,7 +263,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.5-cert-trigger: certificate opens only from Keelung result card -->
+<!-- taiwan-street-pro v5.6-running-blog: training log blog + controller data feed -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -266,6 +298,26 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   </section>
 </div>
 <aside class="drawer" id="drawer"><button class="close" id="close">×</button><div class="dk" id="dk">00 / Home</div><h2 id="dt">CHE-KAI LIN</h2><p id="di"></p><div class="items" id="items"></div></aside>
+<div class="running-blog" id="runningBlog" aria-hidden="true">
+  <div class="running-blog-backdrop" id="runningBlogBackdrop"></div>
+  <section class="running-blog-shell" role="dialog" aria-modal="true" aria-label="Che-Kai Running Log">
+    <header class="runblog-head">
+      <div class="runblog-brand"><strong>CHE-KAI RUNNING LOG</strong><span>TRAINING / RACE / NOTES</span></div>
+      <div class="runblog-actions"><button class="runblog-back" id="runBlogBack" type="button" hidden>← BACK</button><button class="runblog-close" id="runBlogClose" type="button" aria-label="關閉">×</button></div>
+    </header>
+    <div class="runblog-body">
+      <main class="runblog-home">
+        <section class="runblog-hero">
+          <div class="runblog-title"><span class="runblog-kicker">RUNNING ARCHIVE / 2026</span><h2>RUN.<br>RECORD.<br>REPEAT.</h2><p>把每一次訓練留下來：距離、配速、心率與當天身體的感覺。不是只有成績，也記錄過程。</p></div>
+          <div class="runblog-stats" id="runBlogStats"></div>
+        </section>
+        <div class="runblog-section-head"><h3>Training Notes</h3><span id="runBlogUpdated">LOADING</span></div>
+        <section class="runblog-list" id="runBlogList"><div class="runblog-loading">LOADING RUNS…</div></section>
+      </main>
+      <article class="runblog-article" id="runBlogArticle"></article>
+    </div>
+  </section>
+</div>
 <div class="image-viewer" id="imageViewer" aria-hidden="true">
   <div class="image-viewer-backdrop" id="imageViewerBackdrop"></div>
   <section class="image-viewer-panel" role="dialog" aria-modal="true" aria-label="基隆半程馬拉松成績證明">
@@ -318,7 +370,7 @@ const DATA={
  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',accent:'#e36aa8',items:[['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷'],['CDBA中華辯會工作坊 參與','辯論與工作坊參與']]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']]},
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['文章創作','觀點與長短文寫作'],['時事觀察','公共議題與社會觀察'],['散文／隨筆','個人文字與記錄'],['競賽作品','文學與主題創作']]},
- running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程'],['比賽成績','競賽紀錄持續累積']]},
+ running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',accent:'#58bdd2',items:[['欣緯科技有限公司董事','Director'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美宣','Founding Vice President'],['市三重高中前扶輪少年團團員','Member']]},
  public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']]},
  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',accent:'#9b78de',items:[['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration'],['攝影紀錄','Photography'],['靈感收藏','Visual references'],['未來計劃','Future works']]}
@@ -3636,6 +3688,78 @@ function syncTabs(id){const btn=TABS.find(b=>b.dataset.id===id);TABS.forEach(b=>
   const sl=btn.offsetLeft+btn.offsetWidth/2-tabbar.clientWidth/2;if(tabbar.scrollWidth>tabbar.clientWidth)tabbar.scrollTo({left:sl,behavior:'smooth'})}
 addEventListener('resize',()=>syncTabs(activeId));document.fonts?.ready?.then(()=>syncTabs(activeId));addEventListener('load',()=>syncTabs(activeId));
 const drawer=document.getElementById('drawer');document.getElementById('close').onclick=()=>drawer.classList.remove('open');
+const runningBlog=document.getElementById('runningBlog'),runBlogList=document.getElementById('runBlogList'),runBlogStats=document.getElementById('runBlogStats'),runBlogArticle=document.getElementById('runBlogArticle'),runBlogBack=document.getElementById('runBlogBack'),runBlogUpdated=document.getElementById('runBlogUpdated');
+let trainingPosts=[],trainingLoaded=false;
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function num(v,d=1){const n=Number(v);return Number.isFinite(n)?n.toFixed(d):'—'}
+function formatRunDate(v){if(!v)return'—';const d=new Date(v+'T12:00:00');return Number.isNaN(d.getTime())?esc(v):d.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'})}
+function runMetric(label,value){return `<div class="run-card-metric"><em>${label}</em><strong>${esc(value||'—')}</strong></div>`}
+function renderRunningBlog(){
+  const posts=trainingPosts.filter(p=>p.published!==false).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  const totalKm=posts.reduce((a,p)=>a+(Number(p.distance_km)||0),0);
+  const totalElev=posts.reduce((a,p)=>a+(Number(p.elevation_m)||0),0);
+  const latest=posts[0]?.date?formatRunDate(posts[0].date):'—';
+  runBlogStats.innerHTML=`
+    <div class="runblog-stat"><em>RUNS</em><strong>${posts.length}</strong><span>published entries</span></div>
+    <div class="runblog-stat"><em>DISTANCE</em><strong>${num(totalKm,1)} km</strong><span>total logged</span></div>
+    <div class="runblog-stat"><em>ELEVATION</em><strong>${Math.round(totalElev)} m</strong><span>total gain</span></div>
+    <div class="runblog-stat"><em>LATEST</em><strong style="font-size:18px">${latest}</strong><span>last update</span></div>`;
+  runBlogUpdated.textContent=posts.length?`${posts.length} POSTS`:'NO POSTS YET';
+  if(!posts.length){
+    runBlogList.innerHTML='<div class="runblog-empty"><strong>第一篇還沒刊登</strong><span>從 Controllerforpersonalweb 新增訓練後，會自動出現在這裡。</span></div>';return
+  }
+  runBlogList.innerHTML=posts.map(p=>`
+    <button class="run-card" type="button" data-run-id="${esc(p.id)}">
+      <div class="run-card-top"><span class="run-card-date">${formatRunDate(p.date)} · ${esc((p.type||'RUN').toUpperCase())}</span><h4>${esc(p.title||'Training Run')}</h4></div>
+      <div class="run-card-grid">
+        ${runMetric('DISTANCE',(Number(p.distance_km)||0)?num(p.distance_km,2)+' km':'—')}
+        ${runMetric('PACE',p.pace||'—')}
+        ${runMetric('TIME',p.duration||'—')}
+      </div>
+      <div class="run-card-note">${esc((p.note||'').slice(0,110)||'查看完整訓練紀錄 →')}</div>
+    </button>`).join('');
+  runBlogList.querySelectorAll('[data-run-id]').forEach(b=>b.addEventListener('click',()=>openRunArticle(b.dataset.runId)))
+}
+async function loadTrainingPosts(){
+  try{
+    const r=await fetch('./data/training.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('training data '+r.status);
+    const data=await r.json();trainingPosts=Array.isArray(data.posts)?data.posts:[];trainingLoaded=true;renderRunningBlog()
+  }catch(e){
+    runBlogUpdated.textContent='LOAD ERROR';runBlogList.innerHTML='<div class="runblog-empty"><strong>訓練紀錄載入失敗</strong><span>稍後重新開啟即可重試。</span></div>'
+  }
+}
+function openRunningBlog(){
+  if(activeId!=='running'||!drawer.classList.contains('open'))return;
+  runningBlog.classList.remove('detail');runBlogBack.hidden=true;runningBlog.classList.add('open');runningBlog.setAttribute('aria-hidden','false');
+  if(!trainingLoaded)loadTrainingPosts();else renderRunningBlog()
+}
+function closeRunningBlog(){runningBlog.classList.remove('open','detail');runningBlog.setAttribute('aria-hidden','true');runBlogBack.hidden=true}
+function openRunArticle(id){
+  const p=trainingPosts.find(x=>String(x.id)===String(id));if(!p)return;
+  const tags=Array.isArray(p.tags)?p.tags:[];
+  runBlogArticle.innerHTML=`
+    <div class="runarticle-date">${formatRunDate(p.date)} · ${esc((p.type||'RUN').toUpperCase())}</div>
+    <h2 class="runarticle-title">${esc(p.title||'Training Run')}</h2>
+    <section class="runarticle-meta">
+      <div><em>DISTANCE</em><strong>${(Number(p.distance_km)||0)?num(p.distance_km,2)+' km':'—'}</strong></div>
+      <div><em>TIME</em><strong>${esc(p.duration||'—')}</strong></div>
+      <div><em>PACE</em><strong>${esc(p.pace||'—')}</strong></div>
+      <div><em>AVG HR</em><strong>${p.avg_hr?esc(p.avg_hr)+' bpm':'—'}</strong></div>
+    </section>
+    <div class="runarticle-copy">${esc(p.note||'這次訓練尚未留下文字紀錄。')}</div>
+    <div class="runarticle-tags">
+      ${p.location?`<span>⌖ ${esc(p.location)}</span>`:''}
+      ${p.elevation_m?`<span>↗ ${esc(p.elevation_m)} m</span>`:''}
+      ${p.max_hr?`<span>MAX HR ${esc(p.max_hr)}</span>`:''}
+      ${p.source?`<span>${esc(String(p.source).toUpperCase())}</span>`:''}
+      ${tags.map(t=>`<span>#${esc(t)}</span>`).join('')}
+    </div>`;
+  runningBlog.classList.add('detail');runBlogBack.hidden=false;runningBlog.querySelector('.runblog-body').scrollTop=0
+}
+runBlogBack.onclick=()=>{runningBlog.classList.remove('detail');runBlogBack.hidden=true;runningBlog.querySelector('.runblog-body').scrollTop=0};
+document.getElementById('runBlogClose').onclick=closeRunningBlog;
+document.getElementById('runningBlogBackdrop').onclick=closeRunningBlog;
+
 const imageViewer=document.getElementById('imageViewer'),imageViewerCanvas=document.getElementById('imageViewerCanvas'),imageViewerStatus=document.getElementById('imageViewerStatus');
 const certificateCtx=imageViewerCanvas.getContext('2d',{alpha:false});
 const CERT_PARTS=[
@@ -3764,7 +3888,7 @@ function restoreOutboundSnapshot(saved){
   return true
 }
 function openDrawer(id){
-  closeCertificate();
+  closeCertificate();closeRunningBlog();
   const d=DATA[id],dk=document.getElementById('dk'),dt=document.getElementById('dt'),di=document.getElementById('di'),items=document.getElementById('items');
   dk.textContent=`${d.index} / ${d.nav}`;
   if(id==='about'){
@@ -3798,7 +3922,7 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');items.querySelectorAll('[data-certificate="keelung-2026"]').forEach(b=>b.addEventListener('click',openCertificate,{passive:false}))
+    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');items.querySelectorAll('[data-certificate="keelung-2026"]').forEach(b=>b.addEventListener('click',openCertificate,{passive:false}));items.querySelectorAll('[data-training-blog]').forEach(b=>b.addEventListener('click',openRunningBlog))
   }
   drawer.classList.add('open')
 }
@@ -3839,7 +3963,7 @@ canvas.addEventListener('pointerup',e=>{dragging=false;canvas.classList.remove('
 canvas.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
 document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus(CYCLE[0],false)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(imageViewer.classList.contains('open')){closeCertificate();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
 
 
 // ---------------- seamless lap wrap ----------------
