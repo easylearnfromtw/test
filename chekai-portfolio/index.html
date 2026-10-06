@@ -54,7 +54,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
   .ad-hint-kicker{font-size:7px}
   .ad-hint-close{width:28px;height:28px;right:9px;top:9px}
 }
-.drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.item-link{position:relative;display:block;color:inherit;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}.item-link::after{content:'↗';position:absolute;right:12px;top:10px;color:#70c6f4;font-size:15px}.item-link:hover{background:rgba(112,198,244,.08);border-color:rgba(112,198,244,.28);transform:translateY(-1px)}.item-link b,.item-link span{padding-right:22px}
+.drawer{position:fixed;z-index:20;right:16px;top:78px;bottom:16px;width:min(410px,calc(100vw - 32px));padding:22px;background:rgba(5,9,20,.94);border:1px solid rgba(255,255,255,.13);border-radius:18px;backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.5);transform:translateX(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow:auto}.drawer.open{transform:translateX(0)}.close{float:right;width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#101827;cursor:pointer}.dk{font:9px var(--mono);letter-spacing:.14em;color:var(--red);text-transform:uppercase;margin:8px 0}.drawer h2{font-size:42px;line-height:.92;margin:0 0 14px;letter-spacing:-.04em}.drawer p{color:#aeb9c8;font-size:13px;line-height:1.7}.items{display:grid;gap:8px;margin-top:15px}.experience-group-head{display:flex;align-items:center;gap:9px;margin:13px 1px 2px;color:#eef3f8;font:800 9px/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase}.experience-group-head:first-child{margin-top:1px}.experience-group-head::before{content:"";width:18px;height:2px;flex:0 0 auto;background:var(--red);border-radius:999px}.experience-group-count{margin-left:auto;color:#738196;font:700 8px/1 var(--mono);letter-spacing:.08em}.item{padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.03)}.item b{display:block;font-size:13px;margin-bottom:4px}.item span{font-size:11px;line-height:1.5;color:#9ba8b9}.item-link{position:relative;display:block;color:inherit;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}.item-link::after{content:'↗';position:absolute;right:12px;top:10px;color:#70c6f4;font-size:15px}.item-link:hover{background:rgba(112,198,244,.08);border-color:rgba(112,198,244,.28);transform:translateY(-1px)}.item-link b,.item-link span{padding-right:22px}
 .item-image{position:relative;display:block;width:100%;appearance:none;text-align:left;color:inherit;font:inherit;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
 .item-image::after{content:'▧';position:absolute;right:12px;top:10px;color:#d85d99;font-size:16px}
 .item-image:hover{background:rgba(216,93,153,.08);border-color:rgba(216,93,153,.28);transform:translateY(-1px)}
@@ -236,7 +236,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   .close{position:sticky;top:0;z-index:4;float:right;width:36px;height:36px;background:#101827}
   .dk{font-size:8px;margin-top:1px}.drawer h2{font-size:clamp(30px,9vw,38px)!important;margin-bottom:9px}
   .drawer p{font-size:11px;line-height:1.55;margin:0 0 8px}
-  .items{gap:7px;margin-top:10px}
+  .items{gap:7px;margin-top:10px}.experience-group-head{font-size:8px;margin-top:10px}.experience-group-count{font-size:7px}
   .item{padding:10px 11px;border-radius:11px}.item b{font-size:12px}.item span{font-size:10px}
   .profile-card{gap:9px;margin-top:10px}
   .profile-head{padding:13px}.profile-name{font-size:22px!important}
@@ -578,7 +578,7 @@ const DATA={
   ['閒台文 Taiwanway','互動式中文與台灣文化網站','https://easylearnfromtw.github.io/Taiwanway/'],
   ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品',null,{type:'coming_soon'}]
 ]},
- experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、服務、社團與企劃參與。',accent:'#e36aa8',items:[['新北市服務學習社團楷模王114年','服務學習與社團參與肯定'],['新北市服務學習社團楷模王115年','服務學習與社團參與肯定'],['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌'],['市三重高中躲貓貓社創社社長、公關','創社社長｜公關'],['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷'],['CDBA中華辯會工作坊 參與','辯論與工作坊參與']]},
+ experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'服務、社團、媒體與企劃經歷。',accent:'#e36aa8',items:[['新北市服務學習社團楷模王114年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],['新北市服務學習社團楷模王115年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌',null,{category:'服務與公共參與'}],['市三重高中躲貓貓社創社社長、公關','創社社長｜公關',null,{category:'社團與領導'}],['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524',{category:'媒體與寫作'}],['基隆海洋文學大賽 參與','文學與主題寫作參與',null,{category:'媒體與寫作'}],['台灣聯合大學企劃 參與','企劃與專案參與經歷',null,{category:'企劃與培訓'}],['CDBA中華辯會工作坊 參與','辯論與工作坊參與',null,{category:'企劃與培訓'}]]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']]},
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書',''],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作']]},
  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
@@ -590,7 +590,7 @@ if(SITE_CONTENT?.sections){
   for(const [id,c] of Object.entries(SITE_CONTENT.sections)){
     if(!DATA[id])continue;
     for(const k of ['nav','index','title','intro','accent','visible'])if(c[k]!==undefined)DATA[id][k]=c[k];
-    if(Array.isArray(c.items))DATA[id].items=c.items.filter(x=>x?.published!==false).map(x=>[x.title||'',x.subtitle||'',x.url||null,x.type?{type:x.type,id:x.id||undefined}:undefined]);
+    if(Array.isArray(c.items))DATA[id].items=c.items.filter(x=>x?.published!==false).map(x=>[x.title||'',x.subtitle||'',x.url||null,(x.type||x.category)?{type:x.type||'',id:x.id||undefined,category:x.category||''}:undefined]);
   }
 }
 if(SITE_CONTENT?.site){
@@ -599,6 +599,18 @@ if(SITE_CONTENT?.site){
   if(nm&&sc.name)nm.textContent=sc.name;if(en&&sc.en_name)en.textContent=sc.en_name;if(copy&&sc.intro_copy)copy.textContent=sc.intro_copy;if(kick&&sc.intro_kicker)kick.textContent=sc.intro_kicker;
 }
 
+if(DATA.experience?.items){
+  const experienceCategoryOrder=['服務與公共參與','社團與領導','媒體與寫作','企劃與培訓'];
+  const originalExperienceItems=DATA.experience.items.slice();
+  const categorized=[];
+  for(const category of experienceCategoryOrder){
+    const rows=originalExperienceItems.filter(x=>x[3]?.category===category);
+    if(rows.length){categorized.push([category,String(rows.length),null,{type:'category'}],...rows)}
+  }
+  const uncategorized=originalExperienceItems.filter(x=>!experienceCategoryOrder.includes(x[3]?.category));
+  if(uncategorized.length){categorized.push(['其他',String(uncategorized.length),null,{type:'category'}],...uncategorized)}
+  DATA.experience.items=categorized;
+}
 // ---------------------------------------------------------------------------------------------
 // Lap geometry: one 360-unit lap of street, drawn as three copies so the loop is seamless.
 // IX is the centre of the new crossroads (lap-local); the HOME view looks straight down it.
@@ -4331,7 +4343,7 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='jx_story'?`<button class="item item-image" type="button" data-jx-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='category'?`<div class="experience-group-head"><span>${x[0]}</span><span class="experience-group-count">${String(x[1]).padStart(2,'0')}</span></div>`:x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='jx_story'?`<button class="item item-image" type="button" data-jx-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
     items.querySelectorAll('[data-certificate="keelung-2026"]').forEach(b=>{
       b.addEventListener('pointerdown',e=>{if(e.isTrusted)certificateGestureStamp=performance.now()},{passive:true});
       b.addEventListener('keydown',e=>{if(e.isTrusted&&(e.key==='Enter'||e.key===' '))certificateGestureStamp=performance.now()});
