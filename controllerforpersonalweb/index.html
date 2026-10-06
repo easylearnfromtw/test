@@ -59,21 +59,141 @@ a{color:inherit}
   .mobile-nav{position:fixed;z-index:50;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));display:flex;overflow-x:auto;gap:4px;padding:5px;border:1px solid #b9af9f;background:rgba(250,247,239,.96);backdrop-filter:blur(18px);border-radius:16px;box-shadow:0 15px 50px rgba(34,26,20,.15)}
   .mobile-nav button{border:0;background:transparent;color:var(--muted);border-radius:11px;padding:8px 10px 7px;font:780 8px/1 var(--mono);min-width:58px;flex:1}.mobile-nav button b{display:block;margin-bottom:4px;font-size:15px}.mobile-nav button.active{background:var(--indigo);color:#fff}.mobile-nav button.add{background:var(--green);color:#fff}
 }
+
+/* ===== Control Center UI refresh / 2026-10 ===== */
+:root{
+  --ui-bg:#f5f3ee;
+  --ui-surface:#fffdfa;
+  --ui-surface-2:#f9f6f0;
+  --ui-ink:#171915;
+  --ui-muted:#77776f;
+  --ui-border:#dedbd2;
+  --ui-green:#153d34;
+  --ui-green-2:#1f5548;
+  --ui-blue:#29365f;
+  --ui-shadow:0 8px 28px rgba(36,39,31,.055);
+}
+body{background:var(--ui-bg)}
+.app{grid-template-columns:252px minmax(0,1fr)}
+.sidebar{
+  padding:20px 14px 16px;
+  background:linear-gradient(180deg,#123a31 0%,#0f3029 100%);
+  border-right:0;
+  box-shadow:10px 0 36px rgba(13,36,31,.08)
+}
+.logo{padding:8px 10px 20px;border-bottom:1px solid rgba(255,255,255,.09);margin-bottom:14px}
+.logo small{font-size:7px;color:#b9cec4;letter-spacing:.16em}.logo strong{font-size:24px;color:#fff;letter-spacing:-.055em}.logo span{margin-top:7px;color:#91aaa0;font-size:7px}
+.nav{gap:4px}.nav-label{padding:15px 12px 5px;font:800 7px/1 var(--mono);letter-spacing:.19em;color:#76958a}
+.nav button{min-height:48px;padding:8px 10px;border-radius:12px;color:#d9e4df;gap:11px;font-size:11px}
+.nav button i{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:rgba(255,255,255,.07);font-size:13px}
+.nav button>span{display:block;line-height:1.15}.nav button>span small{display:block;margin-top:4px;font:700 7px/1 var(--mono);letter-spacing:.04em;color:#89a49a}
+.nav button:hover{background:rgba(255,255,255,.075)}
+.nav button.active{background:#fff;color:#153d34;box-shadow:0 5px 18px rgba(0,0,0,.11);border-color:transparent}
+.nav button.active i{background:#e9f0ec}.nav button.active>span small{color:#6e8179}
+.nav button.primary{margin-top:4px;background:#d9e7df;color:#123a31;border:0}.nav button.primary i{background:#c5d9cf}.nav button.primary>span small{color:#5d786d}
+.nav button.primary.active{background:#fff}
+.side-bottom{padding:14px 9px 4px;border-top:1px solid rgba(255,255,255,.08)}
+.connection{padding:9px 10px;border-radius:10px;background:rgba(255,255,255,.055)}.front-link{padding:8px 10px;color:#dfe9e4}
+
+.main{padding:0 28px 48px;background:
+  radial-gradient(circle at 78% 0%,rgba(41,54,95,.035),transparent 32%),
+  var(--ui-bg)}
+.top{
+  position:sticky;top:0;z-index:15;
+  margin:0 -28px 22px;padding:22px 28px 18px;
+  align-items:center;
+  background:rgba(245,243,238,.9);
+  border-bottom:1px solid rgba(180,177,168,.55);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
+}
+.top-copy{min-width:0}.top-kicker{display:block;margin-bottom:7px;font:800 7px/1 var(--mono);letter-spacing:.18em;color:#5f6b65}
+.top h1{font-size:clamp(28px,3.3vw,44px);line-height:1;letter-spacing:-.055em}.top p{margin-top:7px;color:#797972}
+.top-actions{flex-wrap:wrap;justify-content:flex-end}.top-actions .btn{white-space:nowrap}
+.btn{border-color:#cec9bd;background:rgba(255,255,255,.5);border-radius:11px;transition:transform .16s,box-shadow .16s,background .16s,border-color .16s}
+.btn:hover{transform:translateY(-1px);background:#fff;box-shadow:0 5px 14px rgba(28,34,29,.06)}
+.btn.primary{background:var(--ui-green);border-color:var(--ui-green);box-shadow:0 7px 18px rgba(21,61,52,.15)}
+.btn.analysis-jump{color:var(--ui-blue);border-color:#bcc1d1;background:#f0f1f6}
+
+.view.active{animation:controlViewIn .24s ease both}
+@keyframes controlViewIn{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+.metric-grid{gap:12px}.metric{
+  position:relative;overflow:hidden;padding:18px 18px 17px;
+  background:var(--ui-surface);border-color:var(--ui-border);border-radius:16px;
+  box-shadow:var(--ui-shadow)
+}
+.metric:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,var(--ui-green),#638277)}
+.metric em{color:#68766f}.metric strong{margin-top:15px;font-size:32px}.metric span{color:#85837c}
+.card{
+  border-color:var(--ui-border);border-radius:16px;background:var(--ui-surface);
+  box-shadow:var(--ui-shadow)
+}
+.card-head{padding:16px 17px 13px;background:transparent;border-bottom:1px solid #ebe7de}.card-head h2{font-size:14px}.card-head span{color:#7d8179}
+.card-body{padding:17px}
+.dash-grid{gap:12px;margin-top:12px}
+.run-row,.cms-item,.order-row,.media-row,.club-event,.ai-block{background:var(--ui-surface-2);border-color:#e3ded4}
+.run-row{transition:transform .16s,border-color .16s,background .16s}.run-row:hover{transform:translateY(-1px);border-color:#bfc9c2;background:#fff}
+.insight{background:var(--ui-surface);border-color:var(--ui-border);border-radius:14px;box-shadow:0 4px 16px rgba(36,39,31,.035)}
+.chart{padding-top:26px}.bar{background:linear-gradient(180deg,#66759d,#29365f);box-shadow:0 4px 10px rgba(41,54,95,.12)}
+.field{gap:7px}.field label{font-size:7px;letter-spacing:.11em;color:#5d7067}
+.field input,.field textarea,.field select,.auth input,.gemini-row input,.cms-row input,.cms-row select,.cms-toolbar select{
+  border-color:#d4cfc4;background:#fff;border-radius:11px;min-height:42px;
+  transition:border-color .16s,box-shadow .16s,background .16s
+}
+.field input:hover,.field textarea:hover,.field select:hover,.auth input:hover,.gemini-row input:hover,.cms-row input:hover,.cms-row select:hover{border-color:#aaa99f}
+.toggle-row{background:var(--ui-surface-2);border-color:#e1ddd4}
+.upload-zone{background:var(--ui-surface-2);border-color:#aaa99e;padding:24px}
+.ai-coach{overflow:hidden}.ai-hero{background:linear-gradient(135deg,#24345e,#1e4a44);padding:20px}
+.ai-output{background:#fffdfa}
+.sync-line{padding:12px 0}.sync-line b{color:#5d6d66}
+
+@media(max-width:1180px){
+  .app{grid-template-columns:220px minmax(0,1fr)}
+  .sidebar{padding-left:10px;padding-right:10px}
+}
+@media(max-width:720px){
+  .main{padding:0 11px calc(92px + env(safe-area-inset-bottom))}
+  .top{
+    margin:0 -11px 14px;padding:calc(13px + env(safe-area-inset-top)) 12px 12px;
+    align-items:flex-end;gap:9px
+  }
+  .top-kicker{font-size:6px;margin-bottom:5px}.top h1{font-size:29px}.top p{font-size:9px;max-width:58vw;line-height:1.45}
+  .top-actions{gap:5px}.top-actions .btn{padding:9px 10px}.top-actions .analysis-jump{display:none}.top-actions .btn:not(.primary):not(#manualSync){display:none}
+  .metric-grid{gap:7px}.metric{padding:14px 13px;border-radius:14px}.metric strong{font-size:24px;margin-top:11px}.metric em{font-size:6px}.metric span{font-size:7px}
+  .card{border-radius:14px}.card-head{padding:14px 14px 11px}.card-body{padding:14px}
+  .mobile-nav{
+    left:7px;right:7px;bottom:calc(7px + env(safe-area-inset-bottom));
+    display:grid;grid-template-columns:repeat(6,1fr);overflow:visible;gap:3px;padding:5px;
+    border-color:#d4d0c8;background:rgba(255,253,249,.94);
+    box-shadow:0 12px 34px rgba(26,34,29,.14)
+  }
+  .mobile-nav button{min-width:0;padding:7px 2px 6px;font-size:7px;border-radius:10px}
+  .mobile-nav button b{font-size:14px;margin-bottom:4px}.mobile-nav button span{display:block}
+  .mobile-nav button.add{background:#dce9e2;color:#153d34}.mobile-nav button.add.active{background:var(--ui-green);color:#fff}
+  .mobile-nav button.active{background:#29365f}
+}
+@media(max-width:390px){
+  .top p{display:none}.top h1{font-size:27px}.top-actions .btn{padding:8px 9px;font-size:9px}
+  .mobile-nav button{font-size:6.5px}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="logo"><small>CHE-KAI / 2026</small><strong>Portfolio Control</strong><span>CONTENT · MEDIA · RUNNING<br>+ WEBSITE SYNC</span></div>
+    <div class="logo"><small>CHE-KAI / TRAINING LAB</small><strong>Control Center</strong><span>TRAINING · ANALYSIS · PORTFOLIO SYNC</span></div>
     <nav class="nav">
-      <button class="active" data-view="overview"><i>◫</i>控制總覽</button>
-      <button data-view="cms"><i>✎</i>網站內容</button>
-      <button data-view="club"><i>▤</i>社團簡報</button>
-      <button data-view="media"><i>▧</i>素材庫</button>
-      <button data-view="analysis"><i>⌁</i>運動分析</button>
-      <button data-view="records"><i>≡</i>訓練紀錄</button>
-      <button class="primary" data-view="add"><i>＋</i>新增訓練</button>
-      <button data-view="settings"><i>⚙</i>同步設定</button>
+      <div class="nav-label">TRAINING</div>
+      <button class="active" data-view="overview"><i>◫</i><span>訓練總覽<small>Dashboard</small></span></button>
+      <button data-view="analysis"><i>⌁</i><span>運動分析<small>Performance</small></span></button>
+      <button data-view="records"><i>≡</i><span>訓練紀錄<small>History</small></span></button>
+      <button class="primary" data-view="add"><i>＋</i><span>新增訓練<small>New session</small></span></button>
+      <div class="nav-label">PORTFOLIO</div>
+      <button data-view="cms"><i>✎</i><span>網站內容<small>Content CMS</small></span></button>
+      <button data-view="club"><i>▤</i><span>社團簡報<small>Club story</small></span></button>
+      <button data-view="media"><i>▧</i><span>素材庫<small>Media</small></span></button>
+      <div class="nav-label">SYSTEM</div>
+      <button data-view="settings"><i>⚙</i><span>同步設定<small>Connections</small></span></button>
     </nav>
     <div class="side-bottom">
       <div class="connection"><i class="dot" id="statusDot"></i><span id="statusText">READ ONLY</span></div>
@@ -83,8 +203,8 @@ a{color:inherit}
 
   <main class="main">
     <header class="top">
-      <div><h1 id="pageTitle">控制總覽</h1><p id="pageSub">網站內容、素材與訓練資料的集中控制台。</p></div>
-       <div class="top-actions"><button class="btn" id="manualSync" type="button">同步全部</button><button class="btn primary" type="button" data-view-jump="add">＋ 新增訓練</button></div>
+      <div class="top-copy"><span class="top-kicker">CHE-KAI TRAINING LAB / CONTROL CENTER</span><h1 id="pageTitle">訓練總覽</h1><p id="pageSub">先看訓練狀態，再管理網站內容與同步。</p></div>
+      <div class="top-actions"><button class="btn analysis-jump" type="button" data-view-jump="analysis">⌁ 運動分析</button><button class="btn" id="manualSync" type="button">↻ 同步</button><button class="btn primary" type="button" data-view-jump="add">＋ 新增訓練</button></div>
     </header>
 
     <section class="view active" id="view-overview">
@@ -254,8 +374,13 @@ a{color:inherit}
   </main>
 </div>
 
-<nav class="mobile-nav">
-  <button class="active" data-view="overview"><b>◫</b>總覽</button><button data-view="cms"><b>✎</b>網站</button><button data-view="club"><b>▤</b>社團</button><button data-view="records"><b>≡</b>訓練</button><button data-view="analysis"><b>⌁</b>分析</button><button data-view="settings"><b>⚙</b>設定</button>
+<nav class="mobile-nav" aria-label="後台主要導覽">
+  <button class="active" data-view="overview"><b>◫</b><span>總覽</span></button>
+  <button data-view="analysis"><b>⌁</b><span>分析</span></button>
+  <button class="add" data-view="add"><b>＋</b><span>新增</span></button>
+  <button data-view="records"><b>≡</b><span>紀錄</span></button>
+  <button data-view="cms"><b>✎</b><span>網站</span></button>
+  <button data-view="settings"><b>⚙</b><span>設定</span></button>
 </nav>
 <div class="toast" id="toast"></div>
 
@@ -277,7 +402,7 @@ function cacheAndSignal(kind,payload){
 }
 
 const META={
-  overview:['控制總覽','網站內容、素材與訓練資料的集中控制台。'],
+  overview:['訓練總覽','先看訓練狀態，再管理網站內容與同步。'],
   cms:['網站內容','編輯首頁、分頁、廣告看板、公開狀態與排序。'],
   club:['社團簡報','管理見賢思琪互動經歷的章節與活動敘事。'],
   media:['素材庫','上傳與管理網站圖片素材。'],
