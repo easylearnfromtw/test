@@ -116,12 +116,90 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 .status{display:none!important}
 @media(max-width:900px){.tabbar,.now-playing,.status{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:linear-gradient(180deg,rgba(40,52,70,.62),rgba(20,28,40,.58))!important}}
 @media(max-width:560px){.tabbar button span{display:none}.tabbar button{padding:9px 11px}.status{display:none}}
+
+/* ---- phone portrait mode: composed for 9:16 / tall screens, not a squeezed desktop layout ---- */
+@media (max-width:600px) and (orientation:portrait){
+  html,body,.app{height:100dvh;min-height:100svh;overscroll-behavior:none}
+  body{-webkit-tap-highlight-color:transparent}
+  .topbar{top:calc(11px + env(safe-area-inset-top));min-height:0!important;padding:0 12px!important}
+  .brand{font-size:clamp(15px,4.7vw,20px)!important;letter-spacing:.15em;max-width:82vw;white-space:nowrap}
+  .now-playing{
+    top:calc(40px + env(safe-area-inset-top));left:50%;right:auto;transform:translateX(-50%);
+    max-width:78vw;padding:5px 8px;font-size:6px;opacity:.80
+  }
+
+  .intro{padding:calc(66px + env(safe-area-inset-top)) 12px calc(82px + env(safe-area-inset-bottom));align-items:center}
+  .intro-card{
+    width:min(94vw,430px);max-height:calc(100dvh - 150px);overflow:auto;
+    padding:22px 18px 18px;box-shadow:0 18px 46px rgba(7,20,27,.26),5px 5px 0 rgba(23,75,58,.14)
+  }
+  .intro-name{font-size:clamp(48px,16vw,68px)!important;margin:25px 0 4px}
+  .intro-en{font-size:10px;letter-spacing:.15em;margin-bottom:19px}
+  .intro-copy{font-size:12.5px;line-height:1.68;padding-right:4px}
+  .intro-meta{margin-top:20px;gap:10px}
+  .intro-swipe{font-size:9px;gap:7px}.intro-arrows{font-size:20px}
+  .intro-enter{font-size:10px;padding:10px 11px}
+  .intro-seal{width:44px!important;height:44px!important;right:15px!important;top:15px!important;font-size:10px!important}
+
+  /* Bottom-sheet details preserve the upper city instead of covering the entire portrait screen. */
+  .drawer{
+    left:8px!important;right:8px!important;top:auto!important;
+    bottom:calc(68px + env(safe-area-inset-bottom))!important;
+    width:auto!important;height:min(66dvh,590px);padding:18px 16px 20px;
+    border-radius:22px 22px 17px 17px;
+    transform:translateY(calc(100% + 96px))!important;
+    transition:transform .38s cubic-bezier(.16,.84,.24,1);
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  }
+  .drawer.open{transform:translateY(0)!important}
+  .drawer::before{
+    content:"";position:sticky;display:block;top:0;margin:-8px auto 10px;width:38px;height:4px;
+    border-radius:4px;background:rgba(255,255,255,.24);z-index:2
+  }
+  .close{position:sticky;top:0;z-index:4;float:right;width:36px;height:36px;background:#101827}
+  .dk{font-size:8px;margin-top:1px}.drawer h2{font-size:clamp(30px,9vw,38px)!important;margin-bottom:9px}
+  .drawer p{font-size:11px;line-height:1.55;margin:0 0 8px}
+  .items{gap:7px;margin-top:10px}
+  .item{padding:10px 11px;border-radius:11px}.item b{font-size:12px}.item span{font-size:10px}
+  .profile-card{gap:9px;margin-top:10px}
+  .profile-head{padding:13px}.profile-name{font-size:22px!important}
+  .profile-grid{grid-template-columns:1fr 1fr!important;gap:6px}
+  .profile-cell{padding:9px}.profile-cell strong{font-size:10px}.profile-projects{padding:10px}
+  .profile-tags{gap:4px}.profile-tags span{font-size:8px;padding:5px 6px}
+  .profile-link{padding:9px 10px}
+
+  .tabbar{
+    bottom:calc(8px + env(safe-area-inset-bottom));max-width:calc(100vw - 14px);width:calc(100vw - 14px);
+    padding:4px;border-radius:18px;scroll-padding-inline:42vw
+  }
+  .tabbar button{padding:9px 12px;min-width:42px;justify-content:center;font-size:9px}
+  .tabbar button span{display:none!important}
+  .tab-cap{top:4px;bottom:4px}
+  
+  /* Portrait bus exit reads as a full-screen passing bus, with safe text placement. */
+  .teleport-bus{top:8dvh;height:84dvh;width:158vw;border-top-width:8px;border-bottom-width:10px}
+  .teleport-bus::before{top:19dvh;height:27dvh;border-top-width:4px;border-bottom-width:4px}
+  .teleport-bus::after{left:7vw;bottom:8dvh;font-size:13vw}
+  .teleport-route{left:7vw;top:7dvh;width:78vw;padding:13px 14px 12px;border-width:3px;box-shadow:5px 5px 0 #173f34}
+  .teleport-route span{font-size:8px}.teleport-route strong{font-size:clamp(22px,7vw,32px);line-height:1.02}
+  .teleport-route small{font-size:8px;margin-top:7px}
+  .teleport-bell{right:12vw;top:8dvh;width:54px;height:54px;font-size:12px;border-width:3px}
+  .teleport-sticker{right:11vw;bottom:9dvh;font-size:8px;padding:8px 9px}
+
+  .loading strong{font-size:22px}.loading div{font-size:8px}
+}
+@media (max-width:390px) and (orientation:portrait){
+  .intro-copy{font-size:12px}.intro-meta{align-items:center}
+  .drawer{left:6px!important;right:6px!important;padding-left:13px;padding-right:13px;height:min(64dvh,560px)}
+  .profile-grid{grid-template-columns:1fr 1fr!important}
+  .tabbar button{min-width:40px;padding-left:10px;padding-right:10px}
+}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script>
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v4.8-outbound: Taiwan bus external-link transition -->
+<!-- taiwan-street-pro v4.9-portrait: phone portrait composition + Taiwan bus outbound -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -311,9 +389,20 @@ function freezeStatic(o){o.updateMatrix();o.matrixAutoUpdate=false;staticSceneOb
 const sharedMaterialCache=new Map();
 function sharedMat(key,factory){if(!sharedMaterialCache.has(key))sharedMaterialCache.set(key,factory());return sharedMaterialCache.get(key)}
 const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,3000);camera.position.set(IX,6.0,38);
-function applyResponsiveCamera(){camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<560?64:innerWidth<920?60:55;camera.updateProjectionMatrix();if(typeof updateCull==='function')updateCull()}
+function phonePortrait(){return innerWidth<=600&&innerHeight>innerWidth*1.22}
+function cameraYFor(id='hero'){return phonePortrait()?(id==='hero'?6.7:6.35):(id==='hero'?6.0:5.8)}
+function cameraZFor(id='hero'){
+  if(phonePortrait())return id==='hero'?50:47.5;
+  if(innerWidth<560)return id==='hero'?43:41;
+  return id==='hero'?38:36
+}
+function applyResponsiveCamera(){
+  camera.aspect=innerWidth/innerHeight;
+  camera.fov=phonePortrait()?78:innerWidth<560?64:innerWidth<920?60:55;
+  camera.updateProjectionMatrix();if(typeof updateCull==='function')updateCull()
+}
 applyResponsiveCamera();
-let targetX=IX,currentX=IX,targetY=6.0,currentY=6.0,targetZ=38,currentZ=38;
+let targetX=IX,currentX=IX,targetY=cameraYFor('hero'),currentY=cameraYFor('hero'),targetZ=cameraZFor('hero'),currentZ=cameraZFor('hero');
 const LOOK_AT_Y=15.6,LOOK_AT_Z=-15.5;
 // Light: late-afternoon sun from the west (screen-left), cool sky fill, warm bounce off the street.
 const ambient=new THREE.HemisphereLight(0xc6d8e8,0x5f5549,1.38);scene.add(ambient);
@@ -3589,8 +3678,8 @@ function focus(id,open=false,lap=null){
   activeId=id;if(id!=='hero')setPortfolioBoardQuality(id);
   const useLap=lap===null?nearestLapFor(id):lap;
   targetX=cfg.x+useLap*LOOP_SPAN;
-  targetY=id==='hero'?6.0:5.8;
-  targetZ=innerWidth<560?(id==='hero'?43:41):(id==='hero'?38:36);
+  targetY=cameraYFor(id);
+  targetZ=cameraZFor(id);
   document.getElementById('focusLabel').textContent=id==='hero'?'HOME':`${DATA[id].index} ${DATA[id].nav.toUpperCase()}`;
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
   updateLoopUI(id); syncTabs(id); history.replaceState(null,'','#'+id); if(open)openDrawer(id)
@@ -3746,8 +3835,12 @@ function perfTick(ms,now){
     PERF.lastDprChange=now;PERF.adj++;applyResolution(d);
   }
 }
+let lastViewportPortrait=phonePortrait();
 addEventListener('resize',()=>{
+  const wasPortrait=lastViewportPortrait;lastViewportPortrait=phonePortrait();
   applyResponsiveCamera();
+  targetY=cameraYFor(activeId);targetZ=cameraZFor(activeId);
+  if(wasPortrait!==lastViewportPortrait){currentY=targetY;currentZ=targetZ}
   if(QUALITY.probe.active){QUALITY.probe.active=false;QUALITY.probe.frames=[]}
   computeResBand();applyResolution(RES.dpr);
   updateStaticVisibility(true);renderer.shadowMap.needsUpdate=USE_SHADOWS;
@@ -3851,7 +3944,7 @@ addEventListener('pageshow',e=>{
     clearOutboundState();lastFrameMs=performance.now();
   }else if(initial&&initial!=='hero'&&DATA[initial]){
     introDismissed=true;intro?.classList.add('hidden');focus(initial,false);currentX=targetX
-  }else{focus('hero',false);currentX=targetX}
+  }else{focus('hero',false);currentX=targetX;currentY=targetY;currentZ=targetZ}
 }
 
 </script>
