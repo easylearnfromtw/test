@@ -397,6 +397,38 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 }
 
 
+/* ===== Generic Photo Story ===== */
+.ps-story{position:fixed;inset:0;z-index:116;background:#f7f2e7;color:#174b3a;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s ease,visibility .32s;overflow:hidden;--ps-accent:#d65b52}
+.ps-story.open{opacity:1;visibility:visible;pointer-events:auto}
+.ps-shell{height:100dvh;display:grid;grid-template-rows:auto 1fr;position:relative}
+.ps-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:3px solid #174b3a;background:#f7f2e7;position:relative;z-index:5}
+.ps-brand{display:flex;align-items:center;gap:10px;font:900 10px/1 var(--mono);letter-spacing:.14em}.ps-brand i{width:9px;height:9px;border-radius:50%;background:var(--ps-accent)}.ps-brand span{max-width:48vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-head-progress{display:flex;align-items:center;gap:10px;min-width:150px}.ps-head-progress b{font:900 9px/1 var(--mono);letter-spacing:.12em}.ps-head-track{width:90px;height:3px;background:rgba(23,75,58,.18)}.ps-head-track i{display:block;height:100%;width:0;background:var(--ps-accent);transition:width .25s}
+.ps-actions{display:flex;gap:8px}.ps-btn{appearance:none;border:2px solid #174b3a;background:#fff9ed;color:#174b3a;padding:9px 11px;font:900 8px/1 var(--mono);letter-spacing:.08em;cursor:pointer}.ps-btn.primary{background:#174b3a;color:#f7f2e7}.ps-btn:disabled{opacity:.35;cursor:default}
+.ps-stage{overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;overscroll-behavior:contain}
+.ps-section{min-height:100%;scroll-snap-align:start;display:grid;place-items:center;padding:34px 18px 46px;box-sizing:border-box}
+.ps-paper{position:relative;width:min(980px,92vw);min-height:min(670px,78vh);box-sizing:border-box;border:3px solid #174b3a;background:#fff9ed;padding:clamp(28px,5vw,64px);box-shadow:10px 10px 0 rgba(23,75,58,.12);overflow:hidden}
+.ps-paper::before{content:"";position:absolute;left:0;top:0;width:100%;height:8px;background:var(--ps-accent)}
+.ps-seal{position:absolute;right:28px;top:30px;min-width:64px;height:64px;padding:0 8px;background:var(--ps-accent);color:#fff9ed;border:3px double #fff9ed;display:grid;place-items:center;text-align:center;font:900 11px/1.05 var(--sans);transform:rotate(-6deg)}
+.ps-kicker{display:flex;align-items:center;gap:9px;color:#9e3d39;font:900 8px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}.ps-kicker i{width:8px;height:8px;border-radius:50%;background:var(--ps-accent)}
+.ps-title{margin:24px 0 16px;font:950 clamp(42px,7vw,86px)/.92 var(--sans);letter-spacing:-.06em;color:#174b3a;max-width:850px}.ps-title.photo{font-size:clamp(32px,5.2vw,62px)}
+.ps-lead{max-width:760px;margin:0;color:#315d50;font-size:clamp(13px,1.5vw,18px);line-height:1.8;font-weight:650}
+.ps-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}.ps-meta span{border:2px solid #174b3a;background:#f3bf53;padding:8px 11px;font:900 8px/1 var(--mono);letter-spacing:.08em}
+.ps-photo-wrap{margin-top:22px;display:grid;place-items:center;min-height:400px}
+.ps-photo-btn{appearance:none;border:2px solid #174b3a;background:#efe6d6;padding:0;cursor:zoom-in;box-shadow:7px 7px 0 rgba(23,75,58,.16);max-width:100%;max-height:58vh;overflow:hidden;transition:transform .22s,box-shadow .22s}
+.ps-photo-btn:hover{transform:translateY(-5px) rotate(.25deg);box-shadow:10px 10px 0 rgba(23,75,58,.2)}
+.ps-photo-btn img{display:block;max-width:min(820px,82vw);max-height:56vh;width:auto;height:auto;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.ps-caption{display:flex;justify-content:space-between;gap:12px;margin-top:14px;color:#436a5d;font:800 9px/1.5 var(--mono)}
+.ps-progress{position:fixed;right:15px;top:50%;transform:translateY(-50%);z-index:7;display:grid;gap:7px}.ps-dot{width:10px;height:10px;border:2px solid #174b3a;background:#f7f2e7;border-radius:50%;cursor:pointer;padding:0}.ps-dot.active{background:var(--ps-accent);transform:scale(1.25)}
+.ps-lightbox{position:absolute;inset:0;z-index:30;display:grid;place-items:center;padding:24px;background:rgba(10,20,17,.86);backdrop-filter:blur(14px);opacity:0;visibility:hidden;pointer-events:none;transition:.2s}.ps-lightbox.open{opacity:1;visibility:visible;pointer-events:auto}
+.ps-lightbox img{display:block;max-width:92vw;max-height:86vh;object-fit:contain;border:3px solid #f7f2e7;box-shadow:12px 12px 0 color-mix(in srgb,var(--ps-accent) 55%,transparent);user-select:none;-webkit-user-drag:none}.ps-lightbox-close{position:absolute;right:18px;top:18px}
+@media(max-width:720px){
+ .ps-top{padding:10px 10px}.ps-brand{font-size:7px}.ps-head-progress{display:none}.ps-btn{padding:8px 8px;font-size:7px}.ps-progress{display:none}
+ .ps-section{padding:22px 9px 30px}.ps-paper{width:95vw;min-height:76vh;padding:26px 18px 28px}.ps-seal{right:16px;top:18px;min-width:48px;height:48px;font-size:8px}
+ .ps-photo-wrap{min-height:300px}.ps-photo-btn img{max-width:86vw;max-height:52vh}.ps-caption{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){.ps-stage{scroll-behavior:auto}.ps-photo-btn,.ps-head-track i{transition:none!important}}
+
 /* ===== 見賢思琪 Interactive Story ===== */
 .jx-story{position:fixed;inset:0;z-index:115;background:#f7f2e7;color:#174b3a;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s;overflow:hidden}
 .jx-story.open{opacity:1;visibility:visible;pointer-events:auto}
@@ -695,6 +727,19 @@ Biometric/profile inference: NOT AUTHORIZED</code>
   </div>
 </div>
 
+<div class="ps-story" id="photoStory" aria-hidden="true">
+  <div class="ps-shell">
+    <header class="ps-top">
+      <div class="ps-brand"><i></i><span id="psBrand">PHOTO STORY</span></div>
+      <div class="ps-head-progress"><b id="psCount">01 / 01</b><div class="ps-head-track"><i id="psHeadBar"></i></div></div>
+      <div class="ps-actions"><button class="ps-btn" id="psPrev" type="button">← 上一章</button><button class="ps-btn primary" id="psNext" type="button">下一章 →</button><button class="ps-btn" id="psClose" type="button">關閉 ×</button></div>
+    </header>
+    <main class="ps-stage" id="psStage"></main>
+    <nav class="ps-progress" id="psProgress" aria-label="照片經歷章節"></nav>
+    <div class="ps-lightbox" id="psLightbox" aria-hidden="true"><button class="ps-btn ps-lightbox-close" id="psLightboxClose" type="button">關閉 ×</button><img id="psLightboxImg" alt="放大的經歷照片" draggable="false"></div>
+  </div>
+</div>
+
 <div class="jx-story" id="jxStory" aria-hidden="true">
   <div class="jx-shell">
     <header class="jx-top">
@@ -768,7 +813,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v11',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v12',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -847,13 +892,13 @@ const DATA={
 ['綠島國小送書去旅行服務','送書去旅行｜綠島國小',null,{category:'服務與公共參與'}],
 ['嘉寶國小送書去旅行服務','送書去旅行｜嘉寶國小',null,{category:'服務與公共參與'}],
 ['台灣聯合大學企劃 參與','企劃與專案參與經歷',null,{category:'企劃與培訓'}],
-['CDBA中華辯會 辯論參與','辯論與工作坊參與',null,{category:'企劃與培訓'}]
+['CDBA中華辯會 辯論參與','辯論與工作坊參與',null,{type:'photo_story',id:'cdba',category:'企劃與培訓'}]
 ]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['中原大學理工類群先修課程','理工類群大學先修']]},
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書','公共議題評論與媒體投書','https://newtalk.tw/citizen/author/319524'],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作'],['小論文比賽（藝術類）','藝術類｜建築雨山的對話',null,{type:'essay_story'}]]},
  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',accent:'#58bdd2',items:[['欣緯科技有限公司','公司董事','https://findbiz.nat.gov.tw/fts/company/24389585'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美宣','Founding Vice President',null,{type:'jx_story'}],['市三重高中前扶輪少年團團員','Member']]},
- public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']]},
+ public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通',null,{type:'photo_story',id:'nuclear3'}]]},
  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',accent:'#9b78de',items:[['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration']]}
 };
 if(SITE_CONTENT?.sections){
@@ -4584,6 +4629,8 @@ function openDrawer(id){
   document.getElementById('jxStory')?.setAttribute('aria-hidden','true');
   document.getElementById('essayStory')?.classList.remove('open');
   document.getElementById('essayStory')?.setAttribute('aria-hidden','true');
+  document.getElementById('photoStory')?.classList.remove('open');
+  document.getElementById('photoStory')?.setAttribute('aria-hidden','true');
   const d=DATA[id],dk=document.getElementById('dk'),dt=document.getElementById('dt'),di=document.getElementById('di'),items=document.getElementById('items');
   dk.textContent=`${d.index} / ${d.nav}`;
   if(id==='about'){
@@ -4617,7 +4664,7 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='category'?`<div class="experience-group-head"><span>${x[0]}</span><span class="experience-group-count">${String(x[1]).padStart(2,'0')}</span></div>`:x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='jx_story'?`<button class="item item-image" type="button" data-jx-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='essay_story'?`<button class="item item-image" type="button" data-essay-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊閱讀完整小論文</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='category'?`<div class="experience-group-head"><span>${x[0]}</span><span class="experience-group-count">${String(x[1]).padStart(2,'0')}</span></div>`:x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='jx_story'?`<button class="item item-image" type="button" data-jx-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='essay_story'?`<button class="item item-image" type="button" data-essay-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊閱讀完整小論文</span></button>`:x[3]?.type==='photo_story'?`<button class="item item-image" type="button" data-photo-story="${x[3].id||''}"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
     items.querySelectorAll('[data-certificate="keelung-2026"]').forEach(b=>{
       b.addEventListener('pointerdown',e=>{if(e.isTrusted)certificateGestureStamp=performance.now()},{passive:true});
       b.addEventListener('keydown',e=>{if(e.isTrusted&&(e.key==='Enter'||e.key===' '))certificateGestureStamp=performance.now()});
@@ -4649,6 +4696,18 @@ function openDrawer(id){
         if(!armed&&!keyboardActivation){e.preventDefault();e.stopPropagation();return}
         armed=false;
         openEssayStory();
+      });
+    });
+    items.querySelectorAll('[data-photo-story]').forEach(b=>{
+      let armed=false;
+      b.addEventListener('pointerdown',e=>{if(e.isTrusted)armed=true},{passive:true});
+      b.addEventListener('pointercancel',()=>{armed=false},{passive:true});
+      b.addEventListener('blur',()=>{armed=false});
+      b.addEventListener('click',e=>{
+        const keyboardActivation=e.isTrusted&&e.detail===0;
+        if(!armed&&!keyboardActivation){e.preventDefault();e.stopPropagation();return}
+        armed=false;
+        openPhotoStory(b.dataset.photoStory);
       });
     });
     items.querySelectorAll('[data-coming-soon]').forEach(b=>b.addEventListener('click',()=>alert('還在籌備中')))
@@ -4713,7 +4772,7 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('wheel',e=>{dismissAdHintOnMove();if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
 document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus(CYCLE[0],false)});
-addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key==='ArrowLeft'||e.key==='PageUp')dismissAdHintOnMove();if(e.key==='Escape'){if(essayStory.classList.contains('open')){closeEssayStory();return}if(jxStory.classList.contains('open')){closeJxStory();return}if(goblinModal.classList.contains('open')){closeGoblinCertificate();return}if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key==='ArrowLeft'||e.key==='PageUp')dismissAdHintOnMove();if(e.key==='Escape'){if(photoStory.classList.contains('open')){closePhotoStory();return}if(essayStory.classList.contains('open')){closeEssayStory();return}if(jxStory.classList.contains('open')){closeJxStory();return}if(goblinModal.classList.contains('open')){closeGoblinCertificate();return}if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
 
 
 
@@ -4830,6 +4889,84 @@ essayStage?.addEventListener('touchstart',e=>{const t=e.touches[0];essayTouchX=t
 essayStage?.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-essayTouchX,dy=t.clientY-essayTouchY;if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.35)essayGo(dx<0?(essayIndex===essaySections.length-1?0:essayIndex+1):Math.max(0,essayIndex-1))},{passive:true});
 
 /* ---------------- 見賢思琪 interactive story ---------------- */
+const PHOTO_STORIES={
+  cdba:{
+    brand:'CDBA 中華辯會 / DEBATE ARCHIVE',
+    title:'CDBA中華辯會｜辯論參與',
+    lead:'辯論與工作坊參與紀錄。以活動現場照片保留參與過程與團隊互動。',
+    mark:'CDBA',
+    accent:'#45a99a',
+    images:[
+      {src:'./assets/photo-stories/cdba-01.jpeg',label:'活動大合照',meta:'GROUP / 01'},
+      {src:'./assets/photo-stories/cdba-02.jpeg',label:'個人紀錄',meta:'PORTRAIT / 02'},
+      {src:'./assets/photo-stories/cdba-03.jpeg',label:'三人合照',meta:'TEAM / 03'},
+      {src:'./assets/photo-stories/cdba-04.jpeg',label:'四人合照',meta:'TEAM / 04'}
+    ]
+  },
+  nuclear3:{
+    brand:'核三公投 / STREET CAMPAIGN ARCHIVE',
+    title:'核三公投｜街頭宣講 × 車掃',
+    lead:'公共議題宣講、車掃與現場參與紀錄。',
+    mark:'PUBLIC',
+    accent:'#d85b55',
+    images:[
+      {src:'./assets/photo-stories/nuclear3-01.jpeg',label:'街頭活動｜台北 101 背景',meta:'FIELD / 01'},
+      {src:'./assets/photo-stories/nuclear3-02.jpeg',label:'車掃現場｜韓國瑜背景',meta:'FIELD / 02'},
+      {src:'./assets/photo-stories/nuclear3-03.jpeg',label:'個人活動照',meta:'PORTRAIT / 03'}
+    ]
+  }
+};
+const photoStory=document.getElementById('photoStory'),psStage=document.getElementById('psStage'),psBrand=document.getElementById('psBrand'),psCount=document.getElementById('psCount'),psHeadBar=document.getElementById('psHeadBar'),psPrev=document.getElementById('psPrev'),psNext=document.getElementById('psNext'),psClose=document.getElementById('psClose'),psProgress=document.getElementById('psProgress'),psLightbox=document.getElementById('psLightbox'),psLightboxImg=document.getElementById('psLightboxImg'),psLightboxClose=document.getElementById('psLightboxClose');
+let psStoryId=null,psIndex=0,psSections=[],psScrollRAF=0,psTouchX=0,psTouchY=0;
+function psUpdate(i){
+  if(!psSections.length)return;
+  psIndex=Math.max(0,Math.min(psSections.length-1,i));
+  [...psProgress.children].forEach((d,k)=>d.classList.toggle('active',k===psIndex));
+  psPrev.disabled=psIndex===0;
+  psNext.textContent=psIndex===psSections.length-1?'回到第一章 ↺':'下一章 →';
+  psCount.textContent=String(psIndex+1).padStart(2,'0')+' / '+String(psSections.length).padStart(2,'0');
+  psHeadBar.style.width=((psIndex+1)/psSections.length*100)+'%';
+}
+function psGo(i){
+  if(!psSections.length)return;
+  const next=Math.max(0,Math.min(psSections.length-1,i));
+  psSections[next].scrollIntoView({behavior:'smooth',block:'start'});
+  psUpdate(next);
+}
+function buildPhotoStory(id){
+  const d=PHOTO_STORIES[id];if(!d)return false;
+  psStoryId=id;photoStory.style.setProperty('--ps-accent',d.accent||'#d65b52');psBrand.textContent=d.brand;
+  const totalPhotos=d.images.length;
+  const intro=`<section class="ps-section"><article class="ps-paper"><div class="ps-seal">${d.mark}</div><div class="ps-kicker"><i></i><span>CHAPTER 01 / ARCHIVE</span></div><h2 class="ps-title">${d.title}</h2><p class="ps-lead">${d.lead}</p><div class="ps-meta"><span>${String(totalPhotos).padStart(2,'0')} PHOTOS</span><span>INTERACTIVE ARCHIVE</span><span>點擊照片可放大</span></div></article></section>`;
+  const photos=d.images.map((im,i)=>`<section class="ps-section"><article class="ps-paper"><div class="ps-kicker"><i></i><span>CHAPTER ${String(i+2).padStart(2,'0')} / ${im.meta}</span></div><h2 class="ps-title photo">${im.label}</h2><div class="ps-photo-wrap"><button class="ps-photo-btn" type="button" data-ps-src="${im.src}" aria-label="放大：${im.label}"><img src="${im.src}" alt="${im.label}" draggable="false" loading="${i===0?'eager':'lazy'}"></button></div><div class="ps-caption"><span>${im.meta}</span><span>PHOTO ARCHIVE · 點擊放大</span></div></article></section>`).join('');
+  psStage.innerHTML=intro+photos;
+  psSections=[...psStage.querySelectorAll('.ps-section')];
+  psProgress.replaceChildren(...psSections.map((_,i)=>{const b=document.createElement('button');b.type='button';b.className='ps-dot'+(i===0?' active':'');b.setAttribute('aria-label','第 '+(i+1)+' 章');b.onclick=()=>psGo(i);return b}));
+  psStage.querySelectorAll('[data-ps-src]').forEach(b=>b.addEventListener('click',()=>openPsLightbox(b.dataset.psSrc,b.getAttribute('aria-label')?.replace('放大：','')||'經歷照片')));
+  psStage.scrollTop=0;psUpdate(0);return true;
+}
+function openPhotoStory(id){
+  if(!buildPhotoStory(id))return;
+  drawer.classList.remove('open');
+  photoStory.classList.add('open');photoStory.setAttribute('aria-hidden','false');
+}
+function closePhotoStory(){
+  photoStory.classList.remove('open');photoStory.setAttribute('aria-hidden','true');closePsLightbox();
+}
+function openPsLightbox(src,label){
+  psLightboxImg.src=src;psLightboxImg.alt=label||'放大的經歷照片';psLightbox.classList.add('open');psLightbox.setAttribute('aria-hidden','false');
+}
+function closePsLightbox(){psLightbox.classList.remove('open');psLightbox.setAttribute('aria-hidden','true');psLightboxImg.removeAttribute('src')}
+psClose?.addEventListener('click',closePhotoStory);
+psPrev?.addEventListener('click',()=>psGo(psIndex-1));
+psNext?.addEventListener('click',()=>psGo(psIndex===psSections.length-1?0:psIndex+1));
+psLightboxClose?.addEventListener('click',closePsLightbox);
+psLightbox?.addEventListener('click',e=>{if(e.target===psLightbox)closePsLightbox()});
+psStage?.addEventListener('scroll',()=>{if(psScrollRAF)return;psScrollRAF=requestAnimationFrame(()=>{psScrollRAF=0;if(!psSections.length)return;const mid=psStage.scrollTop+psStage.clientHeight*.5;let best=0,dist=Infinity;psSections.forEach((el,i)=>{const d=Math.abs(el.offsetTop+el.offsetHeight*.5-mid);if(d<dist){dist=d;best=i}});psUpdate(best)})},{passive:true});
+photoStory?.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();psGo(psIndex===psSections.length-1?0:psIndex+1)}else if(e.key==='ArrowLeft'){e.preventDefault();psGo(Math.max(0,psIndex-1))}});
+psStage?.addEventListener('touchstart',e=>{const t=e.touches[0];psTouchX=t.clientX;psTouchY=t.clientY},{passive:true});
+psStage?.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-psTouchX,dy=t.clientY-psTouchY;if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.35)psGo(dx<0?(psIndex===psSections.length-1?0:psIndex+1):Math.max(0,psIndex-1))},{passive:true});
+
 const jxStory=document.getElementById('jxStory'),jxStage=document.getElementById('jxStage'),jxClose=document.getElementById('jxClose'),jxPrev=document.getElementById('jxPrev'),jxNext=document.getElementById('jxNext');
 if(SITE_CONTENT?.club){
   const cc=SITE_CONTENT.club;
