@@ -38,6 +38,7 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .intro{padding:70px 16px 24px}.intro-card{padding:25px 22px 22px}.intro-name{font-size:64px}.intro-en{font-size:12px}.intro-copy{font-size:13px}.intro-meta{align-items:flex-end}.intro-enter{padding:11px 12px}.intro-seal{width:50px;height:50px;right:20px;top:20px;font-size:12px}}
 .ad-hint{position:fixed;z-index:55;left:50%;bottom:78px;width:min(470px,calc(100vw - 28px));transform:translate(-50%,18px) rotate(-.35deg) scale(.98);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,transform .34s cubic-bezier(.16,.84,.24,1),visibility 0s linear .34s}
 .ad-hint.show{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0) rotate(-.35deg) scale(1);transition:opacity .24s ease,transform .34s cubic-bezier(.16,.84,.24,1),visibility 0s}
+.ad-hint.dismiss-moving{opacity:0!important;transform:translate(-50%,135px) rotate(-.35deg) scale(.96)!important;pointer-events:none!important;visibility:hidden!important;transition:opacity .28s ease,transform .48s cubic-bezier(.2,.8,.2,1),visibility 0s linear .48s!important}
 .ad-hint-card{position:relative;background:#f3eee2;color:#174b3a;border:2px solid #174b3a;padding:15px 48px 14px 17px;box-shadow:5px 5px 0 rgba(23,75,58,.24),0 16px 42px rgba(7,20,27,.24)}
 .ad-hint-card::before{content:'';position:absolute;left:0;right:0;top:7px;border-top:1px dashed rgba(23,75,58,.24)}
 .ad-hint-kicker{display:flex;align-items:center;gap:8px;margin-bottom:8px;font:900 8px/1 var(--mono);letter-spacing:.15em;color:#9e3d39;text-transform:uppercase}
@@ -3894,8 +3895,17 @@ const CYCLE=['about','web','experience','academic','writing','running','roles','
 let activeId='hero',cycleCursor=0,introDismissed=false;
 const intro=document.getElementById('intro'),introEnter=document.getElementById('introEnter');
 const adHint=document.getElementById('adHint'),adHintClose=document.getElementById('adHintClose');
-function showAdHint(){adHint?.classList.add('show');adHint?.setAttribute('aria-hidden','false')}
+let adHintDismissedByMove=false;
+function showAdHint(){if(adHintDismissedByMove)return;adHint?.classList.add('show');adHint?.setAttribute('aria-hidden','false')}
 function closeAdHint(){adHint?.classList.remove('show');adHint?.setAttribute('aria-hidden','true')}
+function dismissAdHintOnMove(){
+  if(adHintDismissedByMove||!adHint)return;
+  adHintDismissedByMove=true;
+  adHint.classList.remove('show');
+  adHint.classList.add('dismiss-moving');
+  adHint.setAttribute('aria-hidden','true');
+  setTimeout(()=>adHint.remove(),520)
+}
 adHintClose?.addEventListener('click',e=>{e.stopPropagation();closeAdHint()});
 function dismissIntro(dir=1,advance=true){
   if(introDismissed)return false;
@@ -3907,11 +3917,11 @@ introEnter?.addEventListener('click',e=>{e.stopPropagation();if(dismissIntro(1,t
 const nav=document.getElementById('nav');if(nav)['hero',...CYCLE].forEach((id,i)=>{const b=document.createElement('button');b.textContent=id==='hero'?'Home':DATA[id].index+' '+DATA[id].nav;b.dataset.id=id;if(!i)b.classList.add('active');b.onclick=()=>focus(id,true);nav.appendChild(b)});
 // Liquid Glass tab bar: tap a tab, or drag the capsule and let go — it snaps and the camera flies there
 const tabbar=document.getElementById('tabbar'),tabCap=document.getElementById('tabCap'),TABS=[],tabDrag={on:false,moved:false,x0:0,l0:0,id:0};
-function goTab(id){if(!introDismissed){introDismissed=true;intro?.classList.add('hidden')}focus(id,false)}
+function goTab(id){if(!introDismissed){introDismissed=true;intro?.classList.add('hidden')}dismissAdHintOnMove();focus(id,false)}
 if(tabbar){['hero',...CYCLE].forEach(id=>{const b=document.createElement('button');b.type='button';b.dataset.id=id;b.innerHTML=id==='hero'?'<b>⌂</b><span>Home</span>':`<b>${DATA[id].index}</b><span>${DATA[id].nav}</span>`;
   b.addEventListener('click',e=>{if(e.detail===0)goTab(id)});tabbar.appendChild(b);TABS.push(b)});
   tabbar.addEventListener('pointerdown',e=>{tabDrag.on=true;tabDrag.moved=false;tabDrag.x0=e.clientX;tabDrag.l0=tabCap.offsetLeft;tabDrag.id=e.pointerId});
-  tabbar.addEventListener('pointermove',e=>{if(!tabDrag.on||e.pointerId!==tabDrag.id)return;const dx=e.clientX-tabDrag.x0;if(!tabDrag.moved&&Math.abs(dx)>7){tabDrag.moved=true;tabbar.setPointerCapture(e.pointerId);tabbar.classList.add('dragging')}
+  tabbar.addEventListener('pointermove',e=>{if(!tabDrag.on||e.pointerId!==tabDrag.id)return;const dx=e.clientX-tabDrag.x0;if(!tabDrag.moved&&Math.abs(dx)>7){tabDrag.moved=true;dismissAdHintOnMove();tabbar.setPointerCapture(e.pointerId);tabbar.classList.add('dragging')}
     if(tabDrag.moved){tabCap.style.transition='none';tabCap.style.left=Math.max(5,Math.min(tabbar.scrollWidth-tabCap.offsetWidth-5,tabDrag.l0+dx))+'px'}});
   const end=e=>{if(!tabDrag.on)return;tabDrag.on=false;tabbar.classList.remove('dragging');tabCap.style.transition='';
     if(tabDrag.moved){const cx=tabCap.offsetLeft+tabCap.offsetWidth/2;let best=TABS[0],bd=1e9;for(const b of TABS){const d=Math.abs(b.offsetLeft+b.offsetWidth/2-cx);if(d<bd){bd=d;best=b}}goTab(best.dataset.id)}
@@ -4209,12 +4219,12 @@ function queueHoverRay(e){
   hoverRayRAF=requestAnimationFrame(()=>{hoverRayRAF=0;if(dragging||!hoverPoint)return;pointerN(hoverPoint);ray.setFromCamera(mouse,camera);document.body.style.cursor=ray.intersectObjects(clickables,false).length?'pointer':''})
 }
 canvas.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY};moved=false;dragging=true;canvas.classList.add('dragging');canvas.setPointerCapture?.(e.pointerId)});
-canvas.addEventListener('pointermove',e=>{if(!dragging){if(e.pointerType==='mouse')queueHoverRay(e);return}if(Math.abs(e.clientX-down.x)+Math.abs(e.clientY-down.y)>8)moved=true});
+canvas.addEventListener('pointermove',e=>{if(!dragging){if(e.pointerType==='mouse')queueHoverRay(e);return}if(Math.abs(e.clientX-down.x)+Math.abs(e.clientY-down.y)>8){moved=true;dismissAdHintOnMove()}});
 canvas.addEventListener('pointerup',e=>{dragging=false;canvas.classList.remove('dragging');const dx=e.clientX-down.x,dy=e.clientY-down.y;if(moved&&Math.abs(dx)>Math.max(46,Math.abs(dy)*1.1)){stepCycle(dx>0?-1:1);return}if(!moved){pointerN(e);ray.setFromCamera(mouse,camera);const hit=ray.intersectObjects(clickables,false)[0];if(hit){if(hit.object.userData.action==='goblin-cert')openGoblinCertificate();else if(hit.object.userData.section)focus(hit.object.userData.section,true)}}});canvas.addEventListener('pointercancel',()=>{dragging=false;canvas.classList.remove('dragging')});
-canvas.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
+canvas.addEventListener('wheel',e=>{dismissAdHintOnMove();if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
 document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus(CYCLE[0],false)});
-addEventListener('keydown',e=>{if(e.key==='Escape'){if(jxStory.classList.contains('open')){closeJxStory();return}if(goblinModal.classList.contains('open')){closeGoblinCertificate();return}if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key==='ArrowLeft'||e.key==='PageUp')dismissAdHintOnMove();if(e.key==='Escape'){if(jxStory.classList.contains('open')){closeJxStory();return}if(goblinModal.classList.contains('open')){closeGoblinCertificate();return}if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
 
 
 
