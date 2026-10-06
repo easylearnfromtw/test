@@ -717,8 +717,8 @@ function updateStreetLights(x){
   for(let i=0;i<n;i++){
     const lx=STREET_LAMP_ORIGIN+(start+i)*STREET_LAMP_STEP;
     const l=streetLampLights[i],p=streetLampPools[i];
-    l.position.set(lx,8.4,-3.8);l.intensity=(MOBILE_GPU?190:250)*streetNight;
-    p.position.set(lx,.045,-2.6);p.material.opacity=.31*streetNight;
+    l.position.set(lx,8.4,-3.8);l.intensity=(MOBILE_GPU?210:280)*streetNight;
+    p.position.set(lx,.045,-2.6);p.material.opacity=.35*streetNight;
   }
 }
 let shadowAnchorX=Infinity;
@@ -1001,6 +1001,9 @@ vec3 cEmis=vec3(0.);
     col*=.8+.3*fbm(uv*2.3);col*=1.-.25*smoothstep(.6,.9,fbm(uv*.4+4.));
     float patchA=smoothstep(.7,.72,fbm2(uv*.08+2.));col=mix(col,col*.72,patchA);
     float oil=smoothstep(.68,.8,fbm(uv*.6+13.))*smoothstep(.3,.6,fbm2(uv*.2));col*=1.-oil*.35;
+    float roadLp=pow(max(0.,1.-abs(mod(vWPos.x+177.5,35.)-17.5)/17.),2.)*max(0.,1.-abs(vWPos.z+3.8)/18.);
+    col*=1.+.20*uNight;
+    cEmis+=vec3(.055,.05,.045)*uNight+vec3(.15,.105,.065)*roadLp*uNight;
   }else if(st<23.5){ // lawn / hedge
     col*=.75+.45*fbm(uv*3.1);col=mix(col,col*vec3(1.15,1.1,.7),smoothstep(.55,.8,fbm2(uv*.7))*.5);
   }else{ // PU running track / court surface
@@ -1038,8 +1041,8 @@ vec3 cEmis=vec3(0.);
     float lp=pow(max(0.,1.-abs(mod(vWPos.x+177.5,35.)-17.5)/16.),2.);
     float side=max(0.,1.-abs(vWPos.z+3.8)/13.);
     vec3 warm=vec3(1.0,.73,.42)*lp*side*uNight;
-    col*=1.+.14*uNight;
-    cEmis=skyRefl(V,N)*(.10+.52*fres)+warm*(.14+.25*max(N.y,0.));
+    col*=1.+.20*uNight;
+    cEmis=skyRefl(V,N)*(.13+.58*fres)+warm*(.17+.29*max(N.y,0.));
     float hl=pow(max(dot(reflect(V,N),normalize(vec3(-.74,.47,.48))),0.),40.);cEmis+=vec3(1.,.9,.8)*hl*.6;
   }else if(st>5.5&&st<6.5){ cEmis=skyRefl(V,N)*(.25+.6*fres);col*=.25;
   }else if(st>15.5&&st<16.5){ cEmis=col*(.35+1.6*vState.x);col*=.3;
