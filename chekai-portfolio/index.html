@@ -859,9 +859,6 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 </div>
 
 <script src="./assets/cdba/cdba-images.js"></script>
-<script src="./assets/photo-stories/ldp-01-embedded.js"></script>
-<script src="./assets/photo-stories/ldp-02-embedded.js"></script>
-<script src="./assets/photo-stories/ldp-03-embedded.js"></script>
 <script type="module">
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
@@ -5009,9 +5006,11 @@ const PHOTO_STORIES={
     lead:'國際來訪接待與交流紀錄。',
     mark:'LDP',
     accent:'#4e6ca8',
-    images:[window.LDP_IMAGE_1,window.LDP_IMAGE_2,window.LDP_IMAGE_3]
-      .filter(Boolean)
-      .map(im=>({src:im.src,label:'活動照',meta:'活動照',w:im.w,h:im.h}))
+    images:[
+      {src:'./assets/photo-stories/ldp-01.webp',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/ldp-02.webp',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/ldp-03.webp',label:'活動照',meta:'活動照'}
+    ]
   }
 };
 const photoStory=document.getElementById('photoStory'),psStage=document.getElementById('psStage'),psBrand=document.getElementById('psBrand'),psCount=document.getElementById('psCount'),psHeadBar=document.getElementById('psHeadBar'),psPrev=document.getElementById('psPrev'),psNext=document.getElementById('psNext'),psClose=document.getElementById('psClose'),psProgress=document.getElementById('psProgress'),psLightbox=document.getElementById('psLightbox'),psLightboxImg=document.getElementById('psLightboxImg'),psLightboxClose=document.getElementById('psLightboxClose');
