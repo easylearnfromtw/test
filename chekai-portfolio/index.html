@@ -768,7 +768,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v8',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v9',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -839,8 +839,8 @@ const DATA={
 ['基隆海洋文學大賽 參與','文學與主題寫作參與',null,{category:'媒體與寫作'}],
 ['市三重高中躲貓貓社創社社長、公關','創社社長｜公關',null,{category:'社團與領導'}],
 ['市三重高中見賢思琪社｜創社副社長、美宣','Founding Vice President / Visual Design',null,{type:'jx_story',category:'社團與領導'}],
-['新北市服務學習社團楷模王114年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],
-['新北市服務學習社團楷模王115年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],
+['114年新北市服務學習社團楷模王','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],
+['115年新北市服務學習社團楷模王','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],
 ['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌',null,{category:'服務與公共參與'}],
 ['新北市114年度三重暨雙和分區幼童軍練團活動 主辦','幼童軍練團活動｜主辦',null,{category:'服務與公共參與'}],
 ['愛維養護中心社團服務 主辦','養護中心社團服務｜主辦',null,{category:'服務與公共參與'}],
