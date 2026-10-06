@@ -622,9 +622,11 @@ function minuteOfLocalDay(v){
 }
 function solarFromWeather(w){
   const cur=w?.current||{},daily=w?.daily||{};
-  const now=minuteOfLocalDay(cur.time),rise=minuteOfLocalDay(daily.sunrise?.[0]),set=minuteOfLocalDay(daily.sunset?.[0]);
+  const off=Number(w?.utc_offset_seconds);
+  const liveMinute=Number.isFinite(off)?((Math.floor(Date.now()/60000)+Math.round(off/60))%1440+1440)%1440:NaN;
+  const now=Number.isFinite(liveMinute)?liveMinute:minuteOfLocalDay(cur.time),rise=minuteOfLocalDay(daily.sunrise?.[0]),set=minuteOfLocalDay(daily.sunset?.[0]);
   if(!Number.isFinite(now)||!Number.isFinite(rise)||!Number.isFinite(set)||set<=rise){
-    return {daylight:cur.is_day?1:.06,progress:.5,warm:cur.is_day?.15:0}
+    return {daylight:cur.is_day?1:.06,progress:.5,warm:cur.is_day ? .15 : 0}
   }
   let daylight=.04;
   if(now>=rise-45&&now<rise+45)daylight=mixN(.04,1,smooth01((now-(rise-45))/90));
@@ -652,7 +654,7 @@ function setClimateTarget(w,loc,immediate=false){
   const precip=Math.max(Number(cur.precipitation)||0,Number(cur.rain)||0);
   const rainCode=(code>=51&&code<=67)||(code>=80&&code<=82)||(code>=95&&code<=99);
   const foggy=code===45||code===48,storm=code>=95,snow=(code>=71&&code<=77)||(code>=85&&code<=86);
-  const rain=clamp01(Math.max(rainCode?.38:0,precip/3.2,storm?.72:0));
+  const rain=clamp01(Math.max(rainCode ? .38 : 0,precip/3.2,storm ? .72 : 0));
   const daylight=solar.daylight,warm=solar.warm;
   const clearTop=new THREE.Color(0x4f86c1),overTop=new THREE.Color(0x6f7e89),nightTop=new THREE.Color(0x071321);
   const clearHor=new THREE.Color(0xd9e2e6),overHor=new THREE.Color(0xaab2b7),nightHor=new THREE.Color(0x172536);
@@ -666,8 +668,8 @@ function setClimateTarget(w,loc,immediate=false){
   CLIMATE.targetAmbient=Math.max(.22,(.32+daylight*1.08)*(1-cloud*.16-rain*.16));
   CLIMATE.targetKey=Math.max(.015,daylight*3.0*(1-cloud*.72)*(1-rain*.55));
   CLIMATE.targetExposure=Math.max(.48,.57+daylight*.52-cloud*.07-rain*.08);
-  CLIMATE.targetFog=.00155+humidity*.00062+cloud*.00034+rain*.00105+(foggy?.0032:0);
-  CLIMATE.targetCloud=clamp01(Math.max(cloud,rain*.75,foggy?.72:0));
+  CLIMATE.targetFog=.00155+humidity*.00062+cloud*.00034+rain*.00105+(foggy ? .0032 : 0);
+  CLIMATE.targetCloud=clamp01(Math.max(cloud,rain*.75,foggy ? .72 : 0));
   CLIMATE.targetRain=rain;CLIMATE.targetWind=clamp01((Number(cur.wind_speed_10m)||8)/38);
   CLIMATE.targetSunColor.set(0xffd3a8).lerp(new THREE.Color(0xff9a68),warm*.62).lerp(new THREE.Color(0xd7e2ea),cloud*.28);
   const p=solar.progress,lat=Math.abs(Number(loc?.lat)||25),elev=Math.max(.045,Math.sin(Math.PI*p)*(.74-.28*Math.min(.9,lat/70))*daylight);
