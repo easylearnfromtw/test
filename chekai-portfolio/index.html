@@ -863,7 +863,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
 import * as THREE from 'three';
 if(window.__CK_BLOCK_AUTOMATION__)throw new Error('Automated access blocked by owner policy');
 
-const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v12',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
+const RAW_BASE='https://raw.githubusercontent.com/easylearnfromtw/test/main/chekai-portfolio/',CONTENT_CACHE_KEY='ck_portfolio_content_cache_v13',TRAINING_CACHE_KEY='ck_portfolio_training_cache_v1',SYNC_SIGNAL_KEY='ck_portfolio_sync_signal_v1';
 const portfolioSyncBus=('BroadcastChannel' in window)?new BroadcastChannel('chekai-portfolio-sync'):null;
 let SITE_CONTENT=null;
 try{const cached=JSON.parse(localStorage.getItem(CONTENT_CACHE_KEY)||'null');if(cached?.sections)SITE_CONTENT=cached}catch{}
@@ -948,7 +948,7 @@ const DATA={
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書','公共議題評論與媒體投書','https://newtalk.tw/citizen/author/319524'],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作'],['小論文比賽（藝術類）','藝術類｜建築雨山的對話',null,{type:'essay_story'}]]},
  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',accent:'#58bdd2',items:[['欣緯科技有限公司','公司董事','https://findbiz.nat.gov.tw/fts/company/24389585'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美宣','Founding Vice President',null,{type:'jx_story'}],['市三重高中前扶輪少年團團員','Member']]},
- public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通',null,{type:'photo_story',id:'nuclear3'}]]},
+ public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流',null,{type:'photo_story',id:'ldp'}],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通',null,{type:'photo_story',id:'nuclear3'}]]},
  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',accent:'#9b78de',items:[['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration']]}
 };
 if(SITE_CONTENT?.sections){
@@ -4981,14 +4981,14 @@ const PHOTO_STORIES={
   cdba:{
     brand:'CDBA 中華辯會 / DEBATE ARCHIVE',
     title:'CDBA中華辯會｜辯論參與',
-    lead:'辯論與工作坊參與紀錄。以活動現場照片保留參與過程與團隊互動。',
+    lead:'辯論與工作坊參與紀錄。',
     mark:'CDBA',
     accent:'#45a99a',
     images:[
-      {src:'./assets/photo-stories/cdba-01.jpeg',label:'活動大合照',meta:'GROUP / 01'},
-      {src:'./assets/photo-stories/cdba-02.jpeg',label:'個人紀錄',meta:'PORTRAIT / 02'},
-      {src:'./assets/photo-stories/cdba-03.jpeg',label:'三人合照',meta:'TEAM / 03'},
-      {src:'./assets/photo-stories/cdba-04.jpeg',label:'四人合照',meta:'TEAM / 04'}
+      {src:'./assets/photo-stories/cdba-01.jpeg',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/cdba-02.jpeg',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/cdba-03.jpeg',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/cdba-04.jpeg',label:'活動照',meta:'活動照'}
     ]
   },
   nuclear3:{
@@ -4998,9 +4998,21 @@ const PHOTO_STORIES={
     mark:'PUBLIC',
     accent:'#d85b55',
     images:[
-      {src:'./assets/photo-stories/nuclear3-01.jpeg',label:'街頭活動｜台北 101 背景',meta:'FIELD / 01'},
-      {src:'./assets/photo-stories/nuclear3-02.jpeg',label:'車掃現場｜韓國瑜背景',meta:'FIELD / 02'},
-      {src:'./assets/photo-stories/nuclear3-03.jpeg',label:'個人活動照',meta:'PORTRAIT / 03'}
+      {src:'./assets/photo-stories/nuclear3-01.jpeg',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/nuclear3-02.jpeg',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/nuclear3-03.jpeg',label:'活動照',meta:'活動照'}
+    ]
+  },
+  ldp:{
+    brand:'日本自民黨來台接待 / EXCHANGE ARCHIVE',
+    title:'日本自民黨來台接待',
+    lead:'國際來訪接待與交流紀錄。',
+    mark:'LDP',
+    accent:'#4e6ca8',
+    images:[
+      {src:'./assets/photo-stories/ldp-01.jpeg',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/ldp-02.jpeg',label:'活動照',meta:'活動照'},
+      {src:'./assets/photo-stories/ldp-03.jpeg',label:'活動照',meta:'活動照'}
     ]
   }
 };
@@ -5026,7 +5038,7 @@ function buildPhotoStory(id){
   psStoryId=id;photoStory.style.setProperty('--ps-accent',d.accent||'#d65b52');psBrand.textContent=d.brand;
   const totalPhotos=d.images.length;
   const intro=`<section class="ps-section"><article class="ps-paper"><div class="ps-seal">${d.mark}</div><div class="ps-kicker"><i></i><span>CHAPTER 01 / ARCHIVE</span></div><h2 class="ps-title">${d.title}</h2><p class="ps-lead">${d.lead}</p><div class="ps-meta"><span>${String(totalPhotos).padStart(2,'0')} PHOTOS</span><span>INTERACTIVE ARCHIVE</span><span>點擊照片可放大</span></div></article></section>`;
-  const photos=d.images.map((im,i)=>`<section class="ps-section"><article class="ps-paper"><div class="ps-kicker"><i></i><span>CHAPTER ${String(i+2).padStart(2,'0')} / ${im.meta}</span></div><h2 class="ps-title photo">${im.label}</h2><div class="ps-photo-wrap"><button class="ps-photo-btn" type="button" data-ps-src="${im.src}" aria-label="放大：${im.label}"><img src="${im.src}" alt="${im.label}" draggable="false" loading="${i===0?'eager':'lazy'}"></button></div><div class="ps-caption"><span>${im.meta}</span><span>PHOTO ARCHIVE · 點擊放大</span></div></article></section>`).join('');
+  const photos=d.images.map((im,i)=>`<section class="ps-section"><article class="ps-paper"><div class="ps-kicker"><i></i><span>CHAPTER ${String(i+2).padStart(2,'0')} / ${im.meta}</span></div><h2 class="ps-title photo">${im.label}</h2><div class="ps-photo-wrap"><button class="ps-photo-btn" type="button" data-ps-src="${im.src}" aria-label="放大：${im.label}"><img src="${im.src}" alt="${im.label}" draggable="false" loading="${i===0?'eager':'lazy'}"></button></div><div class="ps-caption"><span>活動照</span><span>活動照</span></div></article></section>`).join('');
   psStage.innerHTML=intro+photos;
   psSections=[...psStage.querySelectorAll('.ps-section')];
   psProgress.replaceChildren(...psSections.map((_,i)=>{const b=document.createElement('button');b.type='button';b.className='ps-dot'+(i===0?' active':'');b.setAttribute('aria-label','第 '+(i+1)+' 章');b.onclick=()=>psGo(i);return b}));
