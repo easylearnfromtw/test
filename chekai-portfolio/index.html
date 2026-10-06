@@ -4423,55 +4423,41 @@ if(SITE_CONTENT?.club){
 }
 const jxSections=[...document.querySelectorAll('.jx-section')],jxProgress=document.getElementById('jxProgress'),jxChapterCount=document.getElementById('jxChapterCount'),jxHeadBar=document.getElementById('jxHeadBar');
 const jxLightbox=document.getElementById('jxLightbox'),jxLightboxFrame=document.getElementById('jxLightboxFrame'),jxLightboxClose=document.getElementById('jxLightboxClose');
-let jxIndex=0,jxSpriteUrl='',jxSpriteLoading=null,jxCellUrls=[];
+let jxIndex=0,jxSpriteUrl='',jxSpriteLoading=null;
 jxSections.forEach((s,i)=>{const b=document.createElement('button');b.className='jx-dot'+(i===0?' active':'');b.type='button';b.setAttribute('aria-label','第 '+(i+1)+' 章');b.onclick=()=>jxGo(i);jxProgress.appendChild(b)});
 const jxDots=[...jxProgress.children];
 function jxCellPos(el,cell){
-  const c=Number(cell)||0;
-  if(jxCellUrls[c]){
-    el.style.backgroundImage=`url("${jxCellUrls[c]}")`;
-    el.style.backgroundSize='contain';
-    el.style.backgroundPosition='center';
-    el.style.backgroundRepeat='no-repeat';
-    return
-  }
-  const x=c%4,y=Math.floor(c/4);
+  const c=Number(cell)||0,x=c%4,y=Math.floor(c/4);
   el.style.backgroundImage=jxSpriteUrl?`url("${jxSpriteUrl}")`:'';
   el.style.backgroundSize='400% 400%';
-  el.style.backgroundPosition=`${x*100/3}% ${y*100/3}%`
+  el.style.backgroundPosition=`${x*100/3}% ${y*100/3}%`;
+  el.style.backgroundRepeat='no-repeat';
 }
-function applyJxSprite(root=document){if(!jxSpriteUrl&&!jxCellUrls.length)return;root.querySelectorAll?.('[data-jx-cell]').forEach(el=>jxCellPos(el,el.dataset.jxCell))}
-async function buildJxCells(url){
-  const img=new Image();
-  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
-  const cols=4,rows=4,sw=img.naturalWidth/cols,sh=img.naturalHeight/rows;
-  const outSize=innerWidth<720?420:600;
-  const cv=document.createElement('canvas'),g=cv.getContext('2d',{alpha:false});
-  cv.width=cv.height=outSize;g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
-  const urls=[],losslessCells=new Set([0,1,2,13,14]);
-  for(let c=0;c<15;c++){
-    g.fillStyle='#efe6d6';g.fillRect(0,0,outSize,outSize);
-    const sx=(c%4)*sw,sy=Math.floor(c/4)*sh;
-    g.drawImage(img,sx,sy,sw,sh,0,0,outSize,outSize);
-    const type=losslessCells.has(c)?'image/png':'image/webp';
-    const blob=await new Promise(resolve=>cv.toBlob(resolve,type,type==='image/webp'?.98:undefined));
-    urls[c]=blob?URL.createObjectURL(blob):cv.toDataURL(type,type==='image/webp'?.98:undefined);
-  }
-  for(const old of jxCellUrls)if(old?.startsWith?.('blob:'))URL.revokeObjectURL(old);
-  jxCellUrls=urls
+function applyJxSprite(root=document){
+  if(!jxSpriteUrl)return;
+  root.querySelectorAll?.('[data-jx-cell]').forEach(el=>jxCellPos(el,el.dataset.jxCell));
+}
+function probeJxImage(url){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.decoding='async';
+    img.onload=()=>resolve(url);
+    img.onerror=()=>reject(new Error('image load failed: '+url));
+    img.src=url;
+  });
 }
 async function ensureJxSprite(){
-  if(jxSpriteUrl)return jxSpriteUrl;if(jxSpriteLoading)return jxSpriteLoading;
-  jxSpriteLoading=fetch('./assets/jx-sprite.b64.txt',{cache:'force-cache'})
+  if(jxSpriteUrl)return jxSpriteUrl;
+  if(jxSpriteLoading)return jxSpriteLoading;
+  const legacy=()=>fetch('./assets/jx-sprite.b64.txt',{cache:'force-cache'})
     .then(r=>{if(!r.ok)throw new Error('photo archive '+r.status);return r.text()})
-    .then(async b64=>{
-      jxSpriteUrl='data:image/webp;base64,'+b64.trim();
-      try{await buildJxCells(jxSpriteUrl)}catch(e){console.warn('[jx cell extraction]',e)}
-      applyJxSprite();
-      return jxSpriteUrl
-    })
+    .then(b64=>'data:image/webp;base64,'+b64.trim());
+  jxSpriteLoading=probeJxImage('./assets/jx-sprite-hd.webp')
+    .catch(e=>{console.warn('[jx photos 3200 fallback]',e);return probeJxImage('./assets/jx-sprite-hd-1600.webp')})
+    .catch(e=>{console.warn('[jx photos 1600 fallback]',e);return legacy()})
+    .then(url=>{jxSpriteUrl=url;applyJxSprite();return jxSpriteUrl})
     .catch(e=>{console.warn('[jx photos]',e);return ''});
-  return jxSpriteLoading
+  return jxSpriteLoading;
 }
 function updateJxNav(i){jxDots.forEach((d,k)=>d.classList.toggle('active',k===i));jxPrev.disabled=i===0;jxNext.textContent=i===jxSections.length-1?'回到第一章 ↺':'下一章 →';if(jxChapterCount)jxChapterCount.textContent=String(i+1).padStart(2,'0')+' / '+String(jxSections.length).padStart(2,'0');if(jxHeadBar)jxHeadBar.style.width=((i+1)/jxSections.length*100)+'%'}
 function jxGo(i){jxIndex=Math.max(0,Math.min(jxSections.length-1,i));jxSections[jxIndex].scrollIntoView({behavior:'smooth',block:'start'});updateJxNav(jxIndex)}
