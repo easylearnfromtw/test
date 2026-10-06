@@ -3607,7 +3607,7 @@ function stopAhead(v,S){ // nearest stop ahead on the main road: red light, bus 
   for(const [flag,X0,off] of [['bus',BUS_STOP_X,4],['garbage',TRASH_STOP_X,2]]){if(!v[flag])continue;const k2=Math.round((v.x-X0)/LOOP_SPAN),bx=X0+k2*LOOP_SPAN-off*v.dir,d=(bx-v.x)*v.dir;
     if(v.dwellAt!==k2+':'+flag&&d>-.3&&d<60&&d<best){best=d;kind=flag;v._stopKey=k2+':'+flag}}
   return [best,kind]}
-const _trafficLanes=Object.create(null),_trafficLaneKeys=[],_crossLanes=Object.create(null),_crossLaneKeys=[];
+const _trafficLanes=Object.create(null),_trafficLaneKeys=[],_crossLanes=Object.create(null),_crossLaneKeys=[],_laneDeque=[];
 function trafficBucket(store,keys,key){let a=store[key];if(!a){a=store[key]=[];keys.push(key)}return a}
 function prepareTrafficGaps(){
   for(const k of _trafficLaneKeys)_trafficLanes[k].length=0;
@@ -3617,21 +3617,27 @@ function prepareTrafficGaps(){
     if(v.state==='main')trafficBucket(_trafficLanes,_trafficLaneKeys,v.lane+'|'+v.dir).push(v);
     else if(v.state==='in'||v.state==='out')trafficBucket(_crossLanes,_crossLaneKeys,v.state+'|'+v.ix+'|'+Math.round(v.x*10)).push(v)
   }
+  // Exact nearest bumper-gap on each circular main-road lane in O(n log n) sort + O(n) scan.
+  // Sorting in travel-direction coordinates lets both directions share one monotonic-window pass.
   for(const k of _trafficLaneKeys){
-    const a=_trafficLanes[k],n=a.length;if(n<2)continue;a.sort((x,y)=>x.x-y.x);
-    const dir=a[0].dir;
+    const a=_trafficLanes[k],n=a.length;if(n<2)continue;const dir=a[0].dir;
+    a.sort((x,y)=>x.x*dir-y.x*dir);_laneDeque.length=0;let head=0,r=1;
+    const p=j=>a[j%n].x*dir+(j>=n?LOOP_SPAN:0),val=j=>p(j)-a[j%n].len*.5;
     for(let i=0;i<n;i++){
-      const v=a[i],o=a[(i+(dir>0?1:n-1))%n];let d=(o.x-v.x)*dir;if(d<=0)d+=LOOP_SPAN;
-      if(d<=LOOP_SPAN/2)v._laneGap=d-(o.len+v.len)/2
+      if(r<i+1)r=i+1;while(head<_laneDeque.length&&_laneDeque[head]<=i)head++;
+      const pi=p(i);
+      while(r<i+n&&p(r)-pi<=LOOP_SPAN/2){
+        const vr=val(r);while(_laneDeque.length>head&&val(_laneDeque[_laneDeque.length-1])>=vr)_laneDeque.pop();
+        _laneDeque.push(r++)
+      }
+      if(head<_laneDeque.length)a[i]._laneGap=val(_laneDeque[head])-(pi+a[i].len*.5)
     }
   }
+  // Cross-street lanes are non-circular: a suffix minimum gives the exact same bumper-gap test.
   for(const k of _crossLaneKeys){
-    const a=_crossLanes[k],n=a.length;if(n<2)continue;a.sort((x,y)=>x.z-y.z);
-    const dir=a[0].state==='in'?1:-1;
-    for(let i=0;i<n;i++){
-      const j=i+(dir>0?1:-1);if(j<0||j>=n)continue;
-      const v=a[i],o=a[j],d=(o.z-v.z)*dir;if(d>0)v._crossGap=d-(o.len+v.len)/2
-    }
+    const a=_crossLanes[k],n=a.length;if(n<2)continue;const dir=a[0].state==='in'?1:-1;
+    a.sort((x,y)=>x.z*dir-y.z*dir);let best=Infinity;
+    for(let i=n-1;i>=0;i--){const v=a[i],p=v.z*dir;if(best<Infinity)v._crossGap=best-(p+v.len*.5);best=Math.min(best,p-v.len*.5)}
   }
 }
 function updateTraffic(dt,t){
