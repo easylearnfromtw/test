@@ -396,6 +396,37 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
  .jx-metrics,.jx-grid,.jx-honor{grid-template-columns:1fr}.jx-sdg{grid-template-columns:repeat(4,1fr)}.jx-sdg button{min-height:110px;font-size:8px}.jx-gallery{grid-template-columns:repeat(3,1fr);gap:6px}.jx-field-layout{grid-template-columns:1fr}.jx-event span{display:block}.jx-event-media{min-height:0}.jx-growth{grid-template-columns:1fr}.jx-growth .arrow{transform:rotate(90deg);justify-self:center}.jx-head-progress{display:none}.jx-actions{gap:5px}.jx-actions .jx-btn{padding:8px 7px}
 }
 
+
+/* ===== Essay Interactive Story ===== */
+.essay-story{position:fixed;inset:0;z-index:116;background:#f6f5f1;color:#1e2023;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .32s ease,visibility .32s;overflow:hidden}
+.essay-story.open{opacity:1;visibility:visible;pointer-events:auto}
+.essay-shell{height:100dvh;display:grid;grid-template-rows:auto 1fr}
+.essay-top{display:flex;align-items:center;gap:12px;padding:13px 17px;border-bottom:2px solid #181818;background:rgba(248,247,243,.96);position:relative;z-index:6}
+.essay-brand{display:flex;align-items:center;gap:9px;font:900 9px/1 var(--mono);letter-spacing:.13em}.essay-brand i{width:9px;height:9px;border-radius:50%;background:#f06b3b}
+.essay-head-progress{display:flex;align-items:center;gap:9px;min-width:170px;margin-left:auto}.essay-head-progress b{font:900 9px/1 var(--mono)}.essay-head-track{height:5px;flex:1;background:#dedbd4;overflow:hidden}.essay-head-track i{display:block;height:100%;width:11.11%;background:#f06b3b;transition:width .28s ease}
+.essay-actions{display:flex;gap:7px}.essay-btn{appearance:none;border:1.5px solid #1e2023;background:#f8f7f3;color:#1e2023;padding:9px 11px;font:900 9px/1 var(--mono);cursor:pointer;box-shadow:3px 3px 0 #1e2023;transition:.16s}.essay-btn.primary{background:#f3a15f}.essay-btn:active{transform:translate(3px,3px);box-shadow:none}
+.essay-stage{position:relative;overflow:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;background:radial-gradient(circle at 18% 15%,rgba(247,129,72,.10),transparent 25%),radial-gradient(circle at 83% 80%,rgba(86,178,202,.10),transparent 27%),#f6f5f1}
+.essay-section{min-height:100%;scroll-snap-align:start;display:grid;place-items:center;padding:clamp(34px,5vw,66px) 20px;position:relative;overflow:hidden}
+.essay-section::after{content:"";position:absolute;right:-10vw;bottom:-15vw;width:45vw;height:60vw;background:linear-gradient(150deg,#f15e35,#f1c66b 55%,#66c4d8);clip-path:polygon(45% 0,100% 0,72% 100%,0 100%);opacity:.19;pointer-events:none}
+.essay-paper{position:relative;z-index:1;width:min(1080px,93vw);padding:clamp(25px,4.6vw,54px);background:rgba(255,255,255,.88);border:1.5px solid #1e2023;box-shadow:10px 10px 0 rgba(30,32,35,.11),0 24px 65px rgba(30,32,35,.10)}
+.essay-paper::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:linear-gradient(#f05c34,#f3c06d,#63bfd5)}
+.essay-kicker{display:flex;align-items:center;gap:9px;font:900 9px/1 var(--mono);letter-spacing:.14em;color:#db5631;text-transform:uppercase}.essay-kicker i{width:8px;height:8px;border-radius:50%;background:#f06b3b}
+.essay-title{margin:18px 0 14px;font:950 clamp(39px,7vw,82px)/.94 var(--sans);letter-spacing:-.055em;color:#111}.essay-title.small{font-size:clamp(30px,5vw,58px);line-height:1.03}
+.essay-subtitle{max-width:900px;margin:0;color:#555c62;font-size:clamp(13px,1.5vw,18px);line-height:1.75;font-weight:700}
+.essay-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:24px}.essay-meta>div{border:1.5px solid #25282b;padding:14px;background:#fffdf9}.essay-meta em{display:block;font:900 8px/1 var(--mono);font-style:normal;letter-spacing:.11em;color:#d95632}.essay-meta strong{display:block;margin-top:8px;font-size:15px}
+.essay-body{margin-top:24px;display:grid;gap:18px}.essay-body h3{margin:4px 0 0;font-size:clamp(21px,3vw,31px);line-height:1.3}.essay-body h4{margin:4px 0 -4px;font-size:17px;line-height:1.45;color:#25282b}.essay-body p,.essay-body li{font-size:clamp(13px,1.35vw,16px);line-height:1.9;color:#333a3f;font-weight:560}.essay-body p{margin:0}.essay-body ol,.essay-body ul{margin:0;padding-left:1.35em;display:grid;gap:9px}
+.essay-quote{padding:19px 22px;border-left:6px solid #f06b3b;background:#fff5eb;font-size:clamp(16px,2.2vw,24px);line-height:1.65;font-weight:850}
+.essay-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.essay-card{border:1.5px solid #25282b;background:#fffdf9;padding:17px}.essay-card b{display:block;font-size:15px;margin-bottom:8px}.essay-card p{font-size:12px;line-height:1.75;color:#555d63}.essay-tag{display:inline-flex;margin-bottom:9px;padding:5px 7px;background:#f3a15f;border:1px solid #25282b;font:900 7px/1 var(--mono);letter-spacing:.07em}
+.essay-source{display:block;text-decoration:none;color:#1f2529;border:1px solid #c9c6bf;background:#f5f2eb;padding:12px 13px;transition:.18s;overflow-wrap:anywhere}.essay-source:hover{transform:translateY(-2px);border-color:#f06b3b}.essay-source b{display:block;font-size:11px;margin-bottom:5px}.essay-source span{font:700 8px/1.55 var(--mono);color:#687078}
+.essay-ref{display:grid;gap:10px}.essay-ref>div{padding:12px 14px;border-left:3px solid #f06b3b;background:#f7f4ed;font-size:12px;line-height:1.72;color:#42484d}
+.essay-progress{position:fixed;right:15px;top:50%;transform:translateY(-50%);z-index:7;display:grid;gap:7px}.essay-dot{width:10px;height:10px;border:2px solid #202326;background:#f6f5f1;border-radius:50%;padding:0;cursor:pointer}.essay-dot.active{background:#f06b3b;transform:scale(1.25)}
+.essay-reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1)}.essay-section.in .essay-reveal{opacity:1;transform:none}.essay-section.in .essay-reveal:nth-child(2){transition-delay:.06s}.essay-section.in .essay-reveal:nth-child(3){transition-delay:.12s}
+@media(max-width:720px){
+ .essay-top{padding:9px 10px}.essay-brand{font-size:7px;max-width:42vw}.essay-head-progress{display:none}.essay-actions{gap:4px}.essay-btn{padding:8px 7px;font-size:8px}.essay-progress{display:none}
+ .essay-section{padding:22px 9px 30px;min-height:100dvh}.essay-paper{width:96vw;padding:23px 17px 26px}.essay-title{font-size:clamp(35px,12vw,55px)}.essay-title.small{font-size:clamp(28px,8vw,40px)}
+ .essay-meta,.essay-grid{grid-template-columns:1fr}.essay-body p,.essay-body li{font-size:12.5px;line-height:1.82}.essay-source span{font-size:7.5px}
+}
+
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script>
 </head>
@@ -444,6 +475,149 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
   </section>
 </div>
 <aside class="drawer" id="drawer"><button class="close" id="close">×</button><div class="dk" id="dk">00 / Home</div><h2 id="dt">CHE-KAI LIN</h2><p id="di"></p><div class="items" id="items"></div></aside>
+
+
+<div class="essay-story" id="essayStory" aria-hidden="true">
+  <div class="essay-shell">
+    <header class="essay-top">
+      <div class="essay-brand"><i></i><span>自主學習 × 小論文 / ARCHITECTURE PAPER</span></div>
+      <div class="essay-head-progress"><b id="essayChapterCount">01 / 09</b><div class="essay-head-track"><i id="essayHeadBar"></i></div></div>
+      <div class="essay-actions"><button class="essay-btn" id="essayPrev" type="button">← 上一章</button><button class="essay-btn primary" id="essayNext" type="button">下一章 →</button><button class="essay-btn" id="essayClose" type="button">關閉 ×</button></div>
+    </header>
+    <main class="essay-stage" id="essayStage">
+
+      <section class="essay-section" data-essay="0"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 01 / COVER</span></div>
+        <h2 class="essay-title essay-reveal">建築雨山的對話。</h2>
+        <p class="essay-subtitle essay-reveal">基隆要塞司令官邸建材在地化與視覺空間層次探析</p>
+        <div class="essay-meta essay-reveal">
+          <div><em>AUTHOR</em><strong>林哲愷｜三重高中</strong></div>
+          <div><em>CATEGORY</em><strong>小論文比賽｜藝術類</strong></div>
+          <div><em>FORMAT</em><strong>自主學習 × 研究論文</strong></div>
+        </div>
+        <div class="essay-body essay-reveal">
+          <div class="essay-quote">走回基隆，因為相思，所以回去。記憶中的建築與自然相輔相成，將功能與美學相織相融；那柔和、自然與建築的美啊，是我記憶中的基隆。</div>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="1"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 02 / SELF-DIRECTED LEARNING</span></div>
+        <h2 class="essay-title small essay-reveal">從自主學習，走到一篇論文。</h2>
+        <div class="essay-body essay-reveal">
+          <h3>前言</h3>
+          <p>本篇簡報用於統整、記錄、回報高二自主學習成果，雖投稿小論文競賽並未獲獎，但我也在其中獲得了比勝負更大的回報。基隆是我的家鄉，往返台北、基隆是我大部分的兒時回憶，相較於高樓林立、未來感的台北，我更喜愛從骯髒破舊的基隆找尋吸睛的伯樂，本次研究對象就是最為令我吸睛的建築之一，基隆是老是舊然而如同不會因年老而不相愛的戀人，我也痴愛著那老去的雨都基隆。</p>
+          <h3>原先時間規劃｜約 21 週</h3>
+          <ol>
+            <li>第 1—3 週：題目發想</li><li>第 4 週：尋求指導老師同意</li><li>第 5 週：實地考察</li><li>第 6 週：文獻查找、圖書購買</li><li>第 8—13 週：圖書閱讀並執筆撰寫大綱</li><li>第 13—17 週：將大綱改為實際文字並符合小論文比賽規範</li><li>第 18、19 週：繳交文件及報名</li><li>第 20、21 週：記錄過程統整</li>
+          </ol>
+          <h3>實際情況</h3>
+          <p>由於原先打算以物理結構探討為主軸，然而與老師討論後發現理念以藝術為主軸較佳，故更改題目重新製作，花費很多時間。且自主學習課常用於小考、處理班級事務，所以製作非常容易一週做、一週休，和原先預計完全不同。然而，風不轉路轉，經過利用假日製作，我成功趕在繳交期限前準時繳出。</p>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="2"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 03 / INTRODUCTION</span></div>
+        <h2 class="essay-title small essay-reveal">壹、前言：研究動機、目的與方法</h2>
+        <div class="essay-body essay-reveal">
+          <h3>一、研究動機</h3>
+          <p>我的故鄉是基隆，從小節假日往返基隆台北的路程時常被路途中基隆建築而注目，和台北不同的是，基隆的建築雖骯髒破舊，但不少建築建材因地、因空間更動而產生的呼吸感，還有殖民背景下異域風情的獨特情感，於是本人在鄉土情懷的背景下決定提筆以基隆建築為題著此次小論文。基隆長年處於「多雨、高鹽、坡地」的複合環境之中，根據基隆市政府主計處統計（112年）基隆年均降雨量逾 5568.5 毫米，海風所挾帶的高鹽分對建築材料造成持續侵蝕。在此條件下，建築不僅需要抵擋風化，更須透過合宜的建材與構造策略維持空間秩序。因此，在地建材的選擇不只是技術層面的回應，更深刻影響建築形式與空間感知的生成。本研究即由此動機出發，探討材性如何形塑建築與環境之間的對話關係。</p>
+          <p>研究對象「基隆要塞司令官邸」建於日治昭和六年（1931 年），原為私人宅邸，後轉作要塞司令官官舍。建築融合日式木構造與土藏式元素，座落於高地，也融合基隆多山的自然環境。本研究目的為：其一，分析官邸如何透過洗石子基座與木構造的因地更動回應基隆氣候；其二，探討建材由石質轉換為木質時，所產生的美感與空間變化。</p>
+          <a class="essay-source" href="https://klctb.klcg.gov.tw/cp.aspx?n=7496" target="_blank" rel="noopener noreferrer"><b>圖一｜基隆要塞司令官邸照</b><span>資料來源：基隆市文化觀光局。2025 年 9 月 4 日，原論文引用來源 ↗</span></a>
+          <h3>二、研究目的</h3>
+          <ol><li>建材、作法探析</li><li>建材對空間的影響</li><li>美學探討</li></ol>
+          <h3>三、研究方法</h3>
+          <p>此次研究們將藉由實地觀察法、文獻回顧法以及視覺分析法，並且與老師討論進行統整分析。</p>
+          <div class="essay-grid">
+            <div class="essay-card"><span class="essay-tag">01</span><b>實地觀察法</b><p>透過實地觀察探討建築所採作法及建材理論與實際的差異、並且探討其藝術性。</p></div>
+            <div class="essay-card"><span class="essay-tag">02</span><b>文獻回顧法</b><p>透過探討各類文獻確認資料來源正確並且引用保持研究客觀性。</p></div>
+            <div class="essay-card"><span class="essay-tag">03</span><b>視覺分析法</b><p>使用圖表、圖片更加清晰數據分析及感官。</p></div>
+          </div>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="3"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 04 / CLIMATE & MATERIAL</span></div>
+        <h2 class="essay-title small essay-reveal">貳、正文（一）風土考驗下的建材策略</h2>
+        <div class="essay-body essay-reveal">
+          <h3>一、風土考驗下的建材策略</h3>
+          <h4>（一）防潮基座的美學</h4>
+          <p>根據實地測量基隆要塞司令官邸的洗石子基座高度約 80 公分，高於一般住宅常見基準（以周圍房屋做比較）。此設計能隔絕地面濕氣，降低雨水噴濺對上層木構造的侵蝕。除功能外，洗石子粗糙厚重的肌理在視覺上形成穩定的「重量感」，與上部輕盈的木構造形成對比，築起清晰的層次。</p>
+          <h4>（二）耐候性材質的選用：雨淋板</h4>
+          <p>官邸外牆採用雨淋板（Weatherboard），其重疊排列的構造能有效引導雨水下排。在視覺層面，雨淋板形成的重複線條，如竹節般層層遞進，產生光影間的落差豐富了建築的立體度。此設計使耐候性需求轉化為美學的一部分，體現了實用與美學互惠的設計邏輯。</p>
+          <a class="essay-source" href="https://tcmb.culture.tw/zh-tw/detail?indexCode=Culture_Place&id=230997" target="_blank" rel="noopener noreferrer"><b>圖二｜雨淋板照</b><span>資料來源：國家文化記憶庫。2025 年 9 月 11 日，原論文引用來源 ↗</span></a>
+          <h4>（三）雙層屋頂構造與避雨策略</h4>
+          <p>基隆多伴隨斜射風雨，官邸採用層層堆疊的屋頂構造，形成額外保護層。此設計可以延緩雨水進入主要結構層，降低木構造腐朽風險。</p>
+          <a class="essay-source" href="https://tcmb.culture.tw/zh-tw/detail?indexCode=Culture_Place&id=179123" target="_blank" rel="noopener noreferrer"><b>圖三｜基隆要塞司令官邸屋頂照</b><span>資料來源：國家文化記憶庫。2025 年 9 月 19 日，原論文引用來源 ↗</span></a>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="4"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 05 / SPACE & MATERIAL</span></div>
+        <h2 class="essay-title small essay-reveal">貳、正文（二）空間與材質轉換的藝術</h2>
+        <div class="essay-body essay-reveal">
+          <h3>二、空間與材質轉換的藝術</h3>
+          <h4>（一）由硬到軟的視覺引導</h4>
+          <p>官邸空間由外而內呈現清晰材質轉換序列。入口處以碎石地面與洗石子階梯（硬）構成；進入室內後，則轉為木質地板，而木質地板（軟、橘棕色）又分割著室內茶室特有榻榻米（軟、淺綠色）。此一轉換讓人們滿經兩端差異，卻又保持兩端特性自然過渡，既舒適又美觀。</p>
+          <a class="essay-source" href="https://klctb.klcg.gov.tw/cp.aspx?n=7496" target="_blank" rel="noopener noreferrer"><b>圖四｜基隆要塞司令官邸內外對比照</b><span>資料來源：基隆市文化觀光局。2026 年 10 月 1 日，原論文引用來源 ↗</span></a>
+          <h4>（二）室內外的視覺穿透，呼吸且柔和</h4>
+          <p>邊緣作為過渡空間，透過木格柵調節基隆微弱的自然光，使空間呈現柔和的灰階層次。此種光影效果強化了日式建築的幽靜氛圍，同時具備良好通風性，顯示傳統元素在在地條件下的解釋。</p>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="5"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 06 / LIGHT & SHADOW</span></div>
+        <h2 class="essay-title small essay-reveal">貳、正文（三）光影美學</h2>
+        <div class="essay-body essay-reveal">
+          <h3>三、在光與影交雜的窗內盡情呼吸窗外的芬多精，光影美學</h3>
+          <p>從建築立面觀察，官邸透過窗框、壓條與踢腳線，形塑出清晰的分割，使不同材質在硬與軟之間取得完美的過渡，強化了整體建築的和諧、舒適感。</p>
+          <p>在基隆散射光的氣候下，洗石子基座的粗糙與木材的平滑形成鮮明對比。光線投射於不同肌理產生的陰影效果，使官邸即使在陰雨綿綿中，仍能展現內斂且雅緻的空間氛圍。</p>
+          <a class="essay-source" href="https://dribs-drabs.com/commander-cafe/" target="_blank" rel="noopener noreferrer"><b>圖六｜基隆要塞司令官邸光影照</b><span>資料來源：dribs-drabs。2026 年 10 月 29 日，原論文引用來源 ↗</span></a>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="6"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 07 / CONCLUSION</span></div>
+        <h2 class="essay-title small essay-reveal">參、結論</h2>
+        <div class="essay-body essay-reveal">
+          <p>縱觀本研究，基隆要塞司令官邸透過洗石子高基座與雨淋板等在地化策略，不僅回應了嚴苛陡坡的自然條件，也將功能需求修飾為柔美的相互過渡。建材由石質至木質的轉換，形塑出清晰的層次感，證明建築是材料、氣候與感知對話的結果。其中，建材、設計與自然的融合最讓我吸睛，自然、冷冰的建築向性與溫暖、蓬勃發展的植物不同，而此官邸卻將設計與自然融合、互相共生且賦滿生命力，讓人過目不忘。</p>
+          <a class="essay-source" href="https://dribs-drabs.com/commander-cafe/" target="_blank" rel="noopener noreferrer"><b>圖五｜基隆要塞司令官邸窗外中庭自然光與室內微弱燈光融合、共生</b><span>資料來源：dribs-drabs。2026 年 11 月 5 日，原論文引用來源 ↗</span></a>
+          <p>作為高中生，本研究深化了我對材質不同分割、融和空間的理解。此次雖能可靠的研究，也讓我反思，古蹟並非靜態模型，而是長期回應環境的動態產物，其空間、味道掌握著建築、大地百年的容顏，也與近期看到的新聞呼應，在修復與設計中，應精準保留具在地特色的材質肌理，並將材料視為回應地景的主動媒介，而隨意擅自更動，自以為妙的改寫，忽略先祖致力於的建築與地貌融合，不僅是對歷史的不尊重，也是對先人的不敬，這是我的理解。</p>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="7"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 08 / REFLECTION</span></div>
+        <h2 class="essay-title small essay-reveal">沒有得獎，但不是沒有得到。</h2>
+        <div class="essay-body essay-reveal">
+          <div class="essay-quote">經過努力仍未獲獎，雖然可惜，但我也得到新的感悟，並不是凡事都要追求勝利，反而是重要在過程。</div>
+          <p>在準備的路途中我也遇到了實際情況和預設時間完全不同，因為現實隨時會有各種變因，無法掌握，所以讓我學到應該在設計時加入變因考量，預備補救時間。這次的學習歷程教會了我如何預留準備時間以及不要對自己過於苛刻，把握好所有當下，沈浸在製作的過程當中就好。</p>
+        </div>
+      </article></section>
+
+      <section class="essay-section" data-essay="8"><article class="essay-paper">
+        <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 09 / REFERENCES</span></div>
+        <h2 class="essay-title small essay-reveal">肆、引註、引申資料</h2>
+        <div class="essay-body essay-reveal">
+          <h3>一、圖書</h3>
+          <div class="essay-ref">
+            <div>1. 傅朝卿（2017）。《台灣建築史》。台北：台灣商務。</div>
+            <div>2. 圖說臺灣建築文化史編輯委員會（2019）。《圖說臺灣建築文化史：從十七世紀到二十一世紀的建築變遷》。台北：聯經出版。</div>
+          </div>
+          <h3>二、期刊／報告</h3>
+          <div class="essay-ref">
+            <div>1. 基隆市文化局（2023）。《基隆要塞司令部校官眷舍修復再利用工程報告》。基隆市政府。</div>
+            <div>2. 陳朝儀（2012）。〈基隆地區水土保持與坡地建築關係研究〉。《中華水土保持學報》，43(1)，75-84。</div>
+          </div>
+          <h3>三、網路資料</h3>
+          <a class="essay-source" href="https://nchdb.boch.gov.tw/" target="_blank" rel="noopener noreferrer"><b>1. 文化部文化資產局｜基隆要塞司令官邸</b><span>https://nchdb.boch.gov.tw/｜檢索日期 2026/02/04 ↗</span></a>
+          <a class="essay-source" href="https://www.klcg.gov.tw/wSite/public/Attachment/02203/f1681791798156.pdf" target="_blank" rel="noopener noreferrer"><b>2. 基隆市政府主計處統計通報｜民國 112 年 4 月基隆市降雨量及水庫概況</b><span>原論文引用 PDF｜檢索日期 2026/02/05 ↗</span></a>
+        </div>
+      </article></section>
+
+    </main>
+    <nav class="essay-progress" id="essayProgress" aria-label="小論文章節"></nav>
+  </div>
+</div>
 
 <div class="jx-story" id="jxStory" aria-hidden="true">
   <div class="jx-shell">
@@ -585,7 +759,7 @@ const DATA={
 ]},
  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'服務、社團、媒體與企劃經歷。',accent:'#e36aa8',items:[['新北市服務學習社團楷模王114年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],['新北市服務學習社團楷模王115年','服務學習與社團參與肯定',null,{category:'服務與公共參與'}],['新北市教育局三重高中統籌光復救災活動','光復災後復原｜三重高中團隊統籌',null,{category:'服務與公共參與'}],['市三重高中躲貓貓社創社社長、公關','創社社長｜公關',null,{category:'社團與領導'}],['市三重高中見賢思琪社｜創社副社長、美宣','Founding Vice President / Visual Design',null,{type:'jx_story',category:'社團與領導'}],['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524',{category:'媒體與寫作'}],['基隆海洋文學大賽 參與','文學與主題寫作參與',null,{category:'媒體與寫作'}],['台灣聯合大學企劃 參與','企劃與專案參與經歷',null,{category:'企劃與培訓'}],['CDBA中華辯會工作坊 參與','辯論與工作坊參與',null,{category:'企劃與培訓'}]]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['中原大學理工類群先修課程','理工類群大學先修']]},
- writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書','公共議題評論與媒體投書','https://newtalk.tw/citizen/author/319524'],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作'],['小論文比賽（藝術類）','藝術類｜小論文競賽']]},
+ writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書','公共議題評論與媒體投書','https://newtalk.tw/citizen/author/319524'],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作'],['小論文比賽（藝術類）','藝術類｜建築雨山的對話',null,{type:'essay_story'}]]},
  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',accent:'#58bdd2',items:[['欣緯科技有限公司','','https://findbiz.nat.gov.tw/fts/company/24389585'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美宣','Founding Vice President',null,{type:'jx_story'}],['市三重高中前扶輪少年團團員','Member']]},
  public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流'],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通']]},
@@ -4348,7 +4522,7 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='category'?`<div class="experience-group-head"><span>${x[0]}</span><span class="experience-group-count">${String(x[1]).padStart(2,'0')}</span></div>`:x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='jx_story'?`<button class="item item-image" type="button" data-jx-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='category'?`<div class="experience-group-head"><span>${x[0]}</span><span class="experience-group-count">${String(x[1]).padStart(2,'0')}</span></div>`:x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='jx_story'?`<button class="item item-image" type="button" data-jx-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='essay_story'?`<button class="item item-image" type="button" data-essay-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊閱讀完整小論文</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
     items.querySelectorAll('[data-certificate="keelung-2026"]').forEach(b=>{
       b.addEventListener('pointerdown',e=>{if(e.isTrusted)certificateGestureStamp=performance.now()},{passive:true});
       b.addEventListener('keydown',e=>{if(e.isTrusted&&(e.key==='Enter'||e.key===' '))certificateGestureStamp=performance.now()});
@@ -4356,6 +4530,7 @@ function openDrawer(id){
     });
     items.querySelectorAll('[data-training-blog]').forEach(b=>b.addEventListener('click',openRunningBlog));
     items.querySelectorAll('[data-jx-story]').forEach(b=>b.addEventListener('click',openJxStory));
+    items.querySelectorAll('[data-essay-story]').forEach(b=>b.addEventListener('click',openEssayStory));
     items.querySelectorAll('[data-coming-soon]').forEach(b=>b.addEventListener('click',()=>alert('還在籌備中')))
   }
   drawer.classList.add('open')
@@ -4418,7 +4593,7 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('wheel',e=>{dismissAdHintOnMove();if(e.ctrlKey||e.metaKey){targetZ+=e.deltaY*.02;targetZ=Math.max(28,Math.min(52,targetZ))}else if(!wheelLock&&Math.abs(e.deltaY)+Math.abs(e.deltaX)>12){wheelLock=true;const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;stepCycle(d>0?1:-1);setTimeout(()=>wheelLock=false,320)}e.preventDefault()},{passive:false});
 document.getElementById('next')?.addEventListener('click',()=>stepCycle(1));document.getElementById('prev')?.addEventListener('click',()=>stepCycle(-1));
 document.getElementById('plus')?.addEventListener('click',()=>targetZ=Math.max(28,targetZ-2.5));document.getElementById('minus')?.addEventListener('click',()=>targetZ=Math.min(52,targetZ+2.5));document.getElementById('reset')?.addEventListener('click',()=>{drawer.classList.remove('open');focus(CYCLE[0],false)});
-addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key==='ArrowLeft'||e.key==='PageUp')dismissAdHintOnMove();if(e.key==='Escape'){if(jxStory.classList.contains('open')){closeJxStory();return}if(goblinModal.classList.contains('open')){closeGoblinCertificate();return}if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown'||e.key==='ArrowLeft'||e.key==='PageUp')dismissAdHintOnMove();if(e.key==='Escape'){if(essayStory.classList.contains('open')){closeEssayStory();return}if(jxStory.classList.contains('open')){closeJxStory();return}if(goblinModal.classList.contains('open')){closeGoblinCertificate();return}if(imageViewer.classList.contains('open')){closeCertificate();return}if(runningBlog.classList.contains('open')){if(runningBlog.classList.contains('detail')){runningBlog.classList.remove('detail');runBlogBack.hidden=true}else closeRunningBlog();return}drawer.classList.remove('open')}if(e.key==='ArrowRight'||e.key==='PageDown')stepCycle(1);if(e.key==='ArrowLeft'||e.key==='PageUp')stepCycle(-1)});
 
 
 
@@ -4492,6 +4667,47 @@ async function saveGoblinCertificate(){
 }
 goblinSave.addEventListener('click',saveGoblinCertificate);
 
+
+
+/* ---------------- 小論文 interactive story ---------------- */
+const essayStory=document.getElementById('essayStory'),essayStage=document.getElementById('essayStage'),essayClose=document.getElementById('essayClose'),essayPrev=document.getElementById('essayPrev'),essayNext=document.getElementById('essayNext');
+const essaySections=[...document.querySelectorAll('.essay-section')],essayProgress=document.getElementById('essayProgress'),essayChapterCount=document.getElementById('essayChapterCount'),essayHeadBar=document.getElementById('essayHeadBar');
+let essayIndex=0;
+essaySections.forEach((sec,i)=>{const b=document.createElement('button');b.className='essay-dot'+(i===0?' active':'');b.type='button';b.setAttribute('aria-label','小論文第 '+(i+1)+' 章');b.onclick=()=>essayGo(i);essayProgress.appendChild(b)});
+const essayDots=[...essayProgress.children];
+function updateEssayNav(i){
+  essayDots.forEach((d,k)=>d.classList.toggle('active',k===i));
+  essayPrev.disabled=i===0;
+  essayNext.textContent=i===essaySections.length-1?'回到第一章 ↺':'下一章 →';
+  if(essayChapterCount)essayChapterCount.textContent=String(i+1).padStart(2,'0')+' / '+String(essaySections.length).padStart(2,'0');
+  if(essayHeadBar)essayHeadBar.style.width=((i+1)/essaySections.length*100)+'%';
+}
+function essayGo(i){
+  essayIndex=Math.max(0,Math.min(essaySections.length-1,i));
+  essaySections[essayIndex].scrollIntoView({behavior:'smooth',block:'start'});
+  updateEssayNav(essayIndex);
+}
+function openEssayStory(){
+  drawer.classList.remove('open');
+  essayStory.classList.add('open');
+  essayStory.setAttribute('aria-hidden','false');
+  essayStage.scrollTop=0;
+  essayGo(0);
+  setTimeout(()=>essaySections[0]?.classList.add('in'),70);
+}
+function closeEssayStory(){
+  essayStory.classList.remove('open');
+  essayStory.setAttribute('aria-hidden','true');
+}
+essayClose?.addEventListener('click',closeEssayStory);
+essayPrev?.addEventListener('click',()=>essayGo(essayIndex-1));
+essayNext?.addEventListener('click',()=>essayGo(essayIndex===essaySections.length-1?0:essayIndex+1));
+const essayObs=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){const i=+e.target.dataset.essay;essayIndex=i;e.target.classList.add('in');updateEssayNav(i)}},{root:essayStage,threshold:.5});
+essaySections.forEach(sec=>essayObs.observe(sec));
+essayStory?.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();essayGo(essayIndex===essaySections.length-1?0:essayIndex+1)}else if(e.key==='ArrowLeft'){e.preventDefault();essayGo(Math.max(0,essayIndex-1))}});
+let essayTouchX=0,essayTouchY=0;
+essayStage?.addEventListener('touchstart',e=>{const t=e.touches[0];essayTouchX=t.clientX;essayTouchY=t.clientY},{passive:true});
+essayStage?.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-essayTouchX,dy=t.clientY-essayTouchY;if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.35)essayGo(dx<0?(essayIndex===essaySections.length-1?0:essayIndex+1):Math.max(0,essayIndex-1))},{passive:true});
 
 /* ---------------- 見賢思琪 interactive story ---------------- */
 const jxStory=document.getElementById('jxStory'),jxStage=document.getElementById('jxStage'),jxClose=document.getElementById('jxClose'),jxPrev=document.getElementById('jxPrev'),jxNext=document.getElementById('jxNext');
