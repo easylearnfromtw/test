@@ -390,7 +390,7 @@ const DATA={
   ['CITYMUS','音樂與城市視覺品牌','https://easylearnfromtw.github.io/musictown/'],
   ['勞山道士','互動式網頁作品','https://easylearnfromtw.github.io/musictown/magic/'],
   ['閒台文 Taiwanway','互動式中文與台灣文化網站','https://easylearnfromtw.github.io/Taiwanway/'],
-  ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品','https://easylearnfromtw.github.io/test/foodiepage/']
+  ['Foodie Page｜腹地圖','飲食探索與地圖式網頁作品',null,{type:'coming_soon'}]
 ]},
  experience:{nav:'Experience',index:'03',title:'EXPERIENCE',intro:'刊載、文學與企劃參與。',accent:'#e36aa8',items:[['NEWTALK新頭殼｜本人媒體投書專欄','公開評論、投書與專欄文章','https://newtalk.tw/citizen/author/319524'],['基隆海洋文學大賽 參與','文學與主題寫作參與'],['台灣聯合大學企劃 參與','企劃與專案參與經歷'],['CDBA中華辯會工作坊 參與','辯論與工作坊參與']]},
  academic:{nav:'Academic',index:'04',title:'ACADEMIC',intro:'跨領域培育與先修課程。',accent:'#84bdf4',items:[['再興中學畢業','學習經歷'],['台英學士培育計劃','學術培育計劃'],['國立中央大學人工智慧學系先修課程','人工智慧相關先修'],['國立清華大學經濟系先修課程','經濟學相關先修'],['私立中原大學先修課程','大學先修課程']]},
@@ -4023,13 +4023,14 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
     items.querySelectorAll('[data-certificate="keelung-2026"]').forEach(b=>{
       b.addEventListener('pointerdown',e=>{if(e.isTrusted)certificateGestureStamp=performance.now()},{passive:true});
       b.addEventListener('keydown',e=>{if(e.isTrusted&&(e.key==='Enter'||e.key===' '))certificateGestureStamp=performance.now()});
       b.addEventListener('click',openCertificate,{passive:false})
     });
-    items.querySelectorAll('[data-training-blog]').forEach(b=>b.addEventListener('click',openRunningBlog))
+    items.querySelectorAll('[data-training-blog]').forEach(b=>b.addEventListener('click',openRunningBlog));
+    items.querySelectorAll('[data-coming-soon]').forEach(b=>b.addEventListener('click',()=>alert('還在籌備中')))
   }
   drawer.classList.add('open')
 }
