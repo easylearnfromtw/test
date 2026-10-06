@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-06T15:55:00.000Z",
+  "updated_at": "2026-10-06T16:10:00.000Z",
   "site": {
     "intro_kicker": "PORTFOLIO CITY · 2026",
     "name": "林哲愷",
@@ -104,13 +104,6 @@
       "board_intro": "精選數位作品與互動網站。",
       "items": [
         {
-          "title": "SignWell 欣緯生醫",
-          "subtitle": "醫療與產業內容平台",
-          "url": "https://980510linz.github.io/signwell/",
-          "type": "",
-          "published": true
-        },
-        {
           "title": "O森島民集結啦！台灣 70 型測驗",
           "subtitle": "台灣文化 × 互動型人格測驗",
           "url": "https://980510linz.github.io/taiwangogogo/",
@@ -141,6 +134,13 @@
         {
           "title": "Foodie Page｜腹地圖",
           "subtitle": "飲食探索與地圖式網頁作品",
+          "url": "",
+          "type": "coming_soon",
+          "published": true
+        },
+        {
+          "title": "SignWell 欣緯生醫",
+          "subtitle": "醫療與產業內容平台",
           "url": "",
           "type": "coming_soon",
           "published": true
