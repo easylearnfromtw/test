@@ -286,26 +286,26 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 .goblin-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 3px 12px}
 .goblin-top span{font:800 9px/1 var(--mono);letter-spacing:.13em;color:#4c5664}
 .goblin-close{width:36px;height:36px;border:0;border-radius:50%;background:#fff;color:#42271c;font-size:21px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
-.goblin-cert{position:relative;overflow:hidden;aspect-ratio:4/3;border:7px solid #512d1d;border-radius:42px;background:#fffaf0;color:#512d1d;box-shadow:inset 0 0 0 7px #fffaf0,inset 0 0 0 11px #512d1d;padding:6.5% 7%;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+.goblin-cert{position:relative;overflow:hidden;aspect-ratio:4/3;border:7px solid #512d1d;border-radius:42px;background:#fffaf0;color:#512d1d;box-shadow:inset 0 0 0 7px #fffaf0,inset 0 0 0 11px #512d1d;padding:11% 9% 7.5%;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(130px,.72fr);grid-template-rows:auto auto 1fr auto auto;column-gap:7%;row-gap:2.2%;align-items:center}
 .goblin-cert::before{content:"";position:absolute;inset:4.2%;border:4px solid #512d1d;border-radius:30px;pointer-events:none}
 .goblin-cert.generating::after{content:"";position:absolute;left:-15%;top:0;width:18%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-15deg);animation:goblinScan .9s .16s ease-out forwards;pointer-events:none}
 .goblin-crown{position:absolute;left:50%;top:4.3%;width:56px;height:40px;transform:translateX(-50%);z-index:2}
 .goblin-crown svg{width:100%;height:100%;overflow:visible}
 .goblin-cert.generating .goblin-crown{animation:goblinCrown .68s .18s cubic-bezier(.18,.9,.2,1)}
-.goblin-label{position:absolute;left:18%;top:16%;padding:7px 22px;border-radius:999px;background:#f6ead5;font-weight:850;font-size:clamp(14px,2.5vw,22px);letter-spacing:.08em}
-.goblin-title{position:absolute;left:11%;top:29%;margin:0;font-size:clamp(30px,6vw,58px);line-height:1;font-weight:900;letter-spacing:.02em}
-.goblin-title::after{content:"";display:block;width:92%;height:7px;margin:14px 0 0 6%;border-radius:999px;background:#b9df9c}
-.goblin-name-wrap{position:absolute;left:12%;top:57%;width:48%;display:flex;align-items:center;gap:10px}
-.goblin-pencil{font-size:23px;transform:rotate(-10deg)}
+.goblin-label{grid-column:1;grid-row:1;justify-self:start;margin-left:4%;padding:7px 22px;border-radius:999px;background:#f6ead5;font-weight:850;font-size:clamp(14px,2.5vw,22px);letter-spacing:.08em;white-space:nowrap}
+.goblin-title{grid-column:1;grid-row:2;margin:0;align-self:start;font-size:clamp(30px,6vw,58px);line-height:1;font-weight:900;letter-spacing:.02em}
+.goblin-title::after{content:"";display:block;width:88%;height:7px;margin:14px 0 0 5%;border-radius:999px;background:#b9df9c}
+.goblin-name-wrap{grid-column:1;grid-row:3;align-self:center;width:92%;display:flex;align-items:center;gap:10px}
+.goblin-pencil{font-size:23px;transform:rotate(-10deg);flex:0 0 auto}
 .goblin-name{min-width:0;flex:1;border:0;border-bottom:3px solid #512d1d;background:transparent;color:#512d1d;padding:6px 2px;text-align:center;font-size:clamp(13px,2vw,19px);font-weight:800;outline:none}
 .goblin-name::placeholder{color:#a89586}
-.goblin-photo-box{position:absolute;right:10%;top:19%;width:28%;aspect-ratio:1;border:5px solid #512d1d;border-radius:12px;background:#bfe8ff;overflow:hidden}
+.goblin-photo-box{grid-column:2;grid-row:1 / span 3;justify-self:stretch;align-self:center;width:100%;aspect-ratio:1;border:5px solid #512d1d;border-radius:12px;background:#bfe8ff;overflow:hidden}
 .goblin-photo-box img{width:100%;height:100%;object-fit:cover;display:block}
-.goblin-photo-action{position:absolute;right:10%;top:48.8%;width:28%;display:flex;justify-content:center}
-.goblin-photo-action label{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;background:#cce8ff;color:#3d5570;font-size:clamp(8px,1.4vw,12px);font-weight:850;cursor:pointer;box-shadow:0 3px 0 rgba(61,85,112,.12)}
-.goblin-discovery{position:absolute;left:14%;right:14%;bottom:9%;height:13%;border-radius:999px;background:#f6ead5;display:flex;align-items:center;justify-content:center;gap:8px;font-size:clamp(12px,2vw,19px);font-weight:850}
-.goblin-rank{display:inline-flex;min-width:7ch;justify-content:center;padding:8px 13px;border-radius:999px;background:#c9e2ff;color:#33465e;font-family:var(--mono);letter-spacing:.08em;font-size:1.08em}
-.goblin-live{position:absolute;right:7%;bottom:4.7%;font:800 7px/1 var(--mono);letter-spacing:.12em;color:#7d746b}
+.goblin-photo-action{grid-column:2;grid-row:4;display:flex;justify-content:center;align-items:center;min-height:32px}
+.goblin-photo-action label{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 12px;border-radius:999px;background:#cce8ff;color:#3d5570;font-size:clamp(8px,1.4vw,12px);font-weight:850;cursor:pointer;box-shadow:0 3px 0 rgba(61,85,112,.12);white-space:nowrap}
+.goblin-discovery{grid-column:1 / -1;grid-row:5;width:88%;justify-self:center;min-height:64px;border-radius:999px;background:#f6ead5;display:flex;align-items:center;justify-content:center;gap:8px;font-size:clamp(12px,2vw,19px);font-weight:850;white-space:nowrap}
+.goblin-rank{display:inline-flex;min-width:5ch;justify-content:center;align-items:center;padding:8px 13px;border-radius:999px;background:#c9e2ff;color:#33465e;font-family:var(--mono);letter-spacing:.08em;font-size:1.08em;line-height:1}
+.goblin-live{position:absolute;right:8%;bottom:4.2%;font:800 7px/1 var(--mono);letter-spacing:.12em;color:#7d746b}
 .goblin-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .goblin-btn{flex:1;border:1px solid #b7bec7;border-radius:13px;background:#fff;color:#2f3946;padding:12px 14px;font-weight:850;font-size:11px}
 .goblin-btn.primary{background:#173f35;border-color:#173f35;color:#fff}
@@ -315,11 +315,12 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 @keyframes goblinScan{0%{left:-20%}100%{left:120%}}
 @keyframes goblinCrown{0%{transform:translateX(-50%) translateY(-16px) scale(.6);opacity:0}55%{transform:translateX(-50%) translateY(3px) scale(1.15);opacity:1}100%{transform:translateX(-50%) translateY(0) scale(1)}}
 @media(max-width:620px){
- .goblin-modal{padding:8px}.goblin-shell{padding:10px;border-radius:22px}.goblin-cert{border-width:5px;border-radius:27px;padding:5%}
+ .goblin-modal{padding:8px}.goblin-shell{padding:10px;border-radius:22px}
+ .goblin-cert{border-width:5px;border-radius:27px;padding:12% 8% 8%;grid-template-columns:minmax(0,1.45fr) minmax(92px,.72fr);column-gap:6%;row-gap:2%}
  .goblin-cert::before{border-width:3px;border-radius:20px}.goblin-crown{width:42px;height:30px}
- .goblin-label{left:14%;padding:5px 14px}.goblin-title{left:9%}.goblin-name-wrap{left:10%;width:49%;top:58%}
- .goblin-photo-box{right:8%;width:30%;top:19%}.goblin-photo-action{right:8%;width:30%;top:50%}
- .goblin-discovery{left:10%;right:10%;bottom:8%;height:15%;gap:4px}.goblin-rank{padding:6px 8px}
+ .goblin-label{margin-left:2%;padding:5px 12px}.goblin-title{font-size:clamp(27px,8vw,42px)}.goblin-name-wrap{width:96%;gap:6px}.goblin-pencil{font-size:18px}
+ .goblin-photo-box{border-width:4px}.goblin-photo-action label{padding:5px 8px;font-size:8px}
+ .goblin-discovery{width:94%;min-height:52px;gap:4px;font-size:clamp(10px,3.2vw,15px)}.goblin-rank{padding:6px 8px;min-width:4.5ch}
 }
 
 
@@ -4243,7 +4244,7 @@ const goblinPhotoInput=document.getElementById('goblinPhotoInput'),goblinResetPh
 const goblinRank=document.getElementById('goblinRank'),goblinCountStatus=document.getElementById('goblinCountStatus'),goblinToast=document.getElementById('goblinToast');
 const GOBLIN_DEFAULT_PHOTO='./assets/goblin-default.svg',GOBLIN_RANK_KEY='chekai_goblin_discovery_rank_v2',GOBLIN_CLAIM_KEY='chekai_goblin_discovery_claimed_v2';
 let goblinPhotoURL='',goblinRankValue=Number(localStorage.getItem(GOBLIN_RANK_KEY)||0),goblinClaimed=localStorage.getItem(GOBLIN_CLAIM_KEY)==='1';
-function padGoblinRank(n){return String(Math.max(0,Number(n)||0)).padStart(6,'0')}
+function padGoblinRank(n){return String(Math.max(0,Number(n)||0)).padStart(3,'0')}
 function animateGoblinRank(n){
   goblinRankValue=Number(n)||0;const target=goblinRankValue,start=performance.now(),dur=720;
   const tick=now=>{const t=Math.min(1,(now-start)/dur),e=1-Math.pow(1-t,3);goblinRank.textContent=padGoblinRank(Math.floor(target*e));if(t<1)requestAnimationFrame(tick)};
