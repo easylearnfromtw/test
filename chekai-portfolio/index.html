@@ -15,7 +15,46 @@ button{font:inherit;color:inherit}.app{position:fixed;inset:0}.app::after{conten
 .now-playing .np-dot{width:5px;height:5px;flex:0 0 auto;border-radius:50%;background:#68e39d;box-shadow:0 0 10px #68e39d;animation:npPulse 1.2s ease-in-out infinite}.now-playing.blocked .np-dot{background:#e8a25b;box-shadow:0 0 10px #e8a25b}.now-playing.muted .np-dot{background:#69788a;box-shadow:none;animation:none}.now-playing span:last-child{overflow:hidden;text-overflow:ellipsis}
 @keyframes npPulse{50%{opacity:.35;transform:scale(.72)}}
 .hud{display:none}.chip{display:none}.chip b{display:block;color:#fff;font-size:9px;margin-bottom:2px}.status{position:absolute;right:16px;bottom:16px;min-width:190px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(5,10,22,.66);backdrop-filter:blur(12px);font:8px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9eabbc}.status strong{color:#fff;float:right}.bar{height:3px;margin-top:9px;background:rgba(255,255,255,.10);border-radius:4px;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#fff;transition:width .3s}
-.loop-flash{display:none}
+.loop-flash{
+  --hop-accent:#f3bf53;position:fixed;z-index:19;left:50%;bottom:84px;width:min(350px,calc(100vw - 34px));
+  padding:13px 48px 12px 16px;background:#f7f2e7;color:#174b3a;border:2px solid #174b3a;
+  box-shadow:6px 6px 0 rgba(23,75,58,.88);pointer-events:none;opacity:0;
+  transform:translate(-50%,28px) rotate(-2deg) scale(.9);transform-origin:50% 100%;
+}
+.loop-flash::before{content:"";position:absolute;left:17px;right:17px;top:-7px;height:12px;background:rgba(242,209,120,.78);transform:rotate(.7deg);clip-path:polygon(0 14%,100% 0,96% 100%,3% 86%)}
+.loop-flash::after{content:"叮咚";position:absolute;right:-10px;top:-15px;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--hop-accent);color:#173f34;border:2px solid #173f34;font:950 11px/1 var(--sans);transform:rotate(9deg);box-shadow:3px 3px 0 #173f34}
+.loop-kicker{display:block;margin-bottom:5px;font:900 8px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:#8b5c27}
+.loop-flash strong{display:block;font:950 20px/.95 var(--sans);letter-spacing:-.035em}
+.loop-flash small{display:block;margin-top:7px;font:800 9px/1.2 var(--mono);letter-spacing:.06em;color:#527064}
+.loop-arrow{position:absolute;right:17px;bottom:12px;font:950 26px/1 var(--sans);color:#c94a43}
+.loop-flash.show.forward{animation:streetCardF .72s cubic-bezier(.18,.9,.24,1) both}
+.loop-flash.show.backward{animation:streetCardB .72s cubic-bezier(.18,.9,.24,1) both}
+body.street-hop #webgl{animation:streetWorldHop .58s cubic-bezier(.2,.8,.2,1) both;will-change:transform}
+@keyframes streetCardF{
+  0%{opacity:0;transform:translate(calc(-50% + 68px),32px) rotate(5deg) scale(.82)}
+  18%{opacity:1}
+  48%{transform:translate(calc(-50% - 5px),-3px) rotate(-3deg) scale(1.045)}
+  67%{transform:translate(-50%,0) rotate(-1deg) scale(.99)}
+  82%{opacity:1;transform:translate(-50%,0) rotate(-1.5deg) scale(1)}
+  100%{opacity:0;transform:translate(calc(-50% - 22px),-8px) rotate(-4deg) scale(.98)}
+}
+@keyframes streetCardB{
+  0%{opacity:0;transform:translate(calc(-50% - 68px),32px) rotate(-5deg) scale(.82)}
+  18%{opacity:1}
+  48%{transform:translate(calc(-50% + 5px),-3px) rotate(3deg) scale(1.045)}
+  67%{transform:translate(-50%,0) rotate(1deg) scale(.99)}
+  82%{opacity:1;transform:translate(-50%,0) rotate(1.5deg) scale(1)}
+  100%{opacity:0;transform:translate(calc(-50% + 22px),-8px) rotate(4deg) scale(.98)}
+}
+@keyframes streetWorldHop{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  32%{transform:translate3d(0,3px,0) scale(1.004)}
+  52%{transform:translate3d(0,-2px,0) scale(1.006)}
+  72%{transform:translate3d(0,1px,0) scale(1.003)}
+  100%{transform:translate3d(0,0,0) scale(1)}
+}
+@media(max-width:560px){.loop-flash{bottom:68px;width:min(315px,calc(100vw - 24px));padding:12px 44px 11px 14px}.loop-flash strong{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.loop-flash.show.forward,.loop-flash.show.backward,body.street-hop #webgl{animation-duration:.18s!important}}
 .intro{position:fixed;inset:0;z-index:18;display:grid;place-items:center;padding:76px 18px 28px;pointer-events:none;transition:opacity .42s ease,visibility .42s ease}
 .intro::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(12,31,35,.10),rgba(5,14,20,.28));backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 .intro.hidden{opacity:0;visibility:hidden}
@@ -125,7 +164,7 @@ body.teleporting #webgl{animation:tpWorld .46s cubic-bezier(.2,.75,.25,1) both;w
     <div class="status">Focus <strong id="focusLabel">HOME</strong><div class="bar"><i id="progress"></i></div></div>
   </div>
 </div>
-<div class="loop-flash" id="loopFlash"><span id="loopFlashText">09 → 01 ↻</span></div>
+<div class="loop-flash" id="loopFlash" aria-hidden="true"><span class="loop-kicker">NEXT STOP / 下一站</span><strong id="loopFlashText">02 WEB WORKS</strong><small id="loopFlashSub">作品街區 · PORTFOLIO CITY</small><b class="loop-arrow" id="loopFlashArrow">→</b></div>
 <div class="teleport" id="teleport" aria-hidden="true"><i class="teleport-core"></i><b class="teleport-label">TRANSFER / 傳送中</b></div>
 <aside class="drawer" id="drawer"><button class="close" id="close">×</button><div class="dk" id="dk">00 / Home</div><h2 id="dt">CHE-KAI LIN</h2><p id="di"></p><div class="items" id="items"></div></aside>
 <script type="module">
@@ -3453,7 +3492,28 @@ function buildBirds(){
 
 // nav/drawer
 const CYCLE=['about','web','experience','academic','writing','running','roles','public','art'];
+const STREET_NAMES={about:'人物檔案',web:'作品街區',experience:'經歷街區',academic:'學習街區',writing:'文字街區',running:'跑步街區',roles:'角色街區',public:'公共參與',art:'藝術倉庫'};
+const loopFlash=document.getElementById('loopFlash'),loopFlashText=document.getElementById('loopFlashText'),loopFlashSub=document.getElementById('loopFlashSub'),loopFlashArrow=document.getElementById('loopFlashArrow');
+const SECTION_HOP={start:0,dir:1,duration:620,timer:0};
 let activeId='hero',cycleCursor=0,introDismissed=false;
+function playSectionHop(id,dir=1){
+  if(!DATA[id]||id==='hero'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  clearTimeout(SECTION_HOP.timer);SECTION_HOP.start=performance.now();SECTION_HOP.dir=dir<0?-1:1;
+  loopFlash.style.setProperty('--hop-accent',DATA[id].accent||'#f3bf53');
+  loopFlashText.textContent=`${DATA[id].index}  ${DATA[id].nav.toUpperCase()}`;
+  loopFlashSub.textContent=`${STREET_NAMES[id]||'下一街區'} · PORTFOLIO CITY`;
+  loopFlashArrow.textContent=SECTION_HOP.dir>0?'→':'←';
+  loopFlash.classList.remove('show','forward','backward');document.body.classList.remove('street-hop');void loopFlash.offsetWidth;
+  loopFlash.classList.add('show',SECTION_HOP.dir>0?'forward':'backward');document.body.classList.add('street-hop');
+  SECTION_HOP.timer=setTimeout(()=>{loopFlash.classList.remove('show','forward','backward');document.body.classList.remove('street-hop')},740);
+}
+function sectionHopMotion(now){
+  if(!SECTION_HOP.start)return {y:0,roll:0};
+  const p=(now-SECTION_HOP.start)/SECTION_HOP.duration;
+  if(p<=0||p>=1)return {y:0,roll:0};
+  const decay=1-p,wob=Math.sin(p*Math.PI*3)*decay;
+  return {y:Math.sin(Math.PI*p)*.15+wob*.045,roll:SECTION_HOP.dir*wob*.006};
+}
 const intro=document.getElementById('intro'),introEnter=document.getElementById('introEnter');
 function dismissIntro(dir=1,advance=true){
   if(introDismissed)return false;
@@ -3557,11 +3617,13 @@ function updateLoopUI(id){
   const idx=CYCLE.indexOf(id);if(idx>=0){cycleCursor=idx;if(readout)readout.textContent=`${String(idx+1).padStart(2,'0')} / 09  ∞`;if(progress)progress.style.width=((idx+1)/CYCLE.length*100)+'%'}
 }
 function nearestLapFor(id){ return Math.round((currentX-CONFIG[id].x)/LOOP_SPAN); }
-function focus(id,open=false,lap=null){
+function focus(id,open=false,lap=null,animateHop=true){
   const cfg=CONFIG[id]; if(!cfg) return;
+  const prevId=activeId,prevTarget=targetX;
   activeId=id;if(id!=='hero')setPortfolioBoardQuality(id);
   const useLap=lap===null?nearestLapFor(id):lap;
   targetX=cfg.x+useLap*LOOP_SPAN;
+  if(animateHop&&introDismissed&&id!==prevId&&id!=='hero')playSectionHop(id,targetX>=prevTarget?1:-1);
   targetY=id==='hero'?6.0:5.8;
   targetZ=innerWidth<560?(id==='hero'?43:41):(id==='hero'?38:36);
   document.getElementById('focusLabel').textContent=id==='hero'?'HOME':`${DATA[id].index} ${DATA[id].nav.toUpperCase()}`;
@@ -3732,7 +3794,7 @@ function animate(now=performance.now()){
   if(window.__pause)return;
   const ms=now-lastFrameMs,dt=Math.min(.05,Math.max(0,ms*.001));lastFrameMs=now;elapsedTime+=dt;const t=elapsedTime;perfTick(ms,now);
   currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);currentY=moveToward(currentY,targetY,7.5*dt);currentZ=moveToward(currentZ,targetZ,13*dt);
-  wrapLoop();camera.position.set(currentX,currentY,currentZ);camera.rotation.set(Math.atan2(LOOK_AT_Y-currentY,currentZ-LOOK_AT_Z),0,0);updateStaticVisibility();
+  wrapLoop();const hop=sectionHopMotion(now);camera.position.set(currentX,currentY+hop.y,currentZ);camera.rotation.set(Math.atan2(LOOK_AT_Y-(currentY+hop.y),currentZ-LOOK_AT_Z),0,hop.roll);updateStaticVisibility();
   G.uTime.value=t;G.uCamX.value=currentX;skyDome.position.copy(camera.position);
   updateClimateVisual(dt);updateSun(currentX);updateBackdrop(dt);
   oceanUniforms.uTime.value=t;ocean.position.x=currentX;oceanGlint.position.x=currentX;oceanGlintMat.opacity=.055+.045*(.5+.5*Math.sin(t*.72));
@@ -3813,7 +3875,7 @@ addEventListener('pageshow',e=>{
   if(saved&&DATA[saved.activeId]){
     introDismissed=true;intro?.classList.add('hidden');
     const id=saved.activeId,lap=Math.round(((Number(saved.targetX)||CONFIG[id].x)-CONFIG[id].x)/LOOP_SPAN);
-    focus(id,false,lap);
+    focus(id,false,lap,false);
     if(Number.isFinite(Number(saved.currentX)))currentX=Number(saved.currentX);
     if(Number.isFinite(Number(saved.targetX)))targetX=Number(saved.targetX);
     if(Number.isFinite(Number(saved.currentY)))currentY=Number(saved.currentY);
@@ -3823,8 +3885,8 @@ addEventListener('pageshow',e=>{
     if(saved.drawer)requestAnimationFrame(()=>openDrawer(id));
     clearOutboundState();lastFrameMs=performance.now();
   }else if(initial&&initial!=='hero'&&DATA[initial]){
-    introDismissed=true;intro?.classList.add('hidden');focus(initial,false);currentX=targetX
-  }else{focus('hero',false);currentX=targetX}
+    introDismissed=true;intro?.classList.add('hidden');focus(initial,false,null,false);currentX=targetX
+  }else{focus('hero',false,null,false);currentX=targetX}
 }
 
 </script>
