@@ -129,6 +129,10 @@ body.teleporting #webgl{animation:tpWorld .46s cubic-bezier(.2,.75,.25,1) both;w
 .tab-cap{position:absolute;z-index:0;top:5px;bottom:5px;left:5px;width:60px;border-radius:999px;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.66));box-shadow:inset 0 1px 0 #fff,inset 0 -2px 4px rgba(120,140,170,.25),0 4px 14px rgba(0,0,0,.2);transition:left .42s cubic-bezier(.2,.9,.25,1.15),width .42s cubic-bezier(.2,.9,.25,1.15)}
 .tabbar.dragging .tab-cap{transform:scale(1.06);box-shadow:inset 0 1px 0 #fff,0 8px 22px rgba(0,0,0,.28)}
+body.section-changing .tab-cap{animation:tabJelly .56s cubic-bezier(.18,.86,.22,1) both}
+body.section-changing .tabbar button.active{animation:tabLabelPop .52s cubic-bezier(.18,.86,.22,1) both}
+@keyframes tabJelly{0%{transform:scale(.88) rotate(-2deg)}32%{transform:scale(1.12) rotate(1.5deg)}58%{transform:scale(.97) rotate(-.6deg)}78%{transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes tabLabelPop{0%{transform:translateY(0)}34%{transform:translateY(-4px)}62%{transform:translateY(1px)}100%{transform:translateY(0)}}
 .now-playing,.status{background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.06))!important;border:1px solid rgba(255,255,255,.3)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 28px rgba(4,10,20,.28)!important;-webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%)!important;color:#fff!important}
 .status{text-shadow:0 1px 5px rgba(0,0,0,.35)}
 .status{display:none!important}
@@ -139,7 +143,7 @@ body.teleporting #webgl{animation:tpWorld .46s cubic-bezier(.2,.75,.25,1) both;w
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v4: crossroads + LRT, GPU crowd, traffic sim, Danjiang Bridge, Xinyi -->
+<!-- taiwan-street-pro v4.7-transition: playful spring lane-change + Taiwan stop-card -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -3495,7 +3499,32 @@ const CYCLE=['about','web','experience','academic','writing','running','roles','
 const STREET_NAMES={about:'人物檔案',web:'作品街區',experience:'經歷街區',academic:'學習街區',writing:'文字街區',running:'跑步街區',roles:'角色街區',public:'公共參與',art:'藝術倉庫'};
 const loopFlash=document.getElementById('loopFlash'),loopFlashText=document.getElementById('loopFlashText'),loopFlashSub=document.getElementById('loopFlashSub'),loopFlashArrow=document.getElementById('loopFlashArrow');
 const SECTION_HOP={start:0,dir:1,duration:620,timer:0};
+const CAM_SWITCH={active:false,start:0,duration:760,x0:0,x1:0,y0:0,y1:0,z0:0,z1:0,dir:1};
+let sectionClassTimer=0;
 let activeId='hero',cycleCursor=0,introDismissed=false;
+function easeOutBack(t){
+  const c1=1.35,c3=c1+1;
+  return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)
+}
+function beginCameraSwitch(nx,ny,nz,dir){
+  CAM_SWITCH.active=true;CAM_SWITCH.start=performance.now();CAM_SWITCH.x0=currentX;CAM_SWITCH.x1=nx;
+  CAM_SWITCH.y0=currentY;CAM_SWITCH.y1=ny;CAM_SWITCH.z0=currentZ;CAM_SWITCH.z1=nz;CAM_SWITCH.dir=dir<0?-1:1;
+  const dist=Math.abs(nx-currentX);CAM_SWITCH.duration=Math.max(560,Math.min(940,560+dist*3.1));
+  clearTimeout(sectionClassTimer);document.body.classList.remove('section-changing');void document.body.offsetWidth;
+  document.body.classList.add('section-changing');
+  sectionClassTimer=setTimeout(()=>document.body.classList.remove('section-changing'),680);
+}
+function updateCameraSwitch(now){
+  if(!CAM_SWITCH.active)return false;
+  const t=Math.max(0,Math.min(1,(now-CAM_SWITCH.start)/CAM_SWITCH.duration));
+  const e=easeOutBack(t);
+  currentX=CAM_SWITCH.x0+(CAM_SWITCH.x1-CAM_SWITCH.x0)*e;
+  const sm=t*t*(3-2*t);
+  currentY=CAM_SWITCH.y0+(CAM_SWITCH.y1-CAM_SWITCH.y0)*sm;
+  currentZ=CAM_SWITCH.z0+(CAM_SWITCH.z1-CAM_SWITCH.z0)*sm;
+  if(t>=1){CAM_SWITCH.active=false;currentX=CAM_SWITCH.x1;currentY=CAM_SWITCH.y1;currentZ=CAM_SWITCH.z1}
+  return true
+}
 function playSectionHop(id,dir=1){
   if(!DATA[id]||id==='hero'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   clearTimeout(SECTION_HOP.timer);SECTION_HOP.start=performance.now();SECTION_HOP.dir=dir<0?-1:1;
@@ -3554,7 +3583,8 @@ function readOutboundState(){
 function clearOutboundState(){try{sessionStorage.removeItem(RETURN_STATE_KEY)}catch{}}
 function resetTeleport(){
   clearTimeout(outboundTimer);outboundNavigating=false;
-  document.body.classList.remove('teleporting');
+  CAM_SWITCH.active=false;SECTION_HOP.start=0;
+  document.body.classList.remove('teleporting','street-hop','section-changing');
   teleport?.classList.remove('active');
   if(teleport){teleport.style.removeProperty('--tx');teleport.style.removeProperty('--ty')}
 }
@@ -3622,10 +3652,15 @@ function focus(id,open=false,lap=null,animateHop=true){
   const prevId=activeId,prevTarget=targetX;
   activeId=id;if(id!=='hero')setPortfolioBoardQuality(id);
   const useLap=lap===null?nearestLapFor(id):lap;
-  targetX=cfg.x+useLap*LOOP_SPAN;
-  if(animateHop&&introDismissed&&id!==prevId&&id!=='hero')playSectionHop(id,targetX>=prevTarget?1:-1);
-  targetY=id==='hero'?6.0:5.8;
-  targetZ=innerWidth<560?(id==='hero'?43:41):(id==='hero'?38:36);
+  const nx=cfg.x+useLap*LOOP_SPAN;
+  const ny=id==='hero'?6.0:5.8;
+  const nz=innerWidth<560?(id==='hero'?43:41):(id==='hero'?38:36);
+  const dir=nx>=prevTarget?1:-1;
+  targetX=nx;targetY=ny;targetZ=nz;
+  if(animateHop&&introDismissed&&id!==prevId){
+    if(id!=='hero')playSectionHop(id,dir);
+    beginCameraSwitch(nx,ny,nz,dir);
+  }
   document.getElementById('focusLabel').textContent=id==='hero'?'HOME':`${DATA[id].index} ${DATA[id].nav.toUpperCase()}`;
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
   updateLoopUI(id); syncTabs(id); history.replaceState(null,'','#'+id); if(open)openDrawer(id)
@@ -3793,8 +3828,18 @@ function moveToward(v,target,maxStep){const d=target-v;if(Math.abs(d)<=maxStep)r
 function animate(now=performance.now()){
   if(window.__pause)return;
   const ms=now-lastFrameMs,dt=Math.min(.05,Math.max(0,ms*.001));lastFrameMs=now;elapsedTime+=dt;const t=elapsedTime;perfTick(ms,now);
-  currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);currentY=moveToward(currentY,targetY,7.5*dt);currentZ=moveToward(currentZ,targetZ,13*dt);
-  wrapLoop();const hop=sectionHopMotion(now);camera.position.set(currentX,currentY+hop.y,currentZ);camera.rotation.set(Math.atan2(LOOK_AT_Y-(currentY+hop.y),currentZ-LOOK_AT_Z),0,hop.roll);updateStaticVisibility();
+  if(!updateCameraSwitch(now)){
+    currentX=moveToward(currentX,targetX,CAMERA_SPEED*dt);currentY=moveToward(currentY,targetY,7.5*dt);currentZ=moveToward(currentZ,targetZ,13*dt);
+  }
+  wrapLoop();const hop=sectionHopMotion(now);
+  const travelT=CAM_SWITCH.active?Math.max(0,Math.min(1,(now-CAM_SWITCH.start)/CAM_SWITCH.duration)):1;
+  const travelWave=CAM_SWITCH.active?Math.sin(travelT*Math.PI):0;
+  const sway=CAM_SWITCH.active?CAM_SWITCH.dir*travelWave*.42:0;
+  const push=CAM_SWITCH.active?travelWave*1.25:0;
+  const yaw=CAM_SWITCH.active?-CAM_SWITCH.dir*travelWave*.018:0;
+  const roll=hop.roll+(CAM_SWITCH.active?CAM_SWITCH.dir*Math.sin(travelT*Math.PI*2)*.010*(1-travelT):0);
+  camera.position.set(currentX+sway,currentY+hop.y,currentZ+push);
+  camera.rotation.set(Math.atan2(LOOK_AT_Y-(currentY+hop.y),(currentZ+push)-LOOK_AT_Z),yaw,roll);updateStaticVisibility();
   G.uTime.value=t;G.uCamX.value=currentX;skyDome.position.copy(camera.position);
   updateClimateVisual(dt);updateSun(currentX);updateBackdrop(dt);
   oceanUniforms.uTime.value=t;ocean.position.x=currentX;oceanGlint.position.x=currentX;oceanGlintMat.opacity=.055+.045*(.5+.5*Math.sin(t*.72));
