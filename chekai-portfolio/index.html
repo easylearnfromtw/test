@@ -4453,19 +4453,33 @@ if(SITE_CONTENT?.club){
 }
 const jxSections=[...document.querySelectorAll('.jx-section')],jxProgress=document.getElementById('jxProgress'),jxChapterCount=document.getElementById('jxChapterCount'),jxHeadBar=document.getElementById('jxHeadBar');
 const jxLightbox=document.getElementById('jxLightbox'),jxLightboxFrame=document.getElementById('jxLightboxFrame'),jxLightboxClose=document.getElementById('jxLightboxClose');
-let jxIndex=0,jxSpriteUrl='',jxSpriteLoading=null,jxFullSpriteUrl='',jxFullSpriteLoading=null,jxLightboxCell=null;
+const JX_IMAGE_DIMS=[[547,768],[580,768],[548,769],[725,769],[769,402],[768,456],[769,761],[768,461],[768,547],[768,449],[577,768],[510,768],[769,580],[746,699],[512,768]];
+const JX_IMAGES=JX_IMAGE_DIMS.map(([w,h],i)=>{
+  const n=String(i).padStart(2,'0'),name='jx-cell-'+n+'.webp';
+  return{w,h,thumb:'./assets/jx/thumb/'+name,full:'./assets/jx/full/'+name};
+});
+let jxIndex=0,jxLightboxCell=null;
 jxSections.forEach((s,i)=>{const b=document.createElement('button');b.className='jx-dot'+(i===0?' active':'');b.type='button';b.setAttribute('aria-label','第 '+(i+1)+' 章');b.onclick=()=>jxGo(i);jxProgress.appendChild(b)});
 const jxDots=[...jxProgress.children];
-function jxCellPos(el,cell,url=jxSpriteUrl){
-  const c=Number(cell)||0,x=c%4,y=Math.floor(c/4);
-  el.style.backgroundImage=url?`url("${url}")`:'';
-  el.style.backgroundSize='400% 400%';
-  el.style.backgroundPosition=`${x*100/3}% ${y*100/3}%`;
-  el.style.backgroundRepeat='no-repeat';
+function jxMeta(cell){return JX_IMAGES[Math.max(0,Math.min(JX_IMAGES.length-1,Number(cell)||0))]}
+function sizeJxLightbox(meta){
+  const maxW=Math.min(900,innerWidth*.9),maxH=Math.min(900,innerHeight*.82),ratio=meta.w/meta.h;
+  let w=Math.min(maxW,maxH*ratio),h=w/ratio;
+  jxLightboxFrame.style.width=Math.max(180,Math.round(w))+'px';
+  jxLightboxFrame.style.height=Math.max(180,Math.round(h))+'px';
+  jxLightboxFrame.style.aspectRatio='auto';
 }
-function applyJxSprite(root=document){
-  if(!jxSpriteUrl)return;
-  root.querySelectorAll?.('[data-jx-cell]').forEach(el=>jxCellPos(el,el.dataset.jxCell));
+function jxCellPos(el,cell,full=false){
+  const meta=jxMeta(cell),url=full?meta.full:meta.thumb;
+  el.style.backgroundImage=`url("${url}")`;
+  el.style.backgroundSize='contain';
+  el.style.backgroundPosition='center';
+  el.style.backgroundRepeat='no-repeat';
+  if(el===jxLightboxFrame)sizeJxLightbox(meta);
+  else el.style.aspectRatio=meta.w+'/'+meta.h;
+}
+function applyJxImages(root=document){
+  root.querySelectorAll?.('[data-jx-cell]').forEach(el=>jxCellPos(el,el.dataset.jxCell,false));
 }
 function probeJxImage(url){
   return new Promise((resolve,reject)=>{
@@ -4476,49 +4490,29 @@ function probeJxImage(url){
     img.src=url;
   });
 }
-async function ensureJxSprite(){
-  if(jxSpriteUrl)return jxSpriteUrl;
-  if(jxSpriteLoading)return jxSpriteLoading;
-  const legacy=()=>fetch('./assets/jx-sprite.b64.txt',{cache:'force-cache'})
-    .then(r=>{if(!r.ok)throw new Error('photo archive '+r.status);return r.text()})
-    .then(b64=>'data:image/webp;base64,'+b64.trim());
-  // Thumbnails use the lighter 1600px archive. The 3200px archive is deferred
-  // until the viewer actually asks to enlarge a photo.
-  jxSpriteLoading=probeJxImage('./assets/jx-sprite-hd-1600.webp')
-    .catch(e=>{console.warn('[jx photos 1600 fallback]',e);return legacy()})
-    .then(url=>{jxSpriteUrl=url;applyJxSprite();return jxSpriteUrl})
-    .catch(e=>{console.warn('[jx photos]',e);return ''});
-  return jxSpriteLoading;
-}
-async function ensureJxFullSprite(){
-  if(jxFullSpriteUrl)return jxFullSpriteUrl;
-  if(jxFullSpriteLoading)return jxFullSpriteLoading;
-  jxFullSpriteLoading=probeJxImage('./assets/jx-sprite-hd.webp')
-    .then(url=>jxFullSpriteUrl=url)
-    .catch(async e=>{console.warn('[jx photos 3200 fallback]',e);return await ensureJxSprite()});
-  return jxFullSpriteLoading;
-}
 function updateJxNav(i){jxDots.forEach((d,k)=>d.classList.toggle('active',k===i));jxPrev.disabled=i===0;jxNext.textContent=i===jxSections.length-1?'回到第一章 ↺':'下一章 →';if(jxChapterCount)jxChapterCount.textContent=String(i+1).padStart(2,'0')+' / '+String(jxSections.length).padStart(2,'0');if(jxHeadBar)jxHeadBar.style.width=((i+1)/jxSections.length*100)+'%'}
 function jxGo(i){jxIndex=Math.max(0,Math.min(jxSections.length-1,i));jxSections[jxIndex].scrollIntoView({behavior:'smooth',block:'start'});updateJxNav(jxIndex)}
-function openJxStory(){drawer.classList.remove('open');jxStory.classList.add('open');jxStory.setAttribute('aria-hidden','false');jxStage.scrollTop=0;ensureJxSprite();jxGo(0);setTimeout(()=>jxSections[0].classList.add('in'),80)}
+function openJxStory(){drawer.classList.remove('open');jxStory.classList.add('open');jxStory.setAttribute('aria-hidden','false');jxStage.scrollTop=0;applyJxImages();jxGo(0);setTimeout(()=>jxSections[0].classList.add('in'),80)}
 function closeJxStory(){jxStory.classList.remove('open');jxStory.setAttribute('aria-hidden','true');closeJxLightbox()}
 jxClose?.addEventListener('click',closeJxStory);jxPrev?.addEventListener('click',()=>jxGo(jxIndex-1));jxNext?.addEventListener('click',()=>jxGo(jxIndex===jxSections.length-1?0:jxIndex+1));
 const jxObs=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){const i=+e.target.dataset.jx;jxIndex=i;e.target.classList.add('in');updateJxNav(i)}},{root:jxStage,threshold:.55});
 jxSections.forEach(s=>jxObs.observe(s));
 document.querySelectorAll('#jxSdg button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#jxSdg button').forEach(x=>x.classList.remove('active'));b.classList.add('active');const info=document.getElementById('jxSdgInfo');info.animate([{opacity:.25,transform:'translateY(5px)'},{opacity:1,transform:'none'}],{duration:220});info.textContent=b.dataset.info}));
-function makeJxShot(cell,label='活動照片'){const b=document.createElement('button');b.type='button';b.className='jx-shot';b.dataset.jxCell=cell;b.setAttribute('aria-label',label);if(jxSpriteUrl)jxCellPos(b,cell);return b}
+function makeJxShot(cell,label='活動照片'){const b=document.createElement('button');b.type='button';b.className='jx-shot';b.dataset.jxCell=cell;b.setAttribute('aria-label',label);jxCellPos(b,cell,false);return b}
 document.querySelectorAll('#jxTimeline .jx-event').forEach((b,idx)=>b.addEventListener('click',()=>{document.querySelectorAll('#jxTimeline .jx-event').forEach(x=>x.classList.remove('active'));b.classList.add('active');const box=document.getElementById('jxEventDetail'),media=document.getElementById('jxEventMedia'),cells=(b.dataset.cells||'').split(',').filter(Boolean);box.animate([{opacity:.2,transform:'translateY(7px)'},{opacity:1,transform:'none'}],{duration:260,easing:'ease-out'});box.textContent=b.dataset.detail;media.classList.remove('is-changing');void media.offsetWidth;media.replaceChildren(...cells.map((c,i)=>makeJxShot(c,'活動 '+(idx+1)+' 照片 '+(i+1))));media.classList.add('is-changing');document.getElementById('jxEventPhotoLabel').textContent='活動 '+String(idx+1).padStart(2,'0')+' · PDF 現場照片'}));
 function openJxLightbox(cell){
-  if(!jxSpriteUrl)return;
+  const meta=jxMeta(cell);
   jxLightboxCell=String(cell);
-  // Open immediately with the already-loaded 1600px image, then swap to 3200px
-  // when it finishes loading so the viewer never waits on a blank overlay.
-  jxCellPos(jxLightboxFrame,cell,jxSpriteUrl);
+  // Open instantly from the small independent thumbnail, then replace only this
+  // image with its high-resolution file. Other full-size photos stay unloaded.
+  jxCellPos(jxLightboxFrame,cell,false);
   jxLightbox.classList.add('open');
   jxLightbox.setAttribute('aria-hidden','false');
-  ensureJxFullSprite().then(url=>{
-    if(url&&jxLightbox.classList.contains('open')&&jxLightboxCell===String(cell))jxCellPos(jxLightboxFrame,cell,url);
-  });
+  probeJxImage(meta.full).then(url=>{
+    if(jxLightbox.classList.contains('open')&&jxLightboxCell===String(cell)){
+      jxLightboxFrame.style.backgroundImage=`url("${url}")`;
+    }
+  }).catch(e=>console.warn('[jx full image]',e));
 }
 function closeJxLightbox(){jxLightboxCell=null;jxLightbox?.classList.remove('open');jxLightbox?.setAttribute('aria-hidden','true')}
 jxStory.addEventListener('click',e=>{const shot=e.target.closest?.('[data-jx-cell]');if(shot){openJxLightbox(shot.dataset.jxCell);return}if(e.target===jxLightbox)closeJxLightbox()});
