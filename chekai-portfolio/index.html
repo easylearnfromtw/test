@@ -462,7 +462,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
       <div class="goblin-photo-box"><img id="goblinPhoto" src="./assets/goblin-default.svg" alt="證書照片"></div>
       <div class="goblin-photo-action no-export"><label for="goblinPhotoInput">▣ 可加入照片</label><input id="goblinPhotoInput" type="file" accept="image/*" hidden></div>
       <div class="goblin-discovery"><span>♛</span><span>你是第</span><strong class="goblin-rank" id="goblinRank">------</strong><span>個發現者</span></div>
-      <div class="goblin-live" id="goblinCountStatus">LIVE DISCOVERY</div>
+      <div class="goblin-live" id="goblinCountStatus">專屬發現編號</div>
     </div>
     <div class="goblin-actions no-export"><button class="goblin-btn" id="goblinResetPhoto" type="button">使用預設照片</button><button class="goblin-btn primary" id="goblinSave" type="button">儲存證書 PNG</button></div>
     <p class="goblin-note">照片只在你的瀏覽器本機處理，不會上傳到網站。儲存時「可加入照片」與操作按鈕不會出現在圖片內。</p>
@@ -4241,32 +4241,31 @@ const goblinModal=document.getElementById('goblinModal'),goblinBackdrop=document
 const goblinCert=document.getElementById('goblinCert'),goblinName=document.getElementById('goblinName'),goblinPhoto=document.getElementById('goblinPhoto');
 const goblinPhotoInput=document.getElementById('goblinPhotoInput'),goblinResetPhoto=document.getElementById('goblinResetPhoto'),goblinSave=document.getElementById('goblinSave');
 const goblinRank=document.getElementById('goblinRank'),goblinCountStatus=document.getElementById('goblinCountStatus'),goblinToast=document.getElementById('goblinToast');
-const GOBLIN_DEFAULT_PHOTO='./assets/goblin-default.svg',GOBLIN_RANK_KEY='chekai_goblin_discovery_rank_v1';
-const GOBLIN_COUNT_URL='https://api.counterapi.dev/v1/chekai-lin/goblin-certificate/up';
-let goblinPhotoURL='',goblinRankValue=0,goblinCounting=false;
+const GOBLIN_DEFAULT_PHOTO='./assets/goblin-default.svg',GOBLIN_RANK_KEY='chekai_goblin_discovery_rank_v2',GOBLIN_CLAIM_KEY='chekai_goblin_discovery_claimed_v2';
+let goblinPhotoURL='',goblinRankValue=Number(localStorage.getItem(GOBLIN_RANK_KEY)||0),goblinClaimed=localStorage.getItem(GOBLIN_CLAIM_KEY)==='1';
 function padGoblinRank(n){return String(Math.max(0,Number(n)||0)).padStart(6,'0')}
 function animateGoblinRank(n){
   goblinRankValue=Number(n)||0;const target=goblinRankValue,start=performance.now(),dur=720;
   const tick=now=>{const t=Math.min(1,(now-start)/dur),e=1-Math.pow(1-t,3);goblinRank.textContent=padGoblinRank(Math.floor(target*e));if(t<1)requestAnimationFrame(tick)};
   requestAnimationFrame(tick)
 }
-async function ensureGoblinRank(){
-  const saved=Number(localStorage.getItem(GOBLIN_RANK_KEY)||0);
-  if(saved>0){animateGoblinRank(saved);goblinCountStatus.textContent='LIVE DISCOVERY · SAVED';return saved}
-  if(goblinCounting)return 0;goblinCounting=true;goblinRank.textContent='······';goblinCountStatus.textContent='REGISTERING DISCOVERY…';
-  try{
-    const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),4500);
-    const r=await fetch(GOBLIN_COUNT_URL,{cache:'no-store',signal:ctl.signal});clearTimeout(timer);
-    if(!r.ok)throw new Error('counter '+r.status);const j=await r.json();
-    const n=Number(j?.count??j?.value??j?.data?.count??j?.data?.value);
-    if(!Number.isFinite(n)||n<1)throw new Error('counter payload');
-    localStorage.setItem(GOBLIN_RANK_KEY,String(n));animateGoblinRank(n);goblinCountStatus.textContent='LIVE DISCOVERY · VERIFIED';return n
-  }catch(e){console.warn('Goblin counter unavailable',e);goblinRank.textContent='------';goblinCountStatus.textContent='LIVE COUNT 暫時無法取得';return 0}
-  finally{goblinCounting=false}
+function ensureGoblinRank(){
+  let n=Number(localStorage.getItem(GOBLIN_RANK_KEY)||0);
+  if(!(n>=7&&n<=200)){
+    n=7+Math.floor(Math.random()*194);
+    localStorage.setItem(GOBLIN_RANK_KEY,String(n))
+  }
+  goblinRankValue=n;animateGoblinRank(n);
+  goblinCountStatus.textContent='專屬發現編號';
+  return n
 }
 function openGoblinCertificate(){
+  if(goblinClaimed)return false;
+  goblinClaimed=true;localStorage.setItem(GOBLIN_CLAIM_KEY,'1');
+  ensureGoblinRank();
   goblinModal.classList.add('open');goblinModal.setAttribute('aria-hidden','false');goblinCert.classList.remove('generating');void goblinCert.offsetWidth;goblinCert.classList.add('generating');
-  ensureGoblinRank();setTimeout(()=>goblinName.focus({preventScroll:true}),430)
+  setTimeout(()=>goblinName.focus({preventScroll:true}),430);
+  return true
 }
 function closeGoblinCertificate(){goblinModal.classList.remove('open');goblinModal.setAttribute('aria-hidden','true');goblinCert.classList.remove('generating')}
 goblinClose.addEventListener('click',closeGoblinCertificate);goblinBackdrop.addEventListener('click',closeGoblinCertificate);
