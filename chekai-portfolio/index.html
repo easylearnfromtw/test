@@ -231,7 +231,7 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
 </head>
 <body>
 <!-- GitHub Pages ready single-file site -->
-<!-- taiwan-street-pro v5.4-view-only: canvas certificate viewer + copy/save deterrence -->
+<!-- taiwan-street-pro v5.5-cert-trigger: certificate opens only from Keelung result card -->
 <div class="app">
   <canvas id="webgl" class="webgl"></canvas>
   <div class="loading" id="loading"><div><strong>CHE-KAI LIN</strong>BUILDING 3D CITY…</div></div>
@@ -3678,11 +3678,14 @@ async function drawCertificate(){
     if(revoke)URL.revokeObjectURL(revoke)
   }
 }
-async function openCertificate(){
+async function openCertificate(e){
+  const trigger=e?.currentTarget;
+  if(activeId!=='running'||!drawer.classList.contains('open')||trigger?.dataset?.certificate!=='keelung-2026')return;
+  e?.preventDefault?.();e?.stopPropagation?.();
   imageViewer.classList.add('open');imageViewer.setAttribute('aria-hidden','false');
   imageViewerStatus.textContent='載入成績證明…';
   try{await drawCertificate()}
-  catch(e){imageViewerStatus.textContent='成績證明載入失敗，請重新整理後再試';certificateBlobPromise=null}
+  catch(err){imageViewerStatus.textContent='成績證明載入失敗，請重新整理後再試';certificateBlobPromise=null}
 }
 function closeCertificate(){imageViewer.classList.remove('open');imageViewer.setAttribute('aria-hidden','true')}
 document.getElementById('imageViewerClose').onclick=closeCertificate;
@@ -3761,6 +3764,7 @@ function restoreOutboundSnapshot(saved){
   return true
 }
 function openDrawer(id){
+  closeCertificate();
   const d=DATA[id],dk=document.getElementById('dk'),dt=document.getElementById('dt'),di=document.getElementById('di'),items=document.getElementById('items');
   dk.textContent=`${d.index} / ${d.nav}`;
   if(id==='about'){
@@ -3794,7 +3798,7 @@ function openDrawer(id){
       </div>`;
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
-    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');items.querySelectorAll('[data-certificate]').forEach(b=>b.addEventListener('click',openCertificate))
+    items.innerHTML=d.items.map((x,i)=>x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');items.querySelectorAll('[data-certificate="keelung-2026"]').forEach(b=>b.addEventListener('click',openCertificate,{passive:false}))
   }
   drawer.classList.add('open')
 }
