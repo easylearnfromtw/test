@@ -141,8 +141,15 @@
         {
           "title": "SignWell 欣緯生醫",
           "subtitle": "醫療與產業內容平台",
-          "url": "",
-          "type": "coming_soon",
+          "url": "https://easylearnfromtw.github.io/signwellbio/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "SIGNWELL欣緯科技 企業網站",
+          "subtitle": "企業品牌與公司資訊網站",
+          "url": "https://easylearnfromtw.github.io/signwelltec/",
+          "type": "",
           "published": true
         }
       ]
