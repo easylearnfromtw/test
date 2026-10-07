@@ -540,6 +540,31 @@ body:has(
   }
 }
 
+
+/* First-chapter event summaries shared by photo stories, society archive and essay. */
+.event-brief{
+  --event-brief-accent:var(--ps-accent,#cf564b);
+  position:relative;box-sizing:border-box;max-width:760px;margin:20px 0 0;
+  padding:15px 18px 16px;background:#fffdf5;
+  border:2px solid #174b3a;border-left:6px solid var(--event-brief-accent);
+  box-shadow:4px 4px 0 rgba(23,75,58,.09);
+  color:#174b3a;
+}
+.event-brief-heading{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+.event-brief-dot{width:8px;height:8px;flex:none;background:var(--event-brief-accent);border-radius:50%}
+.event-brief-heading strong{font:900 12px/1.3 var(--sans);letter-spacing:.04em}
+.event-brief-heading small{margin-left:auto;font:800 8px/1.2 var(--mono);letter-spacing:.12em;color:#677b70}
+.event-brief p{margin:10px 0 0;color:#315d50;font:550 clamp(12px,1.2vw,14px)/1.8 var(--sans);letter-spacing:.01em}
+.jx-story .event-brief{--event-brief-accent:#f3bf53}
+.essay-story .event-brief{--event-brief-accent:#c74b42;max-width:820px}
+.cdba-story .event-brief{padding:12px 15px;margin-top:16px}
+@media(max-width:720px){
+  .event-brief{padding:12px 13px 13px;margin-top:16px;border-left-width:5px}
+  .event-brief-heading strong{font-size:11px}
+  .event-brief-heading small{font-size:7px}
+  .event-brief p{font-size:12px;line-height:1.7}
+}
+
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script>
 </head>
@@ -636,6 +661,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
         <div class="essay-kicker essay-reveal"><i></i><span>CHAPTER 01 / COVER</span></div>
         <h2 class="essay-title essay-reveal">建築雨山的對話。</h2>
         <p class="essay-subtitle essay-reveal">基隆要塞司令官邸建材在地化與視覺空間層次探析</p>
+        <aside class="event-brief essay-reveal" aria-label="活動簡述"><div class="event-brief-heading"><span class="event-brief-dot"></span><strong>活動簡述</strong><small>EVENT OVERVIEW</small></div><p>以高二自主學習為起點，探究基隆要塞司令官邸的建材與視覺空間，並將研究成果投稿藝術類小論文比賽。這份紀錄涵蓋題目發想、資料整理與製作過程中的反思。</p></aside>
         <div class="essay-meta essay-reveal">
           <div><em>AUTHOR</em><strong>林哲愷｜三重高中</strong></div>
           <div><em>CATEGORY</em><strong>小論文比賽｜藝術類</strong></div>
@@ -790,6 +816,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
         <div class="jx-kicker jx-reveal"><i></i><span>CHAPTER 01 / GROUP</span></div>
         <h2 class="jx-title small jx-reveal">CDBA 中華辯會<br>辯論參與</h2>
         <p class="jx-lead jx-reveal">活動現場紀錄。由大合照開始，保留參與過程中的幾個畫面。</p>
+        <aside class="event-brief jx-reveal" aria-label="活動簡述"><div class="event-brief-heading"><span class="event-brief-dot"></span><strong>活動簡述</strong><small>EVENT OVERVIEW</small></div><p>參與 CDBA 中華辯會的辯論與工作坊，透過活動中的討論和交流接觸論證思考與公共表達；本頁保留團體合照及個人活動紀錄。</p></aside>
         <button class="jx-shot cdba-shot jx-reveal" type="button" data-cdba-image="0" aria-label="放大 CDBA 大合照"></button>
         <div class="cdba-photo-meta jx-reveal"><span>01 / 大合照</span><span>PHOTO ARCHIVE</span></div>
       </div></section>
@@ -828,7 +855,7 @@ Biometric/profile inference: NOT AUTHORIZED</code>
       <div class="jx-actions"><button class="jx-btn" id="jxPrev" type="button">← 上一章</button><button class="jx-btn primary" id="jxNext" type="button">下一章 →</button><button class="jx-btn" id="jxClose" type="button">關閉 ×</button></div>
     </header>
     <main class="jx-stage" id="jxStage">
-      <section class="jx-section" data-jx="0"><div class="jx-paper"><div class="jx-seal">見賢<br>思齊</div><div class="jx-kicker jx-reveal"><i></i><span>CHAPTER 01 / ORIGIN</span></div><h2 class="jx-title jx-reveal">從零開始的<br>社團。</h2><p class="jx-lead jx-reveal">市三重高中見賢思琪社由見賢思琪教育基金會與扶輪社共同贊助。初創時沒有成熟規章與方向，我們靠一次次試錯、反思與重做，把社團做成自己的樣子。</p><div class="jx-metrics jx-reveal"><div class="jx-metric"><em>MEMBERS</em><strong>43</strong><span>社員</span></div><div class="jx-metric"><em>ROLE</em><strong>副社長</strong><span>兼美宣</span></div><div class="jx-metric"><em>CORE</em><strong>SDGs</strong><span>服務 × 反思</span></div></div></div></section>
+      <section class="jx-section" data-jx="0"><div class="jx-paper"><div class="jx-seal">見賢<br>思齊</div><div class="jx-kicker jx-reveal"><i></i><span>CHAPTER 01 / ORIGIN</span></div><h2 class="jx-title jx-reveal">從零開始的<br>社團。</h2><p class="jx-lead jx-reveal">市三重高中見賢思琪社由見賢思琪教育基金會與扶輪社共同贊助。初創時沒有成熟規章與方向，我們靠一次次試錯、反思與重做，把社團做成自己的樣子。</p><aside class="event-brief jx-reveal" aria-label="活動簡述"><div class="event-brief-heading"><span class="event-brief-dot"></span><strong>活動簡述</strong><small>EVENT OVERVIEW</small></div><p>我在市立三重高中參與創立見賢思琪社，擔任創社副社長兼美宣。社團以服務學習與 SDGs 為主軸，從社課企劃、活動執行到檢討反思，持續累積社團運作經驗。</p></aside><div class="jx-metrics jx-reveal"><div class="jx-metric"><em>MEMBERS</em><strong>43</strong><span>社員</span></div><div class="jx-metric"><em>ROLE</em><strong>副社長</strong><span>兼美宣</span></div><div class="jx-metric"><em>CORE</em><strong>SDGs</strong><span>服務 × 反思</span></div></div></div></section>
       <section class="jx-section" data-jx="1"><div class="jx-paper"><div class="jx-kicker jx-reveal"><i></i><span>CHAPTER 02 / MY ROLE</span></div><h2 class="jx-title small jx-reveal">副社長 × 美宣</h2><p class="jx-lead jx-reveal">不是只有一個頭銜，而是把企劃、主持、社務與視覺全部接在一起。</p><div class="jx-grid jx-reveal"><div class="jx-card"><span class="jx-tag">VICE PRESIDENT</span><b>社務與活動</b><p>協助社長處理社務、部分活動對外交接、內部迎新主辦、大型活動企劃書、社課企劃與主持、每次社課最後的反思主持。</p></div><div class="jx-card"><span class="jx-tag">VISUAL DESIGN</span><b>美宣與品牌</b><p>對內外宣傳單、社徽、名牌、社課簡報、社群圖片、社群風格與美術活動主持。</p></div><div class="jx-card"><span class="jx-tag">COORDINATION</span><b>跨單位統籌</b><p>包含與教育部合作、花蓮光復鄉災後復原之三重高中團隊統籌。</p></div><div class="jx-card"><span class="jx-tag">REFLECTION</span><b>把反思變成制度</b><p>每次社課最後主持社員反思，從尷尬、不適應，到逐漸形成團隊檢討與修正的方法。</p></div></div></div></section>
       <section class="jx-section" data-jx="2"><div class="jx-paper"><div class="jx-kicker jx-reveal"><i></i><span>CHAPTER 03 / SDGs</span></div><h2 class="jx-title small jx-reveal">服務不是<br>只有做事。</h2><p class="jx-lead jx-reveal">社課以 7 組 SDGs 主題展開。點一下每個柱子，看我們怎麼把抽象目標變成活動。</p><div class="jx-sdg jx-reveal" id="jxSdg"><button data-info="邀請護理師討論安寧照顧，並至養護中心進行服務。">SDG 3<br>健康福祉</button><button data-info="邀請社工與護理師演講，並主、協辦偏鄉與城市國小活動。">SDG 4<br>優質教育</button><button data-info="社課中討論潔淨能源的重要性，以及台灣如何面對能源議題。">SDG 7<br>潔淨能源</button><button data-info="透過百工百業分享與國小活動，讓社員與兒童理解不同工作樣貌。">SDG 8<br>合適工作</button><button data-info="設計身心障礙體驗，讓社員換位思考、練習同理。">SDG 10<br>減少不平等</button><button data-info="花蓮光復鄉災後復原，協助村民與學校恢復功能。">SDG 11<br>永續鄉鎮</button><button data-info="淨山、淨水與生態活動，讓服務和環境教育一起發生。">SDG 14/15<br>海陸保育</button></div><div class="jx-sdg-info jx-reveal" id="jxSdgInfo">點擊上方 SDG 查看內容。</div></div></section>
       <section class="jx-section" data-jx="3"><div class="jx-paper"><div class="jx-kicker jx-reveal"><i></i><span>CHAPTER 04 / VISUALS</span></div><h2 class="jx-title small jx-reveal">我把社團<br>做成一個品牌。</h2><p class="jx-lead jx-reveal">宣傳海報、社徽、名牌、社課簡報與社群貼文，不只是把資訊排進版面，而是慢慢建立共同的視覺語言。下面直接放入原始幹部經歷 PDF 中的作品。</p><div class="jx-gallery jx-reveal"><button class="jx-shot poster" data-jx-cell="0" aria-label="放大美宣作品一"></button><button class="jx-shot poster" data-jx-cell="1" aria-label="放大美宣作品二"></button><button class="jx-shot poster" data-jx-cell="2" aria-label="放大美宣作品三"></button></div><div class="jx-gallery-caption jx-reveal"><span>原始美宣作品 / PDF ARCHIVE</span><span>點擊圖片可放大</span></div></div></section>
@@ -5013,6 +5040,7 @@ const PHOTO_STORIES={
     brand:'民眾黨第二屆青年團 / YOUTH ARCHIVE',
     title:'民眾黨第二屆青年團',
     lead:'青年團活動參與紀錄。',
+    summary:'參與民眾黨第二屆青年團的活動與交流，接觸青年公共事務的討論及團隊互動。此頁收錄團體合照，作為參與活動的紀錄。',
     mark:'YOUTH',
     accent:'#45a99a',
     images:[
@@ -5023,6 +5051,7 @@ const PHOTO_STORIES={
     brand:'CDBA 中華辯會 / DEBATE ARCHIVE',
     title:'CDBA中華辯會｜辯論參與',
     lead:'辯論與工作坊參與紀錄。',
+    summary:'參與 CDBA 中華辯會的辯論及工作坊活動，透過討論與練習接觸論證、觀點整理和公共表達。照片保留活動合照與個人紀錄。',
     mark:'CDBA',
     accent:'#45a99a',
     images:(Array.isArray(window.CDBA_IMAGES)?window.CDBA_IMAGES:[]).map(im=>({
@@ -5033,6 +5062,7 @@ const PHOTO_STORIES={
     brand:'核三公投 / STREET CAMPAIGN ARCHIVE',
     title:'核三公投｜街頭宣講 × 車掃',
     lead:'公共議題宣講、車掃與現場參與紀錄。',
+    summary:'參與核三公投相關的街頭宣講與車掃，接觸公共議題在第一線的溝通方式。這組照片保留活動現場、車掃及個人參與的畫面。',
     mark:'PUBLIC',
     accent:'#d85b55',
     images:[
@@ -5045,6 +5075,7 @@ const PHOTO_STORIES={
     brand:'日本自民黨來台接待 / EXCHANGE ARCHIVE',
     title:'日本自民黨來台接待',
     lead:'國際來訪接待與交流紀錄。',
+    summary:'參與日本自民黨來台的接待與交流活動，從現場互動中接觸跨國來訪的交流情境。照片整理了團體合影與活動片段。',
     mark:'LDP',
     accent:'#4e6ca8',
     images:[
@@ -5075,7 +5106,7 @@ function buildPhotoStory(id){
   const d=PHOTO_STORIES[id];if(!d)return false;
   psStoryId=id;photoStory.style.setProperty('--ps-accent',d.accent||'#d65b52');psBrand.textContent=d.brand;
   const totalPhotos=d.images.length;
-  const intro=`<section class="ps-section"><article class="ps-paper"><div class="ps-seal">${d.mark}</div><div class="ps-kicker"><i></i><span>CHAPTER 01 / ARCHIVE</span></div><h2 class="ps-title">${d.title}</h2><p class="ps-lead">${d.lead}</p><div class="ps-meta"><span>${String(totalPhotos).padStart(2,'0')} PHOTOS</span><span>INTERACTIVE ARCHIVE</span><span>點擊照片可放大</span></div></article></section>`;
+  const intro=`<section class="ps-section"><article class="ps-paper"><div class="ps-seal">${d.mark}</div><div class="ps-kicker"><i></i><span>CHAPTER 01 / ARCHIVE</span></div><h2 class="ps-title">${d.title}</h2><p class="ps-lead">${d.lead}</p><aside class="event-brief" aria-label="活動簡述"><div class="event-brief-heading"><span class="event-brief-dot"></span><strong>活動簡述</strong><small>EVENT OVERVIEW</small></div><p>${d.summary||d.lead}</p></aside><div class="ps-meta"><span>${String(totalPhotos).padStart(2,'0')} PHOTOS</span><span>INTERACTIVE ARCHIVE</span><span>點擊照片可放大</span></div></article></section>`;
   const photos=d.images.map((im,i)=>`<section class="ps-section"><article class="ps-paper"><div class="ps-kicker"><i></i><span>CHAPTER ${String(i+2).padStart(2,'0')} / ${im.meta}</span></div><h2 class="ps-title photo">${im.label}</h2><div class="ps-photo-wrap"><button class="ps-photo-btn" type="button" data-ps-src="${im.src}" aria-label="放大：${im.label}"><img src="${im.src}" alt="${im.label}" draggable="false" loading="${i===0?'eager':'lazy'}"></button></div><div class="ps-caption"><span>活動照</span><span>活動照</span></div></article></section>`).join('');
   psStage.innerHTML=intro+photos;
   psSections=[...psStage.querySelectorAll('.ps-section')];
