@@ -104,6 +104,27 @@
       "board_intro": "精選數位作品與互動網站。",
       "items": [
         {
+          "title": "SIGNWELL欣緯科技 企業網站",
+          "subtitle": "企業品牌與公司資訊網站",
+          "url": "https://easylearnfromtw.github.io/signwelltec/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "閒台文 Taiwanway",
+          "subtitle": "互動式中文與台灣文化網站",
+          "url": "https://easylearnfromtw.github.io/Taiwanway/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "SignWell 欣緯生醫",
+          "subtitle": "醫療與產業內容平台",
+          "url": "https://easylearnfromtw.github.io/signwellbio/",
+          "type": "",
+          "published": true
+        },
+        {
           "title": "O森島民集結啦！台灣 70 型測驗",
           "subtitle": "台灣文化 × 互動型人格測驗",
           "url": "https://980510linz.github.io/taiwangogogo/",
@@ -125,31 +146,10 @@
           "published": true
         },
         {
-          "title": "閒台文 Taiwanway",
-          "subtitle": "互動式中文與台灣文化網站",
-          "url": "https://easylearnfromtw.github.io/Taiwanway/",
-          "type": "",
-          "published": true
-        },
-        {
           "title": "Foodie Page｜腹地圖",
           "subtitle": "飲食探索與地圖式網頁作品",
           "url": "",
           "type": "coming_soon",
-          "published": true
-        },
-        {
-          "title": "SignWell 欣緯生醫",
-          "subtitle": "醫療與產業內容平台",
-          "url": "https://easylearnfromtw.github.io/signwellbio/",
-          "type": "",
-          "published": true
-        },
-        {
-          "title": "SIGNWELL欣緯科技 企業網站",
-          "subtitle": "企業品牌與公司資訊網站",
-          "url": "https://easylearnfromtw.github.io/signwelltec/",
-          "type": "",
           "published": true
         }
       ]
