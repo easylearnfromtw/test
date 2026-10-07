@@ -509,6 +509,37 @@ body.teleporting #webgl{animation:streetExitNudge .62s cubic-bezier(.2,.8,.2,1) 
  .essay-meta,.essay-grid{grid-template-columns:1fr}.essay-body p,.essay-body li{font-size:12.5px;line-height:1.82}.essay-source span{font-size:7.5px}
 }
 
+
+/* Portfolio overlay navigation: the floating 00–09 bar glides below
+   the viewport in 500ms while a detail page is open, then returns. */
+#tabbar{
+  opacity:1;
+  visibility:visible;
+  transform:translate3d(0,0,0);
+  transition:opacity .5s ease,transform .5s cubic-bezier(.22,.8,.24,1),visibility 0s linear 0s;
+}
+body:has(
+  #drawer.open,
+  #essayStory.open,
+  #cdbaStory.open,
+  #photoStory.open,
+  #jxStory.open,
+  #runningBlog.open,
+  #imageViewer.open,
+  #goblinModal.open
+) #tabbar{
+  opacity:0;
+  visibility:hidden;
+  transform:translate3d(0,calc(100% + 96px),0);
+  pointer-events:none;
+  transition:opacity .5s ease,transform .5s cubic-bezier(.22,.8,.24,1),visibility 0s linear .5s;
+}
+@media (prefers-reduced-motion:reduce){
+  #tabbar,body:has(#drawer.open,#essayStory.open,#cdbaStory.open,#photoStory.open,#jxStory.open,#runningBlog.open,#imageViewer.open,#goblinModal.open) #tabbar{
+    transition-duration:.01s,.01s,0s;
+  }
+}
+
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js"}}</script>
 </head>
