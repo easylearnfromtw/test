@@ -948,7 +948,7 @@ const DATA={
  writing:{nav:'Writing',index:'05',title:'WRITING',intro:'文字創作、觀察與公開表達。',accent:'#f1ad74',items:[['議題投書','公共議題評論與媒體投書','https://newtalk.tw/citizen/author/319524'],['時事觀察','公共議題與社會觀察'],['競賽作品','文學與主題創作'],['小論文比賽（藝術類）','藝術類｜建築雨山的對話',null,{type:'essay_story'}]]},
  running:{nav:'Running',index:'06',title:'RUNNING',intro:'跑步、競賽與身體經驗。',accent:'#d85d99',items:[['烘爐地定向越野 9K組完賽','9K 組完賽'],['基隆半程馬拉松 9K組完賽（103/1581）','總名次 103 / 1581｜個人時間 00:52:29',null,{type:'certificate',id:'keelung-2026'}],['訓練紀錄','跑步與體能進程',null,{type:'training_blog'}],['比賽成績','競賽紀錄持續累積']]},
  roles:{nav:'Roles',index:'07',title:'ROLES',intro:'創辦、公司與社團角色。',accent:'#58bdd2',items:[['欣緯科技有限公司','公司董事','https://findbiz.nat.gov.tw/fts/company/24389585'],['欣緯生醫創辦人','Founder'],['閒台文創辦人','Founder'],['CITYMUS 創辦人','Founder'],['市三重見賢思琪社｜創社副社長、美宣','Founding Vice President',null,{type:'jx_story'}],['市三重高中前扶輪少年團團員','Member']]},
- public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與'],['日本自民黨來台接待','國際來訪接待與交流',null,{type:'photo_story',id:'ldp'}],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通',null,{type:'photo_story',id:'nuclear3'}]]},
+ public:{nav:'Public',index:'08',title:'PUBLIC',intro:'公共參與與交流經歷。',accent:'#e1b45e',items:[['台灣民眾黨青年團第二屆團員','青年政治與公共事務參與',null,{type:'photo_story',id:'tppYouth2'}],['日本自民黨來台接待','國際來訪接待與交流',null,{type:'photo_story',id:'ldp'}],['核三公投街頭宣講、車掃','公共議題宣講與現場溝通',null,{type:'photo_story',id:'nuclear3'}]]},
  art:{nav:'Art Archive',index:'09',title:'ART ARCHIVE',intro:'藝術與視覺作品的收藏區。',accent:'#9b78de',items:[['設計作品','Graphic / visual design'],['手繪創作','Sketch / illustration']]}
 };
 if(SITE_CONTENT?.sections){
@@ -4978,6 +4978,16 @@ let cdbaTouchX=0,cdbaTouchY=0;cdbaStage?.addEventListener('touchstart',e=>{const
 
 /* ---------------- 見賢思琪 interactive story ---------------- */
 const PHOTO_STORIES={
+  tppYouth2:{
+    brand:'民眾黨第二屆青年團 / YOUTH ARCHIVE',
+    title:'民眾黨第二屆青年團',
+    lead:'青年團活動參與紀錄。',
+    mark:'YOUTH',
+    accent:'#45a99a',
+    images:[
+      {src:'./assets/photo-stories/tpp-youth-02-01.webp',label:'活動照',meta:'活動照',w:1000,h:553}
+    ]
+  },
   cdba:{
     brand:'CDBA 中華辯會 / DEBATE ARCHIVE',
     title:'CDBA中華辯會｜辯論參與',

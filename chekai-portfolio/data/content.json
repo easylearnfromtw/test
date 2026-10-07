@@ -460,8 +460,9 @@
           "title": "台灣民眾黨青年團第二屆團員",
           "subtitle": "青年政治與公共事務參與",
           "url": "",
-          "type": "",
-          "published": true
+          "type": "photo_story",
+          "published": true,
+          "id": "tppYouth2"
         },
         {
           "title": "日本自民黨來台接待",
