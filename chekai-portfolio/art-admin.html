@@ -156,6 +156,7 @@ async function publish(){
     const editId=els.editingId.value;
     const existing=state.items.find(x=>x.id===editId);
     let image=existing?.image||'',width=existing?.width||0,height=existing?.height||0;
+    const oldImage=existing?.image||'';
     if(selectedFile){
       setStatus(els.formStatus,'圖片壓縮與上傳中…');
       const c=await compress(selectedFile);
@@ -164,7 +165,6 @@ async function publish(){
       const path=ASSET_DIR+filename;
       await gh(path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Upload art: '+els.title.value.trim(),content:bytesToBase64(c.bytes),branch:BRANCH})});
       image='./assets/art/'+filename;width=c.w;height=c.h;
-      if(existing?.image)await tryDeleteAsset(existing.image);
     }
     if(!image)throw new Error('請選擇作品圖片。');
     const now=new Date().toISOString();
@@ -183,6 +183,7 @@ async function publish(){
     if(existing){const i=state.items.findIndex(x=>x.id===existing.id);state.items[i]=item}else state.items.unshift(item);
     setStatus(els.formStatus,'更新作品索引…');
     await saveData(existing?'Update artwork: '+item.title:'Publish artwork: '+item.title);
+    if(selectedFile&&oldImage&&oldImage!==image)await tryDeleteAsset(oldImage);
     setStatus(els.formStatus,'已發布。GitHub Pages 通常會在 1–2 分鐘內更新。','ok');
     resetForm(false);render();
   }catch(e){setStatus(els.formStatus,e.message,'err')}
