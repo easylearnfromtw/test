@@ -83,7 +83,18 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
           <input type="hidden" id="editingId">
           <div class="field"><label>作品名稱 *</label><input id="title" maxlength="80" placeholder="例如：城市速寫 01"></div>
           <div class="row">
-            <div class="field"><label>分類</label><select id="category"><option>設計作品</option><option>手繪創作</option><option>攝影</option><option>其他</option></select></div>
+            <div class="field">
+              <label>分類</label>
+              <select id="category">
+                <option value="電腦製圖">電腦製圖</option>
+                <option value="網站">網站</option>
+                <option value="__add__">＋ 新增分類</option>
+              </select>
+              <div id="categoryCustomWrap" hidden>
+                <input id="newCategory" maxlength="30" placeholder="輸入新分類名稱，例如：攝影、手繪、海報">
+                <div class="helper">發布後，這個分類會自動加入日後可選清單。</div>
+              </div>
+            </div>
             <div class="field"><label>年份</label><input id="year" inputmode="numeric" maxlength="4" placeholder="2026"></div>
           </div>
           <div class="field"><label>作品簡述</label><textarea id="description" maxlength="400" placeholder="媒材、概念、製作背景…"></textarea><div class="helper">建議 40–120 字，前台會顯示為作品說明。</div></div>
@@ -182,7 +193,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 const OWNER='easylearnfromtw',REPO='test',BRANCH='main',PREFIX='chekai-portfolio/';
 const DATA_PATH=PREFIX+'data/artworks.json',ASSET_DIR=PREFIX+'assets/art/';
 const API='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/';
-const els=Object.fromEntries(['token','saveToken','tokenToggle','testToken','clearToken','settingsStatus','editingId','title','category','year','description','alt','file','preview','previewImg','previewEmpty','previewCategory','previewTitle','previewDescription','previewYear','previewVisibility','published','publishBtn','cancelBtn','formStatus','cards','empty','listStatus','reloadBtn','syncDot','syncLabel','sideDot','sideStatus','statTotal','statLive','statHidden','searchInput','categoryFilter','newWorkBtn','composeHeading','editBadge','toast'].map(id=>[id,document.getElementById(id)]));
+const els=Object.fromEntries(['token','saveToken','tokenToggle','testToken','clearToken','settingsStatus','editingId','title','category','newCategory','categoryCustomWrap','year','description','alt','file','preview','previewImg','previewEmpty','previewCategory','previewTitle','previewDescription','previewYear','previewVisibility','published','publishBtn','cancelBtn','formStatus','cards','empty','listStatus','reloadBtn','syncDot','syncLabel','sideDot','sideStatus','statTotal','statLive','statHidden','searchInput','categoryFilter','newWorkBtn','composeHeading','editBadge','toast'].map(id=>[id,document.getElementById(id)]));
 let state={version:1,updatedAt:'',items:[]},dataSha='',selectedFile=null,busy=false,currentView='compose',searchTerm='',filterCategory='';
 els.token.value=sessionStorage.getItem('ck_art_token')||'';
 function switchView(view){
@@ -203,7 +214,14 @@ els.token.addEventListener('input',refreshConnectionBadge);
 els.reloadBtn.onclick=()=>loadData(true);
 els.file.onchange=()=>pickFile(els.file.files[0]);
 els.cancelBtn.onclick=resetForm;
-['title','category','year','description'].forEach(id=>els[id].addEventListener('input',updatePreviewCopy));
+['title','year','description'].forEach(id=>els[id].addEventListener('input',updatePreviewCopy));
+els.category.addEventListener('change',()=>{
+  const custom=els.category.value==='__add__';
+  els.categoryCustomWrap.hidden=!custom;
+  if(custom)setTimeout(()=>els.newCategory.focus(),60);
+  updatePreviewCopy();
+});
+els.newCategory.addEventListener('input',updatePreviewCopy);
 els.published.addEventListener('change',updatePreviewCopy);
 els.searchInput.addEventListener('input',()=>{searchTerm=els.searchInput.value.trim().toLowerCase();render()});
 els.categoryFilter.addEventListener('change',()=>{filterCategory=els.categoryFilter.value;render()});
@@ -231,10 +249,43 @@ async function testConnection(){
 }
 function updatePreviewCopy(){
   if(els.previewTitle)els.previewTitle.textContent=els.title.value.trim()||'Untitled';
-  if(els.previewCategory)els.previewCategory.textContent=(els.category.value||'ART ARCHIVE').toUpperCase();
+  if(els.previewCategory){
+    const cat=els.category.value==='__add__'?els.newCategory.value.trim():els.category.value;
+    els.previewCategory.textContent=(cat||'ART ARCHIVE').toUpperCase();
+  }
   if(els.previewDescription)els.previewDescription.textContent=els.description.value.trim()||'作品簡述會出現在這裡。';
   if(els.previewYear)els.previewYear.textContent='YEAR '+(els.year.value.trim()||'—');
   if(els.previewVisibility)els.previewVisibility.textContent=els.published.checked?'公開':'未公開';
+}
+function currentCategory(){
+  const selected=els.category.value;
+  if(selected==='__add__'){
+    const custom=els.newCategory.value.trim();
+    if(!custom)throw new Error('請輸入新分類名稱。');
+    return custom;
+  }
+  return selected||'電腦製圖';
+}
+function syncCategoryOptions(preferred=''){
+  const defaults=['電腦製圖','網站'];
+  const existing=[...new Set((state.items||[]).map(x=>x.category).filter(Boolean))];
+  const cats=[...new Set([...defaults,...existing])];
+  const target=preferred||(!['__add__',''].includes(els.category.value)?els.category.value:'電腦製圖');
+  els.category.innerHTML=cats.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('')+'<option value="__add__">＋ 新增分類</option>';
+  if(cats.includes(target)){
+    els.category.value=target;
+    els.categoryCustomWrap.hidden=true;
+    els.newCategory.value='';
+  }else if(target){
+    els.category.value='__add__';
+    els.categoryCustomWrap.hidden=false;
+    els.newCategory.value=target;
+  }else{
+    els.category.value='電腦製圖';
+    els.categoryCustomWrap.hidden=true;
+    els.newCategory.value='';
+  }
+  updatePreviewCopy();
 }
 function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function bytesToBase64(bytes){let out='',chunk=0x8000;for(let i=0;i<bytes.length;i+=chunk)out+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));return btoa(out)}
@@ -253,6 +304,7 @@ async function loadData(show=false){
       j=await r.json();dataSha='';
     }
     state=j&&Array.isArray(j.items)?j:{version:1,updatedAt:'',items:[]};
+    syncCategoryOptions();
     refreshConnectionBadge();render();
     if(show){setStatus(els.listStatus,'已同步 '+state.items.length+' 件作品。','ok');toast('作品資料已同步')}
   }catch(e){refreshConnectionBadge('err');setStatus(els.listStatus,e.message,'err');toast('同步失敗','err')}
@@ -340,7 +392,7 @@ async function publish(){
     const item={
       id:existing?.id||(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)),
       title:els.title.value.trim(),
-      category:els.category.value,
+      category:currentCategory(),
       year:els.year.value.trim(),
       description:els.description.value.trim(),
       alt:els.alt.value.trim()||els.title.value.trim(),
@@ -354,6 +406,7 @@ async function publish(){
     await saveData(existing?'Update artwork: '+item.title:'Publish artwork: '+item.title);
     if(selectedFile&&oldImage&&oldImage!==image)await tryDeleteAsset(oldImage);
     refreshConnectionBadge();setStatus(els.formStatus,'已發布。GitHub Pages 通常會在 1–2 分鐘內更新。','ok');toast('作品已發布');
+    syncCategoryOptions();
     resetForm(false);render();
   }catch(e){refreshConnectionBadge('err');setStatus(els.formStatus,e.message,'err');toast(e.message,'err')}
   finally{busy=false;els.publishBtn.disabled=false;if(token()&&els.syncDot.classList.contains('busy'))refreshConnectionBadge()}
@@ -365,13 +418,13 @@ async function tryDeleteAsset(publicPath){
 }
 window.editWork=id=>{
   const x=state.items.find(y=>y.id===id);if(!x)return;
-  els.editingId.value=x.id;els.title.value=x.title||'';els.category.value=x.category||'其他';els.year.value=x.year||'';els.description.value=x.description||'';els.alt.value=x.alt||'';els.published.checked=x.published!==false;selectedFile=null;
+  els.editingId.value=x.id;els.title.value=x.title||'';syncCategoryOptions(x.category||'電腦製圖');els.year.value=x.year||'';els.description.value=x.description||'';els.alt.value=x.alt||'';els.published.checked=x.published!==false;selectedFile=null;
   els.previewImg.src=x.image+'?v='+encodeURIComponent(state.updatedAt||'1');els.preview.style.display='block';els.previewEmpty.style.display='none';
   els.publishBtn.textContent='儲存修改';els.cancelBtn.hidden=false;els.composeHeading.textContent='編輯作品';els.editBadge.textContent='EDITING';
   updatePreviewCopy();switchView('compose')
 };
 function resetForm(clearStatus=true){
-  els.editingId.value='';els.title.value='';els.category.value='設計作品';els.year.value='';els.description.value='';els.alt.value='';els.file.value='';els.published.checked=true;selectedFile=null;
+  els.editingId.value='';els.title.value='';syncCategoryOptions('電腦製圖');els.year.value='';els.description.value='';els.alt.value='';els.file.value='';els.published.checked=true;selectedFile=null;
   els.preview.style.display='none';els.previewEmpty.style.display='block';els.previewImg.removeAttribute('src');els.publishBtn.textContent='上傳並發布';els.cancelBtn.hidden=true;els.composeHeading.textContent='新增作品';els.editBadge.textContent='NEW WORK';updatePreviewCopy();if(clearStatus)setStatus(els.formStatus,'')
 }
 els.cancelBtn.onclick=()=>resetForm();
