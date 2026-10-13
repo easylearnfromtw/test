@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-06T16:25:00.000Z",
+  "updated_at": "2026-10-13T15:30:00.000Z",
   "site": {
     "intro_kicker": "PORTFOLIO CITY · 2026",
     "name": "林哲愷",
@@ -128,6 +128,13 @@
           "title": "O森島民集結啦！台灣 70 型測驗",
           "subtitle": "台灣文化 × 互動型人格測驗",
           "url": "https://980510linz.github.io/taiwangogogo/",
+          "type": "",
+          "published": true
+        },
+        {
+          "title": "稜角 Learn Angle",
+          "subtitle": "學測智慧錯題本、讀書計時、學習排程與落點分析",
+          "url": "https://easylearnfromtw.github.io/Learneasyly-/",
           "type": "",
           "published": true
         },
