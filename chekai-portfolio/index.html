@@ -4807,6 +4807,36 @@ async function renderArtArchive(container){
     if(seq===artArchiveFetchSeq)container.innerHTML='<div class="art-error">藝術檔案暫時無法載入，請稍後再試。</div>';
   }
 }
+async function renderWebsiteArchive(container){
+  const requestId=String(++artArchiveFetchSeq);
+  container.dataset.websiteRequest=requestId;
+  try{
+    const res=await fetch('./data/artworks.json?ts='+Date.now(),{cache:'no-store'});
+    if(!res.ok)throw new Error('WEB DATA '+res.status);
+    const data=await res.json();
+    if(!container.isConnected||container.dataset.websiteRequest!==requestId)return;
+    if(!data||!Array.isArray(data.items))throw new Error('無效網站資料');
+    const works=data.items.filter(x=>x&&x.type==='web'&&x.published!==false&&x.image);
+    if(!works.length){container.remove();return}
+    const categories=[...new Set(works.map(x=>x.category||'其他網站'))];
+    container.innerHTML='<div class="activity-archive-title"><strong>網站專案 · Web Projects</strong><span>'+works.length+' PROJECTS</span></div>'+
+      '<div class="art-filter"><button class="active" type="button" data-web-filter="全部">全部</button>'+categories.map(c=>'<button type="button" data-web-filter="'+artEsc(c)+'">'+artEsc(c)+'</button>').join('')+'</div>'+
+      '<div class="art-grid">'+works.map((x,i)=>'<article class="art-work" data-web-category="'+artEsc(x.category||'其他網站')+'">'+
+      '<div class="art-work-image"><img loading="lazy" src="'+artEsc(x.image)+'?v='+encodeURIComponent(data.updatedAt||'1')+'" alt="'+artEsc(x.alt||x.title||'網站封面')+'"></div>'+
+      '<div class="art-work-copy"><b>'+artEsc(x.title||'未命名網站')+'</b><span>'+artEsc(x.category||'其他網站')+' · '+artEsc(x.status==='development'?'開發中':x.status==='archived'?'已封存':'已上線')+'</span>'+
+      (x.description?'<p>'+artEsc(x.description)+'</p>':'')+
+      (x.stack?'<p>'+artEsc(x.stack)+'</p>':'')+
+      (x.url&&/^https?:\/\//i.test(x.url)?'<p><a href="'+artEsc(x.url)+'" target="_blank" rel="noopener noreferrer" style="color:#a9d7ff;text-decoration:underline">開啟網站 ↗</a></p>':'')+
+      '</div></article>').join('')+'</div>';
+    container.querySelectorAll('[data-web-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+      container.querySelectorAll('[data-web-filter]').forEach(b=>b.classList.toggle('active',b===btn));
+      container.querySelectorAll('[data-web-category]').forEach(card=>card.hidden=btn.dataset.webFilter!=='全部'&&card.dataset.webCategory!==btn.dataset.webFilter);
+    }));
+  }catch(err){
+    console.warn('[web archive]',err);
+    if(container.isConnected&&container.dataset.websiteRequest===requestId)container.innerHTML='<div class="art-error">網站作品暫時無法載入。</div>';
+  }
+}
 async function renderActivityArchive(container){
   const requestId=String(++artArchiveFetchSeq);
   container.dataset.activityRequest=requestId;
@@ -4909,6 +4939,12 @@ function openDrawer(id){
   }else{
     dt.textContent=d.title;di.textContent=d.intro;
     items.innerHTML=d.items.map((x,i)=>x[3]?.type==='category'?`<div class="experience-group-head"><span>${x[0]}</span><span class="experience-group-count">${String(x[1]).padStart(2,'0')}</span></div>`:x[3]?.type==='certificate'?`<button class="item item-image" type="button" data-certificate="${x[3].id}" data-item="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='training_blog'?`<button class="item item-blog" type="button" data-training-blog="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[3]?.type==='jx_story'?`<button class="item item-image" type="button" data-jx-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='essay_story'?`<button class="item item-image" type="button" data-essay-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊閱讀完整小論文</span></button>`:x[3]?.type==='photo_story'?`<button class="item item-image" type="button" data-photo-story="${x[3].id||''}"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='cdba_story'?`<button class="item item-image" type="button" data-cdba-story="1"><b>${x[0]}</b><span>${x[1]} · 點擊查看互動經歷</span></button>`:x[3]?.type==='coming_soon'?`<button class="item item-locked" type="button" data-coming-soon="1"><b>${x[0]}</b><span>${x[1]}</span></button>`:x[2]?`<a class="item item-link" href="${x[2]}" rel="noopener noreferrer"><b>${x[0]}</b><span>${x[1]}</span></a>`:`<div class="item"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+    if(id==='web'){
+      const websiteSection=document.createElement('section');
+      websiteSection.className='activity-archive-section';
+      items.prepend(websiteSection);
+      renderWebsiteArchive(websiteSection);
+    }
     if(id==='experience'){
       const activitySection=document.createElement('section');
       activitySection.className='activity-archive-section';
