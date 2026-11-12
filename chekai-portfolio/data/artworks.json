@@ -1,5 +1,20 @@
 {
   "version": 1,
-  "updatedAt": "",
-  "items": []
+  "updatedAt": "2026-11-12T07:23:33.952Z",
+  "items": [
+    {
+      "id": "2ac7c8de-2fb9-45d9-bbc7-879437c2644f",
+      "title": "社團設計",
+      "category": "高中社團",
+      "year": "2026",
+      "description": "",
+      "alt": "2026 社團圖片-1",
+      "image": "./assets/art/1794468210492-社團設計.webp",
+      "width": 1920,
+      "height": 1080,
+      "published": true,
+      "createdAt": "2026-11-12T07:23:33.951Z",
+      "updatedAt": "2026-11-12T07:23:33.951Z"
+    }
+  ]
 }
