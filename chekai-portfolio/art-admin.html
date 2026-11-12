@@ -61,8 +61,8 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 <div class="layout">
   <aside class="sidebar">
     <nav class="navgroup">
-      <button class="navbtn active" type="button" data-view="compose"><span>＋</span><span>新增作品</span></button>
-      <button class="navbtn" type="button" data-view="library"><span>▦</span><span>作品庫</span></button>
+      <button class="navbtn active" type="button" data-view="compose"><span>＋</span><span>新增內容</span></button>
+      <button class="navbtn" type="button" data-view="library"><span>▦</span><span>內容庫</span></button>
       <button class="navbtn" type="button" data-view="settings"><span>⚙</span><span>設定</span></button>
     </nav>
     <div class="side-spacer"></div>
@@ -80,10 +80,10 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
       </header>
       <div class="compose-grid">
         <section class="panel panel-pad">
-          <div class="panel-title"><h2>作品資料</h2><span id="editBadge">NEW WORK</span></div>
+          <div class="panel-title"><h2 id="panelTitle">內容資料</h2><span id="editBadge">NEW CONTENT</span></div>
           <input type="hidden" id="editingId">
           <div class="field"><label for="entryType">內容類型</label><select id="entryType"><option value="art">藝術・設計作品</option><option value="activity">活動・經歷紀錄</option></select><div class="helper">藝術會出現在 Art Archive；活動會出現在 Experience。</div></div>
-          <div class="field"><label>作品名稱 *</label><input id="title" maxlength="80" placeholder="例如：城市速寫 01"></div>
+          <div class="field"><label id="titleLabel">作品名稱 *</label><input id="title" maxlength="80" placeholder="例如：城市速寫 01"></div>
           <div class="row">
             <div class="field">
               <label>分類</label>
@@ -94,14 +94,14 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
               </select>
               <div id="categoryCustomWrap" hidden>
                 <input id="newCategory" maxlength="30" placeholder="輸入新分類名稱，例如：攝影、手繪、海報">
-                <div class="helper">發布後，這個分類會自動加入日後可選清單。</div>
+                <div class="helper">新分類會自動保留在對應類型的選單內。</div>
               </div>
             </div>
-            <div class="field"><label>年份</label><input id="year" inputmode="numeric" maxlength="4" placeholder="2026"></div>
+            <div class="field"><label>年份（選填）</label><input id="year" inputmode="numeric" maxlength="4" placeholder="2026"></div>
           </div>
           <div id="activityFields" hidden><div class="row"><div class="field"><label>活動日期</label><input id="eventDate" type="date"></div><div class="field"><label>參與角色</label><input id="role" maxlength="60" placeholder="例如：主辦、參加者"></div></div><div class="field"><label>活動地點</label><input id="venue" maxlength="100" placeholder="例如：新北市"></div></div>
           <div class="field"><label id="descriptionLabel">作品簡述</label><textarea id="description" maxlength="600" placeholder="媒材、概念、製作背景…"></textarea><div class="helper">建議 40–120 字，前台會顯示為作品說明。</div></div>
-          <div class="field"><label>替代文字</label><input id="alt" maxlength="160" placeholder="簡單描述畫面內容"><div class="helper">留白時會自動使用作品名稱。</div></div>
+          <div class="field"><label>圖片替代文字</label><input id="alt" maxlength="160" placeholder="簡單描述畫面內容"><div class="helper">留白時會自動使用作品名稱。</div></div>
           <div class="field">
             <label id="imageLabel">作品圖片 *</label>
             <div class="uploadbox" id="dropbox">
@@ -119,7 +119,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 
         <section class="panel preview-panel">
           <div class="preview-stage">
-            <div class="preview-empty" id="previewEmpty"><div class="shape"></div><b>作品預覽</b><span>選擇圖片後會顯示在這裡</span></div>
+            <div class="preview-empty" id="previewEmpty"><div class="shape"></div><b>內容預覽</b><span>選擇圖片後會顯示在這裡</span></div>
             <div class="preview" id="preview"><img id="previewImg" alt=""></div>
           </div>
           <div class="preview-copy">
@@ -134,7 +134,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 
     <section class="view" data-view-panel="library">
       <header class="viewhead">
-        <div><div class="eyebrow">02 / LIBRARY</div><h1>作品庫</h1><p>作品與活動共用管理介面，各自分流至前台區塊。</p></div>
+        <div><div class="eyebrow">02 / LIBRARY</div><h1>內容庫</h1><p>作品與活動共用管理介面，各自分流至前台區塊。</p></div>
         <div class="stats">
           <div class="stat"><em>TOTAL</em><strong id="statTotal">0</strong></div>
           <div class="stat"><em>PUBLIC</em><strong id="statLive">0</strong></div>
@@ -144,9 +144,9 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
       <div class="library-toolbar">
         <div class="search"><input id="searchInput" type="search" placeholder="搜尋作品、活動或描述…"></div><select id="typeFilter" class="filterselect"><option value="">全部類型</option><option value="art">藝術作品</option><option value="activity">活動紀錄</option></select>
         <select class="filterselect" id="categoryFilter"><option value="">全部分類</option></select>
-        <button class="btn" type="button" id="newWorkBtn">＋ 新增作品</button>
+        <button class="btn" type="button" id="newWorkBtn">＋ 新增內容</button>
       </div>
-      <div class="empty" id="empty"><b>尚未上傳作品</b>從「新增作品」開始建立你的藝術檔案。</div>
+      <div class="empty" id="empty"><b>尚未上傳內容</b>從「新增內容」建立第一筆作品或活動。</div>
       <div class="cards" id="cards"></div>
       <div class="status" id="listStatus"></div>
     </section>
@@ -187,7 +187,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 
 <nav class="mobile-nav">
   <button class="navbtn active" type="button" data-view="compose"><span>＋</span><span>新增</span></button>
-  <button class="navbtn" type="button" data-view="library"><span>▦</span><span>作品庫</span></button>
+  <button class="navbtn" type="button" data-view="library"><span>▦</span><span>內容庫</span></button>
   <button class="navbtn" type="button" data-view="settings"><span>⚙</span><span>設定</span></button>
 </nav>
 <div class="toast" id="toast"></div>
@@ -196,7 +196,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 const OWNER='easylearnfromtw',REPO='test',BRANCH='main',PREFIX='chekai-portfolio/';
 const DATA_PATH=PREFIX+'data/artworks.json',ASSET_DIRS={art:PREFIX+'assets/art/',activity:PREFIX+'assets/activities/'};
 const API='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/';
-const els=Object.fromEntries(['token','saveToken','tokenToggle','testToken','clearToken','settingsStatus','editingId','entryType','activityFields','eventDate','role','venue','descriptionLabel','imageLabel','typeFilter','title','category','newCategory','categoryCustomWrap','year','description','alt','file','preview','previewImg','previewEmpty','previewCategory','previewTitle','previewDescription','previewYear','previewVisibility','published','publishBtn','cancelBtn','formStatus','cards','empty','listStatus','reloadBtn','syncDot','syncLabel','sideDot','sideStatus','statTotal','statLive','statHidden','searchInput','categoryFilter','newWorkBtn','composeHeading','editBadge','toast'].map(id=>[id,document.getElementById(id)]));
+const els=Object.fromEntries(['token','saveToken','tokenToggle','testToken','clearToken','settingsStatus','editingId','entryType','panelTitle','titleLabel','activityFields','eventDate','role','venue','descriptionLabel','imageLabel','typeFilter','title','category','newCategory','categoryCustomWrap','year','description','alt','file','preview','previewImg','previewEmpty','previewCategory','previewTitle','previewDescription','previewYear','previewVisibility','published','publishBtn','cancelBtn','formStatus','cards','empty','listStatus','reloadBtn','syncDot','syncLabel','sideDot','sideStatus','statTotal','statLive','statHidden','searchInput','categoryFilter','newWorkBtn','composeHeading','editBadge','toast'].map(id=>[id,document.getElementById(id)]));
 let state={version:1,updatedAt:'',items:[]},dataSha='',selectedFile=null,busy=false,currentView='compose',searchTerm='',filterCategory='',filterType='';
 els.token.value=sessionStorage.getItem('ck_art_token')||'';
 function switchView(view){
@@ -329,7 +329,7 @@ function render(){
     return (!searchTerm||text.includes(searchTerm))&&(!filterCategory||(x.category||'其他')===filterCategory)&&(!filterType||(x.type||'art')===filterType)
   });
   els.empty.hidden=visible.length>0;
-  els.empty.innerHTML=total?'<b>沒有符合條件的作品</b>調整搜尋或分類篩選。':'<b>尚未上傳作品</b>從「新增作品」開始建立你的藝術檔案。';
+  els.empty.innerHTML=total?'<b>沒有符合條件的內容</b>調整搜尋或分類篩選。':'<b>尚未上傳內容</b>從「新增內容」開始建立你的紀錄。';
   if(total>0&&visible.length===0)els.empty.hidden=false;
   els.cards.innerHTML=visible.map((x)=>`
     <article class="card" data-id="${esc(x.id)}">
@@ -432,12 +432,12 @@ window.editWork=id=>{
   els.entryType.value=x.type||'art';els.eventDate.value=x.eventDate||'';els.role.value=x.role||'';els.venue.value=x.venue||'';syncTypeFields();
   els.editingId.value=x.id;els.title.value=x.title||'';syncCategoryOptions(x.category||'電腦製圖');els.year.value=x.year||'';els.description.value=x.description||'';els.alt.value=x.alt||'';els.published.checked=x.published!==false;selectedFile=null;
   els.previewImg.src=x.image+'?v='+encodeURIComponent(state.updatedAt||'1');els.preview.style.display='block';els.previewEmpty.style.display='none';
-  els.publishBtn.textContent='儲存修改';els.cancelBtn.hidden=false;els.composeHeading.textContent='編輯作品';els.editBadge.textContent='EDITING';
+  els.publishBtn.textContent='儲存修改';els.cancelBtn.hidden=false;els.composeHeading.textContent=x.type==='activity'?'編輯活動':'編輯作品';els.editBadge.textContent='EDITING';
   updatePreviewCopy();switchView('compose')
 };
 function resetForm(clearStatus=true){
   els.editingId.value='';els.entryType.value='art';els.eventDate.value='';els.role.value='';els.venue.value='';syncTypeFields();els.title.value='';syncCategoryOptions('電腦製圖');els.year.value='';els.description.value='';els.alt.value='';els.file.value='';els.published.checked=true;selectedFile=null;
-  els.preview.style.display='none';els.previewEmpty.style.display='block';els.previewImg.removeAttribute('src');els.publishBtn.textContent='上傳並發布';els.cancelBtn.hidden=true;els.composeHeading.textContent='新增作品';els.editBadge.textContent='NEW WORK';updatePreviewCopy();if(clearStatus)setStatus(els.formStatus,'')
+  els.preview.style.display='none';els.previewEmpty.style.display='block';els.previewImg.removeAttribute('src');els.publishBtn.textContent='上傳並發布';els.cancelBtn.hidden=true;els.composeHeading.textContent='新增作品與活動';els.editBadge.textContent='NEW CONTENT';updatePreviewCopy();if(clearStatus)setStatus(els.formStatus,'')
 }
 els.cancelBtn.onclick=()=>resetForm();
 window.move=async(id,dir)=>{
@@ -461,6 +461,8 @@ function syncTypeFields(){
  els.activityFields.hidden=!activity;
  els.descriptionLabel.textContent=activity?'活動紀錄與心得':'作品簡述';
  els.imageLabel.textContent=activity?'活動封面照片 *':'作品圖片 *';
+ els.titleLabel.textContent=activity?'活動名稱 *':'作品名稱 *';
+ els.panelTitle.textContent=activity?'活動紀錄':'藝術作品';
  els.title.placeholder=activity?'例如：中華辯會工作坊':'例如：城市速寫 01';
  updatePreviewCopy();
 }
