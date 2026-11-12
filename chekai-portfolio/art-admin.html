@@ -41,7 +41,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 }
 @media(max-width:520px){.row{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.library-toolbar{grid-template-columns:1fr 1fr}.library-toolbar .search{grid-column:1/-1}.stats{grid-template-columns:repeat(3,1fr)}.stat em{font-size:7px}.preview-stage,.preview{min-height:280px}.auth{grid-template-columns:1fr 1fr}.auth input{grid-column:1/-1}}
 
-#entryType{font-weight:800;background:#f0f2f3}#activityFields[hidden]{display:none!important}#activityFields{padding:13px 14px 0;border:1px solid var(--line);border-radius:14px;margin-bottom:14px;background:#f9f9f8}
+#entryType{font-weight:800;background:#f0f2f3}#activityFields[hidden],#websiteFields[hidden]{display:none!important}#websiteFields,#activityFields{padding:13px 14px 0;border:1px solid var(--line);border-radius:14px;margin-bottom:14px;background:#f9f9f8}
 </style>
 </head>
 <body>
@@ -82,7 +82,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
         <section class="panel panel-pad">
           <div class="panel-title"><h2 id="panelTitle">內容資料</h2><span id="editBadge">NEW CONTENT</span></div>
           <input type="hidden" id="editingId">
-          <div class="field"><label for="entryType">內容類型</label><select id="entryType"><option value="art">藝術・設計作品</option><option value="activity">活動・經歷紀錄</option></select><div class="helper">藝術會出現在 Art Archive；活動會出現在 Experience。</div></div>
+          <div class="field"><label for="entryType">內容類型</label><select id="entryType"><option value="art">藝術・設計作品</option><option value="activity">活動・經歷紀錄</option><option value="web">網站・數位專案</option></select><div class="helper">藝術 → Art Archive；活動 → Experience；網站 → 網站作品。</div></div>
           <div class="field"><label id="titleLabel">作品名稱 *</label><input id="title" maxlength="80" placeholder="例如：城市速寫 01"></div>
           <div class="row">
             <div class="field">
@@ -99,7 +99,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
             </div>
             <div class="field"><label>年份（選填）</label><input id="year" inputmode="numeric" maxlength="4" placeholder="2026"></div>
           </div>
-          <div id="activityFields" hidden><div class="row"><div class="field"><label>活動日期</label><input id="eventDate" type="date"></div><div class="field"><label>參與角色</label><input id="role" maxlength="60" placeholder="例如：主辦、參加者"></div></div><div class="field"><label>活動地點</label><input id="venue" maxlength="100" placeholder="例如：新北市"></div></div>
+          <div id="websiteFields" hidden><div class="field"><label for="websiteUrl">網站網址（https://）</label><input id="websiteUrl" type="url" maxlength="500" placeholder="https://example.com"></div><div class="row"><div class="field"><label for="websiteStack">使用技術</label><input id="websiteStack" maxlength="120" placeholder="HTML / CSS / JavaScript"></div><div class="field"><label for="websiteStatus">網站狀態</label><select id="websiteStatus"><option value="live">已上線</option><option value="development">開發中</option><option value="archived">已封存</option></select></div></div></div><div id="activityFields" hidden><div class="row"><div class="field"><label>活動日期</label><input id="eventDate" type="date"></div><div class="field"><label>參與角色</label><input id="role" maxlength="60" placeholder="例如：主辦、參加者"></div></div><div class="field"><label>活動地點</label><input id="venue" maxlength="100" placeholder="例如：新北市"></div></div>
           <div class="field"><label id="descriptionLabel">作品簡述</label><textarea id="description" maxlength="600" placeholder="媒材、概念、製作背景…"></textarea><div class="helper">建議 40–120 字，前台會顯示為作品說明。</div></div>
           <div class="field"><label>圖片替代文字</label><input id="alt" maxlength="160" placeholder="簡單描述畫面內容"><div class="helper">留白時會自動使用作品名稱。</div></div>
           <div class="field">
@@ -142,7 +142,7 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
         </div>
       </header>
       <div class="library-toolbar">
-        <div class="search"><input id="searchInput" type="search" placeholder="搜尋作品、活動或描述…"></div><select id="typeFilter" class="filterselect"><option value="">全部類型</option><option value="art">藝術作品</option><option value="activity">活動紀錄</option></select>
+        <div class="search"><input id="searchInput" type="search" placeholder="搜尋作品、活動或描述…"></div><select id="typeFilter" class="filterselect"><option value="">全部類型</option><option value="art">藝術作品</option><option value="activity">活動紀錄</option><option value="web">網站作品</option></select>
         <select class="filterselect" id="categoryFilter"><option value="">全部分類</option></select>
         <button class="btn" type="button" id="newWorkBtn">＋ 新增內容</button>
       </div>
@@ -194,9 +194,9 @@ button,input,textarea,select{font:inherit}.appbar{height:64px;position:sticky;to
 
 <script>
 const OWNER='easylearnfromtw',REPO='test',BRANCH='main',PREFIX='chekai-portfolio/';
-const DATA_PATH=PREFIX+'data/artworks.json',ASSET_DIRS={art:PREFIX+'assets/art/',activity:PREFIX+'assets/activities/'};
+const DATA_PATH=PREFIX+'data/artworks.json',ASSET_DIRS={art:PREFIX+'assets/art/',activity:PREFIX+'assets/activities/',web:PREFIX+'assets/web/'};
 const API='https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/';
-const els=Object.fromEntries(['token','saveToken','tokenToggle','testToken','clearToken','settingsStatus','editingId','entryType','panelTitle','titleLabel','activityFields','eventDate','role','venue','descriptionLabel','imageLabel','typeFilter','title','category','newCategory','categoryCustomWrap','year','description','alt','file','preview','previewImg','previewEmpty','previewCategory','previewTitle','previewDescription','previewYear','previewVisibility','published','publishBtn','cancelBtn','formStatus','cards','empty','listStatus','reloadBtn','syncDot','syncLabel','sideDot','sideStatus','statTotal','statLive','statHidden','searchInput','categoryFilter','newWorkBtn','composeHeading','editBadge','toast'].map(id=>[id,document.getElementById(id)]));
+const els=Object.fromEntries(['token','saveToken','tokenToggle','testToken','clearToken','settingsStatus','editingId','entryType','websiteFields','websiteUrl','websiteStack','websiteStatus','panelTitle','titleLabel','activityFields','eventDate','role','venue','descriptionLabel','imageLabel','typeFilter','title','category','newCategory','categoryCustomWrap','year','description','alt','file','preview','previewImg','previewEmpty','previewCategory','previewTitle','previewDescription','previewYear','previewVisibility','published','publishBtn','cancelBtn','formStatus','cards','empty','listStatus','reloadBtn','syncDot','syncLabel','sideDot','sideStatus','statTotal','statLive','statHidden','searchInput','categoryFilter','newWorkBtn','composeHeading','editBadge','toast'].map(id=>[id,document.getElementById(id)]));
 let state={version:1,updatedAt:'',items:[]},dataSha='',selectedFile=null,busy=false,currentView='compose',searchTerm='',filterCategory='',filterType='';
 els.token.value=sessionStorage.getItem('ck_art_token')||'';
 function switchView(view){
@@ -256,7 +256,7 @@ function updatePreviewCopy(){
   if(els.previewTitle)els.previewTitle.textContent=els.title.value.trim()||'Untitled';
   if(els.previewCategory){
     const cat=els.category.value==='__add__'?els.newCategory.value.trim():els.category.value;
-    els.previewCategory.textContent=(els.entryType.value==='activity'?'ACTIVITY / ':'ART / ')+(cat==='__auto__'?inferCategory():(cat||'其他'));
+    els.previewCategory.textContent=(els.entryType.value==='activity'?'ACTIVITY / ':(els.entryType.value==='web'?'WEB / ':'ART / '))+(cat==='__auto__'?inferCategory():(cat||'其他'));
   }
   if(els.previewDescription)els.previewDescription.textContent=els.description.value.trim()||(els.entryType.value==='activity'?'活動簡述會出現在這裡。':'作品簡述會出現在這裡。');
   if(els.previewYear)els.previewYear.textContent=els.entryType.value==='activity'?(els.eventDate.value||els.year.value||'DATE —'):'YEAR '+(els.year.value.trim()||'—');
@@ -270,14 +270,14 @@ function currentCategory(){
     if(!custom)throw new Error('請輸入新分類名稱。');
     return custom;
   }
-  return selected||(els.entryType.value==='activity'?inferCategory():'電腦製圖');
+  return selected||(els.entryType.value==='activity'?inferCategory():els.entryType.value==='web'?'互動網站':'電腦製圖');
 }
 function syncCategoryOptions(preferred=''){
-  const activity=els.entryType.value==='activity';
-  const defaults=activity?['社團與領導','服務與公共參與','競賽與獎項','講座與交流','校園活動','其他活動']:['電腦製圖','網站','攝影','手繪'];
-  const existing=[...new Set((state.items||[]).filter(x=>(x.type||'art')===(activity?'activity':'art')).map(x=>x.category).filter(Boolean))];
+  const activity=els.entryType.value==='activity',web=els.entryType.value==='web';
+  const defaults=web?['互動網站','品牌網站','學習工具','實驗專案','其他網站']:activity?['社團與領導','服務與公共參與','競賽與獎項','講座與交流','校園活動','其他活動']:['電腦製圖','網站','攝影','手繪'];
+  const existing=[...new Set((state.items||[]).filter(x=>(x.type||'art')===(web?'web':activity?'activity':'art')).map(x=>x.category).filter(Boolean))];
   const cats=[...new Set([...defaults,...existing])];
-  const target=preferred||(activity?'__auto__':'電腦製圖');
+  const target=preferred||(activity?'__auto__':web?'互動網站':'電腦製圖');
   els.category.innerHTML=(activity?'<option value="__auto__">✦ 自動判斷分類</option>':'')+cats.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('')+'<option value="__add__">＋ 新增分類</option>';
   if(cats.includes(target)||(activity&&target==='__auto__')){
     els.category.value=target;
@@ -288,7 +288,7 @@ function syncCategoryOptions(preferred=''){
     els.categoryCustomWrap.hidden=false;
     els.newCategory.value=target;
   }else{
-    els.category.value=activity?'__auto__':'電腦製圖';
+    els.category.value=activity?'__auto__':web?'互動網站':'電腦製圖';
     els.categoryCustomWrap.hidden=true;
     els.newCategory.value='';
   }
@@ -334,7 +334,7 @@ function render(){
   els.cards.innerHTML=visible.map((x)=>`
     <article class="card" data-id="${esc(x.id)}">
       <div class="thumb"><img src="${esc(x.image)}?v=${encodeURIComponent(state.updatedAt||'1')}" alt="${esc(x.alt||x.title)}" loading="lazy"></div>
-      <div class="meta"><b>${esc(x.title)}</b><span>${x.type==='activity'?'活動紀錄':'藝術作品'} · ${esc(x.category||'未分類')} · ${esc(x.eventDate||x.year||'—')}</span><span class="desc">${esc(x.description||'尚未填寫作品簡述')}</span><span class="pill ${x.published===false?'':'live'}">${x.published===false?'未公開':'已公開'}</span></div>
+      <div class="meta"><b>${esc(x.title)}</b><span>${x.type==='activity'?'活動紀錄':x.type==='web'?'網站作品':'藝術作品'} · ${esc(x.category||'未分類')} · ${esc(x.eventDate||x.year||'—')}</span><span class="desc">${esc(x.description||'尚未填寫作品簡述')}</span><span class="pill ${x.published===false?'':'live'}">${x.published===false?'未公開':'已公開'}</span></div>
       <div class="cardops">
         <button class="iconbtn" onclick="move('${esc(x.id)}',-1)" title="上移">↑</button>
         <button class="iconbtn" onclick="move('${esc(x.id)}',1)" title="下移">↓</button>
@@ -392,9 +392,12 @@ async function publish(){
       const filename=Date.now()+'-'+slug(els.title.value)+'.webp';
       const path=ASSET_DIRS[els.entryType.value]+filename;
       await gh(path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Upload art: '+els.title.value.trim(),content:bytesToBase64(c.bytes),branch:BRANCH})});
-      image='./assets/'+(els.entryType.value==='activity'?'activities':'art')+'/'+filename;width=c.w;height=c.h;
+      image='./assets/'+(els.entryType.value==='activity'?'activities':els.entryType.value==='web'?'web':'art')+'/'+filename;width=c.w;height=c.h;
     }
-    if(!image)throw new Error('請選擇作品圖片。');
+    if(!image)throw new Error('請選擇封面圖片。');
+    if(els.entryType.value==='web'&&els.websiteUrl.value.trim()){
+      try{const u=new URL(els.websiteUrl.value.trim());if(u.protocol!=='https:'&&u.protocol!=='http:')throw Error()}catch{throw new Error('請輸入有效的 http(s) 網站網址。')}
+    }
     const now=new Date().toISOString();
     const item={
       id:existing?.id||(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)),
@@ -405,6 +408,9 @@ async function publish(){
       eventDate:els.entryType.value==='activity'?els.eventDate.value:'',
       role:els.entryType.value==='activity'?els.role.value.trim():'',
       venue:els.entryType.value==='activity'?els.venue.value.trim():'',
+      url:els.entryType.value==='web'?els.websiteUrl.value.trim():'',
+      stack:els.entryType.value==='web'?els.websiteStack.value.trim():'',
+      status:els.entryType.value==='web'?els.websiteStatus.value:'',
       description:els.description.value.trim(),
       alt:els.alt.value.trim()||els.title.value.trim(),
       image,width,height,
@@ -424,19 +430,21 @@ async function publish(){
 }
 async function tryDeleteAsset(publicPath){
   const rel=publicPath.replace(/^\.\//,'');
+  if(!/^assets\/(art|activities|web)\/[a-zA-Z0-9._-]+\.webp$/.test(rel))return;
+  if(state.items.some(x=>x.image===publicPath))return;
   const path=PREFIX+rel;
   try{const info=await gh(path+'?ref='+BRANCH);await gh(path,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Replace artwork image',sha:info.sha,branch:BRANCH})})}catch(e){console.warn(e)}
 }
 window.editWork=id=>{
   const x=state.items.find(y=>y.id===id);if(!x)return;
-  els.entryType.value=x.type||'art';els.eventDate.value=x.eventDate||'';els.role.value=x.role||'';els.venue.value=x.venue||'';syncTypeFields();
+  els.entryType.value=x.type||'art';els.websiteUrl.value=x.url||'';els.websiteStack.value=x.stack||'';els.websiteStatus.value=x.status||'live';els.eventDate.value=x.eventDate||'';els.role.value=x.role||'';els.venue.value=x.venue||'';syncTypeFields();
   els.editingId.value=x.id;els.title.value=x.title||'';syncCategoryOptions(x.category||'電腦製圖');els.year.value=x.year||'';els.description.value=x.description||'';els.alt.value=x.alt||'';els.published.checked=x.published!==false;selectedFile=null;
   els.previewImg.src=x.image+'?v='+encodeURIComponent(state.updatedAt||'1');els.preview.style.display='block';els.previewEmpty.style.display='none';
-  els.publishBtn.textContent='儲存修改';els.cancelBtn.hidden=false;els.composeHeading.textContent=x.type==='activity'?'編輯活動':'編輯作品';els.editBadge.textContent='EDITING';
+  els.publishBtn.textContent='儲存修改';els.cancelBtn.hidden=false;els.composeHeading.textContent=x.type==='activity'?'編輯活動':x.type==='web'?'編輯網站':'編輯作品';els.editBadge.textContent='EDITING';
   updatePreviewCopy();switchView('compose')
 };
 function resetForm(clearStatus=true){
-  els.editingId.value='';els.entryType.value='art';els.eventDate.value='';els.role.value='';els.venue.value='';syncTypeFields();els.title.value='';syncCategoryOptions('電腦製圖');els.year.value='';els.description.value='';els.alt.value='';els.file.value='';els.published.checked=true;selectedFile=null;
+  els.editingId.value='';els.entryType.value='art';els.websiteUrl.value='';els.websiteStack.value='';els.websiteStatus.value='live';els.eventDate.value='';els.role.value='';els.venue.value='';syncTypeFields();els.title.value='';syncCategoryOptions('電腦製圖');els.year.value='';els.description.value='';els.alt.value='';els.file.value='';els.published.checked=true;selectedFile=null;
   els.preview.style.display='none';els.previewEmpty.style.display='block';els.previewImg.removeAttribute('src');els.publishBtn.textContent='上傳並發布';els.cancelBtn.hidden=true;els.composeHeading.textContent='新增作品與活動';els.editBadge.textContent='NEW CONTENT';updatePreviewCopy();if(clearStatus)setStatus(els.formStatus,'')
 }
 els.cancelBtn.onclick=()=>resetForm();
@@ -457,13 +465,14 @@ function inferCategory(){
  return '其他活動';
 }
 function syncTypeFields(){
- const activity=els.entryType.value==='activity';
+ const activity=els.entryType.value==='activity',web=els.entryType.value==='web';
  els.activityFields.hidden=!activity;
- els.descriptionLabel.textContent=activity?'活動紀錄與心得':'作品簡述';
- els.imageLabel.textContent=activity?'活動封面照片 *':'作品圖片 *';
- els.titleLabel.textContent=activity?'活動名稱 *':'作品名稱 *';
- els.panelTitle.textContent=activity?'活動紀錄':'藝術作品';
- els.title.placeholder=activity?'例如：中華辯會工作坊':'例如：城市速寫 01';
+ els.websiteFields.hidden=!web;
+ els.descriptionLabel.textContent=activity?'活動紀錄與心得':web?'網站介紹與功能':'作品簡述';
+ els.imageLabel.textContent=activity?'活動封面照片 *':web?'網站封面截圖 *':'作品圖片 *';
+ els.titleLabel.textContent=activity?'活動名稱 *':web?'網站名稱 *':'作品名稱 *';
+ els.panelTitle.textContent=activity?'活動紀錄':web?'網站專案':'藝術作品';
+ els.title.placeholder=activity?'例如：中華辯會工作坊':web?'例如：稜角 Learn Angle':'例如：城市速寫 01';
  updatePreviewCopy();
 }
 syncTypeFields();
